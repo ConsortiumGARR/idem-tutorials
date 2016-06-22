@@ -14,7 +14,7 @@
   2. [Configure Apache Tomcat 8](#configure-apache-tomcat-8)
   3. [Speed up Tomcat 8 startup](#speed-up-tomcat-8-startup)
   4. [Configure Shibboleth Identity Provider v3.2.1 to release the persistent-id (Stored Mode)](#configure-shibboleth-identity-provider-v321-to-release-the-persistent-id-stored-mode)
-  5. [Configure Attribute Filter for Research and Scholarship Entity Category](#configure-attribute-filter-for-research-and-scholarship-entity-category)
+  5. [Configure Attribute Filters for Research and Scholarship and Data Protection Code of Conduct Entity Category](#configure-attribute-filters-for-research-and-scholarship-and-data-protection-code-of-conduct-entity-category)
 
 
 ## Requirements Hardware
@@ -30,7 +30,8 @@
  * vim
  * default-jdk 
  * tomcat8
- * apache2
+ * apache2 (>= 2.4)
+ * expat
 
 ## Other Requirements
 
@@ -40,28 +41,34 @@
 
 ### Install software requirements
 
-0. Become ROOT of the machine: 
+1. Become ROOT:
   * ```sudo su -```
 
-1. Install GIT and retrieve this repository: 
-  * ```apt-get install git```
-  * ```git clone https://github.com/malavolti/HOWTO-Install-and-Configure-Shibboleth-Identity-Provider.git /usr/local/src/HOWTO-Shib-IdP```
-
-2. Install the packages required: 
-  * ```apt-get install vim default-jdk ca-certificates openssl tomcat8 apache2 ntp```
+2. Change the default mirror with the GARR ones:
+  * ```nano /etc/apt/sources.list```
+  * CTRL+W (search)
+  * CTRL+R (replace)
+  * Text to search: '```it.archive.ubuntu.com```'
+  * Text to replace: '```mi.mirror.garr.it```'
+  * CTRL+X (save and exit)
+  * ```apt-get update && apt-get upgrade```
+  
+3. Install the packages required: 
+  * ```apt-get install vim default-jdk ca-certificates openssl tomcat8 apache2 ntp expat```
 
 ### Configure the environment
 
-0. Modify your ```/etc/hosts```:
+1. Modify your ```/etc/hosts```:
   * ```vim /etc/hosts```
   
     ```bash
     127.0.1.1 idp.example.org idp
     ```
+  (*Replace ```idp.example.org``` with your IdP Full Qualified Domain Name*)
 
-1. Be sure that your firewall **doesn't block** the traffic on port **443** (or you can't access to your IdP)
+2. Be sure that your firewall **doesn't block** the traffic on port **443** (or you can't access to your IdP)
 
-2. Define the costants ```JAVA_HOME``` and ```IDP_SRC``` inside ```/etc/environment```:
+3. Define the costants ```JAVA_HOME``` and ```IDP_SRC``` inside ```/etc/environment```:
   * ```vim /etc/environment```
 
     ```bash
@@ -72,17 +79,17 @@
   * ```export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/jre```
   * ```export IDP_SRC=/usr/local/src/shibboleth-identity-provider-3.2.1```
   
-3. Move the Certificate and the Key file for HTTPS server from ```/tmp/``` to ```/root/certificates```:
+4. Move the Certificate and the Key file for HTTPS server from ```/tmp/``` to ```/root/certificates```:
   * ```mkdir /root/certificates```
   * ```mv /tmp/idp-cert-server.crt /root/certificates```
   * ```mv /tmp/idp-key-server.key /root/certificates```
   * ```chmod 400 /root/certificates/idp-key-server.key```
   * ```chmod 644 /root/certificates/idp-cert-server.crt```
-  
-  (OPTIONAL) Create a Certificate and a Key self-signed if you don't have the official ones provided by DigiCert:
-  * ```openssl req -x509 -newkey rsa:4096 -keyout /root/certificates/idpkey-server.key -out /root/certificates/idp-cert-server.crt -nodes -days 3650```
 
-4. Configure **/etc/default/tomcat8**:
+  (OPTIONAL) Create a Certificate and a Key self-signed for HTTPS if you don't have the official ones provided by DigiCert:
+  * ```openssl req -x509 -newkey rsa:4096 -keyout /root/certificates/idp-key-server.key -out /root/certificates/idp-cert-server.crt -nodes -days 3650```
+
+5. Configure **/etc/default/tomcat8**:
   * ```update-alternatives --config java``` (copy the path without /bin/java)
   * ```update-alternatives --config javac```
   * ```vim /etc/default/tomcat8```
@@ -99,16 +106,16 @@
 
 ### Install Shibboleth Identity Provider v3.2.1
 
-0. Become ROOT of the machine: 
+1. Become ROOT: 
   * ```sudo su -```
 
-1. Download the Shibboleth IdP 3.2.1:
+2. Download the Shibboleth Identity Provider v3.2.1:
   * ```cd /usr/local/src```
-  * ```wget http://shibboleth.net/downloads/identity-provider/latest/shibboleth-identity-provider-3.2.1.tar.gz```
+  * ```wget http://shibboleth.net/downloads/identity-provider/3.2.1/shibboleth-identity-provider-3.2.1.tar.gz```
   * ```tar -xzvf shibboleth-identity-provider-3.2.1.tar.gz```
   * ```cd shibboleth-identity-provider-3.2.1```
 
-2. Run the installer ```install.sh```:
+3. Run the installer ```install.sh```:
   * ```./bin/install.sh```
   
   ```bash
@@ -116,24 +123,24 @@
   Source (Distribution) Directory: [/usr/local/src/shibboleth-identity-provider-3.2.1]
   Installation Directory: [/opt/shibboleth-idp]
   Hostname: [localhost.localdomain]
-  idp.example.it
-  SAML EntityID: [https://idp.example.it/idp/shibboleth]
+  idp.example.org
+  SAML EntityID: [https://idp.example.org/idp/shibboleth]
   Attribute Scope: [localdomain]
-  example.it
+  example.org
   Backchannel PKCS12 Password: ###PASSWORD-FOR-BACKCHANNEL###
-  Re-enter password: ###PASSWORD-FOR-BACKCHANNEL###
+  Re-enter password:           ###PASSWORD-FOR-BACKCHANNEL###
   Cookie Encryption Key Password: ###PASSWORD-FOR-COOKIE-ENCRYPTION###
-  Re-enter password: ###PASSWORD-FOR-COOKIE-ENCRYPTION###
+  Re-enter password:              ###PASSWORD-FOR-COOKIE-ENCRYPTION###
   ```
   
   From this point the variable **idp.home** refers to the directory: ```/opt/shibboleth-idp```
 
-3. Import the JST libraries to visualize the IdP ```status``` page:
+4. Import the JST libraries to visualize the IdP ```status``` page:
   * ```cd /opt/shibboleth-idp/edit-webapp/WEB-INF/lib```
   * ```wget https://build.shibboleth.net/nexus/service/local/repositories/thirdparty/content/javax/servlet/jstl/1.2/jstl-1.2.jar```
   * ```cd /opt/shibboleth-idp/bin ; ./build.sh -Didp.target.dir=/opt/shibboleth-idp```
 
-4. Change the rights to enable **tomcat8** user to access on the following directories:
+5. Change the owner to enable **tomcat8** user to access on the following directories:
   * ```chown -R tomcat8 /opt/shibboleth-idp/logs/```
   * ```chown -R tomcat8 /opt/shibboleth-idp/metadata/```
   * ```chown -R tomcat8 /opt/shibboleth-idp/credentials/```
@@ -147,14 +154,14 @@
 
   ```apache
   <VirtualHost _default_:443>
-    ServerName idp.example.it:443
-    ServerAdmin admin@example.it
+    ServerName idp.example.org:443
+    ServerAdmin admin@example.org
     DocumentRoot /var/www/html
     ...
     SSLEngine On
     SSLProtocol all -SSLv2 -SSLv3 -TLSv1
     
-    SSLCipherSuite "kEDH+AESGCM:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES256-SHA256:ECDHE-RSA-AES256-SHA:ECDHE-RSA-AES256-GCMSHA384:ECDHE-RSA-AES256-GCM-SHA256:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-ECDSAAES256-SHA384:ECDHE-ECDSA-AES256-SHA256:ECDHE-ECDSA-AES256-SHA:ECDHE-ECDSAAES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA256:AES256-GCM-SHA384:!3DES:!DES:!DHE-RSA-AES128-GCM-SHA256:!DHE-RSA-AES256-SHA:!EDE3:!EDH-DSS-CBC-SHA:!EDH-DSSDES-CBC3-SHA:!EDH-RSA-DES-CBC-SHA:!EDH-RSA-DES-CBC3-SHA:!EXP-EDH-DSS-DES-CBCSHA:!EXP-EDH-RSA-DES-CBC-SHA:!EXPORT:!MD5:!PSK:!RC4-SHA:!aNULL:!eNULL"
+    SSLCipherSuite "TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA:TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA:TLS_ECDHE_RSA_WITH_3DES_EDE_CBC_SHA:kEDH+AESGCM:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES256-SHA256:ECDHE-RSA-AES256-SHA:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA256:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA256:ECDHE-ECDSA-AES256-SHA:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA256:AES256-GCM-SHA384:!3DES:!DES:!DHE-RSA-AES128-GCM-SHA256:!DHE-RSA-AES256-SHA:!EDE3:!EDH-DSS-CBC-SHA:!EDH-DSS-DES-CBC3-SHA:!EDH-RSA-DES-CBC-SHA:!EDH-RSA-DES-CBC3-SHA:!EXP-EDH-DSS-DES-CBC-SHA:!EXP-EDH-RSA-DES-CBC-SHA:!EXPORT:!MD5:!PSK:!RC4-SHA:!aNULL:!eNULL"
     
     SSLHonorCipherOrder on
     
@@ -163,9 +170,8 @@
     # Enable HTTP Strict Transport Security with a 2 year duration
     Header always set Strict-Transport-Security "max-age=63072000;includeSubDomains"
     ...
-    
-    SSLCertificateFile /root/certificates/idp-cert-server.pem
-    SSLCertificateKeyFile /root/certificates/idp-key-server.pem
+    SSLCertificateFile /root/certificates/idp-cert-server.crt
+    SSLCertificateKeyFile /root/certificates/idp-key-server.key
     ...
   </VirtualHost>
   ```
@@ -200,10 +206,10 @@
 
 ### Configure Apache Tomcat 8
 
-0. Become ROOT of the machine: 
+1. Become ROOT: 
   * ```sudo su -```
 
-1. Change ```server.xml```:
+2. Change ```server.xml```:
   * ```vim /etc/tomcat8/server.xml```
   
     Comment out the Connector 8080 (HTTP):
@@ -230,8 +236,11 @@
     <!-- Define an AJP 1.3 Connector on port 8009 -->
     <Connector port="8009" protocol="AJP/1.3" redirectPort="443" address="127.0.0.1" enableLookups="false" tomcatAuthentication="false"/>
     ```
+    
+    Check the integrity of XML files just edited with:
+    ```xmlwf -e UTF-8 /etc/tomcat8/server.xml```
 
-2. Create and change the file ```idp.xml```:
+3. Create and change the file ```idp.xml```:
   * ```sudo vim /etc/tomcat8/Catalina/localhost/idp.xml```
 
     ```apache
@@ -241,7 +250,7 @@
              swallowOutput="true"/>
     ```
 
-3. Create the Apache2 configuration file for IdP:
+4. Create the Apache2 configuration file for IdP:
   * ```vim /etc/apache2/sites-available/idp.conf```
   
     ```apache
@@ -253,53 +262,52 @@
     ProxyPassReverse /idp ajp://localhost:8009/idp retry=5
     ```
 
-4. Enable **proxy_ajp** apache2 module and the new IdP site:
-  * ```a2enmod proxy_ajp ; a2ensite idp.conf ; service apache2 restart```
+5. Enable **proxy_ajp** apache2 module and the new IdP site:
+  * ```a2enmod proxy_ajp```
+  * ```a2ensite idp.conf```
+  * ```service apache2 restart```
   
-5. Modify **context.xml** to prevent error of *lack of persistence of the session objects* created by the IdP :
+6. Modify **context.xml** to prevent error of *lack of persistence of the session objects* created by the IdP :
   * ```vim /etc/tomcat8/context.xml```
 
     and remove the comment from:
 
     ```<Manager pathname="" />```
     
-6. Verify if the IdP works by opening this page on your browser:
-  * ```https://idp.example.it/idp/shibboleth``` (you should see the IdP metadata)
+7. Restart Tomcat8:
+  * ```service tomcat8 restart```
+
+8. Verify if the IdP works by opening this page on your browser:
+  * ```https://idp.example.org/idp/shibboleth``` (you should see the IdP metadata)
   
 ### Speed up Tomcat 8 startup
 
-0. Become ROOT of the machine: 
+1. Become ROOT: 
   * ```sudo su -```
   
-1. Find out the JARs that can be skipped from the scanning:
+2. Find out the JARs that can be skipped from the scanning:
   * ```cd /opt/shibboleth-idp/```
   * ```ls webapp/WEB-INF/lib | awk '{print $1",\\"}'```
   
-2. Insert the output list into ```/opt/tomcat/conf/catalina.properties``` at the tail of ```tomcat.util.scan.StandardJarScanFilter.jarsToSkip```
+3. Insert the output list into ```/opt/tomcat/conf/catalina.properties``` at the tail of ```tomcat.util.scan.StandardJarScanFilter.jarsToSkip```
 
-3. Restart Tomcat 8:
+4. Restart Tomcat 8:
   * ```service tomcat8 restart```
   
 ### Configure Shibboleth Identity Provider v3.2.1 to release the persistent-id (Stored mode)
 
-0. Become ROOT of the machine: 
+1. Become ROOT of the machine: 
   * ```sudo su -```
   
-1. Test IdP by opening a terminal and running these commands:
+2. Test IdP by opening a terminal and running these commands:
   * ```cd /opt/shibboleth-idp/bin```
   * ```./status.sh``` (You shuold see some informations about the IdP installed)
 
-2. Install **MySQL Connector Java** and **Tomcat JDBC** libraries used by Tomcat and Shibboleth for MySQL DB:
+3. Install **MySQL Connector Java** and **Tomcat JDBC** libraries used by Tomcat and Shibboleth for MySQL DB:
   * ```apt-get istall mysql-server libmysql-java```
   * ```cp /usr/share/java/mysql-connector-java.jar /opt/shibboleth-idp/editwebapp/WEB-INF/lib/```
   * ```cp /usr/share/java/mysql-connector-java.jar /usr/share/tomcat8/lib/```
   * ```cp /usr/share/tomcat8/lib/tomcat-jdbc.jar /opt/shibboleth-idp/editwebapp/WEB-INF/lib/```
-
-3. Install the libraries **Common DBCP2**[[2]](http://commons.apache.org/proper/commons-dbcp/) used for generation of saml-id:
-  * ```cd /usr/local/src/```
-  * ```wget http://mirrors.muzzy.it/apache//commons/dbcp/binaries/commonsdbcp2-2.1.1-bin.tar.gz```
-  * ```tar xzvf commons-dbcp2-2.1.1-bin.tar.gz ; cd commons-dbcp2-2.1.1/```
-  * ```cp commons-dbcp2-2.1.1.jar /opt/shibboleth-idp/edit-webapp/WEBINF/lib/```
   
 4. Install the libraries **Tomcat Common Pool**[[3]](http://commons.apache.org/proper/commons-pool/download_pool.cgi) used for the generation of saml-id:
   * ```cd /usr/local/src/```
@@ -308,13 +316,15 @@
   * ```cp commons-pool2-2.4.2.jar /opt/shibboleth-idp/edit-webapp/WEBINF/lib/```
 
 5. Rebuild the **idp.war** of Shibboleth with the new libraries:
+  * ```export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/jre```
   * ```cd /opt/shibboleth-idp/ ; ./bin/build.sh```
 
-6. Create and prepare the "**shibboleth**" MySQL DB to host the values of the several **persistent-id** and **StorageRecords** to host other useful information about user consent:
-  *  ```cd /usr/local/src/HOWTO-Shib-IdP```
-  *  Modify the [shibboleth-db.sql](../master/HOWTO-Shibboleth/Ubuntu/utils/shibboleth-db.sql) by changing the *username* and *password* of the user that has access to the "**shibboleth**" DB.
-  *  ```mysql -u root -p##PASSWORD-DB## < ./shibboleth-db.sql```
-  *  ```service mysql restart```
+6. Create and prepare the "**shibboleth**" MySQL DB to host the values of the several **persistent-id** and **StorageRecords** MySQL DB to host other useful information about user consent:
+  *  Modify the [shibboleth-db.sql](../utils/shibboleth-db.sql) by changing the *username* and *password* of the user that has write access to the "**shibboleth**" DB.
+  *  Import the SQL modified to your MySQL Server:
+     ```mysql -u root -p##PASSWORD-DB## < ./shibboleth-db.sql```
+  *  Restart mysql service:
+     ```service mysql restart```
 
 7. Enable the generation of the ```persistent-id``` (this replace the deprecated attribute *eduPersonTargetedID*)
   * ```vim /opt/shibboleth-idp/conf/saml-nameid.properties```
@@ -365,14 +375,14 @@
             ```
 
 8. Enable **JPAStorageService** for the **StorageService** of the user consent:
-  * ```vim /opt/shibboleth-idp/conf/global.xml``` and add to the tail of the file this piece code:
+  * ```vim /opt/shibboleth-idp/conf/global.xml``` and add this piece of code to the tail:
 
     ```xml
     <!-- A DataSource bean suitable for use in the idp.persistentId.dataSource property. -->
     <bean id="MyDataSource" class="org.apache.commons.dbcp.BasicDataSource"
           p:driverClassName="com.mysql.jdbc.Driver"
           p:url="jdbc:mysql://localhost:3306/shibboleth?autoReconnect=true"
-          p:username="##USER_DB##"
+          p:username="##USER_DB_NAME##"
           p:password="##PASSWORD##"
           p:maxActive="10"
           p:maxIdle="5"
@@ -399,7 +409,7 @@
             <property name="database" value="MYSQL" />
     </bean>
     ```
-    (and modify the "**USER_DB_NAME**" and "**PASSWORD**" of the "**shibboleth**" DB)
+    (and modify the "**USER_DB_NAME**" and "**PASSWORD**" for your "**shibboleth**" DB)
 
   * Modify the IdP configuration file:
     * ```vim /opt/shibboleth-idp/conf/idp.properties```
@@ -411,7 +421,7 @@
       idp.artifact.StorageService = shibboleth.JPAStorageService
       ```
   
-      (This will say to IdP to store the data collected by User Consent into the "**StorageRecords**" table)
+      (This will indicate to IdP to store the data collected by User Consent into the "**StorageRecords**" table)
 
 9. Connect the openLDAP to the IdP to allow the authentication of the users:
   * ```vim /opt/shibboleth-idp/conf/ldap.properties```
@@ -422,45 +432,45 @@
 
       ```xml
       idp.authn.LDAP.authenticator = bindSearchAuthenticator
-      idp.authn.LDAP.ldapURL = ldap://ldap.example.it:389
+      idp.authn.LDAP.ldapURL = ldap://ldap.example.org:389
       idp.authn.LDAP.useStartTLS = true
       idp.authn.LDAP.useSSL = false
       idp.authn.LDAP.sslConfig = certificateTrust
       idp.authn.LDAP.trustCertificates = %{idp.home}/credentials/ldap-server.crt
-      idp.authn.LDAP.baseDN = ou=people,dc=example,dc=it
+      idp.authn.LDAP.baseDN = ou=people,dc=example,dc=org
       idp.authn.LDAP.userFilter = (uid={user})
-      idp.authn.LDAP.bindDN = cn=admin,dc=example,dc=it
-      idp.authn.LDAP.bindDNCredential = ###LDAP ADMIN PASSWORD###
+      idp.authn.LDAP.bindDN = cn=admin,dc=example,dc=org
+      idp.authn.LDAP.bindDNCredential = ###LDAP_ADMIN_PASSWORD###
       ```
 
     * Solution 2: LDAP + TLS:
 
       ```xml
       idp.authn.LDAP.authenticator = bindSearchAuthenticator
-      idp.authn.LDAP.ldapURL = ldaps://ldap.example.it:636
+      idp.authn.LDAP.ldapURL = ldaps://ldap.example.org:636
       idp.authn.LDAP.useStartTLS = false
       idp.authn.LDAP.useSSL = true
       idp.authn.LDAP.sslConfig = certificateTrust
       idp.authn.LDAP.trustCertificates = %{idp.home}/credentials/ldap-server.crt
-      idp.authn.LDAP.baseDN = ou=people,dc=example,dc=it
+      idp.authn.LDAP.baseDN = ou=people,dc=example,dc=org
       idp.authn.LDAP.userFilter = (uid={user})
-      idp.authn.LDAP.bindDN = cn=admin,dc=example,dc=it
-      idp.authn.LDAP.bindDNCredential = ###LDAP ADMIN PASSWORD###
+      idp.authn.LDAP.bindDN = cn=admin,dc=example,dc=org
+      idp.authn.LDAP.bindDNCredential = ###LDAP_ADMIN_PASSWORD###
       ```
 
     * Solution 3: plain LDAP
   
       ```xml
       idp.authn.LDAP.authenticator = bindSearchAuthenticator
-      idp.authn.LDAP.ldapURL = ldap://ldap.example.it:389
+      idp.authn.LDAP.ldapURL = ldap://ldap.example.org:389
       idp.authn.LDAP.useStartTLS = false
       idp.authn.LDAP.useSSL = false
-      idp.authn.LDAP.baseDN = ou=people,dc=example,dc=it
+      idp.authn.LDAP.baseDN = ou=people,dc=example,dc=org
       idp.authn.LDAP.userFilter = (uid={user})
-      idp.authn.LDAP.bindDN = cn=admin,dc=example,dc=it
-      idp.authn.LDAP.bindDNCredential = ###LDAP ADMIN PASSWORD###
+      idp.authn.LDAP.bindDN = cn=admin,dc=example,dc=org
+      idp.authn.LDAP.bindDNCredential = ###LDAP_ADMIN_PASSWORD###
       ```
-      (If you decide to use the Solution 3, you have to remove the following code from your ```attribute-resolver-full.xml```:
+      (If you decide to use the Solution 3, you have to remove (or comment out) the following code from your ```attribute-resolver-full.xml```:
       
       ```xml
       </dc:FilterTemplate>
@@ -475,12 +485,12 @@
 
       **UTILITY FOR OPENLDAP ADMINISTRATOR:**
         * ```ldapsearch -H ldap:// -x -b "dc=example,dc=it" -LLL dn```
-          * the baseDN ==> ```ou=people, dc=example,dc=it``` (branch containing the registered users)
-          * the bindDN ==> ```cn=admin,dc=example,dc=it``` (distinguished name for the user that can made queries on the LDAP)
+          * the baseDN ==> ```ou=people, dc=example,dc=org``` (branch containing the registered users)
+          * the bindDN ==> ```cn=admin,dc=example,dc=org``` (distinguished name for the user that can made queries on the LDAP)
 
 
-10. Enrich IDP logs with the authentication error occurred on LDAP
-  * ```vim /opt/shibboleth/conf/logback```
+10. Enrich IDP logs with the authentication error occurred on LDAP:
+  * ```vim /opt/shibboleth/conf/logback.xml```
 
     ```xml
     <!-- Logs LDAP related messages -->
@@ -490,55 +500,85 @@
     <logger name="org.ldaptive.auth.Authenticator" level="INFO" />
     ```
 
-11. Build the **attribute-resolver.xml** to define which attributes your IdP can release *(a Federation may distribute an attribute resolver compliant with its reccomendations, here we will give a basic configuration only)*:
-  * ```vim /opt/shibboleth/conf/services.xml```
+11. Build the **attribute-resolver.xml** to define which attributes your IdP can manage. Here you can find the **attribute-resolver-v3-idem.xml** provided by IDEM GARR AAI:
+  * Download the attribute resolver provided by IDEM GARR AAI:
+    ```wget http://www.garr.it/idem-conf/attribute-resolver-v3-idem.xml -O /opt/shibboleth-idp/conf```
+
+  * Modify ```services.xml``` file:
+    ```vim /opt/shibboleth/conf/services.xml```
 
     ```xml
     <value>%{idp.home}/conf/attribute-resolver.xml</value>
- 
+    ```
+    
     must become:
  
-    <value>%{idp.home}/conf/attribute-resolver-full.xml</value>
+    ```xml
+    <value>%{idp.home}/conf/attribute-resolver-v3-idem.xml</value>
     ```
 
-  *  ```vim /opt/shibboleth-idp/conf/attribute-resolver-full.xml```
-    * Remove comment from "**Schema: Core Schema attributes**"
-    * Remove comment from "**Schema: InetOrgPerson attributes**"
-    * Remove comment from "**Schema: eduPerson attributes**"
-
-    (Obviously, this schemas are the default ones, but for new attributes, your LDAP could need some new schemas)
-    
-    * Remove the comment from the LDAP Data Connector configured previously on ```ldap.properties```
+  * Configure the LDAP Data Connector to be compliant to the values put on ```ldap.properties```. (See above suggestions)
 
 12. Translate the IdP messages in your language:
   * Get the files translated in your language from [Shibboleth page](https://wiki.shibboleth.net/confluence/display/IDP30/MessagesTranslation) for:
     * **login page** (authn-messages_it.properties)
     * **user consent/terms of use page** (consent-messages_it.properties)
     * **error pages** (error-messages_it.properties)
-  
   * Put all the downloded files into ```/opt/shibboleth-idp/messages``` directory
-    * Restart Tomcat by: ```service tomcat restart```
+  * Restart Tomcat8: 
+    ```service tomcat restart```
 
 13. Enable the SAML2 support by changing the ```idp-metadata.xml``` and disabling the SAML v1.x deprecated support:
   * ```vim /opt/shibboleth-idp/metadata.xml```
     ```bash
-    STRINGS TO REMOVE:
-      – urn:oasis:names:tc:SAML:1.1:protocol
-      – urn:mace:shibboleth:1.0
-      – Entire endpoint with Binding="urn:oasis:names:tc:SAML:1.0:bindings:SOAPbinding" (and change the index in the right way)
-      – <NameIDFormat>urn:mace:shibboleth:1.0:nameIdentifier</NameIDFormat>
-      – Entire endpoint with Binding="urn:mace:shibboleth:1.0:profiles:AuthnRequest" (and change the index in the right way)
-      – 8443 (everywhere, because we don't use it)
+    <IDPSSODescriptor> SECTION:
+      – From the list of “protocolSupportEnumeration” remove:
+        - urn:oasis:names:tc:SAML:1.1:protocol
+        - urn:mace:shibboleth:1.0
+        
+      – Remove the endpoint:
+        <ArtifcatResolutionService Binding="urn:oasis:names:tc:SAML:1.0:bindings:SOAP-binding" …/>
+        (and modify the index value of the next one to “1”)
+        
+      – Remove the endpoint:
+        <NameIDFormat>urn:mace:shibboleth:1.0:nameIdentifier</NameIDFormat>
+        
+      – Replace the endpoint:
+        <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</NameIDFormat>
+        with:
+        <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</NameIDFormat>
+        (because the IdP installed with this guide releases persistent SAML NameIDs)
+        
+      - Remove the endpoint: 
+        <SingleSignOnService Binding="urn:mace:shibboleth:1.0:profiles:AuthnRequest" …/>
+        
+      - Remove all ":8443" from the existing URL (such port is not used anymore)
       
-    IN THE ATTRIBUTE-AUTHORITY SECTION:
-    – Replace "urn:oasis:names:tc:SAML:1.1:protocol" with "urn:oasis:names:tc:SAML:2.0:protocol"
-    - Remove the comment from the AttributeService SAML2 and comment out the SAMLv1 one.
+    <AttributeAuthority> Section:
+      – From the list "protocolSupportEnumeration" replace the value of:
+        - urn:oasis:names:tc:SAML:1.1:protocol
+        with
+        - urn:oasis:names:tc:SAML:2.0:protocol
+        
+      - Remove the comment from:
+        <AttributeService Binding=”urn:oasis:names:tc:SAML:2.0:bindings:SOAP” .../>
+        
+      - Remove the endpoint: 
+        <AttributeService Binding=”urn:oasis:names:tc:SAML:1.0:bindings:SOAP-binding” .../>
+        
+      - Rimuovere l'endpoint: 
+        <NameIDFormat>urn:mace:shibboleth:1.0:nameIdentifier</NameIDFormat>
+        
+      - Remove all ":8443" from the existing URL (such port is not used anymore)
     ```
 
-14. Register your IdP on your federation with the metadata found on:
-  *  ```https://##idp.example.it##/idp/shibboleth```
+14. Obtain your IdP metadata here:
+  *  ```https://##idp.example.org##/idp/shibboleth```
 
-15. Configure the IdP to retrieve the Federation Metadata:
+15. Register you IdP on IDEM Entity Registry:
+  * ```https://registry.idem.garr.it/```
+
+16. Configure the IdP to retrieve the Federation Metadata:
   * ```cd /opt/shibboleth-idp/conf```
   * ```vim metadata-providers.xml```
 
@@ -546,8 +586,8 @@
     <MetadataProvider
           id="URLMD-Federation"
           xsi:type="FileBackedHTTPMetadataProvider"
-          backingFile="%{idp.home}/federation-test-metadata-sha256.xml"
-          metadataURL="https://www.exampleFed.it/metadata/federation-test-metadatasha256.xml">
+          backingFile="%{idp.home}/idem-test-metadata-sha256.xml"
+          metadataURL="http://www.garr.it/idem-metadata/idem-test-metadata-sha256.xml">
 
           <!--
               Verify the signature on the root element of the metadata aggregate
@@ -568,29 +608,37 @@
     ```
 
   * Retrive the Federation Certificate used to verify its signed metadata:
-    *  ```wget https://www.exampleFed.it/certificate/federation-cert.pem -O /opt/shibboleth-idp/metadata/federation-cert.pem```
+    *  ```wget https://www.idem.garr.it/documenti/doc_download/321-idem-metadata-signer-2019 -O /opt/shibboleth-idp/metadata/federation-cert.pem```
 
   * Check the validity:
     *  ```cd /opt/shibboleth-idp/metadata```
     *  ```openssl x509 -in federation-cert.pem -fingerprint -sha1 -noout```
     *  ```openssl x509 -in federation-cert.pem -fingerprint -md5 -noout```
   
-15. Reload service with id ```shibboleth.MetadataResolverService``` to retrieve the Federation Metadata:
+17. Reload service with id ```shibboleth.MetadataResolverService``` to retrieve the Federation Metadata:
   *  ```cd /opt/shibboleth-idp/bin```
   *  ```./reload-service.sh -id shibboleth.MetadataResolverService```
 
-### Configure Attribute Filter for Research and Scholarship Entity Category
+### Configure Attribute Filters for Research and Scholarship and Data Protection Code of Conduct Entity Category
 
-1. Retrieve the attribute filter Research and Scholarship compliant:
-  *  Download the [R&S Attribute Filter](../master/attribute-filter-rs.xml) inside ```cd /opt/shibboleth-idp/conf```
-  
-2. Modify your ```services.xml```:
+1. Modify your ```services.xml```:
   * ```vim /opt/shibboleth-idp/conf/services.xml```
 
     ```xml
+    <bean id="ResearchAndScholarship" class="net.shibboleth.ext.spring.resource.FileBackedHTTPResource"
+          c:client-ref="shibboleth.FileCachingHttpClient"
+          c:url="http://www.garr.it/idem-conf/attribute-filter-v3-rs.xml"
+          c:backingFile="%{idp.home}/conf/attribute-filter-v3-rs.xml"/>
+          
+    <bean id="CodeOfConduct" class="net.shibboleth.ext.spring.resource.FileBackedHTTPResource"
+          c:client-ref="shibboleth.FileCachingHttpClient"
+          c:url="http://www.garr.it/idem-conf/attribute-filter-v3-coco.xml"
+          c:backingFile="%{idp.home}/conf/attribute-filter-v3-coco.xml"/>
+    
     <util:list id ="shibboleth.AttributeFilterResources">
         <value>%{idp.home}/conf/attribute-filter.xml</value>
-        <value>%{idp.home}/conf/attribute-filter-rs.xml</value>
+        <ref bean="ResearchAndScholarship"/>
+        <ref bean="CodeOfConduct"/>
      </util:list>
      ```
 
