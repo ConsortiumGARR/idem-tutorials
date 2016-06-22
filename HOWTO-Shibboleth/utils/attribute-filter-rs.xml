@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- This file is an EXAMPLE policy file for  retrieved from REFEDS:
+
+     InCommon Example: Configure an IdP to Release a Dynamic Subset of R&S Attributes:
+     https://wiki.refeds.org/display/ENT/Research+and+Scholarship+IdP+Config 
+-->
+<AttributeFilterPolicyGroup id="ShibbolethFilterPolicy"
+        xmlns="urn:mace:shibboleth:2.0:afp"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="urn:mace:shibboleth:2.0:afp http://shibboleth.net/schema/idp/shibboleth-afp.xsd">
+
+    <!-- Attribute Filter Policy Dinamica e compliant con la R&S Entity Category -->
+
+    <AttributeFilterPolicy id="releaseDynamicSubsetRandSAttributeBundle">
+
+      <PolicyRequirementRule xsi:type="EntityAttributeExactMatch"
+          attributeName="http://macedir.org/entity-category"
+          attributeValue="http://refeds.org/category/research-and-scholarship"/>
+
+      <!-- Sottoinsieme dinamico di attributi per la Research & Scholarship -->
+      <!-- rilascia ePPN se e solo se compare nei metadati degli SP -->
+      <AttributeRule attributeID="eduPersonPrincipalName">
+          <PermitValueRule xsi:type="AttributeInMetadata"
+onlyIfRequired="false"/>
+      </AttributeRule>
+
+      <!-- rilascia ePTID se e solo se ePTID o ePPN compaiono nei metadati degli SP -->
+      <AttributeRule attributeID="eduPersonTargetedID">
+          <PermitValueRule xsi:type="OR">
+              <Rule xsi:type="AttributeInMetadata" onlyIfRequired="false"/>
+              <Rule xsi:type="AttributeInMetadata"
+attributeName="urn:oid:1.3.6.1.4.1.5923.1.1.1.6"/>
+          </PermitValueRule>
+      </AttributeRule>
+
+      <!-- Se ePPN non viene ri-assegnato, la regola sopra può essere semplificata o rimossa dal momento che ePTID è opzionale -->
+
+      <!-- rilascia mail se e solo se mail compare nei metadati degli SP -->
+      <AttributeRule attributeID="email">
+          <PermitValueRule xsi:type="AttributeInMetadata"
+onlyIfRequired="false"/>
+      </AttributeRule>
+
+      <!-- rilascia displayName se e solo se displayName o (givenName + sn) compaiono nei metadati degli SP -->
+      <AttributeRule attributeID="displayName">
+          <PermitValueRule xsi:type="OR">
+              <Rule xsi:type="AttributeInMetadata" onlyIfRequired="false"/>
+              <Rule xsi:type="AND">
+                  <Rule xsi:type="AttributeInMetadata" attributeName="urn:oid:2.5.4.42"/>
+                  <Rule xsi:type="AttributeInMetadata" attributeName="urn:oid:2.5.4.4"/>
+              </Rule>
+          </PermitValueRule>
+      </AttributeRule>
+
+      <!-- rilascia givenName se e solo se givenName o displayName compaiono nei metadati degli SP -->
+      <AttributeRule attributeID="givenName">
+          <PermitValueRule xsi:type="OR">
+              <Rule xsi:type="AttributeInMetadata" onlyIfRequired="false"/>
+              <Rule xsi:type="AttributeInMetadata" attributeName="urn:oid:2.16.840.1.113730.3.1.241"/>
+          </PermitValueRule>
+      </AttributeRule>
+
+      <!-- rilascia surname se e solo se surname o displayName compaiono nei metadata degli SP -->
+      <AttributeRule attributeID="surname">
+          <PermitValueRule xsi:type="OR">
+              <Rule xsi:type="AttributeInMetadata" onlyIfRequired="false"/>
+              <Rule xsi:type="AttributeInMetadata" attributeName="urn:oid:2.16.840.1.113730.3.1.241"/>
+          </PermitValueRule>
+      </AttributeRule>
+
+    </AttributeFilterPolicy>
+
+</AttributeFilterPolicyGroup>
