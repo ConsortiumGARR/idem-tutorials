@@ -607,8 +607,8 @@
 
   * Check the validity:
     *  ```cd /opt/shibboleth-idp/metadata```
-    *  ```openssl x509 -in federation-cert.pem -fingerprint -sha1 -noout```
-    *  ```openssl x509 -in federation-cert.pem -fingerprint -md5 -noout```
+    *  ```openssl x509 -in federation-cert.pem -fingerprint -sha1 -noout``` (sha1: 2F:F8:24:78:6A:A9:2D:91:29:19:2F:7B:33:33:FF:59:45:C1:7C:C8)
+    *  ```openssl x509 -in federation-cert.pem -fingerprint -md5 -noout``` (md5: AA:A7:CD:41:2D:3E:B7:F6:02:8A:D3:62:CD:21:F7:DE)
   
 17. Reload service with id ```shibboleth.MetadataResolverService``` to retrieve the Federation Metadata:
   *  ```cd /opt/shibboleth-idp/bin```
