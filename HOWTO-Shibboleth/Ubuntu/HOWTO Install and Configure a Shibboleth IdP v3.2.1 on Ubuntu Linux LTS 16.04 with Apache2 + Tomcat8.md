@@ -426,7 +426,7 @@
 9. Connect the openLDAP to the IdP to allow the authentication of the users:
   * ```vim /opt/shibboleth-idp/conf/ldap.properties```
 
-    (with ***TLS** solutions we consider to have the LDAP certificate into ```/opt/shibboleth-idp/credentials```).
+    (with **TLS** solutions we consider to have the LDAP certificate into ```/opt/shibboleth-idp/credentials```).
 
     *  Solution 1: LDAP + STARTTLS:
 
@@ -532,48 +532,43 @@
   * ```vim /opt/shibboleth-idp/metadata.xml```
     ```bash
     <IDPSSODescriptor> SECTION:
-      – From the list of “protocolSupportEnumeration” remove:
+      – From the list of "protocolSupportEnumeration" remove:
         - urn:oasis:names:tc:SAML:1.1:protocol
         - urn:mace:shibboleth:1.0
-        
+
       – Remove the endpoint:
-        <ArtifcatResolutionService Binding="urn:oasis:names:tc:SAML:1.0:bindings:SOAP-binding" …/>
+        <ArtifactResolutionService Binding="urn:oasis:names:tc:SAML:1.0:bindings:SOAP-binding" Location="https://idp.example.org:8443/idp/profile/SAML1/SOAP/ArtifactResolution" index="1"/>
         (and modify the index value of the next one to “1”)
-        
+
       – Remove the endpoint:
         <NameIDFormat>urn:mace:shibboleth:1.0:nameIdentifier</NameIDFormat>
-        
+
       – Replace the endpoint:
         <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</NameIDFormat>
         with:
         <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</NameIDFormat>
         (because the IdP installed with this guide releases persistent SAML NameIDs)
-        
+
       - Remove the endpoint: 
-        <SingleSignOnService Binding="urn:mace:shibboleth:1.0:profiles:AuthnRequest" …/>
-        
+        <SingleSignOnService Binding="urn:mace:shibboleth:1.0:profiles:AuthnRequest" Location="https://idp.example.org/idp/profile/Shibboleth/SSO"/>        
       - Remove all ":8443" from the existing URL (such port is not used anymore)
-      
-    <AttributeAuthority> Section:
+
+    <AttributeAuthorityDescriptor> Section:
       – From the list "protocolSupportEnumeration" replace the value of:
         - urn:oasis:names:tc:SAML:1.1:protocol
         with
         - urn:oasis:names:tc:SAML:2.0:protocol
-        
+
       - Remove the comment from:
-        <AttributeService Binding=”urn:oasis:names:tc:SAML:2.0:bindings:SOAP” .../>
-        
+        <AttributeService Binding="urn:oasis:names:tc:SAML:2.0:bindings:SOAP" Location="https://idp.mi.garr.it/idp/profile/SAML2/SOAP/AttributeQuery"/>
       - Remove the endpoint: 
-        <AttributeService Binding=”urn:oasis:names:tc:SAML:1.0:bindings:SOAP-binding” .../>
-        
-      - Rimuovere l'endpoint: 
-        <NameIDFormat>urn:mace:shibboleth:1.0:nameIdentifier</NameIDFormat>
-        
+        <AttributeService Binding="urn:oasis:names:tc:SAML:1.0:bindings:SOAP-binding" Location="https://idp.example.org:8443/idp/profile/SAML1/SOAP/AttributeQuery"/>
+
       - Remove all ":8443" from the existing URL (such port is not used anymore)
     ```
 
 14. Obtain your IdP metadata here:
-  *  ```https://##idp.example.org##/idp/shibboleth```
+  *  ```https://idp.example.org/idp/shibboleth```
 
 15. Register you IdP on IDEM Entity Registry:
   * ```https://registry.idem.garr.it/```
