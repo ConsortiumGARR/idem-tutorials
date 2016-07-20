@@ -490,7 +490,7 @@
 
 
 10. Enrich IDP logs with the authentication error occurred on LDAP:
-  * ```vim /opt/shibboleth/conf/logback.xml```
+  * ```vim /opt/shibboleth-idp/conf/logback.xml```
 
     ```xml
     <!-- Logs LDAP related messages -->
@@ -505,7 +505,7 @@
     ```wget http://www.garr.it/idem-conf/attribute-resolver-v3-idem.xml -O /opt/shibboleth-idp/conf```
 
   * Modify ```services.xml``` file:
-    ```vim /opt/shibboleth/conf/services.xml```
+    ```vim /opt/shibboleth-idp/conf/services.xml```
 
     ```xml
     <value>%{idp.home}/conf/attribute-resolver.xml</value>
