@@ -36,9 +36,9 @@ PRIMARY KEY (context, id)
 USE mysql;
 
 /* Change the value of 'demo' work with the preferred password for shibboleth DB */
-INSERT INTO user (Host, User, Password, Select_priv,Insert_priv,Update_priv, Delete_priv, Create_tmp_table_priv, Lock_tables_priv,Execute_priv) VALUES ('localhost','idem',PASSWORD('demo'),'Y','Y','Y','Y','Y','Y','Y');
+INSERT INTO user (Host, User, Password, Select_priv,Insert_priv,Update_priv, Delete_priv, Create_tmp_table_priv, Lock_tables_priv,Execute_priv) VALUES ('localhost','##USERNAME##',PASSWORD('##PASSWORD##'),'Y','Y','Y','Y','Y','Y','Y');
 
-GRANT ALL PRIVILEGES ON shibboleth.* TO USERNAME@localhost IDENTIFIED BY 'PASSWORD';
+GRANT ALL PRIVILEGES ON shibboleth.* TO ##USERNAME##@localhost IDENTIFIED BY '##PASSWORD##';
 
 FLUSH PRIVILEGES;
 
