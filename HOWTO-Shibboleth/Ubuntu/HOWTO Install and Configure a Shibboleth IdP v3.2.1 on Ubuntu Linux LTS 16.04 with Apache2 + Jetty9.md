@@ -722,20 +722,20 @@
   * https://sp24-test.garr.it/secure (Service Provider provided for testing the IDEM Test Federation and IDEM Production Federation)
 
 
-### Configure Attribute Filters to release the mandatory attributes to the default IDEM Resources:
+### Configure Attribute Filters to release the mandatory attributes to the default IDEM Default Resources:
 
 1. Modify your ```services.xml```:
   * ```vim /opt/shibboleth-idp/conf/services.xml```
 
     ```xml
-    <bean id="IdemDefaultResources" class="net.shibboleth.ext.spring.resource.FileBackedHTTPResource"
+    <bean id="IDEM-Default" class="net.shibboleth.ext.spring.resource.FileBackedHTTPResource"
           c:client-ref="shibboleth.FileCachingHttpClient"
           c:url="http://www.garr.it/idem-conf/attribute-filter-v3-idem.xml"
           c:backingFile="%{idp.home}/conf/attribute-filter-v3-idem.xml"/>
           
     <util:list id ="shibboleth.AttributeFilterResources">
         <value>%{idp.home}/conf/attribute-filter.xml</value>
-        <ref bean="IdemDefaultResources"/>
+        <ref bean="IDEM-Default"/>
      </util:list>
      ```
 
@@ -743,6 +743,27 @@
   *  ```cd /opt/shibboleth-idp/bin```
   *  ```./reload-service.sh -id shibboleth.AttributeFilterService```
 
+### Configure Attribute Filters to release the mandatory attributes to the default IDEM Production Resources:
+
+1. Modify your ```services.xml```:
+  * ```vim /opt/shibboleth-idp/conf/services.xml```
+
+    ```xml
+    <bean id="IDEM-Production-Filter" class="net.shibboleth.ext.spring.resource.FileBackedHTTPResource"
+          c:client-ref="shibboleth.FileCachingHttpClient"
+          c:url="http://www.garr.it/idem-conf/attribute-filter-v3-required.xml"
+          c:backingFile="%{idp.home}/conf/attribute-filter-v3-required.xml"/>
+    ...
+    <util:list id ="shibboleth.AttributeFilterResources">
+        <value>%{idp.home}/conf/attribute-filter.xml</value>
+        <ref bean="IDEM-Default"/>
+        <ref bean="IDEM-Production-Filter"/>
+    </util:list>
+     ```
+
+2. Reload service with id ```shibboleth.AttributeFilterService``` to refresh the Attribute Filter followed by the IdP:
+  *  ```cd /opt/shibboleth-idp/bin```
+  *  ```./reload-service.sh -id shibboleth.AttributeFilterService```
 
 ### Configure Attribute Filters for Research and Scholarship and Data Protection Code of Conduct Entity Category
 
@@ -762,7 +783,8 @@
     
     <util:list id ="shibboleth.AttributeFilterResources">
         <value>%{idp.home}/conf/attribute-filter.xml</value>
-        <ref bean="IdemDefaultResources"/>
+        <ref bean="IDEM-Default"/>
+        <ref bean="IDEM-Production-Filter"/>
         <ref bean="ResearchAndScholarship"/>
         <ref bean="CodeOfConduct"/>
      </util:list>
