@@ -14,7 +14,11 @@
   2. [Configure Apache Tomcat 8](#configure-apache-tomcat-8)
   3. [Speed up Tomcat 8 startup](#speed-up-tomcat-8-startup)
   4. [Configure Shibboleth Identity Provider v3.2.1 to release the persistent-id (Stored Mode)](#configure-shibboleth-identity-provider-v321-to-release-the-persistent-id-stored-mode)
-  5. [Configure Attribute Filters for Research and Scholarship and Data Protection Code of Conduct Entity Category](#configure-attribute-filters-for-research-and-scholarship-and-data-protection-code-of-conduct-entity-category)
+  5. [Configure Attribute Filters to release the mandatory attributes to the default IDEM Resources](#configure-attribute-filters-to-release-the-mandatory-attributes-to-the-default-idem-resources)
+  6. [Configure Attribute Filters to release the mandatory attributes to the IDEM Production Resources](#configure-attribute-filters-to-release-the-mandatory-attributes-to-the-idem-production-resources)
+  7. [Configure Attribute Filters for Research and Scholarship and Data Protection Code of Conduct Entity Category](#configure-attribute-filters-for-research-and-scholarship-and-data-protection-code-of-conduct-entity-category)
+6. [Appendix A: Import metadata from previous IDP v2.x](#appendix-a-import-metadata-from-previous-idp-v2x)
+7. [Appendix B: Import persistent-id from a previous database](#appendix-b-import-persistent-id-from-a-previous-database)
 
 
 ## Requirements Hardware
@@ -32,6 +36,10 @@
  * tomcat8
  * apache2 (>= 2.4)
  * expat
+ * openssl
+ * mysql-server
+ * libmysql-java
+ * default-jdk (openjdk 1.8.0)
 
 ## Other Requirements
 
@@ -254,12 +262,17 @@
   * ```vim /etc/apache2/sites-available/idp.conf```
   
     ```apache
-    <Proxy ajp://localhost:8009>
-      Require all granted
-    </Proxy>
+    <IfModule mod_proxy.c>
+      ProxyPreserveHost On
+      RequestHeader set X-Forwarded-Proto "https"
+    
+      <Proxy ajp://localhost:8009>
+        Require all granted
+      </Proxy>
   
-    ProxyPass /idp ajp://localhost:8009/idp retry=5
-    ProxyPassReverse /idp ajp://localhost:8009/idp retry=5
+      ProxyPass /idp ajp://localhost:8009/idp retry=5
+      ProxyPassReverse /idp ajp://localhost:8009/idp retry=5
+    </IfModule>
     ```
 
 5. Enable **proxy_ajp** apache2 module and the new IdP site:
@@ -618,6 +631,53 @@
   *  ```cd /opt/shibboleth-idp/bin```
   *  ```./reload-service.sh -id shibboleth.MetadataResolverService```
 
+18. The day after the IDEM Federation Operators approval, check if you can login with your IdP on the following services:
+  * https://sp-test.garr.it/secure   (Service Provider provided for testing the IDEM Test Federation)
+  * https://sp24-test.garr.it/secure (Service Provider provided for testing the IDEM Test Federation and IDEM Production Federation)
+
+### Configure Attribute Filters to release the mandatory attributes to the default IDEM Resources:
+
+1. Modify your ```services.xml```:
+  * ```vim /opt/shibboleth-idp/conf/services.xml```
+
+    ```xml
+    <bean id="IDEM-Default-Filter" class="net.shibboleth.ext.spring.resource.FileBackedHTTPResource"
+          c:client-ref="shibboleth.FileCachingHttpClient"
+          c:url="http://www.garr.it/idem-conf/attribute-filter-v3-idem.xml"
+          c:backingFile="%{idp.home}/conf/attribute-filter-v3-idem.xml"/>
+          
+    <util:list id ="shibboleth.AttributeFilterResources">
+        <value>%{idp.home}/conf/attribute-filter.xml</value>
+        <ref bean="IDEM-Default-Filter"/>
+     </util:list>
+     ```
+
+2. Reload service with id ```shibboleth.AttributeFilterService``` to refresh the Attribute Filter followed by the IdP:
+  *  ```cd /opt/shibboleth-idp/bin```
+  *  ```./reload-service.sh -id shibboleth.AttributeFilterService```
+
+### Configure Attribute Filters to release the mandatory attributes to the IDEM Production Resources:
+
+1. Modify your ```services.xml```:
+  * ```vim /opt/shibboleth-idp/conf/services.xml```
+
+    ```xml
+    <bean id="IDEM-Production-Filter" class="net.shibboleth.ext.spring.resource.FileBackedHTTPResource"
+          c:client-ref="shibboleth.FileCachingHttpClient"
+          c:url="http://www.garr.it/idem-conf/attribute-filter-v3-required.xml"
+          c:backingFile="%{idp.home}/conf/attribute-filter-v3-required.xml"/>
+    ...
+    <util:list id ="shibboleth.AttributeFilterResources">
+        <value>%{idp.home}/conf/attribute-filter.xml</value>
+        <ref bean="IDEM-Default-Filter"/>
+        <ref bean="IDEM-Production-Filter"/>
+    </util:list>
+     ```
+
+2. Reload service with id ```shibboleth.AttributeFilterService``` to refresh the Attribute Filter followed by the IdP:
+  *  ```cd /opt/shibboleth-idp/bin```
+  *  ```./reload-service.sh -id shibboleth.AttributeFilterService```
+
 ### Configure Attribute Filters for Research and Scholarship and Data Protection Code of Conduct Entity Category
 
 1. Modify your ```services.xml```:
@@ -636,6 +696,8 @@
     
     <util:list id ="shibboleth.AttributeFilterResources">
         <value>%{idp.home}/conf/attribute-filter.xml</value>
+        <ref bean="IDEM-Default-Filter"/>
+        <ref bean="IDEM-Production-Filter"/>
         <ref bean="ResearchAndScholarship"/>
         <ref bean="CodeOfConduct"/>
      </util:list>
@@ -644,3 +706,50 @@
 3. Reload service with id ```shibboleth.AttributeFilterService``` to refresh the Attribute Filter followed by the IdP:
   *  ```cd /opt/shibboleth-idp/bin```
   *  ```./reload-service.sh -id shibboleth.AttributeFilterService```
+
+### Appendix A: Import metadata from previous IDP v2.x ###
+
+1. Store into /tmp directory the following files:
+  * ```idp-metadata.xml```
+  * ```idp.crt```
+  * ```idp.key```
+
+2. Follow the steps on your IdP v3.x:
+  * ```sudo su -```
+  * ```mv /tmp/idp-metadata.xml /opt/shibboleth-idp/metadata```
+  * ```cd /opt/shibboleth-idp/credentials/```
+  * ```rm idp-encryption.crt idp-backchannel.crt idp-encryption.key idpsigning.crt idp-signing.key```
+  * ```ln -s idp.crt idp-encryption.crt```
+  * ```ln -s idp.key idp-encryption.key```
+  * ```ln -s idp.key idp-signing.key```
+  * ```ln -s idp.crt idp-signing.crt```
+  * ```ln -s idp.crt idp-backchannel.crt```
+  * ```openssl pkcs12 -export -in idp-encryption.crt -inkey idp-encryption.key -out idp-backchannel.p12 -password pass:#YOUR.BACKCHANNEL.CERT.PASSWORD#```
+
+3. Check if the *idp.entityID* property value is equal to the entityID value inside the *idp-metadata.xml* on the file `/opt/shibboleth-idp/conf/idp.properties`.
+
+4. Restart Jetty:
+  * ```service jetty restart```
+
+### Appendix B: Import persistent-id from a previous database ###
+
+1. Create a DUMP of `shibpid` table from the previous DB `userdb` and also one of `shibpid` table from the new DB `shibboleth` :
+  * ```cd /tmp```
+  * ```mysqldump -u root -p userdb shibpid > userdb_shibpid.sql```
+  * ```mysqldump -u root -p shibboleth shibpid > shibboleth_shibpid.sql```
+
+2. Import the previous values on the new DB `shibboleth` by paying attention on the order of the fields of the old table `userdb.shibpid`. 
+They have to be in the same order of the fields provided by the new `shibboleth.shibpid` before doing the import. THEY MUST BE IN THE SAME ORDER because, if they will not be aligned, the import will fail the the population on the new DB `shibboleth`.
+
+To make easier this process, follow these steps with the `userdb_shibpid.sql`:
+ * Modify the name of the DB found on the DUMP into `shibboleth`.
+ * From DUMP of `shibboleth_shibpid.sql` copy the part on "Table structure for table `shibpid`" and insert it into `userdb_shibpid.sql` under that already present.
+ * Modify the order of the fields on the piece of code of `shibboleth.shibpid` pasted in away that the order of the fields is the same of that found on the table `shibpid` of the old `userdb`.
+ * Delete the section "Table structure for table `shibpid`" of `userdb`.
+ * Save and import the values on the new DB `shibboleth`: ```mysql -u root -p shibboleth < userdb_shibpid.sql```
+
+### Author
+
+#### Original Author
+
+ * Marco Malavolti (marco.malavolti@garr.it)
