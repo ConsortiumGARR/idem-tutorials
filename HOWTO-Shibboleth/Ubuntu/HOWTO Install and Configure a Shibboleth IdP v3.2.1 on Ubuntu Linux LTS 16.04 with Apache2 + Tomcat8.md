@@ -320,11 +320,11 @@
   * ```cd /opt/shibboleth-idp/ ; ./bin/build.sh```
 
 6. Create and prepare the "**shibboleth**" MySQL DB to host the values of the several **persistent-id** and **StorageRecords** MySQL DB to host other useful information about user consent:
-  *  Modify the [shibboleth-db.sql](../utils/shibboleth-db.sql) by changing the *username* and *password* of the user that has write access to the "**shibboleth**" DB.
-  *  Import the SQL modified to your MySQL Server:
-     ```mysql -u root -p##PASSWORD-DB## < ./shibboleth-db.sql```
-  *  Restart mysql service:
-     ```service mysql restart```
+  * Modify the [shibboleth-db.sql](../utils/shibboleth-db.sql) by changing the *username* and *password* of the user that has write access to the "**shibboleth**" DB.
+  * Import the SQL modified to your MySQL Server:
+    ```mysql -u root -p##PASSWORD-DB## < ./shibboleth-db.sql```
+  * Restart mysql service:
+    ```service mysql restart```
 
 7. Enable the generation of the ```persistent-id``` (this replace the deprecated attribute *eduPersonTargetedID*)
   * ```vim /opt/shibboleth-idp/conf/saml-nameid.properties```
