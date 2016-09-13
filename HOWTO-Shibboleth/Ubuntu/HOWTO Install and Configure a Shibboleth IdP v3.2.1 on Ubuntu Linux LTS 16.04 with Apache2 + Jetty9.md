@@ -16,6 +16,8 @@
   3. [Configure Shibboleth Identity Provider v3.2.1 to release the persistent-id (Stored Mode)](#configure-shibboleth-identity-provider-v321-to-release-the-persistent-id-stored-mode)
   4. [Configure Attribute Filters to release the mandatory attributes to the default IDEM Resources](#configure-attribute-filters-to-release-the-mandatory-attributes-to-the-default-idem-resources)
   5. [Configure Attribute Filters for Research and Scholarship and Data Protection Code of Conduct Entity Category](#configure-attribute-filters-for-research-and-scholarship-and-data-protection-code-of-conduct-entity-category)
+6. [Appendix A: Import metadata from previous IDP v2.x](#appendix-a-import-metadata-from-previous-idp-v2x)
+7. [Appendix B: Import persistent-id from a previous database](#appendix-b-import-persistent-id-from-a-previous-database)
 
 
 ## Requirements Hardware
@@ -805,11 +807,11 @@
 They have to be in the same order of the fields provided by the new `shibboleth.shibpid` before doing the import. THEY MUST BE IN THE SAME ORDER because, if they will not be aligned, the import will fail the the population on the new DB `shibboleth`.
 
 To make easier this process, follow these steps with the `userdb_shibpid.sql`:
- a. Modify the name of the DB found on the DUMP into `shibboleth`.
- b. From DUMP of `shibboleth_shibpid.sql` copy the part on "Table structure for table `shibpid`" and insert it into `userdb_shibpid.sql` under that already present.
- c. Modify the order of the fields on the piece of code of `shibboleth.shibpid` pasted in away that the order of the fields is the same of that found on the table `shibpid` of the old `userdb`.
- d. Delete the section "Table structure for table `shibpid`" of `userdb`.
- e. Save and import the values on the new DB `shibboleth`: ```mysql -u root -p shibboleth < userdb_shibpid.sql```
+ * Modify the name of the DB found on the DUMP into `shibboleth`.
+ * From DUMP of `shibboleth_shibpid.sql` copy the part on "Table structure for table `shibpid`" and insert it into `userdb_shibpid.sql` under that already present.
+ * Modify the order of the fields on the piece of code of `shibboleth.shibpid` pasted in away that the order of the fields is the same of that found on the table `shibpid` of the old `userdb`.
+ * Delete the section "Table structure for table `shibpid`" of `userdb`.
+ * Save and import the values on the new DB `shibboleth`: ```mysql -u root -p shibboleth < userdb_shibpid.sql```
 
 ### Author
 
