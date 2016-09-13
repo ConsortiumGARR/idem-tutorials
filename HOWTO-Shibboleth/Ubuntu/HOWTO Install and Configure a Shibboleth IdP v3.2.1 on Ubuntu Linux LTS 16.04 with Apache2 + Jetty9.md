@@ -15,7 +15,8 @@
   2. [Configure Jetty](#configure-jetty)
   3. [Configure Shibboleth Identity Provider v3.2.1 to release the persistent-id (Stored Mode)](#configure-shibboleth-identity-provider-v321-to-release-the-persistent-id-stored-mode)
   4. [Configure Attribute Filters to release the mandatory attributes to the default IDEM Resources](#configure-attribute-filters-to-release-the-mandatory-attributes-to-the-default-idem-resources)
-  5. [Configure Attribute Filters for Research and Scholarship and Data Protection Code of Conduct Entity Category](#configure-attribute-filters-for-research-and-scholarship-and-data-protection-code-of-conduct-entity-category)
+  5. [Configure Attribute Filters to release the mandatory attributes to the default IDEM Production Resources](#configure-attribute-filters-to-release-the-mandatory-attributes-to-the-default-idem-production-resources)
+  6. [Configure Attribute Filters for Research and Scholarship and Data Protection Code of Conduct Entity Category](#configure-attribute-filters-for-research-and-scholarship-and-data-protection-code-of-conduct-entity-category)
 6. [Appendix A: Import metadata from previous IDP v2.x](#appendix-a-import-metadata-from-previous-idp-v2x)
 7. [Appendix B: Import persistent-id from a previous database](#appendix-b-import-persistent-id-from-a-previous-database)
 
@@ -38,7 +39,7 @@
  * openssl
  * mysql-server
  * libmysql-java
- * default-jdk (openjdk-8)
+ * default-jdk (openjdk 1.8.0)
 
 ## Other Requirements
 
@@ -63,6 +64,9 @@
 3. Install the packages required: 
   * ```apt-get install vim default-jdk ca-certificates openssl apache2 ntp expat```
 
+4. Check that Java is working:
+  * ```update-alternatives --config java```
+
 ### Configure the environment
 
 1. Modify your ```/etc/hosts```:
@@ -75,16 +79,14 @@
 
 2. Be sure that your firewall **doesn't block** the traffic on port **443** (or you can't access to your IdP)
 
-3. Define the costants ```JAVA_HOME``` and ```IDP_SRC``` inside ```/etc/environment```:
+3. Define the costant ```IDP_SRC``` inside ```/etc/environment```:
   * ```vim /etc/environment```
 
     ```bash
-    JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/jre
     IDP_SRC=/usr/local/src/shibboleth-identity-provider-3.2.1
     ```
 
   * ```source /etc/environment```
-  * ```export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/jre```
   * ```export IDP_SRC=/usr/local/src/shibboleth-identity-provider-3.2.1```
   
 4. Move the Certificate and the Key file for HTTPS server from ```/tmp/``` to ```/root/certificates```:
@@ -728,14 +730,14 @@
   * ```vim /opt/shibboleth-idp/conf/services.xml```
 
     ```xml
-    <bean id="IDEM-Default" class="net.shibboleth.ext.spring.resource.FileBackedHTTPResource"
+    <bean id="IDEM-Default-Filter" class="net.shibboleth.ext.spring.resource.FileBackedHTTPResource"
           c:client-ref="shibboleth.FileCachingHttpClient"
           c:url="http://www.garr.it/idem-conf/attribute-filter-v3-idem.xml"
           c:backingFile="%{idp.home}/conf/attribute-filter-v3-idem.xml"/>
           
     <util:list id ="shibboleth.AttributeFilterResources">
         <value>%{idp.home}/conf/attribute-filter.xml</value>
-        <ref bean="IDEM-Default"/>
+        <ref bean="IDEM-Default-Filter"/>
      </util:list>
      ```
 
@@ -756,7 +758,7 @@
     ...
     <util:list id ="shibboleth.AttributeFilterResources">
         <value>%{idp.home}/conf/attribute-filter.xml</value>
-        <ref bean="IDEM-Default"/>
+        <ref bean="IDEM-Default-Filter"/>
         <ref bean="IDEM-Production-Filter"/>
     </util:list>
      ```
@@ -783,7 +785,7 @@
     
     <util:list id ="shibboleth.AttributeFilterResources">
         <value>%{idp.home}/conf/attribute-filter.xml</value>
-        <ref bean="IDEM-Default"/>
+        <ref bean="IDEM-Default-Filter"/>
         <ref bean="IDEM-Production-Filter"/>
         <ref bean="ResearchAndScholarship"/>
         <ref bean="CodeOfConduct"/>
