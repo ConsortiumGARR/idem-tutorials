@@ -14,8 +14,8 @@
   1. [Configure SSL on Apache2 (Jetty front-end)](#configure-ssl-on-apache2-jetty-front-end)
   2. [Configure Jetty](#configure-jetty)
   3. [Configure Shibboleth Identity Provider v3.2.1 to release the persistent-id (Stored Mode)](#configure-shibboleth-identity-provider-v321-to-release-the-persistent-id-stored-mode)
-  4. [Configure Attribute Filters to release the mandatory attributes to the default IDEM Resources](#configure-attribute-filters-to-release-the-mandatory-attributes-to-the-default-idem-resources)
-  5. [Configure Attribute Filters to release the mandatory attributes to the default IDEM Production Resources](#configure-attribute-filters-to-release-the-mandatory-attributes-to-the-default-idem-production-resources)
+  4. [Configure Attribute Filters to release the mandatory attributes to the IDEM Default  Resources](#configure-attribute-filters-to-release-the-mandatory-attributes-to-the-idem-default-resources)
+  5. [Configure Attribute Filters to release the mandatory attributes to the IDEM Production Resources](#configure-attribute-filters-to-release-the-mandatory-attributes-to-the-idem-production-resources)
   6. [Configure Attribute Filters for Research and Scholarship and Data Protection Code of Conduct Entity Category](#configure-attribute-filters-for-research-and-scholarship-and-data-protection-code-of-conduct-entity-category)
 6. [Appendix A: Import metadata from previous IDP v2.x](#appendix-a-import-metadata-from-previous-idp-v2x)
 7. [Appendix B: Import persistent-id from a previous database](#appendix-b-import-persistent-id-from-a-previous-database)
@@ -724,7 +724,7 @@
   * https://sp24-test.garr.it/secure (Service Provider provided for testing the IDEM Test Federation and IDEM Production Federation)
 
 
-### Configure Attribute Filters to release the mandatory attributes to the default IDEM Default Resources:
+### Configure Attribute Filters to release the mandatory attributes to the IDEM Default Resources:
 
 1. Modify your ```services.xml```:
   * ```vim /opt/shibboleth-idp/conf/services.xml```
@@ -745,7 +745,7 @@
   *  ```cd /opt/shibboleth-idp/bin```
   *  ```./reload-service.sh -id shibboleth.AttributeFilterService```
 
-### Configure Attribute Filters to release the mandatory attributes to the default IDEM Production Resources:
+### Configure Attribute Filters to release the mandatory attributes to the IDEM Production Resources:
 
 1. Modify your ```services.xml```:
   * ```vim /opt/shibboleth-idp/conf/services.xml```
