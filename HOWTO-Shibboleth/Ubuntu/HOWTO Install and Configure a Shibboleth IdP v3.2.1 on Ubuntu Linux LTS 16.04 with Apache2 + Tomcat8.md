@@ -32,14 +32,13 @@
  * ca-certificates
  * ntp
  * vim
- * default-jdk 
+ * default-jdk (openjdk 1.8.0)
  * tomcat8
  * apache2 (>= 2.4)
  * expat
  * openssl
  * mysql-server
  * libmysql-java
- * default-jdk (openjdk 1.8.0)
 
 ## Other Requirements
 
