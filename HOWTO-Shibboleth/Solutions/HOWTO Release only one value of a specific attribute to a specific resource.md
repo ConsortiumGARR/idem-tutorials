@@ -42,7 +42,7 @@
 
    * `vim /opt/shibboleth-idp/conf/service.xml`:
    
-   ```
+   ```xml
    ...
     <util:list id ="shibboleth.AttributeFilterResources">
         ...
