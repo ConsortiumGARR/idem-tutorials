@@ -313,6 +313,7 @@
     ...
     SSLCertificateFile /root/certificates/idp-cert-server.crt
     SSLCertificateKeyFile /root/certificates/idp-key-server.key
+    SSLCertificateChainFile /root/certificates/DigiCertCA.pem
     ...
   </VirtualHost>
   ```
