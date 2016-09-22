@@ -90,8 +90,10 @@
   * ```mkdir /root/certificates```
   * ```mv /tmp/idp-cert-server.crt /root/certificates```
   * ```mv /tmp/idp-key-server.key /root/certificates```
+  * ```mv /tmp/DigiCertCA.crt /root/certificates```
   * ```chmod 400 /root/certificates/idp-key-server.key```
   * ```chmod 644 /root/certificates/idp-cert-server.crt```
+  * ```chmod 644 /root/certificates/DigiCertCA.crt```
 
   (OPTIONAL) Create a Certificate and a Key self-signed for HTTPS if you don't have the official ones provided by DigiCert:
   * ```openssl req -x509 -newkey rsa:4096 -keyout /root/certificates/idp-key-server.key -out /root/certificates/idp-cert-server.crt -nodes -days 3650```
@@ -318,9 +320,12 @@
 
 3. Install **MySQL Connector Java** and **Tomcat JDBC** libraries used by Tomcat and Shibboleth for MySQL DB:
   * ```apt-get istall mysql-server libmysql-java```
-  * ```cp /usr/share/java/mysql-connector-java.jar /opt/shibboleth-idp/edit-webapp/WEB-INF/lib/```
-  * ```cp /usr/share/java/mysql-connector-java.jar /usr/share/tomcat8/lib/```
-  * ```cp /usr/share/tomcat8/lib/tomcat-jdbc.jar /opt/shibboleth-idp/editwebapp/WEB-INF/lib/```
+  * ```cd /opt/shibboleth-idp/edit-webapp/WEB-INF/lib/```
+  * ```ln -s /usr/share/java/mysql-connector-java.jar```
+  * ```cd /usr/share/tomcat8/lib/```
+  * ```ln -s /usr/share/java/mysql-connector-java.jar```
+  * ```cd /opt/shibboleth-idp/editwebapp/WEB-INF/lib/```
+  * ```ln -s /usr/share/tomcat8/lib/tomcat-jdbc.jar```
   
 4. Install the libraries **Tomcat Common Pool**[[3]](http://commons.apache.org/proper/commons-pool/download_pool.cgi) used for the generation of saml-id:
   * ```cd /usr/local/src/```
@@ -539,7 +544,7 @@
     * **error pages** (error-messages_it.properties)
   * Put all the downloded files into ```/opt/shibboleth-idp/messages``` directory
   * Restart Tomcat8: 
-    ```service tomcat restart```
+    ```service tomcat8 restart```
 
 13. Enable the SAML2 support by changing the ```idp-metadata.xml``` and disabling the SAML v1.x deprecated support:
   * ```vim /opt/shibboleth-idp/metadata.xml```
@@ -592,7 +597,7 @@
 
     ```xml
     <MetadataProvider
-          id="URLMD-Federation"
+          id="URLMD-IDEM-Federation"
           xsi:type="FileBackedHTTPMetadataProvider"
           backingFile="%{idp.home}/idem-test-metadata-sha256.xml"
           metadataURL="http://www.garr.it/idem-metadata/idem-test-metadata-sha256.xml">
@@ -631,7 +636,7 @@
   *  ```cd /opt/shibboleth-idp/bin```
   *  ```./reload-service.sh -id shibboleth.MetadataResolverService```
 
-18. The day after the IDEM Federation Operators approval, check if you can login with your IdP on the following services:
+18. The day after the IDEM Federation Operators approval your entity on IDEM Entity Registry, check if you can login with your IdP on the following services:
   * https://sp-test.garr.it/secure   (Service Provider provided for testing the IDEM Test Federation)
   * https://sp24-test.garr.it/secure (Service Provider provided for testing the IDEM Test Federation and IDEM Production Federation)
 
@@ -728,8 +733,8 @@
 
 3. Check if the *idp.entityID* property value is equal to the entityID value inside the *idp-metadata.xml* on the file `/opt/shibboleth-idp/conf/idp.properties`.
 
-4. Restart Jetty:
-  * ```service jetty restart```
+4. Restart Tomcat 8:
+  * ```service tomcat8 restart```
 
 ### Appendix B: Import persistent-id from a previous database ###
 
@@ -742,14 +747,14 @@
 They have to be in the same order of the fields provided by the new `shibboleth.shibpid` before doing the import. THEY MUST BE IN THE SAME ORDER because, if they will not be aligned, the import will fail the the population on the new DB `shibboleth`.
 
 To make easier this process, follow these steps with the `userdb_shibpid.sql`:
- * Modify the name of the DB found on the DUMP into `shibboleth`.
- * From DUMP of `shibboleth_shibpid.sql` copy the part on "Table structure for table `shibpid`" and insert it into `userdb_shibpid.sql` under that already present.
- * Modify the order of the fields on the piece of code of `shibboleth.shibpid` pasted in away that the order of the fields is the same of that found on the table `shibpid` of the old `userdb`.
- * Delete the section "Table structure for table `shibpid`" of `userdb`.
- * Save and import the values on the new DB `shibboleth`: ```mysql -u root -p shibboleth < userdb_shibpid.sql```
+  * Modify the name of the DB found on the DUMP into `shibboleth`.
+  * From DUMP of `shibboleth_shibpid.sql` copy the part on "Table structure for table `shibpid`" and insert it into `userdb_shibpid.sql` under that already present.
+  * Modify the order of the fields on the piece of code of `shibboleth.shibpid` pasted in away that the order of the fields is the same of that found on the table `shibpid` of the old `userdb`.
+  * Delete the section "Table structure for table `shibpid`" of `userdb`.
+  * Save and import the values on the new DB `shibboleth`: ```mysql -u root -p shibboleth < userdb_shibpid.sql```
 
 ### Author
 
 #### Original Author
 
- * Marco Malavolti (marco.malavolti@garr.it)
+  * Marco Malavolti (marco.malavolti@garr.it)
