@@ -1,3 +1,5 @@
+<img width="120px" src="https://wiki.idem.garrservices.it/IDEM_Approved.png" />
+
 ## Table of Contents
 
 1. [Requirements](#requirements)
@@ -13,7 +15,7 @@
 
    * `vim /opt/shibboleth-idp/conf/attribute-fiter-custom.xml`
 
-   ```
+   ```xml
    <?xml version="1.0" encoding="UTF-8"?>
    <!--
     This file is an EXAMPLE policy file only.
