@@ -1,5 +1,7 @@
 # HOWTO Install and Configure a Shibboleth IdP v3.2.1 on Linux Fedora 24 Server Edition with Apache2 + Tomcat8
 
+<img width="120px" src="https://wiki.idem.garrservices.it/IDEM_Approved.png" />
+
 ## Table of Contents
 
 1. [Requirements Hardware](#requirements-hardware)
