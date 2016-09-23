@@ -1,7 +1,5 @@
 # HOWTO Install and Configure a Shibboleth IdP v3.2.1 on Ubuntu Linux LTS 16.04 with Apache2 + Jetty9 
 
-<img width="120px" src="https://wiki.idem.garrservices.it/IDEM_Approved.png" />
-
 ## Table of Contents
 
 1. [Requirements Hardware](#requirements-hardware)
