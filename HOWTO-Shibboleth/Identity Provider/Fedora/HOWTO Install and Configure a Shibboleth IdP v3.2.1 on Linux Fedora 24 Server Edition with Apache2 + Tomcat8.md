@@ -12,7 +12,7 @@
   2. [Configure the environment](#configure-the-environment)
   3. [Install Shibboleth Identity Provider 3.2.1](#install-shibboleth-identity-provider-v321)
 5. [Configuration Instructions](#configuration-instructions)
-  1. [Configure SSL on Apache2 (Tomcat8 front-end)](#configure-ssl-on-apache2-tomcat-8-front-end)
+  1. [Configure SSL on Apache2 (Tomcat 8 front-end)](#configure-ssl-on-apache2-tomcat-8-front-end)
   2. [Configure Apache Tomcat 8](#configure-apache-tomcat-8)
   3. [Speed up Tomcat 8 startup](#speed-up-tomcat-8-startup)
   4. [Configure Shibboleth Identity Provider v3.2.1 to release the persistent-id (Stored Mode)](#configure-shibboleth-identity-provider-v321-to-release-the-persistent-id-stored-mode)
