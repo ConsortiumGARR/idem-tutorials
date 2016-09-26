@@ -151,6 +151,12 @@
 1. Modify the file ```/etc/httpd/conf.d/ssl.conf``` as follows:
 
   ```apache
+  #
+  # When we also provide SSL we have to listen to the 
+  # the HTTPS port in addition.
+  #
+  Listen 443 https
+  ...
   <VirtualHost _default_:443>
     ServerName idp.example.org:443
     ServerAdmin admin@example.org
@@ -183,19 +189,15 @@
   * ```vim /etc/httpd/conf/httpd.conf```
 
     ```apache
-    # If you just change the port or add more ports here, you will likely also
-    # have to change the VirtualHost statement in
-    # /etc/apache2/sites-enabled/000-default.conf
-  
+    # Listen: Allows you to bind Apache to specific IP addresses and/or
+    # ports, instead of the default. See also the <VirtualHost>
+    # directive.
+    #
+    # Change this to Listen on specific IP addresses as shown below to 
+    # prevent Apache from glomming onto all bound IP addresses.
+    #
+    #Listen 12.34.56.78:80
     Listen 127.0.0.1:80
-
-    <IfModule ssl_module>
-      Listen 443
-    </IfModule>
-    
-    <IfModule mod_gnutls.c>
-      Listen 443
-    </IfModule>
     ```
   
 4. Verify the strength of your IdP's machine on:
@@ -251,17 +253,15 @@
   * ```vim /etc/httpd/conf.d/idp.conf```
   
     ```apache
-    <IfModule mod_proxy.c>
-      ProxyPreserveHost On
-      RequestHeader set X-Forwarded-Proto "https"
-    
-      <Proxy ajp://localhost:8009>
-        Require all granted
-      </Proxy>
+    ProxyPreserveHost On
+    RequestHeader set X-Forwarded-Proto "https"
+
+    <Proxy ajp://localhost:8009>
+      Require all granted
+    </Proxy>
   
-      ProxyPass /idp ajp://localhost:8009/idp retry=5
-      ProxyPassReverse /idp ajp://localhost:8009/idp retry=5
-    </IfModule>
+    ProxyPass /idp ajp://localhost:8009/idp retry=5
+    ProxyPassReverse /idp ajp://localhost:8009/idp retry=5
     ```
 
 5. Restart Apache2:
