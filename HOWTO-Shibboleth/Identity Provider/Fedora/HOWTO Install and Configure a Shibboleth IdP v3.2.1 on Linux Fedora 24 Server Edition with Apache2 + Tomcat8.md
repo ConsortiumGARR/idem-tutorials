@@ -2,7 +2,7 @@
 
 <img width="120px" src="https://wiki.idem.garrservices.it/IDEM_Approved.png" />
 
-## Table of Contents
+## Index
 
 1. [Requirements Hardware](#requirements-hardware)
 2. [Requirements Software](#requirements-software)
@@ -21,9 +21,10 @@
   7. [Configure Attribute Filters for Research and Scholarship and Data Protection Code of Conduct Entity Category](#configure-attribute-filters-for-research-and-scholarship-and-data-protection-code-of-conduct-entity-category)
 6. [Appendix A: Import metadata from previous IDP v2.x](#appendix-a-import-metadata-from-previous-idp-v2x)
 7. [Appendix B: Import persistent-id from a previous database](#appendix-b-import-persistent-id-from-a-previous-database)
+8. [Authors](#authors)
 
 
-## Requirements Hardware
+## Requirements Hardware 
 
  * CPU: 2 Core
  * RAM: 4 GB
@@ -279,7 +280,7 @@
 
 8. Verify if the IdP works by opening this page on your browser:
   * ```https://idp.example.org/idp/shibboleth``` (you should see the IdP metadata)
-  
+
 ### Speed up Tomcat 8 startup
 
 1. Become ROOT: 
@@ -293,7 +294,7 @@
 
 4. Restart Tomcat 8:
   * ```service tomcat restart```
-  
+
 ### Configure Shibboleth Identity Provider v3.2.1 to release the persistent-id (Stored mode)
 
 1. Become ROOT of the machine: 
@@ -622,7 +623,7 @@
   * https://sp-test.garr.it/secure   (Service Provider provided for testing the IDEM Test Federation)
   * https://sp24-test.garr.it/secure (Service Provider provided for testing the IDEM Test Federation, IDEM Production Federation and eduGAIN)
 
-### Configure Attribute Filters to release the mandatory attributes to the default IDEM Resources:
+### Configure Attribute Filters to release the mandatory attributes to the default IDEM Resources
 
 1. Modify your ```services.xml```:
   * ```vim /opt/shibboleth-idp/conf/services.xml```
@@ -643,7 +644,7 @@
   *  ```cd /opt/shibboleth-idp/bin```
   *  ```./reload-service.sh -id shibboleth.AttributeFilterService```
 
-### Configure Attribute Filters to release the mandatory attributes to the IDEM Production Resources:
+### Configure Attribute Filters to release the mandatory attributes to the IDEM Production Resources
 
 1. Modify your ```services.xml```:
   * ```vim /opt/shibboleth-idp/conf/services.xml```
@@ -694,7 +695,7 @@
   *  ```cd /opt/shibboleth-idp/bin```
   *  ```./reload-service.sh -id shibboleth.AttributeFilterService```
 
-### Appendix A: Import metadata from previous IDP v2.x ###
+### Appendix A: Import metadata from previous IDP v2.x
 
 1. Store into /tmp directory the following files:
   * ```idp-metadata.xml```
@@ -718,7 +719,7 @@
 4. Restart Tomcat8:
   * ```service tomcat restart```
 
-### Appendix B: Import persistent-id from a previous database ###
+### Appendix B: Import persistent-id from a previous database
 
 1. Create a DUMP of `shibpid` table from the previous DB `userdb` and also one of `shibpid` table from the new DB `shibboleth` :
   * ```cd /tmp```
@@ -735,9 +736,7 @@ To make easier this process, follow these steps with the `userdb_shibpid.sql`:
  * Delete the section "Table structure for table `shibpid`" of `userdb`.
  * Save and import the values on the new DB `shibboleth`: ```mysql -u root -p shibboleth < userdb_shibpid.sql```
 
-### Author
-
-#### Original Author
+### Authors
 
  * Alessandro Enea (alessandro.enea@ilc.cnr.it)
  * Marco Malavolti (marco.malavolti@garr.it)
