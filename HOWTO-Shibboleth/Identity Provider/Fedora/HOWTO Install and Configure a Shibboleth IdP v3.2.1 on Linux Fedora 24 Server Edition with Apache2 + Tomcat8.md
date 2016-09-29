@@ -5,7 +5,7 @@
 ## Index
 
 1. [Requirements Hardware](#requirements-hardware)
-2. [Requirements Software](#requirements-software)
+2. [Software that will be installed](#software-that-will-be-installed)
 3. [Other Requirements](#other-requirements)
 4. [Installation Instructions](#installation-instructions)
   1. [Install software requirements](#install-software-requirements)
@@ -30,7 +30,7 @@
  * RAM: 4 GB
  * HDD: 20 GB
 
-## Requirements Software
+## Software that will be installed
 
  * ca-certificates
  * ntp
