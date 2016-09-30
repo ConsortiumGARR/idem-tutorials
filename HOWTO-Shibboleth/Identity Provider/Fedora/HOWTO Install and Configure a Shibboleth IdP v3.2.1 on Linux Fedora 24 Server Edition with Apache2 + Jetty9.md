@@ -39,6 +39,8 @@
  * openssl
  * mariadb-server
  * mysql-connector-java
+ * wget
+ * tar
 
 ## Other Requirements
 
@@ -52,7 +54,7 @@
   * ```sudo su -```
 
 2. Install the packages required: 
-  * ```dnf install vim-enhanced java-1.8.0-openjdk ca-certificates openssl httpd expat ntp```
+  * ```dnf install vim-enhanced java-1.8.0-openjdk ca-certificates openssl httpd expat wget tar ntp```
 
 ### Configure the environment
 
