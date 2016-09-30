@@ -1,4 +1,4 @@
-# HOWTO Install and Configure a Shibboleth IdP v3.2.1 on Linux Fedora 24 Server Edition with Apache2 + Jetty9 
+# HOWTO Install and Configure a Shibboleth IdP v3.2.1 on Linux Fedora 24 Server Edition (minimal) with Apache2 + Jetty9 
 
 ## Table of Contents
 
