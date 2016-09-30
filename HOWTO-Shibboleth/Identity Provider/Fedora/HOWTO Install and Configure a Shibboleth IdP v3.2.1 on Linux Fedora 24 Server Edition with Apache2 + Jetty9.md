@@ -52,7 +52,7 @@
   * ```sudo su -```
 
 2. Install the packages required: 
-  * ```dfn install vim-enhanced java-1.8.0-openjdk ca-certificates openssl httpd expat ntp```
+  * ```dnf install vim-enhanced java-1.8.0-openjdk ca-certificates openssl httpd expat ntp```
 
 ### Configure the environment
 
@@ -309,7 +309,7 @@
   ```
 
 2. Enable **proxy_http**, **SSL** and **headers** Apache2 modules:
-  * ```dfn install mod_ssl```
+  * ```dnf install mod_ssl```
   * ```service httpd restart```
 
 3. Configure Apache2 to open port **80** only for localhost:
