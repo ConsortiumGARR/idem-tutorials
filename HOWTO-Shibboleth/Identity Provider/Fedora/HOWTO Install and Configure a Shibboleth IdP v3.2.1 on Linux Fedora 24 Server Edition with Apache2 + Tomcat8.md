@@ -183,7 +183,7 @@
   ```
 
 2. Enable **SSL** and **headers** Apache2 modules:
-  * ```dfn install mod_ssl```
+  * ```dnf install mod_ssl```
   * ```service httpd restart```
 
 3. Configure Apache2 to open port **80** only for localhost:
