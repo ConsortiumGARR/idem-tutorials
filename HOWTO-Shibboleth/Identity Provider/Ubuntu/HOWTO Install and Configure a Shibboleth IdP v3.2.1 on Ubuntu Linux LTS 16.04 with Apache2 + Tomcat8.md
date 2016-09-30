@@ -98,7 +98,7 @@
   * ```chmod 644 /root/certificates/DigiCertCA.crt```
 
   (OPTIONAL) Create a Certificate and a Key self-signed for HTTPS if you don't have the official ones provided by DigiCert:
-  * ```openssl req -x509 -newkey rsa:4096 -keyout /root/certificates/idp-key-server.key -out /root/certificates/idp-cert-server.crt -nodes -days 3650```
+  * ```openssl req -x509 -newkey rsa:4096 -keyout /root/certificates/idp-key-server.key -out /root/certificates/idp-cert-server.crt -nodes -days 1095```
 
 5. Configure **/etc/default/tomcat8**:
   * ```update-alternatives --config java``` (copy the path without /bin/java)
