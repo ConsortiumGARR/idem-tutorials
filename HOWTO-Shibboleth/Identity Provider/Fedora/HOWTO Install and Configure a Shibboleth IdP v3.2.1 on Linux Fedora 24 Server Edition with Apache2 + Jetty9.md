@@ -50,7 +50,22 @@
 
 ### Install software requirements
 
-1. Become ROOT:
+1. Disable SELinux:
+  * ```sudovim /etc/selinux/config```
+  
+    ```
+    # This file controls the state of SELinux on the system.
+    # SELINUX= can take one of these three values:
+    #       enforcing - SELinux security policy is enforced.
+    #       permissive - SELinux prints warnings instead of enforcing.
+    #       disabled - No SELinux policy is loaded.
+    SELINUX=disabled
+    ```
+    
+  * ```reboot```
+  * check that the command ```getenforce``` returns **Disabled**.
+
+2. Become ROOT:
   * ```sudo su -```
 
 2. Install the packages required: 
