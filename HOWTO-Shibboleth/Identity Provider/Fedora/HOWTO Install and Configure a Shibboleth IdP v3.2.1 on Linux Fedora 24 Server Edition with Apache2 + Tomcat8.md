@@ -21,7 +21,8 @@
   7. [Configure Attribute Filters for Research and Scholarship and Data Protection Code of Conduct Entity Category](#configure-attribute-filters-for-research-and-scholarship-and-data-protection-code-of-conduct-entity-category)
 6. [Appendix A: Import metadata from previous IDP v2.x](#appendix-a-import-metadata-from-previous-idp-v2x)
 7. [Appendix B: Import persistent-id from a previous database](#appendix-b-import-persistent-id-from-a-previous-database)
-8. [Authors](#authors)
+8. [Appendix C: Useful logs to find problems](#appendix-c-useful-logs-to-find-problems)
+9. [Authors](#authors)
 
 
 ## Requirements Hardware 
@@ -55,7 +56,7 @@
   * ```sudo su -```
 
 2. Install the packages required: 
-  * ```dnf install vim-enhanced java-1.8.0-openjdk ca-certificates openssl httpd expat wget tar ntp```
+  * ```dnf install vim-enhanced java-1.8.0-openjdk ca-certificates openssl httpd mod_ssl expat wget tar ntp```
   
 3. Disable SELinux:
   * ```vim /etc/selinux/config```
@@ -751,6 +752,19 @@ To make easier this process, follow these steps with the `userdb_shibpid.sql`:
  * Modify the order of the fields on the piece of code of `shibboleth.shibpid` pasted in away that the order of the fields is the same of that found on the table `shibpid` of the old `userdb`.
  * Delete the section "Table structure for table `shibpid`" of `userdb`.
  * Save and import the values on the new DB `shibboleth`: ```mysql -u root -p shibboleth < userdb_shibpid.sql```
+
+### Appendix C: Useful logs to find problems
+
+1. Tomcat8 Logs:
+  * ```cd /var/log/tomcat/```
+  * ```vim catalina.out```
+
+2. Shibboleth IdP Logs:
+  * ```cd /opt/shibboleth-idp/logs```
+  * **Audit Log:** ```vim idp-audit.log```
+  * **Consent Log:** ```vim idp-consent-audit.log```
+  * **Warn Log:** ```vim idp-warn.log```
+  * **Process Log:** ```vim idp-process.log```
 
 ### Authors
 
