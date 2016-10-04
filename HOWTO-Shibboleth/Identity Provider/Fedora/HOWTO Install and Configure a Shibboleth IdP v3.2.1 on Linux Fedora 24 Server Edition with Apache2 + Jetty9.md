@@ -329,7 +329,6 @@
   ```
 
 2. Enable **proxy_http**, **SSL** and **headers** Apache2 modules:
-  * ```dnf install mod_ssl```
   * ```service httpd restart```
 
 3. Configure Apache2 to open port **80** only for localhost:
