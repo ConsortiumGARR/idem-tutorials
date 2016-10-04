@@ -851,10 +851,10 @@ To make easier this process, follow these steps with the `userdb_shibpid.sql`:
 
 2. Shibboleth IdP Logs:
   * ```cd /opt/shibboleth-idp/logs```
-  * *Audit Log:* ```vim idp-audit.log```
-  * *Consent Log:* ```vim idp-consent-audit.log```
-  * *Warn Log:* ```vim idp-warn.log```
-  * *Process Log:* ```vim idp-process.log```
+  * **Audit Log:** ```vim idp-audit.log```
+  * **Consent Log:** ```vim idp-consent-audit.log```
+  * **Warn Log:** ```vim idp-warn.log```
+  * **Process Log:** ```vim idp-process.log```
 
 ### Author
 
