@@ -292,6 +292,7 @@
   * ```cd /opt/shibboleth-idp/bin ; ./build.sh -Didp.target.dir=/opt/shibboleth-idp```
 
 5. Change the owner to enable **jetty** user to access on the following directories:
+  * ```cd ..```
   * ```chown -R jetty logs/ metadata/ credentials/ conf/ system/ war/```
 
 ## Configuration Instructions
