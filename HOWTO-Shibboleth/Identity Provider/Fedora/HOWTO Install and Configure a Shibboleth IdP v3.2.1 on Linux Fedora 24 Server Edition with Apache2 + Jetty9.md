@@ -57,7 +57,7 @@
   * ```dnf install vim-enhanced java-1.8.0-openjdk ca-certificates openssl httpd expat wget tar ntp```
   
 3. Disable SELinux:
-  * ```sudo vim /etc/selinux/config```
+  * ```vim /etc/selinux/config```
   
     ```
     # This file controls the state of SELinux on the system.
