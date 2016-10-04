@@ -599,7 +599,7 @@
     <MetadataProvider
           id="URLMD-IDEM-Federation"
           xsi:type="FileBackedHTTPMetadataProvider"
-          backingFile="%{idp.home}/idem-test-metadata-sha256.xml"
+          backingFile="%{idp.home}/metadata/idem-test-metadata-sha256.xml"
           metadataURL="http://www.garr.it/idem-metadata/idem-test-metadata-sha256.xml">
 
           <!--
