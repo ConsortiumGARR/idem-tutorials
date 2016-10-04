@@ -55,7 +55,7 @@
   * ```sudo su -```
 
 2. Install the packages required: 
-  * ```dnf install vim-enhanced java-1.8.0-openjdk ca-certificates openssl httpd expat wget tar ntp```
+  * ```dnf install vim-enhanced java-1.8.0-openjdk ca-certificates openssl httpd mod_ssl expat wget tar ntp```
   
 3. Disable SELinux:
   * ```vim /etc/selinux/config```
