@@ -51,8 +51,14 @@
 
 ### Install software requirements
 
-1. Disable SELinux:
-  * ```sudovim /etc/selinux/config```
+1. Become ROOT:
+  * ```sudo su -```
+
+2. Install the packages required: 
+  * ```dnf install vim-enhanced java-1.8.0-openjdk ca-certificates openssl httpd expat wget tar ntp```
+  
+3. Disable SELinux:
+  * ```sudo vim /etc/selinux/config```
   
     ```
     # This file controls the state of SELinux on the system.
@@ -64,13 +70,8 @@
     ```
     
   * ```reboot```
-  * check that the command ```getenforce``` returns **Disabled**.
-
-2. Become ROOT:
   * ```sudo su -```
-
-3. Install the packages required: 
-  * ```dnf install vim-minimal java-1.8.0-openjdk ca-certificates openssl tomcat httpd expat ntp```
+  * check that the command ```getenforce``` returns **Disabled**.
 
 ### Configure the environment
 
