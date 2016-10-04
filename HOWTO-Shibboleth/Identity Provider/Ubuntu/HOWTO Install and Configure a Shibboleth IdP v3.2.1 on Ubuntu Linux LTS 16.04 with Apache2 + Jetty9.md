@@ -486,11 +486,11 @@
             ```
 
 9. Enable **JPAStorageService** for the **StorageService** of the user consent:
-  * ```vim /opt/shibboleth-idp/conf/global.xml``` and add this piece of code to the tail:
+  * ```vim /opt/shibboleth-idp/conf/global.xml``` and add this piece of code to the tail (before **`</beans>`** tag):
 
     ```xml
     <!-- A DataSource bean suitable for use in the idp.persistentId.dataSource property. -->
-    <bean id="MyDataSource" class="org.apache.commons.dbcp.BasicDataSource"
+    <bean id="MyDataSource" class="org.apache.commons.dbcp2.BasicDataSource"
           p:driverClassName="com.mysql.jdbc.Driver"
           p:url="jdbc:mysql://localhost:3306/shibboleth?autoReconnect=true"
           p:username="##USER_DB_NAME##"
