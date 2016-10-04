@@ -22,6 +22,7 @@
 6. [Appendix A: Import metadata from previous IDP v2.x](#appendix-a-import-metadata-from-previous-idp-v2x)
 7. [Appendix B: Import persistent-id from a previous database](#appendix-b-import-persistent-id-from-a-previous-database)
 8. [Appendix C: Useful logs to find problems](#appendix-c-useful-logs-to-find-problems)
+9. [Authors](#authors)
 
 
 ## Requirements Hardware
@@ -861,7 +862,7 @@ To make easier this process, follow these steps with the `userdb_shibpid.sql`:
   * **Warn Log:** ```vim idp-warn.log```
   * **Process Log:** ```vim idp-process.log```
 
-### Author
+### Authors
 
 #### Original Author
 
