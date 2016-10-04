@@ -289,6 +289,7 @@
   * ```cd /opt/shibboleth-idp/bin ; ./build.sh -Didp.target.dir=/opt/shibboleth-idp```
 
 5. Change the owner to enable **jetty** user to access on the following directories:
+  * ```cd ..```
   * ```chown -R jetty logs/ metadata/ credentials/ conf/ system/ war/```
 
 ## Configuration Instructions
@@ -414,9 +415,9 @@
   
 5. Install the libraries **Common Pool**[[3]](http://commons.apache.org/proper/commons-pool/download_pool.cgi) used for the generation of saml-id:
   * ```cd /usr/local/src/```
-  * ```wget http://mirror.nohup.it/apache//commons/pool/binaries/commonspool2-2.4.2-bin.tar.gz```
+  * ```wget http://mirror.nohup.it/apache//commons/pool/binaries/commons-pool2-2.4.2-bin.tar.gz```
   * ```tar xzvf commons-pool2-2.4.2-bin.tar.gz ; cd commons-pool2-2.4.2/```
-  * ```cp commons-pool2-2.4.2.jar /opt/shibboleth-idp/edit-webapp/WEBINF/lib/```
+  * ```cp commons-pool2-2.4.2.jar /opt/shibboleth-idp/edit-webapp/WEB-INF/lib/```
 
 6. Rebuild the **idp.war** of Shibboleth with the new libraries:
   * ```export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/jre```
