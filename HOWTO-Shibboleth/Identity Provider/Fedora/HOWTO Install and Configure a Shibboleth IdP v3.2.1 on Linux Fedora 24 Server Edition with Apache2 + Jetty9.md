@@ -329,27 +329,23 @@
   </VirtualHost>
   ```
 
-2. Enable **proxy_http**, **SSL** and **headers** Apache2 modules:
-  * ```service httpd restart```
-
-3. Configure Apache2 to open port **80** only for localhost:
+2. Configure Apache2 to open port **80** only for localhost:
   * ```vim /etc/httpd/conf/httpd.conf```
 
     ```apache
-    # If you just change the port or add more ports here, you will likely also
-    # have to change the VirtualHost statement in
-    # /etc/apache2/sites-enabled/000-default.conf
-  
+    # Listen: Allows you to bind Apache to specific IP addresses and/or
+    # ports, instead of the default. See also the <VirtualHost>
+    # directive.
+    #
+    # Change this to Listen on specific IP addresses as shown below to 
+    # prevent Apache from glomming onto all bound IP addresses.
+    #
+    #Listen 12.34.56.78:80
     Listen 127.0.0.1:80
-
-    <IfModule ssl_module>
-      Listen 443
-    </IfModule>
-    
-    <IfModule mod_gnutls.c>
-      Listen 443
-    </IfModule>
     ```
+
+3. Enable **SSL** and **headers** Apache2 modules:
+  * ```service httpd restart```
   
 4. Verify the strength of your IdP's machine on:
   * [**https://www.ssllabs.com/ssltest/analyze.html**](https://www.ssllabs.com/ssltest/analyze.html)
