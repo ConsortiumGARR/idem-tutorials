@@ -521,7 +521,7 @@
 
 11. Build the **attribute-resolver.xml** to define which attributes your IdP can manage. Here you can find the **attribute-resolver-v3-idem.xml** provided by IDEM GARR AAI:
   * Download the attribute resolver provided by IDEM GARR AAI:
-    ```wget http://www.garr.it/idem-conf/attribute-resolver-v3-idem.xml -O /opt/shibboleth-idp/conf```
+    ```wget http://www.garr.it/idem-conf/attribute-resolver-v3-idem.xml -O /opt/shibboleth-idp/conf/attribute-resolver-v3-idem.xml```
 
   * Modify ```services.xml``` file:
     ```vim /opt/shibboleth-idp/conf/services.xml```
