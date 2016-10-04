@@ -88,7 +88,7 @@
   * ```vim /etc/environment```
 
     ```bash
-    JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/jre
+    JAVA_HOME=/usr/lib/jvm/jre
     IDP_SRC=/usr/local/src/shibboleth-identity-provider-3.2.1
     ```
   * ```source /etc/environment```
