@@ -318,7 +318,7 @@
   
 2. Test IdP by opening a terminal and running these commands:
   * ```cd /opt/shibboleth-idp/bin```
-  * ```./status.sh``` (You shuold see some informations about the IdP installed)
+  * ```./status.sh``` (You should see some informations about the IdP installed)
 
 3. Install **MySQL Connector Java** and **Tomcat JDBC** libraries used by Tomcat and Shibboleth for MySQL DB:
   * ```apt-get istall mysql-server libmysql-java```
@@ -331,12 +331,11 @@
   
 4. Install the libraries **Tomcat Common Pool**[[3]](http://commons.apache.org/proper/commons-pool/download_pool.cgi) used for the generation of saml-id:
   * ```cd /usr/local/src/```
-  * ```wget http://mirror.nohup.it/apache//commons/pool/binaries/commonspool2-2.4.2-bin.tar.gz```
+  * ```wget http://mirror.nohup.it/apache//commons/pool/binaries/commons-pool2-2.4.2-bin.tar.gz```
   * ```tar xzvf commons-pool2-2.4.2-bin.tar.gz ; cd commons-pool2-2.4.2/```
-  * ```cp commons-pool2-2.4.2.jar /opt/shibboleth-idp/edit-webapp/WEBINF/lib/```
+  * ```cp commons-pool2-2.4.2.jar /opt/shibboleth-idp/edit-webapp/WEB-INF/lib/```
 
 5. Rebuild the **idp.war** of Shibboleth with the new libraries:
-  * ```export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/jre```
   * ```cd /opt/shibboleth-idp/ ; ./bin/build.sh```
 
 6. Create and prepare the "**shibboleth**" MySQL DB to host the values of the several **persistent-id** and **StorageRecords** MySQL DB to host other useful information about user consent:
