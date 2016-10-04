@@ -416,7 +416,7 @@
   * ```cd /usr/local/src/```
   * ```wget http://mirror.nohup.it/apache/commons/pool/binaries/commons-pool2-2.4.2-bin.tar.gz```
   * ```tar xzvf commons-pool2-2.4.2-bin.tar.gz ; cd commons-pool2-2.4.2/```
-  * ```cp commons-pool2-2.4.2.jar /opt/shibboleth-idp/edit-webapp/WEBINF/lib/```
+  * ```cp commons-pool2-2.4.2.jar /opt/shibboleth-idp/edit-webapp/WEB-INF/lib/```
 
 6. Rebuild the **idp.war** of Shibboleth with the new libraries:
   * ```export JAVA_HOME=/usr/lib/jvm/jre```
