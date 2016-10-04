@@ -80,14 +80,15 @@
 
 2. Be sure that your firewall **doesn't block** the traffic on port **443** (or you can't access to your IdP)
 
-3. Define the costant ```IDP_SRC``` inside ```/etc/environment```:
+3. Define the costant ```JAVA_HOME``` and ```IDP_SRC``` inside ```/etc/environment```:
   * ```vim /etc/environment```
 
     ```bash
+    JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/jre
     IDP_SRC=/usr/local/src/shibboleth-identity-provider-3.2.1
     ```
-
   * ```source /etc/environment```
+  * ```export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/jre```
   * ```export IDP_SRC=/usr/local/src/shibboleth-identity-provider-3.2.1```
   
 4. Move the Certificate and the Key file for HTTPS server from ```/tmp/``` to ```/root/certificates```:
@@ -251,6 +252,10 @@
 9. Check if all settings are OK:
   * ```service jetty check```
   * ```service jetty start```
+  
+  (If you receive an error likes "*Job for jetty.service failed because the control process exited with error code. See "systemctl status jetty.service" and "journalctl -xe" for details.*", try this: 
+    * ```rm /var/run/jetty.pid```
+    * ```service jetty start```
 
 ### Install Shibboleth Identity Provider v3.2.1
 
