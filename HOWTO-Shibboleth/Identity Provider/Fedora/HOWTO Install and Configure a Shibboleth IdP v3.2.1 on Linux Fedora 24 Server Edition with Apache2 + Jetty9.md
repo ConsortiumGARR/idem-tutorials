@@ -83,14 +83,15 @@
 
 2. Be sure that your firewall **doesn't block** the traffic on port **443** (or you can't access to your IdP)
 
-3. Define the costant ```IDP_SRC``` inside ```/etc/environment```:
+3. Define the costant ```JAVA_HOME``` and ```IDP_SRC``` inside ```/etc/environment```:
   * ```vim /etc/environment```
 
     ```bash
+    JAVA_HOME=/usr/lib/jvm/jre
     IDP_SRC=/usr/local/src/shibboleth-identity-provider-3.2.1
     ```
-
   * ```source /etc/environment```
+  * ```export JAVA_HOME=/usr/lib/jvm/jre```
   * ```export IDP_SRC=/usr/local/src/shibboleth-identity-provider-3.2.1```
   
 4. Move the Certificate and the Key file for HTTPS server from ```/tmp/``` to ```/root/certificates```:
@@ -420,7 +421,6 @@
   * ```cp commons-pool2-2.4.2.jar /opt/shibboleth-idp/edit-webapp/WEB-INF/lib/```
 
 6. Rebuild the **idp.war** of Shibboleth with the new libraries:
-  * ```export JAVA_HOME=/usr/lib/jvm/jre```
   * ```cd /opt/shibboleth-idp/bin ; ./build.sh -Didp.target.dir=/opt/shibboleth-idp```
 
 7. Create and prepare the "**shibboleth**" MySQL DB to host the values of the several **persistent-id** and **StorageRecords** MySQL DB to host other useful information about user consent:
