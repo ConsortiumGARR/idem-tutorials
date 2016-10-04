@@ -200,10 +200,7 @@
   </VirtualHost>
   ```
 
-2. Enable **SSL** and **headers** Apache2 modules:
-  * ```service httpd restart```
-
-3. Configure Apache2 to open port **80** only for localhost:
+2. Configure Apache2 to open port **80** only for localhost:
   * ```vim /etc/httpd/conf/httpd.conf```
 
     ```apache
@@ -217,6 +214,9 @@
     #Listen 12.34.56.78:80
     Listen 127.0.0.1:80
     ```
+
+3. Enable **SSL** and **headers** Apache2 modules:
+  * ```service httpd restart```
   
 4. Verify the strength of your IdP's machine on:
   * [**https://www.ssllabs.com/ssltest/analyze.html**](https://www.ssllabs.com/ssltest/analyze.html)
