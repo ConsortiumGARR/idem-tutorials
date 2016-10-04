@@ -21,6 +21,7 @@
   7. [Configure Attribute Filters for Research and Scholarship and Data Protection Code of Conduct Entity Category](#configure-attribute-filters-for-research-and-scholarship-and-data-protection-code-of-conduct-entity-category)
 6. [Appendix A: Import metadata from previous IDP v2.x](#appendix-a-import-metadata-from-previous-idp-v2x)
 7. [Appendix B: Import persistent-id from a previous database](#appendix-b-import-persistent-id-from-a-previous-database)
+8. [Appendix C: Useful logs to find problems](#appendix-c-useful-logs-to-find-problems)
 
 
 ## Requirements Hardware
@@ -754,7 +755,20 @@ To make easier this process, follow these steps with the `userdb_shibpid.sql`:
   * Delete the section "Table structure for table `shibpid`" of `userdb`.
   * Save and import the values on the new DB `shibboleth`: ```mysql -u root -p shibboleth < userdb_shibpid.sql```
 
-### Author
+### Appendix C: Useful logs to find problems
+
+1. Jetty Logs:
+  * ```cd /opt/jetty/logs```
+  * ```ls -l *.stderrout.log```
+
+2. Shibboleth IdP Logs:
+  * ```cd /opt/shibboleth-idp/logs```
+  * **Audit Log:** ```vim idp-audit.log```
+  * **Consent Log:** ```vim idp-consent-audit.log```
+  * **Warn Log:** ```vim idp-warn.log```
+  * **Process Log:** ```vim idp-process.log```
+
+### Authors
 
 #### Original Author
 
