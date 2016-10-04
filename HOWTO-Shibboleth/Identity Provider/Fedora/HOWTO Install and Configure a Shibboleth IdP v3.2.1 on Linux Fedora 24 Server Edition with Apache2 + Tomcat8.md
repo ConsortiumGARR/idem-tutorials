@@ -68,7 +68,6 @@
     #       disabled - No SELinux policy is loaded.
     SELINUX=disabled
     ```
-    
   * ```reboot```
   * ```sudo su -```
   * check that the command ```getenforce``` returns **Disabled**.
