@@ -27,14 +27,13 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="urn:mace:shibboleth:2.0:afp http://shibboleth.net/schema/idp/shibboleth-afp.xsd">
 
-        <!-- Release some attributes to an SP. -->
+        <!-- Release the 'eduPersonEntitlement' attribute with a specific value to Elsevier ScienceDirect SP(identified by its entityID) -->
         <AttributeFilterPolicy id="Elsevier_ScienceDirect">
             <PolicyRequirementRule xsi:type="Requester" value="https://sdauth.sciencedirect.com/" />
 
             <AttributeRule attributeID="eduPersonEntitlement">
                 <PermitValueRule xsi:type="Value" value="urn:mace:dir:entitlement:common-lib-terms" ignoreCase="true" />
             </AttributeRule>
-
         </AttributeFilterPolicy>
 
    </AttributeFilterPolicyGroup>
