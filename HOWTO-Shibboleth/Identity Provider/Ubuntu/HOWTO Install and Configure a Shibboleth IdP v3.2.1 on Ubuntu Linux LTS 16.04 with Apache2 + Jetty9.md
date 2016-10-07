@@ -642,7 +642,7 @@
     ```service jetty restart```
 
 14. Enable the SAML2 support by changing the ```idp-metadata.xml``` and disabling the SAML v1.x deprecated support:
-  * ```vim /opt/shibboleth-idp/metadata.xml```
+  * ```vim /opt/shibboleth-idp/metadata/idp-metadata.xml```
     ```bash
     <IDPSSODescriptor> SECTION:
       – From the list of "protocolSupportEnumeration" remove:
