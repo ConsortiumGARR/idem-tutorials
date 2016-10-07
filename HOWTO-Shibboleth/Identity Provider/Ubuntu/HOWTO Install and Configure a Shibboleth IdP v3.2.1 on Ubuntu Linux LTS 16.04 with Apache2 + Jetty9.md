@@ -473,7 +473,7 @@
             <bean id="shibboleth.DefaultRelyingParty" parent="RelyingParty">
                 <property name="profileConfigurations">
                   <list>
-                      <bean parent="Shibboleth.SSO" p:postAuthenticationFlows="attributerelease" />
+                      <bean parent="Shibboleth.SSO" p:postAuthenticationFlows="attribute-release" />
                       <ref bean="SAML1.AttributeQuery" />
                       <ref bean="SAML1.ArtifactResolution" />
                       <bean parent="SAML2.SSO" p:postAuthenticationFlows="attribute-release" p:nameIDFormatPrecedence="urn:oasis:names:tc:SAML:2.0:nameid-format:persistent" />
