@@ -399,7 +399,7 @@
   * ```./status.sh``` (You should see some informations about the IdP installed)
 
 3. Install **MySQL Connector Java** and **JDBC** libraries used by Jetty and Shibboleth for MySQL DB:
-  * ```apt-get istall mariadb-server mysql-connector-java```
+  * ```dnf istall mariadb-server mysql-connector-java```
   * ```cd /opt/shibboleth-idp/edit-webapp/WEB-INF/lib/```
   * ```ln -s /usr/share/java/mysql-connector-java.jar```
   * ```cd /opt/jetty/lib/```
