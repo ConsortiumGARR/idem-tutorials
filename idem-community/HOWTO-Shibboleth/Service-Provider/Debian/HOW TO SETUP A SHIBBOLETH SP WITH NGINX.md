@@ -48,7 +48,7 @@ cd /tmp
 wget -O nginx_1.10.1-1~jessie_amd64.deb http://goo.gl/NVqfw3
 dpkg -i nginx_1.10.1-1~jessie_amd64.deb  
 ```
-You can jump right to chapter 4 [CONFIGURATION](#configuration)
+You can jump right to chapter 4 [CONFIGURATIONS](#configurations)
 
 * B.Creation of your customised packet
 
