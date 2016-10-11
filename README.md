@@ -1,22 +1,28 @@
 # idem-tutorials
-Simple step-by-step tutorials provided by IDEM GARR AAI
+These GitHub Repository will contain and maintain the step-by-step tutorials provided by IDEM GARR AAI and its users.
 
-## Linux Debian Distributions
 
-### HOWTO Install and Configure an Identity Provider
+## IDEM Federation Operators HOWTOs
 
-1. [HOWTO Install and Configure a Shibboleth IdP v3.2.1 on Ubuntu Linux LTS 16.04 with Apache2 + Jetty9](https://github.com/ConsortiumGARR/idem-tutorials/blob/master/HOWTO-Shibboleth/Identity%20Provider/Ubuntu/HOWTO%20Install%20and%20Configure%20a%20Shibboleth%20IdP%20v3.2.1%20on%20Ubuntu%20Linux%20LTS%2016.04%20with%20Apache2%20%2B%20Jetty9.md)
-2. [HOWTO Install and Configure a Shibboleth IdP v3.2.1 on Ubuntu Linux LTS 16.04 with Apache2 + Tomcat8](https://github.com/ConsortiumGARR/idem-tutorials/blob/master/HOWTO-Shibboleth/Identity%20Provider/Ubuntu/HOWTO%20Install%20and%20Configure%20a%20Shibboleth%20IdP%20v3.2.1%20on%20Ubuntu%20Linux%20LTS%2016.04%20with%20Apache2%20%2B%20Tomcat8.md)
+### Linux Debian Distributions
 
-## Linux RedHat Distributions
+#### HOWTO Install and Configure an Identity Provider
 
-### HOWTO Install and Configure an Identity Provider
-1. [HOWTO Install and Configure a Shibboleth IdP v3.2.1 on Linux Fedora 24 Server Edition with Apache2 + Jetty9](https://github.com/ConsortiumGARR/idem-tutorials/blob/master/HOWTO-Shibboleth/Identity%20Provider/Fedora/HOWTO%20Install%20and%20Configure%20a%20Shibboleth%20IdP%20v3.2.1%20on%20Linux%20Fedora%2024%20Server%20Edition%20with%20Apache2%20%2B%20Jetty9.md)
-2. [HOWTO Install and Configure a Shibboleth IdP v3.2.1 on Linux Fedora 24 Server Edition with Apache2 + Tomcat8](https://github.com/ConsortiumGARR/idem-tutorials/blob/master/HOWTO-Shibboleth/Identity%20Provider/Fedora/HOWTO%20Install%20and%20Configure%20a%20Shibboleth%20IdP%20v3.2.1%20on%20Linux%20Fedora%2024%20Server%20Edition%20with%20Apache2%20%2B%20Tomcat8.md)
+1. [HOWTO Install and Configure a Shibboleth IdP v3.2.1 on Ubuntu Linux LTS 16.04 with Apache2 + Jetty9](https://github.com/ConsortiumGARR/idem-tutorials/blob/master/idem-fedops/HOWTO-Shibboleth/Identity%20Provider/Ubuntu/HOWTO%20Install%20and%20Configure%20a%20Shibboleth%20IdP%20v3.2.1%20on%20Ubuntu%20Linux%20LTS%2016.04%20with%20Apache2%20%2B%20Jetty9.md)
+2. [HOWTO Install and Configure a Shibboleth IdP v3.2.1 on Ubuntu Linux LTS 16.04 with Apache2 + Tomcat8](https://github.com/ConsortiumGARR/idem-tutorials/blob/master/idem-fedops/HOWTO-Shibboleth/Identity%20Provider/Ubuntu/HOWTO%20Install%20and%20Configure%20a%20Shibboleth%20IdP%20v3.2.1%20on%20Ubuntu%20Linux%20LTS%2016.04%20with%20Apache2%20%2B%20Tomcat8.md)
 
-## Miscellaneous
+### Linux RedHat Distributions
 
-### Shibboleth
+#### HOWTO Install and Configure an Identity Provider
+1. [HOWTO Install and Configure a Shibboleth IdP v3.2.1 on Linux Fedora 24 Server Edition with Apache2 + Jetty9](https://github.com/ConsortiumGARR/idem-tutorials/blob/master/idem-fedops/HOWTO-Shibboleth/Identity%20Provider/Fedora/HOWTO%20Install%20and%20Configure%20a%20Shibboleth%20IdP%20v3.2.1%20on%20Linux%20Fedora%2024%20Server%20Edition%20with%20Apache2%20%2B%20Jetty9.md)
+2. [HOWTO Install and Configure a Shibboleth IdP v3.2.1 on Linux Fedora 24 Server Edition with Apache2 + Tomcat8](https://github.com/ConsortiumGARR/idem-tutorials/blob/master/idem-fedops/HOWTO-Shibboleth/Identity%20Provider/Fedora/HOWTO%20Install%20and%20Configure%20a%20Shibboleth%20IdP%20v3.2.1%20on%20Linux%20Fedora%2024%20Server%20Edition%20with%20Apache2%20%2B%20Tomcat8.md)
 
-* [HOWTO Configure a Shibboleth IdP v3.2.1 to authenticate users existing on different LDAP Servers](https://github.com/ConsortiumGARR/idem-tutorials/blob/master/HOWTO-Shibboleth/Solutions/HOWTO%20Configure%20a%20Shibboleth%20IdP%20v3.2.1%20to%20authenticate%20Users%20existing%20on%20different%20LDAP%20Servers.md)
-* [HOWTO Release only one value of a specific attribute to a specific resource](https://github.com/ConsortiumGARR/idem-tutorials/blob/master/HOWTO-Shibboleth/Solutions/HOWTO%20Release%20only%20one%20value%20of%20a%20specific%20attribute%20to%20a%20specific%20resource.md)
+### Miscellaneous
+
+#### Shibboleth
+
+* [HOWTO Configure a Shibboleth IdP v3.2.1 to authenticate users existing on different LDAP Servers](https://github.com/ConsortiumGARR/idem-tutorials/blob/master/idem-fedops/HOWTO-Shibboleth/Solutions/HOWTO%20Configure%20a%20Shibboleth%20IdP%20v3.2.1%20to%20authenticate%20Users%20existing%20on%20different%20LDAP%20Servers.md)
+* [HOWTO Release only one value of a specific attribute to a specific resource](https://github.com/ConsortiumGARR/idem-tutorials/blob/master/idem-fedops/HOWTO-Shibboleth/Solutions/HOWTO%20Release%20only%20one%20value%20of%20a%20specific%20attribute%20to%20a%20specific%20resource.md)
+
+
+## IDEM Community Users HOWTOs
