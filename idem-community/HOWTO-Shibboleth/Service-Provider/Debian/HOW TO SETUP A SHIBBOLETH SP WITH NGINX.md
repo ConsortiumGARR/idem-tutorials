@@ -42,15 +42,15 @@ apt-get update && \
 Install nginx stable version with all the necessary modules.
 To do this you can install the packet compiled by me (point A) or if you have particular needs or you wonder about it, we can develop it together (point B).
 
-*A.Ready packet:
+* A.Ready packet:
 ```bash
 cd /tmp
 wget -O nginx_1.10.1-1~jessie_amd64.deb http://goo.gl/NVqfw3
 dpkg -i nginx_1.10.1-1~jessie_amd64.deb  
 ```
-You can jump right to chapter 4 (CONFIGURATION)
+You can jump right to chapter 4 [CONFIGURATION](#configuration)
 
-*B.Creation of your customised packet
+* B.Creation of your customised packet
 
 Change the following file:
 ```
