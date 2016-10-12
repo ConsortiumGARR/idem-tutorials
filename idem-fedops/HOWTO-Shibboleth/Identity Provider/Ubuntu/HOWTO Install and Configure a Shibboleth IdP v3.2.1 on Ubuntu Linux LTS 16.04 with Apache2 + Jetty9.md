@@ -476,7 +476,7 @@
                   <bean parent="Shibboleth.SSO" p:postAuthenticationFlows="attribute-release" />
                   <ref bean="SAML1.AttributeQuery" />
                   <ref bean="SAML1.ArtifactResolution" />
-                  <bean parent="SAML2.SSO" p:postAuthenticationFlows="attribute-release" p:nameIDFormatPrecedence="urn:oasis:names:tc:SAML:2.0:nameid-format:persistent" />
+                  <bean parent="SAML2.SSO" p:postAuthenticationFlows="attribute-release" p:nameIDFormatPrecedence="#{{ 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent','urn:oasis:names:tc:SAML:2.0:nameid-format:transient' }}" />
                   <ref bean="SAML2.ECP" />
                   <ref bean="SAML2.Logout" />
                   <ref bean="SAML2.AttributeQuery" />
