@@ -27,7 +27,7 @@
 This guide aims to setup a functional shibboleth SP with Nginx on Debian 8.
 The example SP hostname is sp.example.it, you need to change it with your real SP hostname.
 
-**BONUS:** Throught this guide you will be able to get A+ on https://www.ssllabs.com
+**BONUS:** Through this guide you will be able to get A+ on https://www.ssllabs.com
 
 ## INSTALLATION OF THE NECESSARY SOFTWARE
 
@@ -96,7 +96,7 @@ Install the generated packet:
 ```
 dpkg -i nginx_1.10.1-1~jessie_amd64.deb  
 ```
-All the necessary packets has been installed, now proceed with configurations.
+All the necessary packets have been installed, now proceed with configurations.
 
 ## CONFIGURATIONS
 
