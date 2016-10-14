@@ -26,3 +26,7 @@ These GitHub Repository will contain and maintain the step-by-step tutorials pro
 
 
 ## IDEM Community Users HOWTOs
+
+#### Shibboleth
+
+* [HOWTO Setup a Shibboleth SP with NGINX](https://github.com/ConsortiumGARR/idem-tutorials/blob/master/idem-community/HOWTO-Shibboleth/Service-Provider/Debian/HOW%20TO%20SETUP%20A%20SHIBBOLETH%20SP%20WITH%20NGINX.md) Marco Cappellacci Università degli studi di Urbino Carlo Bo
