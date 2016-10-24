@@ -26,7 +26,7 @@ These GitHub Repository will contain and maintain the step-by-step tutorials pro
 
 #### Shibboleth Statistics from Audit Logs
 
-* [HOWTO Obtain useful data for statistic purposes from Shibboleth IDP Audit Logs](https://github.com/ConsortiumGARR/idem-tutorials/blob/master/idem-fedops/HOWTO-Statistics/HOWTO%20Obtain%20useful%20data%20for%20statistics%20purposes%20from%20Shibboleth%20IDP%20Audit%20Logs.md)
+* [HOWTO Obtain useful data for statistic purposes from Shibboleth IDP Audit Logs](https://github.com/ConsortiumGARR/idem-tutorials/blob/master/idem-fedops/HOWTO-Statistics/HOWTO%20Obtain%20useful%20data%20for%20statistic%20purposes%20from%20Shibboleth%20IDP%20Audit%20Logs.md)
 
 ## IDEM Community Users HOWTOs
 
