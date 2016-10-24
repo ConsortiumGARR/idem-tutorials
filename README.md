@@ -24,6 +24,9 @@ These GitHub Repository will contain and maintain the step-by-step tutorials pro
 * [HOWTO Configure a Shibboleth IdP v3.2.1 to authenticate users existing on different LDAP Servers](https://github.com/ConsortiumGARR/idem-tutorials/blob/master/idem-fedops/HOWTO-Shibboleth/Solutions/HOWTO%20Configure%20a%20Shibboleth%20IdP%20v3.2.1%20to%20authenticate%20Users%20existing%20on%20different%20LDAP%20Servers.md)
 * [HOWTO Release only one value of a specific attribute to a specific resource](https://github.com/ConsortiumGARR/idem-tutorials/blob/master/idem-fedops/HOWTO-Shibboleth/Solutions/HOWTO%20Release%20only%20one%20value%20of%20a%20specific%20attribute%20to%20a%20specific%20resource.md)
 
+#### Shibboleth Statistics from Audit Logs
+
+* [HOWTO Obtain useful data for statistic purposes from Shibboleth IDP Audit Logs](https://github.com/ConsortiumGARR/idem-tutorials/blob/master/idem-fedops/HOWTO-Statistics/HOWTO%20Obtain%20useful%20data%20for%20statistics%20purposes%20from%20Shibboleth%20IDP%20Audit%20Logs.md)
 
 ## IDEM Community Users HOWTOs
 
