@@ -35,6 +35,7 @@
  * ntp
  * vim-enhanced
  * java-1.8.0-openjdk
+ * java-1.8.0-openjdk-devel
  * jetty 9.3.x
  * httpd (Apache >= 2.4)
  * expat
@@ -56,7 +57,7 @@
   * ```sudo su -```
 
 2. Install the packages required: 
-  * ```dnf install vim-enhanced java-1.8.0-openjdk ca-certificates openssl httpd mod_ssl expat wget tar ntp```
+  * ```dnf install vim-enhanced java-1.8.0-openjdk java-1.8.0-openjdk-devel ca-certificates openssl httpd mod_ssl expat wget tar ntp```
   
 3. Disable SELinux:
   * ```vim /etc/selinux/config```
