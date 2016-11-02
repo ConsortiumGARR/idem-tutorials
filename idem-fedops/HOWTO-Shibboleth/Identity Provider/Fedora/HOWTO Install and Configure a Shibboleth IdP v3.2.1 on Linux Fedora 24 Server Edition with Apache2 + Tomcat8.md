@@ -722,8 +722,9 @@
 2. Follow the steps on your IdP v3.x:
   * ```sudo su -```
   * ```mv /tmp/idp-metadata.xml /opt/shibboleth-idp/metadata```
+  * ```mv /tmp/idp.crt /tmp/idp.key /opt/shibboleth-idp/credentials```
   * ```cd /opt/shibboleth-idp/credentials/```
-  * ```rm idp-encryption.crt idp-backchannel.crt idp-encryption.key idpsigning.crt idp-signing.key```
+  * ```rm idp-encryption.crt idp-backchannel.crt idp-encryption.key idp-signing.crt idp-signing.key```
   * ```ln -s idp.crt idp-encryption.crt```
   * ```ln -s idp.key idp-encryption.key```
   * ```ln -s idp.key idp-signing.key```
