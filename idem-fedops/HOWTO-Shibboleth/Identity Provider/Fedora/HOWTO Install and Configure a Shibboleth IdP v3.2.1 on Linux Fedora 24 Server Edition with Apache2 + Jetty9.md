@@ -729,7 +729,10 @@
 
 ### Configure Attribute Filters to release the mandatory attributes to the IDEM Default Resources:
 
-1. Modify your ```services.xml```:
+1. Make sure that you have the "```tmp/httpClientCache```" used by "```shibboleth.FileCachingHttpClient```":
+  * ```mkdir -p /opt/shibboleth-idp/tmp/httpClientCache ; chown jetty /opt/shibboleth-idp/tmp/httpClientCache```
+
+2. Modify your ```services.xml```:
   * ```vim /opt/shibboleth-idp/conf/services.xml```
 
     ```xml
@@ -744,13 +747,16 @@
      </util:list>
      ```
 
-2. Reload service with id ```shibboleth.AttributeFilterService``` to refresh the Attribute Filter followed by the IdP:
+3. Reload service with id ```shibboleth.AttributeFilterService``` to refresh the Attribute Filter followed by the IdP:
   *  ```cd /opt/shibboleth-idp/bin```
   *  ```./reload-service.sh -id shibboleth.AttributeFilterService```
 
 ### Configure Attribute Filters to release the mandatory attributes to the IDEM Production Resources:
 
-1. Modify your ```services.xml```:
+1. Make sure that you have the "```tmp/httpClientCache```" used by "```shibboleth.FileCachingHttpClient```":
+  * ```mkdir -p /opt/shibboleth-idp/tmp/httpClientCache ; chown jetty /opt/shibboleth-idp/tmp/httpClientCache```
+
+2. Modify your ```services.xml```:
   * ```vim /opt/shibboleth-idp/conf/services.xml```
 
     ```xml
@@ -766,13 +772,16 @@
     </util:list>
      ```
 
-2. Reload service with id ```shibboleth.AttributeFilterService``` to refresh the Attribute Filter followed by the IdP:
+3. Reload service with id ```shibboleth.AttributeFilterService``` to refresh the Attribute Filter followed by the IdP:
   *  ```cd /opt/shibboleth-idp/bin```
   *  ```./reload-service.sh -id shibboleth.AttributeFilterService```
 
 ### Configure Attribute Filters for Research and Scholarship and Data Protection Code of Conduct Entity Category
 
-1. Modify your ```services.xml```:
+1. Make sure that you have the "```tmp/httpClientCache```" used by "```shibboleth.FileCachingHttpClient```":
+  * ```mkdir -p /opt/shibboleth-idp/tmp/httpClientCache ; chown jetty /opt/shibboleth-idp/tmp/httpClientCache```
+
+2. Modify your ```services.xml```:
   * ```vim /opt/shibboleth-idp/conf/services.xml```
 
     ```xml
@@ -795,7 +804,7 @@
      </util:list>
      ```
 
-2. Reload service with id ```shibboleth.AttributeFilterService``` to refresh the Attribute Filter followed by the IdP:
+3. Reload service with id ```shibboleth.AttributeFilterService``` to refresh the Attribute Filter followed by the IdP:
   *  ```cd /opt/shibboleth-idp/bin```
   *  ```./reload-service.sh -id shibboleth.AttributeFilterService```
 
