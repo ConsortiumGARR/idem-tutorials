@@ -374,27 +374,6 @@
     * ```vim /opt/shibboleth-idp/conf/c14n/subject-c14n.xml```
         * Remove the comment to the bean called "**c14n/SAML2Persistent**".
 
-    * Modify the ***DefaultRelyingParty*** to releasing of the "persistent-id" to all, ever:
-      * ```vim /opt/shibboleth-idp/conf/relying-party.xml```
-
-        ```xml
-        <bean id="shibboleth.DefaultRelyingParty" parent="RelyingParty">
-            <property name="profileConfigurations">
-              <list>
-                  <bean parent="Shibboleth.SSO" p:postAuthenticationFlows="attribute-release" />
-                  <ref bean="SAML1.AttributeQuery" />
-                  <ref bean="SAML1.ArtifactResolution" />
-                  <bean parent="SAML2.SSO" p:postAuthenticationFlows="attribute-release" p:nameIDFormatPrecedence="#{{ 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent','urn:oasis:names:tc:SAML:2.0:nameid-format:transient' }}" />
-                  <ref bean="SAML2.ECP" />
-                  <ref bean="SAML2.Logout" />
-                  <ref bean="SAML2.AttributeQuery" />
-                  <ref bean="SAML2.ArtifactResolution" />
-                  <ref bean="Liberty.SSOS" />
-              </list>
-            </property>
-        </bean>
-        ```
-
 8. Enable **JPAStorageService** for the **StorageService** of the user consent:
   * ```vim /opt/shibboleth-idp/conf/global.xml``` and add this piece of code to the tail:
 
