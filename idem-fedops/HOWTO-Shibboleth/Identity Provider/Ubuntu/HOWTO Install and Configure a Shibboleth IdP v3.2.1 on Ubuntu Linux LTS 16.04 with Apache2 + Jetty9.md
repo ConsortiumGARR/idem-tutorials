@@ -22,7 +22,7 @@
 6. [Appendix A: Import metadata from previous IDP v2.x](#appendix-a-import-metadata-from-previous-idp-v2x)
 7. [Appendix B: Import persistent-id from a previous database](#appendix-b-import-persistent-id-from-a-previous-database)
 8. [Appendix C: Useful logs to find problems](#appendix-c-useful-logs-to-find-problems)
-9. [Appendix D: Issues](#issues)
+9. [Appendix D: Issues](#appendix-d-issues)
 10. [Authors](#authors)
 
 
