@@ -22,7 +22,8 @@
 6. [Appendix A: Import metadata from previous IDP v2.x](#appendix-a-import-metadata-from-previous-idp-v2x)
 7. [Appendix B: Import persistent-id from a previous database](#appendix-b-import-persistent-id-from-a-previous-database)
 8. [Appendix C: Useful logs to find problems](#appendix-c-useful-logs-to-find-problems)
-9. [Authors](#authors)
+9. [Appendix D: Issues](#appendix-d-issues)
+10. [Authors](#authors)
 
 
 ## Requirements Hardware 
@@ -755,6 +756,14 @@ To make easier this process, follow these steps with the `userdb_shibpid.sql`:
   * **Warn Log:** ```vim idp-warn.log```
   * **Process Log:** ```vim idp-process.log```
 
+### Appendix D: Issues
+
+  1. The ```<ResultCache>```, an LDAP Data Connector child element, in IdP versions before 3.3.0 has a serious security issue, as described in [security advisory 20161027](http://shibboleth.net/community/advisories/secadv_20161027.txt). 
+  
+  **If you are using a vulnerable version of the IdP then you should not use this element in new deployments, and you should remove it from existing deployments.**
+
+  The <ResultCache> element can be used safely starting with IdP version 3.3.0.
+  
 ### Authors
 
  * Alessandro Enea (alessandro.enea@ilc.cnr.it)
