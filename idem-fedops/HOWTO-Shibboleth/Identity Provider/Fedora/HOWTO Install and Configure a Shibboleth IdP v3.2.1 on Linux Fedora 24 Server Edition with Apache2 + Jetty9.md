@@ -405,7 +405,7 @@
 3. Install **MySQL Connector Java** and other useful libraries used by Jetty for MySQL DB (if you don't have them already):
   * ```dnf install mariadb-server mysql-connector-java apache-commons-dbcp apache-commons-pool```
   * ```cd /opt/jetty/lib/ext```
-  * ```ln -s /usr/share/java/mysql.jar mysql-connector-java.jar```
+  * ```ln -s /usr/share/java/mysql-java-connector.jar mysql-connector-java.jar```
   * ```ln -s /usr/share/java/commons-pool.jar commons-pool.jar```
   * ```ln -s /usr/share/java/commons-dbcp.jar commons-dbcp.jar```
 
