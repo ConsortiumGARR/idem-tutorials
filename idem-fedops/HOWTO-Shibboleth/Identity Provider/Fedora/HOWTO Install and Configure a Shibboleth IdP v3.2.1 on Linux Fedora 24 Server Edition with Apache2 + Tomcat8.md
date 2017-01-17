@@ -328,7 +328,7 @@
 3. Install **MySQL Connector Java** and **Tomcat JDBC** libraries used by Tomcat and Shibboleth for MySQL DB:
   * ```dnf install mariadb-server mysql-connector-java apache-commons-dbcp apache-commons-pool```
   * ```cd /usr/share/tomcat/lib/```
-  * ```ln -s ../../java/mysql.jar mysql-connector-java.jar```
+  * ```ln -s ../../java/mysql-java-connector.jar mysql-connector-java.jar```
   * ```ln -s ../../java/commons-pool.jar commons-pool.jar```
   * ```ln -s ../../java/commons-dbcp.jar commons-dbcp.jar```
   * ```ln -s ../../java/tomcat-jbcp.jar tomcat-jbcp.jar```
