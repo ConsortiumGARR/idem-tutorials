@@ -462,14 +462,14 @@
 
     ```xml
     <!-- A DataSource bean suitable for use in the idp.persistentId.dataSource property. -->
-    <bean id="MyDataSource" class="org.apache.commons.dbcp2.BasicDataSource"
+    <bean id="MyDataSource" class="org.apache.commons.dbcp.BasicDataSource"
           p:driverClassName="com.mysql.jdbc.Driver"
           p:url="jdbc:mysql://localhost:3306/shibboleth?autoReconnect=true"
           p:username="##USER_DB_NAME##"
           p:password="##PASSWORD##"
-          p:maxTotal="10"
+          p:maxActive="10"
           p:maxIdle="5"
-          p:maxWaitMillis="15000"
+          p:maxWait="15000"
           p:testOnBorrow="true"
           p:validationQuery="select 1"
           p:validationQueryTimeout="5" />
