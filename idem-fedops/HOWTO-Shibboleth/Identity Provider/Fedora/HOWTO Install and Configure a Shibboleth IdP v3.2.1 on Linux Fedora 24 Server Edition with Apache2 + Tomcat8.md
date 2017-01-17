@@ -45,6 +45,8 @@
  * openssl
  * mariadb-server
  * mysql-connector-java
+ * apache-commons-dbcp
+ * apache-commons-pool
 
 ## Other Requirements
 
@@ -257,7 +259,7 @@
     ```
     
     Check the integrity of XML files just edited with:
-    ```xmlwf -e UTF-8 /etc/tomcat8/server.xml```
+    ```xmlwf -e UTF-8 /etc/tomcat/server.xml```
 
 3. Create and change the file ```idp.xml```:
   * ```sudo vim /etc/tomcat/Catalina/localhost/idp.xml```
@@ -324,28 +326,24 @@
   * ```./status.sh``` (You should see some informations about the IdP installed)
 
 3. Install **MySQL Connector Java** and **Tomcat JDBC** libraries used by Tomcat and Shibboleth for MySQL DB:
-  * ```dnf install mariadb-server mysql-connector-java```
-  * ```cp /usr/share/java/mysql-connector-java.jar /opt/shibboleth-idp/edit-webapp/WEB-INF/lib/```
-  * ```cp /usr/share/java/mysql-connector-java.jar /usr/share/tomcat/lib/```
-  * ```cp /usr/share/tomcat/lib/tomcat-jdbc.jar /opt/shibboleth-idp/edit-webapp/WEB-INF/lib/```
-  
-4. Install the libraries **Tomcat Common Pool**[[3]](http://commons.apache.org/proper/commons-pool/download_pool.cgi) used for the generation of saml-id:
-  * ```cd /usr/local/src/```
-  * ```wget http://mirror.nohup.it/apache/commons/pool/binaries/commons-pool2-2.4.2-bin.tar.gz```
-  * ```tar xzvf commons-pool2-2.4.2-bin.tar.gz ; cd commons-pool2-2.4.2/```
-  * ```cp commons-pool2-2.4.2.jar /opt/shibboleth-idp/edit-webapp/WEB-INF/lib/```
+  * ```dnf install mariadb-server mysql-connector-java apache-commons-dbcp apache-commons-pool```
+  * ```cd /usr/share/tomcat/lib/```
+  * ```ln -s ../../java/mysql.jar mysql-connector-java.jar```
+  * ```ln -s ../../java/commons-pool.jar commons-pool.jar```
+  * ```ln -s ../../java/commons-dbcp.jar commons-dbcp.jar```
+  * ```ln -s ../../java/tomcat-jbcp.jar tomcat-jbcp.jar```
 
-5. Rebuild the **idp.war** of Shibboleth with the new libraries:
+4. Rebuild the **idp.war** of Shibboleth with the new libraries:
   * ```cd /opt/shibboleth-idp/ ; ./bin/build.sh```
 
-6. Create and prepare the "**shibboleth**" MySQL DB to host the values of the several **persistent-id** and **StorageRecords** MySQL DB to host other useful information about user consent:
+5. Create and prepare the "**shibboleth**" MySQL DB to host the values of the several **persistent-id** and **StorageRecords** MySQL DB to host other useful information about user consent:
   * Modify the [shibboleth-db.sql](../utils/shibboleth-db.sql) by changing the *username* and *password* of the user that has write access to the "**shibboleth**" DB.
   * Import the SQL modified to your MySQL Server:
     ```mysql -u root -p##PASSWORD-DB## < ./shibboleth-db.sql```
   * Restart mysql service:
     ```service mariadb restart```
 
-7. Enable the generation of the ```persistent-id``` (this replace the deprecated attribute *eduPersonTargetedID*)
+6. Enable the generation of the ```persistent-id``` (this replace the deprecated attribute *eduPersonTargetedID*)
   * ```vim /opt/shibboleth-idp/conf/saml-nameid.properties```
     (the *sourceAttribute* MUST BE an attribute, or a list of comma-separated attributes, that uniquely identify the subject of the generated ```persistent-id```. It MUST BE: **Stable**, **Permanent** and **Not-reassignable**)
 
@@ -372,7 +370,7 @@
     * ```vim /opt/shibboleth-idp/conf/c14n/subject-c14n.xml```
         * Remove the comment to the bean called "**c14n/SAML2Persistent**".
 
-8. Enable **JPAStorageService** for the **StorageService** of the user consent:
+7. Enable **JPAStorageService** for the **StorageService** of the user consent:
   * ```vim /opt/shibboleth-idp/conf/global.xml``` and add this piece of code to the tail:
 
     ```xml
@@ -421,7 +419,7 @@
   
       (This will indicate to IdP to store the data collected by User Consent into the "**StorageRecords**" table)
 
-9. Connect the openLDAP to the IdP to allow the authentication of the users:
+8. Connect the openLDAP to the IdP to allow the authentication of the users:
   * ```vim /opt/shibboleth-idp/conf/ldap.properties```
 
     (with **TLS** solutions we consider to have the LDAP certificate into ```/opt/shibboleth-idp/credentials```).
@@ -487,7 +485,7 @@
           * the bindDN ==> ```cn=admin,dc=example,dc=org``` (distinguished name for the user that can made queries on the LDAP)
 
 
-10. Enrich IDP logs with the authentication error occurred on LDAP:
+9. Enrich IDP logs with the authentication error occurred on LDAP:
   * ```vim /opt/shibboleth-idp/conf/logback.xml```
 
     ```xml
@@ -498,7 +496,7 @@
     <logger name="org.ldaptive.auth.Authenticator" level="INFO" />
     ```
 
-11. Build the **attribute-resolver.xml** to define which attributes your IdP can manage. Here you can find the **attribute-resolver-v3-idem.xml** provided by IDEM GARR AAI:
+10. Build the **attribute-resolver.xml** to define which attributes your IdP can manage. Here you can find the **attribute-resolver-v3-idem.xml** provided by IDEM GARR AAI:
   * Download the attribute resolver provided by IDEM GARR AAI:
     ```wget http://www.garr.it/idem-conf/attribute-resolver-v3-idem.xml -O /opt/shibboleth-idp/conf/attribute-resolver-v3-idem.xml```
 
@@ -517,7 +515,7 @@
 
   * Configure the LDAP Data Connector to be compliant to the values put on ```ldap.properties```. (See above suggestions)
 
-12. Translate the IdP messages in your language:
+11. Translate the IdP messages in your language:
   * Get the files translated in your language from [Shibboleth page](https://wiki.shibboleth.net/confluence/display/IDP30/MessagesTranslation) for:
     * **login page** (authn-messages_it.properties)
     * **user consent/terms of use page** (consent-messages_it.properties)
@@ -526,7 +524,7 @@
   * Restart Tomcat8: 
     ```service tomcat restart```
 
-13. Enable the SAML2 support by changing the ```idp-metadata.xml``` and disabling the SAML v1.x deprecated support:
+12. Enable the SAML2 support by changing the ```idp-metadata.xml``` and disabling the SAML v1.x deprecated support:
   * ```vim /opt/shibboleth-idp/metadata/idp-metadata.xml```
     ```bash
     <IDPSSODescriptor> SECTION:
@@ -565,13 +563,13 @@
       - Remove all ":8443" from the existing URL (such port is not used anymore)
     ```
 
-14. Obtain your IdP metadata here:
+13. Obtain your IdP metadata here:
   *  ```https://idp.example.org/idp/shibboleth```
 
-15. Register you IdP on IDEM Entity Registry:
+14. Register you IdP on IDEM Entity Registry:
   * ```https://registry.idem.garr.it/```
 
-16. Configure the IdP to retrieve the Federation Metadata:
+15. Configure the IdP to retrieve the Federation Metadata:
   * ```cd /opt/shibboleth-idp/conf```
   * ```vim metadata-providers.xml```
 
@@ -612,11 +610,11 @@
 
        (md5: AA:A7:CD:41:2D:3E:B7:F6:02:8A:D3:62:CD:21:F7:DE)
   
-17. Reload service with id ```shibboleth.MetadataResolverService``` to retrieve the Federation Metadata:
+16. Reload service with id ```shibboleth.MetadataResolverService``` to retrieve the Federation Metadata:
   *  ```cd /opt/shibboleth-idp/bin```
   *  ```./reload-service.sh -id shibboleth.MetadataResolverService```
 
-18. The day after the IDEM Federation Operators approval the IdP entity on the IDEM Entity Registry, check if you can login with your IdP on the following services:
+17. The day after the IDEM Federation Operators approval the IdP entity on the IDEM Entity Registry, check if you can login with your IdP on the following services:
   * https://sp-test.garr.it/secure   (Service Provider provided for testing the IDEM Test Federation)
   * https://sp24-test.garr.it/secure (Service Provider provided for testing the IDEM Test Federation, IDEM Production Federation and eduGAIN)
 
