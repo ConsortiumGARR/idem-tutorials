@@ -466,7 +466,7 @@
       idp.authn.LDAP.bindDN = cn=admin,dc=example,dc=org
       idp.authn.LDAP.bindDNCredential = ###LDAP_ADMIN_PASSWORD###
       ```
-      (If you decide to use the Solution 3, you have to remove (or comment out) the following code from your ```attribute-resolver-full.xml```:
+      (If you decide to use the Solution 3, you have to remove (or comment out) the following code from your Attribute Resolver file:
       
       ```xml
       </dc:FilterTemplate>
