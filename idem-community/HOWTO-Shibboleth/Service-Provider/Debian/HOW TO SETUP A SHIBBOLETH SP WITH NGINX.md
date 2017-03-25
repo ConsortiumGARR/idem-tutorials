@@ -90,7 +90,7 @@ In the same line of --with-ld-opt="$(LDFLAGS)" add  \ and then:
 ```
 Make the packet with:
 ```
-sudo dpkg-buildpackage -b
+dpkg-buildpackage -b
 ```
 Install the generated packet:
 ```
