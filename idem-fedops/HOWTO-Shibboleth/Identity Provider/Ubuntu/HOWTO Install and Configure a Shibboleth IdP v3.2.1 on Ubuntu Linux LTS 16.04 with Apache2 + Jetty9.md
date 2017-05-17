@@ -810,44 +810,44 @@
 3. Check if the *idp.entityID* property value is equal to the entityID value inside the *idp-metadata.xml* on the file `/opt/shibboleth-idp/conf/idp.properties`.
 
 4. Enable the SAML2 support by changing the ```idp-metadata.xml``` and disabling the SAML v1.x deprecated support:
-    * ```vim /opt/shibboleth-idp/metadata/idp-metadata.xml```
+   * ```vim /opt/shibboleth-idp/metadata/idp-metadata.xml```
  
-      ```bash
-      <IDPSSODescriptor> SECTION:
-        – From the list of "protocolSupportEnumeration" remove:
-          - urn:oasis:names:tc:SAML:1.1:protocol
-          - urn:mace:shibboleth:1.0
+     ```bash
+     <IDPSSODescriptor> SECTION:
+       – From the list of "protocolSupportEnumeration" remove:
+         - urn:oasis:names:tc:SAML:1.1:protocol
+         - urn:mace:shibboleth:1.0
 
-        – Remove the endpoint:
-          <ArtifactResolutionService Binding="urn:oasis:names:tc:SAML:1.0:bindings:SOAP-binding" Location="https://idp.example.org:8443/idp/profile/SAML1/SOAP/ArtifactResolution" index="1"/>
-          (and modify the index value of the next one to “1”)
+       – Remove the endpoint:
+         <ArtifactResolutionService Binding="urn:oasis:names:tc:SAML:1.0:bindings:SOAP-binding" Location="https://idp.example.org:8443/idp/profile/SAML1/SOAP/ArtifactResolution" index="1"/>
+         (and modify the index value of the next one to “1”)
 
-        – Remove the endpoint:
-          <NameIDFormat>urn:mace:shibboleth:1.0:nameIdentifier</NameIDFormat>
+       – Remove the endpoint:
+         <NameIDFormat>urn:mace:shibboleth:1.0:nameIdentifier</NameIDFormat>
 
-        – Add under the line:
-          <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</NameIDFormat>
-          this line:
-          <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</NameIDFormat>
-          (because the IdP installed with this guide releases persistent SAML NameIDs)
+       – Add under the line:
+         <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</NameIDFormat>
+         this line:
+         <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</NameIDFormat>
+         (because the IdP installed with this guide releases persistent SAML NameIDs)
 
-        - Remove the endpoint: 
-          <SingleSignOnService Binding="urn:mace:shibboleth:1.0:profiles:AuthnRequest" Location="https://idp.example.org/idp/profile/Shibboleth/SSO"/>        
-        - Remove all ":8443" from the existing URL (such port is not used anymore)
+       - Remove the endpoint: 
+         <SingleSignOnService Binding="urn:mace:shibboleth:1.0:profiles:AuthnRequest" Location="https://idp.example.org/idp/profile/Shibboleth/SSO"/>        
+       - Remove all ":8443" from the existing URL (such port is not used anymore)
 
-      <AttributeAuthorityDescriptor> Section:
-        – From the list "protocolSupportEnumeration" replace the value of:
-          - urn:oasis:names:tc:SAML:1.1:protocol
-          with
-          - urn:oasis:names:tc:SAML:2.0:protocol
+     <AttributeAuthorityDescriptor> Section:
+       – From the list "protocolSupportEnumeration" replace the value of:
+         - urn:oasis:names:tc:SAML:1.1:protocol
+         with
+         - urn:oasis:names:tc:SAML:2.0:protocol
 
-        - Remove the comment from:
-          <AttributeService Binding="urn:oasis:names:tc:SAML:2.0:bindings:SOAP" Location="https://idp.example.org/idp/profile/SAML2/SOAP/AttributeQuery"/>
-        - Remove the endpoint: 
-          <AttributeService Binding="urn:oasis:names:tc:SAML:1.0:bindings:SOAP-binding" Location="https://idp.example.org:8443/idp/profile/SAML1/SOAP/AttributeQuery"/>
+       - Remove the comment from:
+         <AttributeService Binding="urn:oasis:names:tc:SAML:2.0:bindings:SOAP" Location="https://idp.example.org/idp/profile/SAML2/SOAP/AttributeQuery"/>
+       - Remove the endpoint: 
+         <AttributeService Binding="urn:oasis:names:tc:SAML:1.0:bindings:SOAP-binding" Location="https://idp.example.org:8443/idp/profile/SAML1/SOAP/AttributeQuery"/>
 
-        - Remove all ":8443" from the existing URL (such port is not used anymore)
-      ```
+       - Remove all ":8443" from the existing URL (such port is not used anymore)
+     ```
 
 5. Restart Jetty:
    * ```service jetty restart```
