@@ -852,7 +852,7 @@
 5. Restart Jetty:
    * ```service jetty restart```
   
-6. Update your IdP Metadata on [IDEM Entity Registry](https://registry.idem.garr.it/rr3) to apply changes on the federation IDEM
+6. Don't forget to update your IdP Metadata on [IDEM Entity Registry](https://registry.idem.garr.it/rr3) to apply changes on the federation IDEM! For any help write to idem-help@garr.it
 
 
 ### Appendix B: Import persistent-id from a previous database ###
