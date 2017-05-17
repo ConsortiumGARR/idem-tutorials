@@ -811,6 +811,7 @@
 
 4. Enable the SAML2 support by changing the ```idp-metadata.xml``` and disabling the SAML v1.x deprecated support:
     * ```vim /opt/shibboleth-idp/metadata/idp-metadata.xml```
+ 
       ```bash
       <IDPSSODescriptor> SECTION:
         – From the list of "protocolSupportEnumeration" remove:
@@ -847,6 +848,7 @@
 
         - Remove all ":8443" from the existing URL (such port is not used anymore)
       ```
+
 5. Restart Jetty:
    * ```service jetty restart```
   
