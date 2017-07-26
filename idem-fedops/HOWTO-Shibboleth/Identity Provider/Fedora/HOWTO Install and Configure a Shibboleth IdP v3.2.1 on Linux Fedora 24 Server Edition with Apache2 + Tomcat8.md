@@ -769,20 +769,17 @@
 
 ### Appendix B: Import persistent-id from a previous database
 
-1. Create a DUMP of `shibpid` table from the previous DB `userdb` and also one of `shibpid` table from the new DB `shibboleth` :
+1. Create a DUMP of `shibpid` table from the previous DB `userdb` on the OLD IdP:
    * ```cd /tmp```
-   * ```mysqldump -u root -p userdb shibpid > userdb_shibpid.sql```
-   * ```mysqldump -u root -p shibboleth shibpid > shibboleth_shibpid.sql```
+   * ```mysqldump --complete-insert --no-create-db --no-create-info -u root -p userdb shibpid > /tmp/userdb_shibpid.sql```
 
-2. Import the previous values on the new DB `shibboleth` by paying attention on the order of the fields of the old table `userdb.shibpid`. 
-They have to be in the same order of the fields provided by the new `shibboleth.shibpid` before doing the import. THEY MUST BE IN THE SAME ORDER because, if they will not be aligned, the import will fail the the population on the new DB `shibboleth`.
+2. Move the ```/tmp/userdb_shibpid.sql``` of old IdP into ```/tmp/userdb_shibpid.sql``` on the new IdP.
+ 
+3. Import the content of ```/tmp/userdb_shibpid.sql``` into the DB of the new IDP:
+   * ```cd /tmp ; mysql -u root -p shibboleth < /tmp/userdb_shibpid.sql```
 
-To make easier this process, follow these steps with the `userdb_shibpid.sql`:
-   * Modify the name of the DB found on the DUMP into `shibboleth`.
-   * From DUMP of `shibboleth_shibpid.sql` copy the part on "Table structure for table `shibpid`" and insert it into `userdb_shibpid.sql` under that already present.
-   * Modify the order of the fields on the piece of code of `shibboleth.shibpid` pasted in away that the order of the fields is the same of that found on the table `shibpid` of the old `userdb`.
-   * Delete the section "Table structure for table `shibpid`" of `userdb`.
-   * Save and import the values on the new DB `shibboleth`: ```mysql -u root -p shibboleth < userdb_shibpid.sql```
+4. Delete ```/tmp/userdb_shibpid.sql```:
+   * ```rm /tmp/userdb_shibpid.sql```
 
 ### Appendix C: Useful logs to find problems
 
