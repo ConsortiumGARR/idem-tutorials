@@ -164,39 +164,47 @@
 
 ## Configuration Instructions
 
-### Configure SSL on Apache2 (Tomcat8 front-end)
+### Configure SSL on Apache2 (Jetty front-end)
 
 1. Modify the file ```/etc/apache2/sites-available/default-ssl.conf``` as follows:
 
    ```apache
-   <VirtualHost _default_:443>
-     ServerName idp.example.org:443
-     ServerAdmin admin@example.org
-     DocumentRoot /var/www/html
-     ...
-     SSLEngine On
-     SSLProtocol all -SSLv2 -SSLv3 -TLSv1
-    
-     SSLCipherSuite "TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA:TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA:TLS_ECDHE_RSA_WITH_3DES_EDE_CBC_SHA:kEDH+AESGCM:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES256-SHA256:ECDHE-RSA-AES256-SHA:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA256:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA256:ECDHE-ECDSA-AES256-SHA:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA256:AES256-GCM-SHA384:!3DES:!DES:!DHE-RSA-AES128-GCM-SHA256:!DHE-RSA-AES256-SHA:!EDE3:!EDH-DSS-CBC-SHA:!EDH-DSS-DES-CBC3-SHA:!EDH-RSA-DES-CBC-SHA:!EDH-RSA-DES-CBC3-SHA:!EXP-EDH-DSS-DES-CBC-SHA:!EXP-EDH-RSA-DES-CBC-SHA:!EXPORT:!MD5:!PSK:!RC4-SHA:!aNULL:!eNULL"
-    
-     SSLHonorCipherOrder on
-    
-     # Disable SSL Compression
-     SSLCompression Off
-     # Enable HTTP Strict Transport Security with a 2 year duration
-     Header always set Strict-Transport-Security "max-age=63072000;includeSubDomains"
-     ...
-     SSLCertificateFile /root/certificates/idp-cert-server.crt
-     SSLCertificateKeyFile /root/certificates/idp-key-server.key
-     SSLCertificateChainFile /root/certificates/DigiCertCA.pem
-     ...
-   </VirtualHost>
+   <IfModule mod_ssl.c>
+      SSLStaplingCache        shmcb:/var/run/ocsp(128000)
+      <VirtualHost _default_:443>
+        ServerName idp.example.org:443
+        ServerAdmin admin@example.org
+        DocumentRoot /var/www/html
+        ...
+        SSLEngine On
+        
+        SSLProtocol All -SSLv2 -SSLv3 -TLSv1 -TLSv1.1
+        SSLCipherSuite "EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH"
+
+        SSLHonorCipherOrder on
+
+        # Disable SSL Compression
+        SSLCompression Off
+        
+        # OCSP Stapling, only in httpd/apache >= 2.3.3
+        SSLUseStapling          on
+        SSLStaplingResponderTimeout 5
+        SSLStaplingReturnResponderErrors off
+        
+        # Enable HTTP Strict Transport Security with a 2 year duration
+        Header always set Strict-Transport-Security "max-age=63072000;includeSubDomains;preload"
+        ...
+        SSLCertificateFile /root/certificates/idp-cert-server.crt
+        SSLCertificateKeyFile /root/certificates/idp-key-server.key
+        SSLCertificateChainFile /root/certificates/DigiCertCA.pem
+        ...
+      </VirtualHost>
+   </IfModule>
    ```
 
-2. Enable **SSL** and **headers** Apache2 modules:
-   * ```a2enmod ssl headers```
+2. Enable **proxy_http**, **SSL** and **headers** Apache2 modules:
+   * ```a2enmod proxy_http ssl headers alias include negotiation```
    * ```a2ensite default-ssl.conf```
-   * ```a2dissite 000-default.conf```
    * ```service apache2 restart```
 
 3. Configure Apache2 to open port **80** only for localhost:
@@ -208,7 +216,7 @@
      # /etc/apache2/sites-enabled/000-default.conf
 
      Listen 127.0.0.1:80
-
+ 
      <IfModule ssl_module>
        Listen 443
      </IfModule>
@@ -217,8 +225,17 @@
        Listen 443
      </IfModule>
      ```
+5. Configure Apache2 to redirect all on HTTPS:
+   * ```vim /etc/apache2/sites-enabled/000-default.conf```
+   
+   ```apache
+   <VirtualHost *:80>
+        ServerName "idp.example.org"
+        Redirect "/" "https://idp.example.org/"
+   </VirtualHost>
+   ```
   
-4. Verify the strength of your IdP's machine on:
+6. Verify the strength of your IdP's machine on:
    * [**https://www.ssllabs.com/ssltest/analyze.html**](https://www.ssllabs.com/ssltest/analyze.html)
 
 ### Configure Apache Tomcat 8
