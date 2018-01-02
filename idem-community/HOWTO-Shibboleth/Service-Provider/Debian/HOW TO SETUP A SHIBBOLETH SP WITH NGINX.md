@@ -1,8 +1,8 @@
-#HOW TO SETUP A SHIBBOLETH SP WITH NGINX
+# HOW TO SETUP A SHIBBOLETH SP WITH NGINX
 
-####Author: Marco Cappellacci - Università degli Studi di Urbino Carlo Bo
+#### Author: Marco Cappellacci - Università degli Studi di Urbino Carlo Bo
 
-##TABLE OF CONTENTS
+## TABLE OF CONTENTS
 
 1. [PREREQUISITES](#prerequisites)
 2. [INTRODUCTION](#introduction)
@@ -211,7 +211,7 @@ More info https://www.openssl.org/docs/manmaster/apps/dhparam.html
 
 **WARNING** when the SP goes into production, the attribute list after “more_clear_input_headers” will be updated.
 
-###PHP5-FPM CONFIGURATION
+### PHP5-FPM CONFIGURATION
 
 Create a group and add a new user:
 ```bash
