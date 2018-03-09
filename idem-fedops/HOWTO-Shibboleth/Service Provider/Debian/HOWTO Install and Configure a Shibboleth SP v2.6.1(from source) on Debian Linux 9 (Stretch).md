@@ -276,7 +276,7 @@
        </head>
        <body>
          <p>
-          <a href="https://sp-test.garr.it/privacy.html">Politica della privacy</a>
+          <a href="https://sp.example.org/privacy.html">Privacy Policy</a>
          </p>
          <?php
          // Visualizza tutte le informazioni, default: INFO_ALL
