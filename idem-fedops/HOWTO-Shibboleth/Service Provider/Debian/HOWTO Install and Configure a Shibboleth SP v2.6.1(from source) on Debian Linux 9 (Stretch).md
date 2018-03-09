@@ -55,13 +55,8 @@
    * ```sudo su -```
 
 2. Change the default mirror with the GARR ones:
-   * ```nano /etc/apt/sources.list```
-   * CTRL+W (search)
-   * CTRL+R (replace)
-   * Text to search: '```it.archive.ubuntu.com```'
-   * Text to replace: '```mi.mirror.garr.it```'
-   * CTRL+X (save and exit)
-   * ```apt-get update && apt-get upgrade```
+   * ```sed -i 's/deb.debian.org/mi.mirror.garr.it\/mirrors/g' /etc/apt/sources.list```
+   * ```apt update && apt upgrade```
   
 3. Install the packages required: 
    * ```apt install apache2 openssl ntp g++ libcurl4-openssl-dev libxerces-c-dev liblog4shib1v5 libxml-security-c17v5 libxmltooling-dev libxmltooling7 opensaml2-schemas apache2-dev libssl-dev libboost-dev xmltooling-schemas libsaml2-dev vim ca-certificates```
