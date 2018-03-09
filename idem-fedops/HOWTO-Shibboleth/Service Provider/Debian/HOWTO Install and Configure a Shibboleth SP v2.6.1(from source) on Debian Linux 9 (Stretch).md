@@ -1,5 +1,6 @@
 # HOWTO Install and Configure a Shibboleth SP v2.6.1(from source) on Debian Linux 9 (Stretch) 
 
+<img width="120px" src="https://wiki.idem.garrservices.it/IDEM_Approved.png" />
 
 ## Table of Contents
 
