@@ -10,14 +10,14 @@
 4. [Installation Instructions](#installation-instructions)
    1. [Install software requirements](#install-software-requirements)
    2. [Configure the environment](#configure-the-environment)
-   3. [Install Shibboleth Service Provider v2.6.1](##install-shibboleth-service-provider-v261)
+   3. [Install Shibboleth Service Provider](##install-shibboleth-service-provider)
 5. [Configuration Instructions](#configuration-instructions)
    1. [Configure SSL on Apache2](#configure-ssl-on-apache2)
    2. [Configure Shibboleth SP (with IDEM WAYF)](#configure-shibboleth-sp-with-idem-wayf)
    3. [Configure an example federated resouce "secure"](#configure-an-example-federated-resouce-secure)
    4. [OPTIONAL - Maintain 'shibd' working](#optional---maintain-shibd-working)
    5. [Enable Attribute Support on Shibboleth SP](#enable-attribute-support-on-shibboleth-sp)
-10. [Authors](#authors)
+6. [Authors](#authors)
 
 
 ## Requirements Hardware
@@ -82,7 +82,7 @@
    (OPTIONAL) Create a Certificate and a Key self-signed for HTTPS if you don't have yet the official ones provided by the Certificate Authority(DigicertCA):
    * ```openssl req -x509 -newkey rsa:4096 -keyout /etc/ssl/private/ssl-sp.key -out /etc/ssl/certs/ssl-sp.crt -nodes -days 1095```
 
-### Install Shibboleth Service Provider v2.6.1
+### Install Shibboleth Service Provider
 
 1. Become ROOT: 
    * ```sudo su -```
@@ -285,13 +285,13 @@
    * ```vim /etc/init.d/shibd```
 
      ```bash
-     ...
+     #...other lines...
      ### END INIT INFO
 
      # Import useful functions like 'status_of_proc' needed to 'status'
      . /lib/lsb/init-functions
 
-     ...
+     #...other lines...
 
      # Add 'status' operation
      status)
