@@ -182,13 +182,13 @@
 5. Configure Apache2 to redirect all on HTTPS:
    * ```vim /etc/apache2/sites-enabled/000-default.conf```
    
-   ```apache
-   <VirtualHost *:80>
-      ServerName "sp.example.org"
-      Redirect permanent "/" "https://sp.example.org/"
-      RedirectMatch permanent ^/(.*)$ https://sp.example.org/$1
-   </VirtualHost>
-   ```
+     ```apache
+     <VirtualHost *:80>
+        ServerName "sp.example.org"
+        Redirect permanent "/" "https://sp.example.org/"
+        RedirectMatch permanent ^/(.*)$ https://sp.example.org/$1
+     </VirtualHost>
+     ```
   
 6. Verify the strength of your IdP's machine on:
    * [**https://www.ssllabs.com/ssltest/analyze.html**](https://www.ssllabs.com/ssltest/analyze.html)
@@ -203,7 +203,6 @@
    * ```apache2ctl configtest```
    * ```a2enconf shib-sp.conf ```
    * ```systemctl reload apache2.service ```
-   * ``` ```
   
 3. Download Federation Metadata Signing Certificate:
    * ```cd /opt/shibboleth-sp/etc/shibboleth/```
@@ -247,7 +246,6 @@
 
 7. Register you SP on IDEM Entity Registry (your entity have to be approved by an IDEM Federation Operator before become part of IDEM Test Federation):
    * Go to ```https://registry.idem.garr.it/``` and follow "Insert a New Service Provider into the IDEM Test Federation"
-
 
 ### Configure an example federated resouce "secure"
 
@@ -307,14 +305,12 @@
    * ```vim /etc/init.d/shibd```
 
      ```bash
-     ...
+     #...other lines...
      ### END INIT INFO
 
      # Import useful functions like 'status_of_proc' needed to 'status'
      . /lib/lsb/init-functions
-
-     ...
-
+     #...other lines...
      # Add 'status' operation
      status)
        status_of_proc -p "$PIDFILE" "$DAEMON" "$NAME" && exit 0 || exit $?
