@@ -9,10 +9,13 @@
 4. [Installation Instructions](#installation-instructions)
    1. [Install software requirements](#install-software-requirements)
    2. [Configure the environment](#configure-the-environment)
-   3. [Install Jetty 9 Web Server](#install-jetty-9-web-server)
-   4. [Install Shibboleth Identity Provider 3.2.1](#install-shibboleth-identity-provider-v321)
+   3. [Install Shibboleth Service Provider v2.6.1](##install-shibboleth-service-provider-v261)
 5. [Configuration Instructions](#configuration-instructions)
-   1. [Configure SSL on Apache2 (Jetty front-end)](#configure-ssl-on-apache2-jetty-front-end)
+   1. [Configure SSL on Apache2](#configure-ssl-on-apache2)
+   2. [Configure Shibboleth SP (with IDEM WAYF)](#configure-shibboleth-sp-with-idem-wayf)
+   3. [Configure an example federated resouce "secure"](#configure-an-example-federated-resouce-secure)
+   4. [OPTIONAL - Maintain 'shibd' working](#optional---maintain-shibd-working)
+   5. [Enable Attribute Support on Shibboleth SP](#enable-attribute-support-on-shibboleth-sp)
 10. [Authors](#authors)
 
 
