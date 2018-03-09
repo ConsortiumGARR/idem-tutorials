@@ -20,37 +20,48 @@ The EDS is a set of Javascript and CSS files, so installing it and using it is s
 8. [Credits](#credits)
 
 ## Requirements
+
+* Apache Server (>= 2.4)
 * A working Shibboleth Service Provider (>= 2.4)
 
 ## Installation
 1. `sudo su -`
+
 2. `cd /usr/local/src`
-3. `wget https://shibboleth.net/downloads/embedded-discovery-service/1.2.0/shibboleth-embedded-ds-1.2.0.tar.gz`
-4. `tar xzf shibboleth-embedded-ds-1.2.0.tar.gz`
-5. `cd shibboleth-embedded-ds-1.2.0`
-6. `make install`
+
+3. `wget https://shibboleth.net/downloads/embedded-discovery-service/1.2.0/shibboleth-embedded-ds-1.2.0.tar.gz -O shibboleth-eds.tar.gz`
+
+4. `tar xzf shibboleth-eds.tar.gz`
+
+5. `cd shibboleth-eds`
+
+6. `sudo apt install make ; make install`
+
 7. Enable Discovery Service Web Page
-  * `cp shibboleth-ds.conf /etc/apache2/sites-available/shibboleth-ds.conf`
-     (make sure that "`Allow from all`" becomes "`Require all granted`" if you have Apache >= 2.4)
+   * `cp shibboleth-ds.conf /etc/apache2/sites-available/shibboleth-ds.conf`
+   * `sed -i 's/Allow from All/Require all granted/g' shibboleth-ds.conf`
+
 8. Update "`shibboleth2.xml`" file to the new Discovery Service page:
-  * `vim /etc/shibboleth/shibboleth2.xml`
+   * `vim /etc/shibboleth/shibboleth2.xml`
  
-    ```xml
-    <SSO discoveryProtocol="SAMLDS" 
-         discoveryURL="https://###YOUR.SP.FQDN###/shibboleth-ds/index.html"
-         isDefault="true">
-       SAML2
-    </SSO>
-    <!-- SAML and local-only logout. -->
-    <Logout>SAML2 Local</Logout>
-    ...
-    <!-- JSON feed of discovery information. -->
-    <Handler type="DiscoveryFeed" Location="/DiscoFeed"/>
-    ```
+     ```xml
+     <SSO discoveryProtocol="SAMLDS" 
+          discoveryURL="https://###YOUR.SP.FQDN###/shibboleth-ds/index.html"
+          isDefault="true">
+        SAML2
+     </SSO>
+     <!-- SAML and local-only logout. -->
+     <Logout>SAML2 Local</Logout>
+     ...
+     <!-- JSON feed of discovery information. -->
+     <Handler type="DiscoveryFeed" Location="/DiscoFeed"/>
+     ```
+
 9. Enable the Discovery Service Page:
-  * `a2ensite shibboleth-ds.conf`
+   * `a2ensite shibboleth-ds.conf`
+
 10. Restart Apache to load the new web site:
-   * `service shibd restart ; service apache2 restart`
+    * `service shibd restart ; service apache2 restart`
 
 ## Configuration
 The behaviour of Shibboleth Embedded Discovery Service is controlled by `IdPSelectUIParms` class contained. `idpselect_config.js`.
