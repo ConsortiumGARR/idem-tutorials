@@ -44,7 +44,7 @@
  * Place the SSL Credentials into the right place:
    1. SSL Certificate: "```/etc/ssl/certs/ssl-sp.crt```"
    2. SSL Key: "```/etc/ssl/private/ssl-sp.key```"
-   3. SSL CA: "```/usr/share/local/ca-certificates/ssl-ca.crt```"
+   3. SSL CA: "```/usr/local/share/ca-certificates/ssl-ca.crt```"
    4. Run the command: "```update-ca-certificates```"
 
 ## Installation Instructions
@@ -55,13 +55,8 @@
    * ```sudo su -```
 
 2. Change the default mirror with the GARR ones:
-   * ```nano /etc/apt/sources.list```
-   * CTRL+W (search)
-   * CTRL+R (replace)
-   * Text to search: '```it.archive.ubuntu.com```'
-   * Text to replace: '```mi.mirror.garr.it```'
-   * CTRL+X (save and exit)
-   * ```apt-get update && apt-get upgrade```
+   * ```sed -i 's/deb.debian.org/mi.mirror.garr.it\/mirrors/g' /etc/apt/sources.list```
+   * ```apt update && apt upgrade```
   
 3. Install the packages required: 
    * ```apt install apache2 openssl ntp g++ libcurl4-openssl-dev libxerces-c-dev liblog4shib1v5 libxml-security-c17v5 libxmltooling-dev libxmltooling7 opensaml2-schemas apache2-dev libssl-dev libboost-dev xmltooling-schemas libsaml2-dev vim ca-certificates```
