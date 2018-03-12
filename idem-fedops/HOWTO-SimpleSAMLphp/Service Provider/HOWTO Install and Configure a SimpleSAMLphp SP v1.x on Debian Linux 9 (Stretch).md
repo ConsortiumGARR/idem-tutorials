@@ -10,10 +10,10 @@
 4. [Installation Instructions](#installation-instructions)
    1. [Install software requirements](#install-software-requirements)
    2. [Configure the environment](#configure-the-environment)
-   3. [Install SimpleSAMLphp Service Provider](##install-simplesamlphp-service-provider)
+   3. [Install SimpleSAMLphp Service Provider](#install-simplesamlphp-service-provider)
 5. [Configuration Instructions](#configuration-instructions)
    1. [Configure SSL on Apache2](#configure-ssl-on-apache2)
-   2. [Configure SimpleSAMLphp (with IDEM WAYF)](#configure-shibboleth-sp-with-idem-wayf)
+   2. [Configure SimpleSAMLphp SP](#configure-simplesamlphp-sp)
    3. [Configure an example federated resouce "secure"](#configure-an-example-federated-resouce-secure)
 6. [Authors](#authors)
 
@@ -82,7 +82,7 @@
    * ```cd /opt/```
    * ```wget https://github.com/simplesamlphp/simplesamlphp/releases/download/v1.15.4/simplesamlphp-1.15.4.tar.gz```
    * ```tar xzf simplesamlphp-1.15.4.tar.gz```
-   * ```mv simplesamlphp-1.15.4 simplesamlphp
+   * ```mv simplesamlphp-1.15.4 simplesamlphp```
 
 ## Configuration Instructions
 
@@ -147,6 +147,7 @@
        Listen 443
      </IfModule>
      ```
+     
 5. Configure Apache2 to redirect all on HTTPS:
    * ```vim /etc/apache2/sites-enabled/000-default.conf```
    
@@ -157,11 +158,11 @@
         RedirectMatch permanent ^/(.*)$ https://sp.example.org/$1
      </VirtualHost>
      ```
-  
-6. Verify the strength of your IdP's machine on:
+
+6. Verify the strength of your SP's machine on:
    * [**https://www.ssllabs.com/ssltest/analyze.html**](https://www.ssllabs.com/ssltest/analyze.html)
 
-### Configure SimpleSAMLphp SP (with IDEM WAYF)
+### Configure SimpleSAMLphp SP
 
 1. Become ROOT: 
    * ```sudo su -```
@@ -179,6 +180,7 @@
        Require all granted
      </Location>
      ```
+
 3. Enable the simplsaml Apache2 configuration:
 
    * ```a2ensite simplesaml.conf```
@@ -192,11 +194,17 @@
 5. Configure the SimpleSAMLphp SP:
 
    * Generate some useful opaque strings:
-      * User Admin Password (```auth.adminpassword```)`: ```php /opt/simplesamlphp/bin/pwgen.php```
-      * Secret Salt (```secretsalt```): ```tr -c -d '0123456789abcdefghijklmnopqrstuvwxyz' </dev/urandom | dd bs=32 count=1 2>/dev/null ; echo```
-      * Cron Key (```key```): ```tr -c -d '0123456789abcdefghijklmnopqrstuvwxyz' </dev/urandom | dd bs=32 count=1 2>/dev/null ; echo```
+      * User Admin Password (```auth.adminpassword```):
+        ```php /opt/simplesamlphp/bin/pwgen.php```
+        
+      * Secret Salt (```secretsalt```):
+        ```tr -c -d '0123456789abcdefghijklmnopqrstuvwxyz' </dev/urandom | dd bs=32 count=1 2>/dev/null ; echo```
+        
+      * Cron Key (```key```):
+        ```tr -c -d '0123456789abcdefghijklmnopqrstuvwxyz' </dev/urandom | dd bs=32 count=1 2>/dev/null ; echo```
 
-   * ```vim /opt/simplesamlphp/config/config.php```
+   * Change SimpleSAMLphp configuration:
+      ```vim /opt/simplesamlphp/config/config.php```
    
       ```bash
       ...
@@ -214,9 +222,10 @@
 
 6. Generate SAML Credentials:
 
-   * ```mkdir /opt/simplesamlphp/saml-credentials```
+   * Move on the SAML credentials directory:
+     ```cd /opt/simplesamlphp/cert```
 
-   * ```Follow [Appendix A: Sample SAML2 Metadata embedded certificate](https://www.switch.ch/aai/support/certificates/embeddedcerts-requirements-appendix-a/)```
+   * Follow [Appendix A: Sample SAML2 Metadata embedded certificate](https://www.switch.ch/aai/support/certificates/embeddedcerts-requirements-appendix-a/) and generate the right SAML Credentials.
 
 7. Configure automatic download of Federation Metadata:
 
@@ -299,51 +308,51 @@
         'sets' => array(
 
            'idem' => array(
-              'cron'          => array('hourly'),
-              'sources'       => array(
-                                    array(
-                                       /*
-                                        * entityIDs that should be excluded from this src.
-                                        */
-                                       #'blacklist' => array(
-                                       #       'http://some.other.uni/idp',
-                                       #),
+              'cron'    => array('hourly'),
+              'sources' => array(
+                              array(
+                                 /*
+                                  * entityIDs that should be excluded from this src.
+                                  */
+                                 #'blacklist' => array(
+                                 #       'http://some.other.uni/idp',
+                                 #),
 
-                                       /*
-                                        * Whitelist: only keep these EntityIDs.
-                                        */
-                                       #'whitelist' => array(
-                                       #       'http://some.uni/idp',
-                                       #       'http://some.other.uni/idp',
-                                       #),
+                                 /*
+                                  * Whitelist: only keep these EntityIDs.
+                                  */
+                                 #'whitelist' => array(
+                                 #       'http://some.uni/idp',
+                                 #       'http://some.other.uni/idp',
+                                 #),
 
-                                       #'conditionalGET' => TRUE,
-                                       'src' => 'http://www.garr.it/idem-metadata/idem-test-metadata-sha256.xml',
-                                       'certificates' => array(
-                                          '/opt/simpleasamlphp/cert/idem_signer.crt',
-                                       ),
-                                       'template' => array(
-                                          'tags'  => array('idem'),
-                                          'authproc' => array(
-                                             51 => array('class' => 'core:AttributeMap', 'oid2name'),
-                                          ),
-                                       ),
-
-                                       /*
-                                        * The sets of entities to load, any combination of:
-                                        *  - 'saml20-idp-remote'
-                                        *  - 'saml20-sp-remote'
-                                        *  - 'shib13-idp-remote'
-                                        *  - 'shib13-sp-remote'
-                                        *  - 'attributeauthority-remote'
-                                        *
-                                        * All of them will be used by default.
-                                        *
-                                        * This option takes precedence over the same option per metadata set.
-                                        */
-                                      //'types' => array(),
+                                 #'conditionalGET' => TRUE,
+                                 'src' => 'http://www.garr.it/idem-metadata/idem-test-metadata-sha256.xml',
+                                 'certificates' => array(
+                                    '/opt/simpleasamlphp/cert/idem_signer.crt',
+                                 ),
+                                 'template' => array(
+                                    'tags'  => array('idem'),
+                                    'authproc' => array(
+                                       51 => array('class' => 'core:AttributeMap', 'oid2name'),
                                     ),
                                  ),
+
+                                 /*
+                                  * The sets of entities to load, any combination of:
+                                  *  - 'saml20-idp-remote'
+                                  *  - 'saml20-sp-remote'
+                                  *  - 'shib13-idp-remote'
+                                  *  - 'shib13-sp-remote'
+                                  *  - 'attributeauthority-remote'
+                                  *
+                                  * All of them will be used by default.
+                                  *
+                                  * This option takes precedence over the same option per metadata set.
+                                  */
+                                //'types' => array(),
+                              ),
+                           ),
               'expireAfter'           => 60*60*24*5, // Maximum 5 days cache time
               'outputDir'     => 'metadata/idem-test-federation/',
 
@@ -406,7 +415,7 @@
 
    * Download the Federation signing certificate: 
    
-     ```wget https://www.idem.garr.it/documenti/doc_download/321-idem-metadata-signer-2019 -O /opt/simplesamlphp/cert/idem_signer.pem  ```
+     ```wget https://www.idem.garr.it/documenti/doc_download/321-idem-metadata-signer-2019 -O /opt/simplesamlphp/cert/idem_signer.crt```
 
    * Force download of Federation metadata by pressing on ```Metarefresh: fetch metadata``` or wait 1 day
 
@@ -420,7 +429,7 @@
 
 9. Choose and modify your authsources:
 
-   * ```vim ```
+   * ```vim /opt/simplesamlphp/config/authsources.php```
 
      ```bash
      <?php
@@ -495,7 +504,6 @@
                 'urn:oid:0.9.2342.19200300.100.1.3',
              ),
 
-
              'description' => array(
                 'en' => 'Service Description',
                 'it' => 'Descrizione del Servizio offerto',
@@ -565,7 +573,7 @@
    (change ```sp.example.org``` to you SP full qualified domain name)
 
 12. Register you SP on IDEM Entity Registry (your entity have to be approved by an IDEM Federation Operator before become part of IDEM Test Federation):
-   * Go to ```https://registry.idem.garr.it/``` and follow "Insert a New Service Provider into the IDEM Test Federation"
+   * Go to ```https://registry.idem.garr.it/``` and follow "**Insert a New Service Provider into the IDEM Test Federation**"
 
 
 ### Configure an example federated resouce "secure"
