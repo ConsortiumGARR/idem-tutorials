@@ -29,7 +29,7 @@
  * ca-certificates
  * ntp
  * vim
- * libapache2-mod-php, php, php7.0-mcrypt, apache2 (>= 2.4)
+ * libapache2-mod-php, php, php7.0-mcrypt, php-dom, php-curl, apache2 (>= 2.4)
  * openssl
  * cron
  * curl
