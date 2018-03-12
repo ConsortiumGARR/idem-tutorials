@@ -44,7 +44,7 @@
  * Place the SSL Credentials into the right place:
    1. SSL Certificate: "```/etc/ssl/certs/ssl-sp.crt```"
    2. SSL Key: "```/etc/ssl/private/ssl-sp.key```"
-   3. SSL CA: "```/usr/share/local/ca-certificates/ssl-ca.crt```"
+   3. SSL CA: "```/usr/local/share/ca-certificates/ssl-ca.crt```"
    4. Run the command: "```update-ca-certificates```"
 
 ## Installation Instructions
