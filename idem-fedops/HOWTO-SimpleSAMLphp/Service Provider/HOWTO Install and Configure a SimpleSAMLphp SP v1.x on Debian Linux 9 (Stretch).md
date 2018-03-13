@@ -37,10 +37,10 @@
 ## Other Requirements
 
  * Place the SSL Credentials into the right place:
-   1. SSL Certificate: "```/etc/ssl/certs/ssl-sp.crt```"
-   2. SSL Key: "```/etc/ssl/private/ssl-sp.key```"
-   3. SSL CA: "```/usr/share/local/ca-certificates/ssl-ca.crt```"
-   4. Run the command: "```update-ca-certificates```"
+   * SSL Certificate: "```/etc/ssl/certs/ssl-sp.crt```"
+   * SSL Key: "```/etc/ssl/private/ssl-sp.key```"
+   * SSL CA: "```/usr/share/local/ca-certificates/ssl-ca.crt```"
+   * Run the command: "```update-ca-certificates```"
 
 ## Installation Instructions
 
@@ -181,7 +181,7 @@
      </Location>
      ```
 
-3. Enable the simplsaml Apache2 configuration:
+3. Enable the simplesaml Apache2 configuration:
 
    * ```a2ensite simplesaml.conf```
 
@@ -397,7 +397,7 @@
      ),
      ```
 
-   * ```Remove/Rename the following files: ```
+   * Remove/Rename the following files:
 
      ```
      adfs-idp-hosted.php
