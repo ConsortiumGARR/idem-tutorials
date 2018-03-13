@@ -614,11 +614,6 @@
      </html>
      ```
 
-2. Install needed packages:
-   * ```apt istall libapache2-mod-php```
-
-   * ```systemctl restart apache2.service```
-
 ### Authors
 
 #### Original Author
