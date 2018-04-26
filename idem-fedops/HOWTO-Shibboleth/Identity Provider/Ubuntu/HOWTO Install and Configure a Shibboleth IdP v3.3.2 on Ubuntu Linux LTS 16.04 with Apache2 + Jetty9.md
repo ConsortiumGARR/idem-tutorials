@@ -37,7 +37,7 @@
  * ntp
  * vim
  * default-jdk (openjdk 1.8.0)
- * jetty 9.3.x
+ * jetty 9.4.x
  * apache2 (>= 2.4)
  * expat
  * openssl
@@ -130,10 +130,10 @@
 2. Download and Extract Jetty:
    * ```cd /usr/local/src```
    * ```wget http://central.maven.org/maven2/org/eclipse/jetty/jetty-distribution/9.4.9.v20180320/jetty-distribution-9.4.9.v20180320.tar.gz```
-   * ```tar xzvf jetty-distribution-9.3.11.v20160721.tar.gz```
+   * ```tar xzvf jetty-distribution-9.4.9.v20180320.tar.gz```
 
 3. Create an useful-for-updates `jetty-src` folder:
-   * ```ln -s jetty-distribution-9.3.11.v20160721 jetty-src```
+   * ```ln -s jetty-distribution-9.4.9.v20180320 jetty-src```
 
 4. Create the user `jetty` that can run the web server:
    * ```useradd -r -m jetty```
