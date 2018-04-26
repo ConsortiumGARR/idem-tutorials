@@ -1,4 +1,4 @@
-# HOWTO Install and Configure a Shibboleth IdP v3.2.1 on Ubuntu Linux LTS 16.04 with Apache2 + Jetty9 
+# HOWTO Install and Configure a Shibboleth IdP v3.3.2 on Ubuntu Linux LTS 16.04 with Apache2 + Jetty9 
 
 <img width="120px" src="https://wiki.idem.garrservices.it/IDEM_Approved.png" />
 
@@ -11,11 +11,11 @@
    1. [Install software requirements](#install-software-requirements)
    2. [Configure the environment](#configure-the-environment)
    3. [Install Jetty 9 Web Server](#install-jetty-9-web-server)
-   4. [Install Shibboleth Identity Provider 3.2.1](#install-shibboleth-identity-provider-v321)
+   4. [Install Shibboleth Identity Provider 3.3.2](#install-shibboleth-identity-provider-v321)
 5. [Configuration Instructions](#configuration-instructions)
    1. [Configure SSL on Apache2 (Jetty front-end)](#configure-ssl-on-apache2-jetty-front-end)
    2. [Configure Jetty](#configure-jetty)
-   3. [Configure Shibboleth Identity Provider v3.2.1 to release the persistent-id (Stored Mode)](#configure-shibboleth-identity-provider-v321-to-release-the-persistent-id-stored-mode)
+   3. [Configure Shibboleth Identity Provider v3.3.2 to release the persistent-id (Stored Mode)](#configure-shibboleth-identity-provider-v321-to-release-the-persistent-id-stored-mode)
    4. [Configure Attribute Filters to release the mandatory attributes to the IDEM Default  Resources](#configure-attribute-filters-to-release-the-mandatory-attributes-to-the-idem-default-resources)
    5. [Configure Attribute Filters to release the mandatory attributes to the IDEM Production Resources](#configure-attribute-filters-to-release-the-mandatory-attributes-to-the-idem-production-resources)
    6. [Configure Attribute Filters for Research and Scholarship and Data Protection Code of Conduct Entity Category](#configure-attribute-filters-for-research-and-scholarship-and-data-protection-code-of-conduct-entity-category)
@@ -46,10 +46,14 @@
  * libmysql-java
  * libcommons-dbcp-java
  * libcommons-pool-java
+ * libjstl1.1-java
 
 ## Other Requirements
 
- * Place the HTTPS Server Certificate and the HTTPS Server Key inside ```/tmp``` directory
+ * Put HTTPS credentials in the right place:
+   * HTTPS Server Certificate (Public Key) inside ```/etc/ssl/certs``` 
+   * HTTPS Server Key (Private Key) inside ```/etc/ssl/private```
+   * HTTPS Certification Authority Certificate is already provided by Ubuntu packages
 
 ## Installation Instructions
 
@@ -62,13 +66,13 @@
    * ```nano /etc/apt/sources.list```
    * CTRL+W (search)
    * CTRL+R (replace)
-   * Text to search: '```it.archive.ubuntu.com```'
+   * Text to search: '```archive.ubuntu.com```'
    * Text to replace: '```mi.mirror.garr.it```'
    * CTRL+X (save and exit)
    * ```apt-get update && apt-get upgrade```
   
 3. Install the packages required: 
-   * ```apt-get install vim default-jdk ca-certificates openssl apache2 ntp expat```
+   * ```apt-get install vim default-jdk ca-certificates openssl apache2 ntp expat --no-install-recommends```
 
 4. Check that Java is working:
    * ```update-alternatives --config java```
@@ -89,35 +93,28 @@
    * ```vim /etc/environment```
 
      ```bash
-     JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/jre
-     IDP_SRC=/usr/local/src/shibboleth-identity-provider-3.2.1
+     JAVA_HOME=/usr/lib/jvm/default-java/jre
+     IDP_SRC=/usr/local/src/shibboleth-identity-provider-3.3.2
      ```
    * ```source /etc/environment```
-   * ```export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/jre```
-   * ```export IDP_SRC=/usr/local/src/shibboleth-identity-provider-3.2.1```
+   * ```export JAVA_HOME=/usr/lib/jvm/default-java/jre```
+   * ```export IDP_SRC=/usr/local/src/shibboleth-identity-provider-3.3.2```
   
 4. Move the Certificate and the Key file for HTTPS server from ```/tmp/``` to ```/root/certificates```:
-   * ```mkdir /root/certificates```
-   * ```mv /tmp/idp-cert-server.crt /root/certificates```
-   * ```mv /tmp/idp-key-server.key /root/certificates```
-   * ```mv /tmp/DigiCertCA.crt /root/certificates```
-   * ```chmod 400 /root/certificates/idp-key-server.key```
-   * ```chmod 644 /root/certificates/idp-cert-server.crt```
-   * ```chmod 644 /root/certificates/DigiCertCA.crt```
+   * ```chmod 400 /etc/ssl/private/idp-key-server.key```
+   * ```chmod 644 /etc/ssl/certs/idp-cert-server.crt```
 
    (OPTIONAL) Create a Certificate and a Key self-signed for HTTPS if you don't have the official ones provided by DigiCert:
-   * ```openssl req -x509 -newkey rsa:4096 -keyout /root/certificates/idp-key-server.key -out /root/certificates/idp-cert-server.crt -nodes -days 1095```
+   * ```openssl req -x509 -newkey rsa:4096 -keyout /etc/ssl/private/idp-key-server.key -out /etc/ssl/certs/idp-cert-server.crt -nodes -days 1095```
 
 5. Configure **/etc/default/jetty**:
-   * ```update-alternatives --config java``` (copy the path without /bin/java)
-   * ```update-alternatives --config javac```
    * ```vim /etc/default/jetty```
   
      ```bash
      JETTY_HOME=/usr/local/src/jetty-src
      JETTY_BASE=/opt/jetty
      JETTY_USER=jetty
-     JETTY_LOGS=/var/log/jetty
+     JETTY_START_LOG=/var/log/jetty/start.log
      TMPDIR=/opt/jetty/tmp
      JAVA_OPTIONS="-Djava.awt.headless=true -XX:+DisableExplicitGC -XX:+UseParallelOldGC -Xms256m -Xmx2g -Djava.security.egd=file:/dev/./urandom -Didp.home=/opt/shibboleth-idp"
      ```
@@ -133,7 +130,7 @@
 
 2. Download and Extract Jetty:
    * ```cd /usr/local/src```
-   * ```wget http://repo1.maven.org/maven2/org/eclipse/jetty/jetty-distribution/9.3.11.v20160721/jetty-distribution-9.3.11.v20160721.tar.gz```
+   * ```wget http://central.maven.org/maven2/org/eclipse/jetty/jetty-distribution/9.4.9.v20180320/jetty-distribution-9.4.9.v20180320.tar.gz```
    * ```tar xzvf jetty-distribution-9.3.11.v20160721.tar.gz```
 
 3. Create an useful-for-updates `jetty-src` folder:
@@ -175,12 +172,59 @@
      --module=ext
 
      # ---------------------------------------
+     # Module: server
+     --module=server
+
+     ### ThreadPool configuration
+     ## Minimum number of threads
+     jetty.threadPool.minThreads=10
+
+     ## Maximum number of threads
+     jetty.threadPool.maxThreads=200
+
+     ## Thread idle timeout (in milliseconds)
+     jetty.threadPool.idleTimeout=60000
+
+     ## Response content buffer size (in bytes)
+     jetty.httpConfig.outputBufferSize=32768
+
+     ## Max request headers size (in bytes)
+     jetty.httpConfig.requestHeaderSize=8192
+
+     ## Max response headers size (in bytes)
+     jetty.httpConfig.responseHeaderSize=8192
+
+     ## Whether to send the Server: header
+     jetty.httpConfig.sendServerVersion=true
+
+     ## Whether to send the Date: header
+     jetty.httpConfig.sendDateHeader=false
+
+     ## Dump the state of the Jetty server, components, and webapps after startup
+     	jetty.server.dumpAfterStart=false
+
+     ## Dump the state of the Jetty server, components, and webapps before shutdown
+     jetty.server.dumpBeforeStop=false
+
+     # ---------------------------------------
+     # Module: jsp
+     --module=jsp
+
+     # ---------------------------------------
      # Module: resources
      --module=resources
 
      # ---------------------------------------
-     # Module: server
-     --module=server
+     # Module: deploy
+     --module=deploy
+
+     # ---------------------------------------
+     # Module: jstl
+     --module=jstl
+
+     # ---------------------------------------
+     # Module: websocket
+     --module=websocket
 
      # ---------------------------------------
      # Module: http
@@ -197,32 +241,14 @@
      ## Connector idle timeout in milliseconds
      jetty.http.idleTimeout=30000
 
-     ## Connector socket linger time in seconds (-1 to disable)
-     jetty.http.soLingerTime=-1
-
-     # ---------------------------------------
-     # Module: deploy
-     --module=deploy
-
-     # ---------------------------------------
-     # Module: jsp
-     --module=jsp
-
-     # ---------------------------------------
-     # Module: websocket
-     --module=websocket
-
-     # ---------------------------------------
-     # Module: jstl
-     --module=jstl
-
      # ---------------------------------------
      # Module: annotations
      --module=annotations
 
-     # ---------------------------------------
-     # Module: logging
-     --module=logging
+     # Module: console-capture
+     --module=console-capture
+
+     jetty.console-capture.dir=/var/log/jetty
 
      # ---------------------------------------
      # Module: requestlog
@@ -250,9 +276,10 @@
    * ```ln -s /usr/local/src/jetty-src/bin/jetty.sh jetty```
    * ```update-rc.d jetty defaults```
 
-8. Create the JETTY_LOG folder:
+8. Create the Jetty Log's folder:
    * ```mkdir /var/log/jetty```
-   * ```chown jetty:jetty /var/log/jetty```
+   * ```mkdir /opt/jetty/logs```
+   * ```chown jetty:jetty /var/log/jetty /opt/jetty/logs```
 
 9. Check if all settings are OK:
    * ```service jetty check```
@@ -262,23 +289,33 @@
      * ```rm /var/run/jetty.pid```
      * ```service jetty start```
 
-### Install Shibboleth Identity Provider v3.2.1
+### Install Shibboleth Identity Provider v3.3.2
 
-1. Become ROOT: 
+1. Become ROOT:
    * ```sudo su -```
 
-2. Download the Shibboleth Identity Provider v3.2.1:
+2. Install needed libraries for Shibboleth:
+   * ```apt-get install libmysql-java libcommons-dbcp-java libcommons-pool-java libjstl1.1-java --no-install-recommends```
+
+2. Download the Shibboleth Identity Provider v3.3.2:
    * ```cd /usr/local/src```
-   * ```wget http://shibboleth.net/downloads/identity-provider/3.2.1/shibboleth-identity-provider-3.2.1.tar.gz```
-   * ```tar -xzvf shibboleth-identity-provider-3.2.1.tar.gz```
-   * ```cd shibboleth-identity-provider-3.2.1```
+   * ```wget http://shibboleth.net/downloads/identity-provider/3.3.2/shibboleth-identity-provider-3.3.2.tar.gz```
+   * ```tar -xzvf shibboleth-identity-provider-3.3.2.tar.gz```
+   * ```cd shibboleth-identity-provider-3.3.2```
+
+3. Link the needed libraries:
+   * ```cd shibboleth-identity-provider-3.3.2```
+   * ```ln -s /usr/share/java/mysql-connector-java.jar webapp/WEB-INF/lib```
+   * ```ln -s /usr/share/java/commons-dbcp.jar webapp/WEB-INF/lib```
+   * ```ln -s /usr/share/java/commons-pool.jar webapp/WEB-INF/lib```
+   * ```ln -s /usr/share/java/jstl1.1.jar webapp/WEB-INF/lib```
 
 3. Run the installer ```install.sh```:
    * ```./bin/install.sh```
   
    ```bash
-   root@idp:/usr/local/src/shibboleth-identity-provider-3.2.1# ./bin/install.sh
-   Source (Distribution) Directory: [/usr/local/src/shibboleth-identity-provider-3.2.1]
+   root@idp:/usr/local/src/shibboleth-identity-provider-3.3.2# ./bin/install.sh
+   Source (Distribution) Directory: [/usr/local/src/shibboleth-identity-provider-3.3.2]
    Installation Directory: [/opt/shibboleth-idp]
    Hostname: [localhost.localdomain]
    idp.example.org
@@ -293,13 +330,8 @@
   
    From this point the variable **idp.home** refers to the directory: ```/opt/shibboleth-idp```
 
-4. Import the JST libraries to visualize the IdP ```status``` page:
-   * ```cd /opt/shibboleth-idp/edit-webapp/WEB-INF/lib```
-   * ```wget https://build.shibboleth.net/nexus/service/local/repositories/thirdparty/content/javax/servlet/jstl/1.2/jstl-1.2.jar```
-   * ```cd /opt/shibboleth-idp/bin ; ./build.sh -Didp.target.dir=/opt/shibboleth-idp```
-
 5. Change the owner to enable **jetty** user to access on the following directories:
-   * ```cd ..```
+   * ```cd /opt/shibboleth-idp```
    * ```chown -R jetty logs/ metadata/ credentials/ conf/ system/ war/```
 
 ## Configuration Instructions
@@ -336,7 +368,6 @@
         ...
         SSLCertificateFile /root/certificates/idp-cert-server.crt
         SSLCertificateKeyFile /root/certificates/idp-key-server.key
-        SSLCertificateChainFile /root/certificates/DigiCertCA.pem
         ...
       </VirtualHost>
    </IfModule>
@@ -347,31 +378,13 @@
    * ```a2ensite default-ssl.conf```
    * ```service apache2 restart```
 
-3. Configure Apache2 to open port **80** only for localhost:
-   * ```vim /etc/apache2/ports.conf```
-
-     ```apache
-     # If you just change the port or add more ports here, you will likely also
-     # have to change the VirtualHost statement in
-     # /etc/apache2/sites-enabled/000-default.conf
-
-     Listen 127.0.0.1:80
- 
-     <IfModule ssl_module>
-       Listen 443
-     </IfModule>
-    
-     <IfModule mod_gnutls.c>
-       Listen 443
-     </IfModule>
-     ```
 5. Configure Apache2 to redirect all on HTTPS:
    * ```vim /etc/apache2/sites-enabled/000-default.conf```
    
    ```apache
    <VirtualHost *:80>
         ServerName "idp.example.org"
-        Redirect "/" "https://idp.example.org/"
+        Redirect permanent "/" "https://idp.example.org/"
    </VirtualHost>
    ```
   
@@ -401,9 +414,10 @@
 
 3. Enable the new site:
    * ```cd /etc/apache2/sites-available/ ; a2ensite idp.conf```
-   * ```service apache2 restart```
+   * ```service apache2 reload```
 
 4. Configure IdP Context Descriptor
+   * ```mkdir /opt/jetty/webapps```
    * ```vim /opt/jetty/webapps/idp.xml```
 
      ```bash
@@ -415,10 +429,11 @@
        <Set name="copyWebInf">true</Set>
      </Configure>
      ```
+
 5. Restart Jetty:
    * ```service jetty restart```
 
-### Configure Shibboleth Identity Provider v3.2.1 to release the persistent-id (Stored mode)
+### Configure Shibboleth Identity Provider v3.3.2 to release the persistent-id (Stored mode)
 
 1. Become ROOT of the machine: 
    * ```sudo su -```
@@ -427,22 +442,14 @@
    * ```cd /opt/shibboleth-idp/bin```
    * ```./status.sh``` (You should see some informations about the IdP installed)
 
-3. Install **MySQL Connector Java** and other useful libraries used by Jetty for MySQL DB (if you don't have them already):
-   * ```apt-get install mysql-server libmysql-java libcommons-dbcp-java libcommons-pool-java```
-   * ```cd /opt/jetty/lib/ext```
-   * ```ln -s /usr/share/java/mysql.jar mysql-connector-java.jar```
-   * ```ln -s /usr/share/java/commons-pool.jar commons-pool.jar```
-   * ```ln -s /usr/share/java/commons-dbcp.jar commons-dbcp.jar```
-
-4. Rebuild the **idp.war** of Shibboleth with the new libraries:
-   * ```export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/jre```
-   * ```cd /opt/shibboleth-idp/bin ; ./build.sh -Didp.target.dir=/opt/shibboleth-idp```
+3. Install **MySQL Database Server**:
+   * ```apt-get install mysql-server --no-install-recommends```
 
 5. Create and prepare the "**shibboleth**" MySQL DB to host the values of the several **persistent-id** and **StorageRecords** MySQL DB to host other useful information about user consent:
    * Modify the [shibboleth-db.sql](../utils/shibboleth-db.sql) by changing the *username* and *password* of the user that has write access to the "**shibboleth**" DB.
 
    * Import the SQL modified to your MySQL Server:
-    ```mysql -u root -p##PASSWORD-DB## < shibboleth-db.sql```
+    ```mysql -u root -p < shibboleth-db.sql```
 
    * Restart mysql service:
     ```service mysql restart```
@@ -573,14 +580,14 @@
        (If you decide to use the Solution 3, you have to remove (or comment out) the following code from your Attribute Resolver file:
       
        ```xml
-       </dc:FilterTemplate>
+       </FilterTemplate>
        <!--
-       <dc:StartTLSTrustCredential id="LDAPtoIdPCredential" xsi:type="sec:X509ResourceBacked">
+       <StartTLSTrustCredential id="LDAPtoIdPCredential" xsi:type="sec:X509ResourceBacked">
          <sec:Certificate>%
            {idp.attribute.resolver.LDAP.trustCertificates}</sec:Certificate>
-         </dc:StartTLSTrustCredential>
+         </StartTLSTrustCredential>
        -->
-       </resolver:DataConnector>
+       </DataConnector>
        ```
 
        **UTILITY FOR OPENLDAP ADMINISTRATOR:**
@@ -600,9 +607,9 @@
      <logger name="org.ldaptive.auth.Authenticator" level="INFO" />
      ```
 
-10. Define which attributes your IdP can manage into your Attribute Resolver file. Here you can find the **attribute-resolver-v3-idem.xml** provided by IDEM GARR AAI as example:
+10. Define which attributes your IdP can manage into your Attribute Resolver file. Here you can find the **attribute-resolver-v3_3-idem.xml** provided by IDEM GARR AAI as example:
     * Download the attribute resolver provided by IDEM GARR AAI:
-      ```wget http://www.garr.it/idem-conf/attribute-resolver-v3-idem.xml -O /opt/shibboleth-idp/conf/attribute-resolver-v3-idem.xml```
+      ```wget http://www.garr.it/idem-conf/attribute-resolver-v3_3-idem.xml -O /opt/shibboleth-idp/conf/attribute-resolver-v3_3-idem.xml```
 
     * Modify ```services.xml``` file:
       ```vim /opt/shibboleth-idp/conf/services.xml```
@@ -614,7 +621,8 @@
       must become:
  
       ```xml
-      <value>%{idp.home}/conf/attribute-resolver-v3-idem.xml</value>
+      <value>%{idp.home}/conf/attribute-resolver.xml</value>
+      <value>%{idp.home}/conf/attribute-resolver-v3_3-idem.xml</value>
       ```
 
   * Configure the LDAP Data Connector to be compliant to the values put in ```ldap.properties```. (See above suggestions)
@@ -898,14 +906,6 @@
    * **Consent Log:** ```vim idp-consent-audit.log```
    * **Warn Log:** ```vim idp-warn.log```
    * **Process Log:** ```vim idp-process.log```
-
-### Appendix D: Issues
-
-  1. The ```<ResultCache>```, an LDAP Data Connector child element, in IdP versions before 3.3.0 has a serious security issue, as described in [security advisory 20161027](http://shibboleth.net/community/advisories/secadv_20161027.txt). 
-  
-  **If you are using a vulnerable version of the IdP then you should not use this element in new deployments, and you should remove it from existing deployments.**
-
-  The <ResultCache> element can be used safely starting with IdP version 3.3.0.
 
 ### Authors
 
