@@ -22,8 +22,7 @@
 6. [Appendix A: Import metadata from previous IDP v2.x](#appendix-a-import-metadata-from-previous-idp-v2x)
 7. [Appendix B: Import persistent-id from a previous database](#appendix-b-import-persistent-id-from-a-previous-database)
 8. [Appendix C: Useful logs to find problems](#appendix-c-useful-logs-to-find-problems)
-9. [Appendix D: Issues](#appendix-d-issues)
-10. [Authors](#authors)
+9. [Authors](#authors)
 
 
 ## Requirements Hardware
@@ -297,20 +296,20 @@
 2. Install needed libraries for Shibboleth:
    * ```apt-get install libmysql-java libcommons-dbcp-java libcommons-pool-java libjstl1.1-java --no-install-recommends```
 
-2. Download the Shibboleth Identity Provider v3.3.2:
+3. Download the Shibboleth Identity Provider v3.3.2:
    * ```cd /usr/local/src```
    * ```wget http://shibboleth.net/downloads/identity-provider/3.3.2/shibboleth-identity-provider-3.3.2.tar.gz```
    * ```tar -xzvf shibboleth-identity-provider-3.3.2.tar.gz```
    * ```cd shibboleth-identity-provider-3.3.2```
 
-3. Link the needed libraries:
+4. Link the needed libraries:
    * ```cd shibboleth-identity-provider-3.3.2```
    * ```ln -s /usr/share/java/mysql-connector-java.jar webapp/WEB-INF/lib```
    * ```ln -s /usr/share/java/commons-dbcp.jar webapp/WEB-INF/lib```
    * ```ln -s /usr/share/java/commons-pool.jar webapp/WEB-INF/lib```
    * ```ln -s /usr/share/java/jstl1.1.jar webapp/WEB-INF/lib```
 
-3. Run the installer ```install.sh```:
+5. Run the installer ```install.sh```:
    * ```./bin/install.sh```
   
    ```bash
@@ -330,7 +329,7 @@
   
    From this point the variable **idp.home** refers to the directory: ```/opt/shibboleth-idp```
 
-5. Change the owner to enable **jetty** user to access on the following directories:
+6. Change the owner to enable **jetty** user to access on the following directories:
    * ```cd /opt/shibboleth-idp```
    * ```chown -R jetty logs/ metadata/ credentials/ conf/ system/ war/```
 
@@ -378,7 +377,7 @@
    * ```a2ensite default-ssl.conf```
    * ```service apache2 restart```
 
-5. Configure Apache2 to redirect all on HTTPS:
+3. Configure Apache2 to redirect all on HTTPS:
    * ```vim /etc/apache2/sites-enabled/000-default.conf```
    
    ```apache
@@ -388,7 +387,7 @@
    </VirtualHost>
    ```
   
-6. Verify the strength of your IdP's machine on:
+4. Verify the strength of your IdP's machine on:
    * [**https://www.ssllabs.com/ssltest/analyze.html**](https://www.ssllabs.com/ssltest/analyze.html)
 
 ### Configure Jetty
@@ -445,7 +444,7 @@
 3. Install **MySQL Database Server**:
    * ```apt-get install mysql-server --no-install-recommends```
 
-5. Create and prepare the "**shibboleth**" MySQL DB to host the values of the several **persistent-id** and **StorageRecords** MySQL DB to host other useful information about user consent:
+4. Create and prepare the "**shibboleth**" MySQL DB to host the values of the several **persistent-id** and **StorageRecords** MySQL DB to host other useful information about user consent:
    * Modify the [shibboleth-db.sql](../utils/shibboleth-db.sql) by changing the *username* and *password* of the user that has write access to the "**shibboleth**" DB.
 
    * Import the SQL modified to your MySQL Server:
@@ -454,7 +453,7 @@
    * Restart mysql service:
     ```service mysql restart```
 
-6. Enable the generation of the ```persistent-id``` (this replace the deprecated attribute *eduPersonTargetedID*)
+5. Enable the generation of the ```persistent-id``` (this replace the deprecated attribute *eduPersonTargetedID*)
    * ```vim /opt/shibboleth-idp/conf/saml-nameid.properties```
      (the *sourceAttribute* MUST BE an attribute, or a list of comma-separated attributes, that uniquely identify the subject of the generated ```persistent-id```. It MUST BE: **Stable**, **Permanent** and **Not-reassignable**)
 
@@ -481,7 +480,7 @@
      * ```vim /opt/shibboleth-idp/conf/c14n/subject-c14n.xml```
        * Remove the comment to the bean called "**c14n/SAML2Persistent**".
 
-7. Enable **JPAStorageService** for the **StorageService** of the user consent:
+6. Enable **JPAStorageService** for the **StorageService** of the user consent:
    * ```vim /opt/shibboleth-idp/conf/global.xml``` and add this piece of code to the tail (before **`</beans>`** tag):
 
      ```xml
@@ -530,7 +529,7 @@
   
        (This will indicate to IdP to store the data collected by User Consent into the "**StorageRecords**" table)
 
-8. Connect the openLDAP to the IdP to allow the authentication of the users:
+7. Connect the openLDAP to the IdP to allow the authentication of the users:
    * ```vim /opt/shibboleth-idp/conf/ldap.properties```
 
      (with **TLS** solutions we consider to have the LDAP certificate into ```/opt/shibboleth-idp/credentials```).
@@ -596,7 +595,7 @@
            * the bindDN ==> ```cn=admin,dc=example,dc=org``` (distinguished name for the user that can made queries on the LDAP)
 
 
-9. Enrich IDP logs with the authentication error occurred on LDAP:
+8. Enrich IDP logs with the authentication error occurred on LDAP:
    * ```vim /opt/shibboleth-idp/conf/logback.xml```
 
      ```xml
@@ -607,7 +606,7 @@
      <logger name="org.ldaptive.auth.Authenticator" level="INFO" />
      ```
 
-10. Define which attributes your IdP can manage into your Attribute Resolver file. Here you can find the **attribute-resolver-v3_3-idem.xml** provided by IDEM GARR AAI as example:
+9. Define which attributes your IdP can manage into your Attribute Resolver file. Here you can find the **attribute-resolver-v3_3-idem.xml** provided by IDEM GARR AAI as example:
     * Download the attribute resolver provided by IDEM GARR AAI:
       ```wget http://www.garr.it/idem-conf/attribute-resolver-v3_3-idem.xml -O /opt/shibboleth-idp/conf/attribute-resolver-v3_3-idem.xml```
 
@@ -627,7 +626,7 @@
 
   * Configure the LDAP Data Connector to be compliant to the values put in ```ldap.properties```. (See above suggestions)
 
-11. Translate the IdP messages in your language:
+10. Translate the IdP messages in your language:
     * Get the files translated in your language from [Shibboleth page](https://wiki.shibboleth.net/confluence/display/IDP30/MessagesTranslation) for:
       * **login page** (authn-messages_it.properties)
       * **user consent/terms of use page** (consent-messages_it.properties)
@@ -636,7 +635,7 @@
     * Restart Jetty: 
       ```service jetty restart```
 
-12. Enable the SAML2 support by changing the ```idp-metadata.xml``` and disabling the SAML v1.x deprecated support:
+11. Enable the SAML2 support by changing the ```idp-metadata.xml``` and disabling the SAML v1.x deprecated support:
     * ```vim /opt/shibboleth-idp/metadata/idp-metadata.xml```
       ```bash
       <IDPSSODescriptor> SECTION:
@@ -675,13 +674,13 @@
         - Remove all ":8443" from the existing URL (such port is not used anymore)
       ```
 
-13. Obtain your IdP metadata here:
+12. Obtain your IdP metadata here:
     *  ```https://idp.example.org/idp/shibboleth```
 
-14. Register you IdP on IDEM Entity Registry (your entity have to be approved by an IDEM Federation Operator before become part of IDEM Test Federation):
+13. Register you IdP on IDEM Entity Registry (your entity have to be approved by an IDEM Federation Operator before become part of IDEM Test Federation):
     * ```https://registry.idem.garr.it/```
 
-15. Configure the IdP to retrieve the Federation Metadata:
+14. Configure the IdP to retrieve the Federation Metadata:
     * ```cd /opt/shibboleth-idp/conf```
     * ```vim metadata-providers.xml```
 
@@ -722,11 +721,11 @@
 
          (md5: AA:A7:CD:41:2D:3E:B7:F6:02:8A:D3:62:CD:21:F7:DE)
   
-18. Reload service with id ```shibboleth.MetadataResolverService``` to retrieve the Federation Metadata:
+15. Reload service with id ```shibboleth.MetadataResolverService``` to retrieve the Federation Metadata:
     *  ```cd /opt/shibboleth-idp/bin```
     *  ```./reload-service.sh -id shibboleth.MetadataResolverService```
 
-19. The day after the IDEM Federation Operators approval your entity on IDEM Entity Registry, check if you can login with your IdP on the following services:
+16. The day after the IDEM Federation Operators approval your entity on IDEM Entity Registry, check if you can login with your IdP on the following services:
     * https://sp-test.garr.it/secure   (Service Provider provided for testing the IDEM Test Federation)
     * https://sp24-test.garr.it/secure (Service Provider provided for testing the IDEM Test Federation and IDEM Production Federation)
 
