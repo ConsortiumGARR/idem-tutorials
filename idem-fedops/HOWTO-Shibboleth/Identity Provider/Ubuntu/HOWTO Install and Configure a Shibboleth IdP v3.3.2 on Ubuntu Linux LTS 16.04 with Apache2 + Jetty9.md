@@ -45,7 +45,6 @@
  * libmysql-java
  * libcommons-dbcp-java
  * libcommons-pool-java
- * libjstl1.1-java
 
 ## Other Requirements
 
@@ -294,7 +293,7 @@
    * ```sudo su -```
 
 2. Install needed libraries for Shibboleth:
-   * ```apt-get install libmysql-java libcommons-dbcp-java libcommons-pool-java libjstl1.1-java --no-install-recommends```
+   * ```apt-get install libmysql-java libcommons-dbcp-java libcommons-pool-java --no-install-recommends```
 
 3. Download the Shibboleth Identity Provider v3.3.2:
    * ```cd /usr/local/src```
@@ -309,7 +308,11 @@
    * ```ln -s /usr/share/java/commons-pool.jar webapp/WEB-INF/lib```
    * ```ln -s /usr/share/java/jstl1.1.jar webapp/WEB-INF/lib```
 
-5. Run the installer ```install.sh```:
+5. Import the JST libraries to visualize the IdP ```status``` page:
+   * ```cd /opt/shibboleth-idp/edit-webapp/WEB-INF/lib```
+   * ```wget https://build.shibboleth.net/nexus/service/local/repositories/thirdparty/content/javax/servlet/jstl/1.2/jstl-1.2.jar```
+
+6. Run the installer ```install.sh```:
    * ```./bin/install.sh```
   
    ```bash
@@ -329,7 +332,7 @@
   
    From this point the variable **idp.home** refers to the directory: ```/opt/shibboleth-idp```
 
-6. Change the owner to enable **jetty** user to access on the following directories:
+7. Change the owner to enable **jetty** user to access on the following directories:
    * ```cd /opt/shibboleth-idp```
    * ```chown -R jetty logs/ metadata/ credentials/ conf/ system/ war/```
 
