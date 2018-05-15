@@ -331,7 +331,6 @@
    * ```ln -s ../../java/mysql-java-connector.jar mysql-connector-java.jar```
    * ```ln -s ../../java/commons-pool.jar commons-pool.jar```
    * ```ln -s ../../java/commons-dbcp.jar commons-dbcp.jar```
-   * ```ln -s ../../java/tomcat-jbcp.jar tomcat-jbcp.jar```
 
 4. Rebuild the **idp.war** of Shibboleth with the new libraries:
    * ```cd /opt/shibboleth-idp/ ; ./bin/build.sh```
