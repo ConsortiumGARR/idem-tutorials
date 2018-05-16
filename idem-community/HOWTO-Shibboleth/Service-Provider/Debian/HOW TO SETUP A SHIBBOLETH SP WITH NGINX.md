@@ -12,6 +12,7 @@
   2. [NGINX CONFIGURATION](#nginx-configuration)
   3. [PHP5-FPM CONFIGURATION](#php5-fpm-configuration)
   4. [SHIBBOLETH CONFIGURATION](#shibboleth-configuration)
+5. [AUTHORS](#authors)
 5. [CREDITS](#credits)
 
 
@@ -338,7 +339,11 @@ You can download metadata from https://sp.example.it/Shibboleth.sso/Metadata
 **BONUS:** test your SP on ssl labs: https://www.ssllabs.com/ssltest/
 
 
+### AUTHORS
 
+#### ORIGINAL AUTHORS
+
+ * Marco Cappellacci - Università degli Studi di Urbino Carlo Bo (marco.cappellacci@uniurb.it)
 
 ## CREDITS
 
