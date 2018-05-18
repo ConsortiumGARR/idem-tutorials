@@ -68,13 +68,13 @@
 
 2. Be sure that your firewall **doesn't block** the traffic on port **443** (or you can't access to your SP)
 
-3. Define the costant ```JAVA_HOME``` and ```IDP_SRC``` inside ```/etc/environment```:
+3. Define the costant ```APACHE_LOG```, ```SHIB_SP``` and ```SHIBD_LOG``` inside ```/etc/environment```:
    * ```vim /etc/environment```
 
      ```bash
      APACHE_LOG=/var/log/apache2
-     SHIB_SP=/opt/shibboleth-sp/etc/shibboleth
-     SHIBD-LOG=/opt/shibboleth-sp/var/log/shibboleth
+     SHIB_SP=/etc/shibboleth
+     SHIBD_LOG=/var/log/shibboleth
      ```
 
    * ```source /etc/environment```
@@ -126,8 +126,8 @@
         # Enable HTTP Strict Transport Security with a 2 year duration
         Header always set Strict-Transport-Security "max-age=63072000;includeSubDomains;preload"
         ...
-        SSLCertificateFile /root/certificates/ssl-sp.crt
-        SSLCertificateKeyFile /root/certificates/ssl-sp.key
+        SSLCertificateFile /etc/ssl/certs/ssl-sp.crt
+        SSLCertificateKeyFile /etc/ssl/private/ssl-sp.key
         SSLCertificateChainFile /root/certificates/ssl-ca.pem
         ...
       </VirtualHost>
@@ -311,7 +311,7 @@
      ```bash
      #! /bin/bash
      SERVICE=/etc/init.d/shibd
-     STOPPED_MESSAGE="shibd is not running"
+     STOPPED_MESSAGE="failed"
 
      if [[ "`$SERVICE status`" == *"$STOPPED_MESSAGE"* ]];
      then
