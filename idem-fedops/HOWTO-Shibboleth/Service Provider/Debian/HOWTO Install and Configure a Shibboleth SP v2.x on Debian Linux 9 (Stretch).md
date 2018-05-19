@@ -168,7 +168,7 @@
      </VirtualHost>
      ```
   
-6. Verify the strength of your IdP's machine on:
+6. Verify the strength of your SP's machine on:
    * [**https://www.ssllabs.com/ssltest/analyze.html**](https://www.ssllabs.com/ssltest/analyze.html)
 
 ### Configure Shibboleth SP (with IDEM WAYF)
@@ -325,7 +325,7 @@
    * ```systemctl daemon-reload```
 
 ### Enable Attribute Support on Shibboleth SP
-1. Enable attribute by remove comment from the related content into "```/opt/shibboleth-idp/etc/shibboleth/attribute-map.xml```"
+1. Enable attribute by remove comment from the related content into "```/opt/shibboleth-sp/etc/shibboleth/attribute-map.xml```"
 2. Disable First deprecated/incorrect version of ```persistent-id``` from ```attribute-map.xml```
 
 ### Authors
