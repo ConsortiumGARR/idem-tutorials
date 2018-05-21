@@ -87,17 +87,15 @@
 
 2. Be sure that your firewall **doesn't block** the traffic on port **443** (or you can't access to your IdP)
 
-3. Define the costant ```JAVA_HOME``` and ```IDP_SRC``` inside ```/etc/environment```:
+3. Define the costant ```JAVA_HOME``` inside ```/etc/environment```:
    * ```vim /etc/environment```
 
      ```bash
-     JAVA_HOME=/usr/lib/jvm/default-java/jre
-     IDP_SRC=/usr/local/src/shibboleth-identity-provider-3.3.2
-     ```
+     JAVA_HOME=/usr/lib/jvm/default-java/jre
+     ```
    * ```source /etc/environment```
    * ```export JAVA_HOME=/usr/lib/jvm/default-java/jre```
-   * ```export IDP_SRC=/usr/local/src/shibboleth-identity-provider-3.3.2```
-  
+
 4. Move the Certificate and the Key file for HTTPS server from ```/tmp/``` to ```/root/certificates```:
    * ```chmod 400 /etc/ssl/private/idp-key-server.key```
    * ```chmod 644 /etc/ssl/certs/idp-cert-server.crt```
@@ -299,17 +297,15 @@
    * ```cd /usr/local/src```
    * ```wget http://shibboleth.net/downloads/identity-provider/3.3.2/shibboleth-identity-provider-3.3.2.tar.gz```
    * ```tar -xzvf shibboleth-identity-provider-3.3.2.tar.gz```
-   * ```cd shibboleth-identity-provider-3.3.2```
 
 4. Link the needed libraries:
    * ```cd shibboleth-identity-provider-3.3.2```
    * ```ln -s /usr/share/java/mysql-connector-java.jar webapp/WEB-INF/lib```
    * ```ln -s /usr/share/java/commons-dbcp.jar webapp/WEB-INF/lib```
    * ```ln -s /usr/share/java/commons-pool.jar webapp/WEB-INF/lib```
-   * ```ln -s /usr/share/java/jstl1.1.jar webapp/WEB-INF/lib```
 
 5. Import the JST libraries to visualize the IdP ```status``` page:
-   * ```cd /opt/shibboleth-idp/edit-webapp/WEB-INF/lib```
+   * ```cd /usr/local/src/shibboleth-identity-provider-3.3.2/webapp/WEB-INF/lib```
    * ```wget https://build.shibboleth.net/nexus/service/local/repositories/thirdparty/content/javax/servlet/jstl/1.2/jstl-1.2.jar```
 
 6. Run the installer ```install.sh```:
