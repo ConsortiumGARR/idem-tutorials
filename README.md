@@ -40,6 +40,6 @@ These GitHub Repository will contain and maintain the step-by-step tutorials pro
 
 #### Shibboleth
 
-* [HOWTO Setup a Shibboleth SP with NGINX](https://github.com/ConsortiumGARR/idem-tutorials/blob/master/idem-community/HOWTO-Shibboleth/Service-Provider/Debian/HOW%20TO%20SETUP%20A%20SHIBBOLETH%20SP%20WITH%20NGINX.md) Marco Cappellacci Università degli studi di Urbino Carlo Bo
+* [HOWTO Setup a Shibboleth SP with NGINX](https://github.com/ConsortiumGARR/idem-tutorials/blob/master/idem-community/HOWTO-Shibboleth/Service-Provider/Debian/HOW%20TO%20SETUP%20A%20SHIBBOLETH%20SP%20WITH%20NGINX.md) di Marco Cappellacci (Università degli studi di Urbino Carlo Bo)
 
-* [HOWTO Relase properly eduPersonEntitlement](https://github.com/speedj/IdemDay18-Daniele/tree/master/eduPersonEntitlement#edupersonentitlement-valori-strettamente-necessari-agli-sp)
+* [HOWTO Relase properly eduPersonEntitlement](https://github.com/speedj/IdemDay18-Daniele/tree/master/eduPersonEntitlement#edupersonentitlement-valori-strettamente-necessari-agli-sp) di Daniele Albrizio (Università degli Studi di Trieste)
