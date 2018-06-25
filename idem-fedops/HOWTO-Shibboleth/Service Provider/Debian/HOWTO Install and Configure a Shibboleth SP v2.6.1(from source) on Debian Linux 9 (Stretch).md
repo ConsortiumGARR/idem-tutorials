@@ -73,7 +73,7 @@
 
 2. Be sure that your firewall **doesn't block** the traffic on port **443** (or you can't access to your SP)
 
-3. Define the costant ```JAVA_HOME``` and ```IDP_SRC``` inside ```/etc/environment```:
+3. Define the costants inside ```/etc/environment```:
    * ```vim /etc/environment```
 
      ```bash
@@ -185,7 +185,7 @@
      </VirtualHost>
      ```
   
-6. Verify the strength of your IdP's machine on:
+6. Verify the strength of your SP's machine on:
    * [**https://www.ssllabs.com/ssltest/analyze.html**](https://www.ssllabs.com/ssltest/analyze.html)
 
 ### Configure Shibboleth SP (with IDEM WAYF)
@@ -227,6 +227,7 @@
      ...
      <MetadataProvider type="XML" uri="http://www.garr.it/idem-metadata/idem-test-metadata-sha256.xml" legacyOrgName="true" backingFilePath="idem-test-metadata-sha256.xml" reloadInterval="600">
            <MetadataFilter type="Signature" certificate="idem_signer.pem"/>
+           <MetadataFilter type="RequireValidUntil" maxValidityInterval="864000" />
      </MetadataProvider>
      ```
 
@@ -337,7 +338,7 @@
    * ```systemctl daemon-reload```
 
 ### Enable Attribute Support on Shibboleth SP
-1. Enable attribute by remove comment from the related content into "```/opt/shibboleth-idp/etc/shibboleth/attribute-map.xml```"
+1. Enable attribute by remove comment from the related content into "```/opt/shibboleth-sp/etc/shibboleth/attribute-map.xml```"
 2. Disable First deprecated/incorrect version of ```persistent-id``` from ```attribute-map.xml```
 
 ### Authors
