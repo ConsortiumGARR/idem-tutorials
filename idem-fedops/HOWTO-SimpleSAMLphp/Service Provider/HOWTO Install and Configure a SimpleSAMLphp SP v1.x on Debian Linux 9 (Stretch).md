@@ -353,7 +353,7 @@
                                 //'types' => array(),
                               ),
                            ),
-              'expireAfter'           => 60*60*24*5, // Maximum 5 days cache time
+              'expireAfter'           => 60*60*24*10, // Maximum 10 days cache time
               'outputDir'     => 'metadata/idem-test-federation/',
 
               /*
