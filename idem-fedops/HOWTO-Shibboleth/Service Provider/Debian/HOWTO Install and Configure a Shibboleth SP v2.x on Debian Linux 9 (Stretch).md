@@ -204,6 +204,7 @@
      ...
      <MetadataProvider type="XML" uri="http://www.garr.it/idem-metadata/idem-test-metadata-sha256.xml" legacyOrgName="true" backingFilePath="idem-test-metadata-sha256.xml" reloadInterval="600">
            <MetadataFilter type="Signature" certificate="idem_signer.pem"/>
+           <MetadataFilter type="RequireValidUntil" maxValidityInterval="864000" />
      </MetadataProvider>
      ```
 4. Create SP metadata credentials:
