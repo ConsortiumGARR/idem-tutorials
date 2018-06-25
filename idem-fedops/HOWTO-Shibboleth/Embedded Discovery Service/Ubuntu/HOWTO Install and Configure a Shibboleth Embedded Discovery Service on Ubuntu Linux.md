@@ -78,6 +78,7 @@ Find here the EDS Configuration Options: https://wiki.shibboleth.net/confluence/
                       uri="http://www.garr.it/idem-metadata/idem-metadata-sha256.xml"
                       backingFilePath="idem-metadata-sha256.xml">
        <MetadataFilter type="Signature" certificate="/etc/shibboleth/idem_signer_2019.pem"/>
+       <MetadataFilter type="RequireValidUntil" maxValidityInterval="864000" />
        <MetadataFilter type="Whitelist">
            <Include>https://entityid.idp1.permesso.it/shibboleth</Include>
            <Include>https://entityid.idp2.permesso.it/shibboleth</Include>
@@ -97,6 +98,7 @@ Find here the EDS Configuration Options: https://wiki.shibboleth.net/confluence/
                       uri="http://www.garr.it/idem-metadata/idem-metadata-sha256.xml"
                       backingFilePath="idem-metadata-sha256.xml">
        <MetadataFilter type="Signature" certificate="/etc/shibboleth/idem_signer_2019.pem"/>
+       <MetadataFilter type="RequireValidUntil" maxValidityInterval="864000" />
        <MetadataFilter type="Whitelist" matcher="EntityAttributes">
            <saml:Attribute Name="http://macedir.org/entity-category"
                            NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri">
@@ -117,6 +119,7 @@ Find here the EDS Configuration Options: https://wiki.shibboleth.net/confluence/
                       uri="http://www.garr.it/idem-metadata/idem-metadata-sha256.xml"
                       backingFilePath="idem-metadata-sha256.xml">
        <MetadataFilter type="Signature" certificate="/etc/shibboleth/idem_signer_2019.pem"/>
+       <MetadataFilter type="RequireValidUntil" maxValidityInterval="864000" />
        <MetadataFilter type="Whitelist" matcher="EntityAttributes">
            <saml:Attribute Name="urn:oasis:names:tc:SAML:attribute:assurancecertification"
                            NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri">
@@ -138,6 +141,7 @@ Find here the EDS Configuration Options: https://wiki.shibboleth.net/confluence/
                       uri="http://www.garr.it/idem-metadata/idem-metadata-sha256.xml"
                       backingFilePath="idem-metadata-sha256.xml">
        <MetadataFilter type="Signature" certificate="/etc/shibboleth/idem_signer_2019.pem"/>
+       <MetadataFilter type="RequireValidUntil" maxValidityInterval="864000" />
        <MetadataFilter type="Blacklist">
            <Include>https://entityid.idp1.permesso.it/shibboleth</Include>
            <Include>https://entityid.idp2.permesso.it/shibboleth</Include>
@@ -157,6 +161,7 @@ Find here the EDS Configuration Options: https://wiki.shibboleth.net/confluence/
                       uri="http://www.garr.it/idem-metadata/idem-metadata-sha256.xml"
                       backingFilePath="idem-metadata-sha256.xml">
        <MetadataFilter type="Signature" certificate="/etc/shibboleth/idem_signer_2019.pem"/>
+       <MetadataFilter type="RequireValidUntil" maxValidityInterval="864000" />
        <MetadataFilter type="Blacklist" matcher="EntityAttributes">
            <saml:Attribute Name="http://macedir.org/entity-category"
                            NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri">
