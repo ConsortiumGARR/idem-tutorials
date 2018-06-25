@@ -291,14 +291,14 @@ Insert idem test wayf:
 ```
 Add metadataprovider:
 ```bash
-   <MetadataProvider type="XML" uri="http://www.garr.it/idem-metadata/idem-test-metadata-sha256.xml" backingFilePath="idem-test-metadata-sha256.xml" reloadInterval="7200">
-      <MetadataFilter type="Signature" certificate="idem_signer_2019.pem"/>
-      <MetadataFilter type="RequireValidUntil" maxValidityInterval="864000" />
-      <MetadataFilter type="EntityRoleWhiteList">
-         <RetainedRole>md:IDPSSODescriptor</RetainedRole>
-         <RetainedRole>md:AttributeAuthorityDescriptor</RetainedRole>
-      </MetadataFilter>
-   </MetadataProvider>
+<MetadataProvider type="XML" uri="http://www.garr.it/idem-metadata/idem-test-metadata-sha256.xml" backingFilePath="idem-test-metadata-sha256.xml" reloadInterval="7200">
+   <MetadataFilter type="Signature" certificate="idem_signer_2019.pem"/>
+   <MetadataFilter type="RequireValidUntil" maxValidityInterval="864000" />
+   <MetadataFilter type="EntityRoleWhiteList">
+      <RetainedRole>md:IDPSSODescriptor</RetainedRole>
+      <RetainedRole>md:AttributeAuthorityDescriptor</RetainedRole>
+   </MetadataFilter>
+</MetadataProvider>
 ```
 Change Sessions in this way:
 ```bash
