@@ -31,6 +31,7 @@ These GitHub Repository will contain and maintain the step-by-step tutorials pro
 * [HOWTO Configure a Shibboleth IdP v3.2.1 to authenticate users existing on different LDAP Servers](https://github.com/ConsortiumGARR/idem-tutorials/blob/master/idem-fedops/HOWTO-Shibboleth/Solutions/HOWTO%20Configure%20a%20Shibboleth%20IdP%20v3.2.1%20to%20authenticate%20Users%20existing%20on%20different%20LDAP%20Servers.md)
 * [HOWTO Release only one value of a specific attribute to a specific resource](https://github.com/ConsortiumGARR/idem-tutorials/blob/master/idem-fedops/HOWTO-Shibboleth/Solutions/HOWTO%20Release%20only%20one%20value%20of%20a%20specific%20attribute%20to%20a%20specific%20resource.md)
 * [HOWTO Install and Configure a Shibboleth Embedded Discovery Service on Ubuntu Linux](https://github.com/ConsortiumGARR/idem-tutorials/blob/master/idem-fedops/HOWTO-Shibboleth/Embedded%20Discovery%20Service/Ubuntu/HOWTO%20Install%20and%20Configure%20a%20Shibboleth%20Embedded%20Discovery%20Service%20on%20Ubuntu%20Linux.md)
+* [HOWTO Define dynamically attributes for Shibboleth IdP v3](https://github.com/ConsortiumGARR/idem-tutorials/blob/master/idem-fedops/HOWTO-Shibboleth/Solutions/HOWTO%20Define%20dynamically%20attributes%20for%20Shibboleth%20IdP%20v3.md)
 
 #### Shibboleth Statistics from Audit Logs
 
