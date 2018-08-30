@@ -326,7 +326,7 @@
    * ```systemctl daemon-reload```
 
 ### Enable Attribute Support on Shibboleth SP
-1. Enable attribute by remove comment from the related content into "```/opt/shibboleth-sp/etc/shibboleth/attribute-map.xml```"
+1. Enable attribute by remove comment from the related content into "```/etc/shibboleth/attribute-map.xml```"
 2. Disable First deprecated/incorrect version of ```persistent-id``` from ```attribute-map.xml```
 
 ### Authors
