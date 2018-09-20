@@ -33,16 +33,16 @@ The EDS is a set of Javascript and CSS files, so installing it and using it is s
 
 4. `tar xzf shibboleth-eds.tar.gz`
 
-5. `cd shibboleth-eds`
+5. `cd shibboleth-embedded-ds-1.2.0`
 
 6. `sudo apt install make ; make install`
 
 7. Enable Discovery Service Web Page
-   * `cp shibboleth-ds.conf /etc/apache2/sites-available/shibboleth-ds.conf`
+   * `cp shibboleth-ds.conf /etc/apache2/conf-available/shibboleth-ds.conf`
    * `sed -i 's/Allow from All/Require all granted/g' shibboleth-ds.conf`
 
 8. Update "`shibboleth2.xml`" file to the new Discovery Service page:
-   * `vim /etc/shibboleth/shibboleth2.xml`
+   * ` `
  
      ```xml
      <SSO discoveryProtocol="SAMLDS" 
@@ -58,10 +58,10 @@ The EDS is a set of Javascript and CSS files, so installing it and using it is s
      ```
 
 9. Enable the Discovery Service Page:
-   * `a2ensite shibboleth-ds.conf`
+   * `a2enconf shibboleth-ds.conf`
 
 10. Restart Apache to load the new web site:
-    * `service shibd restart ; service apache2 restart`
+    * `systemctl restart shibd.service ; systemctl restart apache2.service`
 
 ## Configuration
 The behaviour of Shibboleth Embedded Discovery Service is controlled by `IdPSelectUIParms` class contained. `idpselect_config.js`.
@@ -87,7 +87,7 @@ Find here the EDS Configuration Options: https://wiki.shibboleth.net/confluence/
     </MetadataProvider>
     ```
 2. Restart "**shibd**" service:
-  * `service shibd restart`
+  * `systemctl restart shibd.service`
 
 ### How to allow the access to IdPs that support a specific Entity Category
 1. Modify "**shibboleth2.xml**":
@@ -108,7 +108,7 @@ Find here the EDS Configuration Options: https://wiki.shibboleth.net/confluence/
     </MetadataProvider>
     ```
 2. Restart "**shibd**" service:
-  * `service shibd restart`
+  * `systemctl restart shibd.service`
 
 ### How to allow the access to IdPs that support SIRTFI
 1. Modify "**shibboleth2.xml**":
@@ -129,7 +129,7 @@ Find here the EDS Configuration Options: https://wiki.shibboleth.net/confluence/
     </MetadataProvider>
     ```
 2. Restart "**shibd**" service:
-  * `service shibd restart`
+  * `systemctl restart shibd.service`
 
 ## Blacklist - How to disallow IdPs to access the federated resource
 ### How to disallow the access to IdPs by specifying their entityID
@@ -150,7 +150,7 @@ Find here the EDS Configuration Options: https://wiki.shibboleth.net/confluence/
     </MetadataProvider>
     ```
 2. Restart "**shibd**" service:
-  * `service shibd restart`
+  * `systemctl restart shibd.service`
 
 ### How to disallow the access to IdPs that support a specific Entity Category
 1. Modify "**shibboleth2.xml**":
@@ -171,7 +171,7 @@ Find here the EDS Configuration Options: https://wiki.shibboleth.net/confluence/
     </MetadataProvider>
     ```
 2. Restart "**shibd**" service:
-  * `service shibd restart`
+  * `systemctl restart shibd.service`
 
 ## Best Practices to follow to maximize the access to the resource
 * [REFEDS Discovery Guide](https://discovery.refeds.org/)
