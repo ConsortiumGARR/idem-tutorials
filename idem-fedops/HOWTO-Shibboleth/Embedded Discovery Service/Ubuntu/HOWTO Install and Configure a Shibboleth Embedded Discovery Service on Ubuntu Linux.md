@@ -42,7 +42,7 @@ The EDS is a set of Javascript and CSS files, so installing it and using it is s
    * `sed -i 's/Allow from All/Require all granted/g' shibboleth-ds.conf`
 
 8. Update "`shibboleth2.xml`" file to the new Discovery Service page:
-   * ` `
+   * `vim /etc/shibboleth/shibboleth2.xml `
  
      ```xml
      <SSO discoveryProtocol="SAMLDS" 
