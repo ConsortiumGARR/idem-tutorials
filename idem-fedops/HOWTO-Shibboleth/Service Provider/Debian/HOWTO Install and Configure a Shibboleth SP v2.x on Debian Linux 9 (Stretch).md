@@ -243,6 +243,7 @@
        require valid-user
      </Location>
      ```
+   * ```a2enconf secure```
 
 2. Create the "```secure```" application into the DocumentRoot:
    * ```mkdir /var/www/html/secure```
