@@ -68,7 +68,7 @@
 
 2. Be sure that your firewall **doesn't block** the traffic on port **443** (or you can't access to your SP)
 
-3. Define the costant ```APACHE_LOG```, ```SHIB_SP``` and ```SHIBD_LOG``` inside ```/etc/environment```:
+3. ***Define the costant ```APACHE_LOG```, ```SHIB_SP``` and ```SHIBD_LOG``` inside ```/etc/environment```:
    * ```vim /etc/environment```
 
      ```bash
@@ -89,7 +89,7 @@
 
 2. Install Shibboleth SP:
    * ```bash
-     apt install apache2 libapache2-mod-shib2 libapache2-mod-php ntp
+     apt install apache2 libapache2-mod-shib2 libapache2-mod-php ntp --no-install-recommends
      ```
 
    From this point the location of the SP directory is: ```/etc/shibboleth```
@@ -109,7 +109,12 @@
         DocumentRoot /var/www/html
         ...
         SSLEngine On
-        
+        ...
+        SSLCertificateFile /etc/ssl/certs/ssl-sp.crt
+        SSLCertificateKeyFile /etc/ssl/private/ssl-sp.key
+        ...
+        SSLCertificateChainFile /root/certificates/ssl-ca.pem
+        ...
         SSLProtocol All -SSLv2 -SSLv3 -TLSv1 -TLSv1.1
         SSLCipherSuite "EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH"
 
@@ -125,11 +130,6 @@
         
         # Enable HTTP Strict Transport Security with a 2 year duration
         Header always set Strict-Transport-Security "max-age=63072000;includeSubDomains;preload"
-        ...
-        SSLCertificateFile /etc/ssl/certs/ssl-sp.crt
-        SSLCertificateKeyFile /etc/ssl/private/ssl-sp.key
-        SSLCertificateChainFile /root/certificates/ssl-ca.pem
-        ...
       </VirtualHost>
    </IfModule>
    ```
@@ -137,7 +137,7 @@
 2. Enable **proxy_http**, **SSL** and **headers** Apache2 modules:
    * ```a2enmod proxy_http ssl headers alias include negotiation```
    * ```a2ensite default-ssl.conf```
-   * ```systemctl restart apache2```
+   * ```systemctl restart apache2.service```
 
 3. Configure Apache2 to open port **80** only for localhost:
    * ```vim /etc/apache2/ports.conf```
@@ -167,6 +167,8 @@
         RedirectMatch permanent ^/(.*)$ https://sp.example.org/$1
      </VirtualHost>
      ```
+
+   * ```systemctl reload apache2.service```
   
 6. Verify the strength of your SP's machine on:
    * [**https://www.ssllabs.com/ssltest/analyze.html**](https://www.ssllabs.com/ssltest/analyze.html)
@@ -194,7 +196,8 @@
      ```bash
      ...
      <ApplicationDefaults entityID="https://sp.example.org/shibboleth"
-          REMOTE_USER="eppn persistent-id targeted-id">
+          REMOTE_USER="eppn persistent-id targeted-id"
+          cipherSuites="ECDHE+AESGCM:ECDHE:!aNULL:!eNULL:!LOW:!EXPORT:!RC4:!SHA:!SSLv2">
      ...
      <Sessions lifetime="28800" timeout="3600" checkAddress="false" handlerSSL="true" cookieProps="https">
      ...
@@ -210,10 +213,11 @@
 4. Create SP metadata credentials:
    * ```/usr/sbin/shib-keygen```
    * ```shibd -t /etc/shibboleth/shibboleth2.xml``` (Check Shibboleth configuration)
+   * ```systemctl restart shibd.service```
 
 5. Enable Shibboleth Apache2 configuration:
    * ```a2enmod shib2```
-   * ```systemctl reload apache2.service ```
+   * ```systemctl reload apache2.service```
 
 5. Now you are able to reach your Shibboleth SP Metadata on:
    * ```https://sp.example.org/Shibboleth.sso/Metadata```
@@ -228,7 +232,7 @@
 1. Create the Apache2 configuration for the application: 
    * ```sudo su -```
 
-   * ```vim /etc/apache2/site-available/secure.conf```
+   * ```vim /etc/apache2/conf-available/secure.conf```
   
      ```bash
      RedirectMatch    ^/$  /secure
@@ -258,8 +262,6 @@
           <a href="https://sp.example.org/privacy.html">Privacy Policy</a>
          </p>
          <?php
-         // Visualizza tutte le informazioni, default: INFO_ALL
-         //phpinfo();
          foreach ($_SERVER as $key => $value){
             print $key." = ".$value."<br>";
          }
@@ -275,7 +277,7 @@
      ```
 
 3. Install needed packages:
-   * ```apt istall libapache2-mod-php```
+   * ```apt install libapache2-mod-php```
 
    * ```systemctl restart apache2.service```
 
