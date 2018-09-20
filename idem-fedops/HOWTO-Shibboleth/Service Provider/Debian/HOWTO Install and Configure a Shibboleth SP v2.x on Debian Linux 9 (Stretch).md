@@ -13,10 +13,11 @@
    3. [Install Shibboleth Service Provider](##install-shibboleth-service-provider)
 5. [Configuration Instructions](#configuration-instructions)
    1. [Configure SSL on Apache2](#configure-ssl-on-apache2)
-   2. [Configure Shibboleth SP (with IDEM WAYF)](#configure-shibboleth-sp-with-idem-wayf)
+   2. [Configure Shibboleth SP](#configure-shibboleth-sp)
    3. [Configure an example federated resouce "secure"](#configure-an-example-federated-resouce-secure)
    4. [OPTIONAL - Maintain 'shibd' working](#optional---maintain-shibd-working)
    5. [Enable Attribute Support on Shibboleth SP](#enable-attribute-support-on-shibboleth-sp)
+   6. [Enable Attribute Checker Support on Shibboleth SP](#enable-attribute-checker-support-on-shibboleth-sp)
 6. [Authors](#authors)
 
 
@@ -333,8 +334,109 @@
 1. Enable attribute by remove comment from the related content into "```/etc/shibboleth/attribute-map.xml```"
 2. Disable First deprecated/incorrect version of ```persistent-id``` from ```attribute-map.xml```
 
+### Enable Attribute Checker Support on Shibboleth SP
+1. Add a sessionHook for attribute checker: `sessionHook="/Shibboleth.sso/AttrChecker"` and the `metadataAttributePrefix="Meta-"` to `ApplicationDefaults`:
+   * ```vim /etc/shibboleth/shibboleth2.xml```
+
+     ```bash
+     <ApplicationDefaults entityID="https://<HOST>/shibboleth"
+                          REMOTE_USER="eppn persistent-id targeted-id"
+                          cipherSuites="ECDHE+AESGCM:ECDHE:!aNULL:!eNULL:!LOW:!EXPORT:!RC4:!SHA:!SSLv2"
+                          sessionHook="/Shibboleth.sso/AttrChecker"
+                          metadataAttributePrefix="Meta-" >
+     ```
+2. Add the attribute checker handler with the list of required attributes to Sessions (in the example below: `eppn`, `displayName`). The attributes' names HAVE TO MATCH with those are defined on `attribute-map.xml`:
+   * ```vim /etc/shibboleth/shibboleth2.xml```
+
+     ```bash
+     <!-- Attribute Checker -->
+     <Handler type="AttributeChecker" Location="/AttrChecker" template="attrChecker.html" attributes="eppn displayName" flushSession="true"/>
+     ```
+     
+     If you want to describe more complex scenarios with required attributes, operators such as "AND" and "OR" are available.
+     ```bash
+     <Handler type="AttributeChecker" Location="/AttrChecker" template="attrChecker.html" flushSession="true">
+        <OR>
+           <Rule require="displayName"/>
+           <AND>
+              <Rule require="givenName"/>
+              <Rule require="surname"/>
+           </AND>
+        </OR>
+      </Handler>
+      ```
+
+3. Add the <AttributeExtractor> element of the type="Metadata" next to the already existing type="XML": (```<AttributeExtractor type="XML" validate="true" path="attribute-map.xml"/>```)
+   * ```vim /etc/shibboleth/shibboleth2.xml```
+
+     ```bash
+     <!-- Extracts support information for IdP from its metadata. -->
+     <AttributeExtractor type="Metadata" errorURL="errorURL" DisplayName="displayName"
+                         InformationURL="informationURL" PrivacyStatementURL="privacyStatementURL"
+                         OrganizationURL="organizationURL">
+        <ContactPerson id="Technical-Contact"  contactType="technical" formatter="$EmailAddress" />
+        <Logo id="Small-Logo" height="16" width="16" formatter="$_string"/>
+     </AttributeExtractor>
+     ```
+
+4. Save and restart "shibd" service:
+   * ```systemctl restart shibd.restart```
+   
+5. Customize Attribute Checker template:
+   * ```cd /etc/shibboleth```
+   * ```cp attrChecker.html attrChecker.html.orig```
+   * ```wget https://raw.githubusercontent.com/CSCfi/shibboleth-attrchecker/master/attrChecker.html -O attrChecker.html```
+   * ```sed -i 's/SHIB_//g' /etc/shibboleth/attrChecker.html```
+   * ```sed -i 's/eduPersonPrincipalName/eppn/g' /etc/shibboleth/attrChecker.html```
+   * ```sed -i 's/Meta-Support-Contact/Meta-Technical-Contact/g' /etc/shibboleth/attrChecker.html```
+   * ```sed -i 's/supportContact/technicalContact/g' /etc/shibboleth/attrChecker.html```
+   * ```sed -i 's/support/technical/g' /etc/shibboleth/attrChecker.html```
+
+   There are three locations needing modifications:
+
+   1. The pixel tracking link after the comment "PixelTracking". 
+      The Image tag and all required attributes after the variable must be configured here. 
+      After "`miss=`" define all required attributes you updated in `shibboleth2.xml` using shibboleth tagging. 
+      
+      Eg `<shibmlpifnot $attribute>-$attribute</shibmlpifnot>` (this echoes $attribute if it's not received by shibboleth).
+      The attributes' names HAVE TO MATCH with those are defined on `attribute-map.xml`.
+      
+      This example uses "`-`" as a delimiter.
+      
+   2. The table showing missing attributes between the tags "`<!--TableStart-->`" and "`<!--TableEnd-->`". 
+      You have to insert again all the same attributes as above.
+
+      Define row for each required attribute (eg: `displayName` below)
+
+      ```bash
+      <tr <shibmlpifnot displayName> class='warning text-danger'</shibmlpifnot>>
+        <td>displayName</td>
+        <td><shibmlp displayName /></td>
+      </tr>
+      ```
+
+   3. The email template between the tags "<textarea>" and "</textarea>". After "The attributes that were not released to the service are:". 
+
+      Again define all required attributes using shibboleth tagging like in section 1 ( eg: `<shibmlpifnot $attribute> * $attribute</shibmlpifnot>`).
+      The attributes' names HAVE TO MATCH with those are defined on `attribute-map.xml`.
+      Note that for SP identifier target URL is used instead of entityID. 
+      There arent yet any tag for SP entityID so you can replace this target URL manually.
+
+6. Enable Logging:
+   * Download an image 1x1 px from 'http://png-pixel.com/' and put it under /var/www/html/track.png (your DocumentRoot)
+
+   * Result into /var/log/apache2/access.log:
+   
+   ```bash
+   ./apache2/access.log:193.206.129.66 - - [20/Sep/2018:15:05:07 +0000] "GET /track.png?idp=https://garr-idp-test.irccs.garr.it/idp/shibboleth&miss=-SHIB_givenName-SHIB_cn-SHIB_sn-SHIB_eppn-SHIB_schacHomeOrganization-SHIB_schacHomeOrganizationType HTTP/1.1" 404 637 "https://sp.example.org/Shibboleth.sso/AttrChecker?return=https%3A%2F%2Fsp.example.org%2FShibboleth.sso%2FSAML2%2FPOST%3Fhook%3D1%26target%3Dss%253Amem%253A43af2031f33c3f4b1d61019471537e5bc3fde8431992247b3b6fd93a14e9802d&target=https%3A%2F%2Fsp.example.org%2Fsecure%2F"
+   ```
+   
 ### Authors
 
 #### Original Author
 
  * Marco Malavolti (marco.malavolti@garr.it)
+ 
+### BIG Thanks
+
+ * eduGAIN: For [How to configure Shibboleth SP attribute checker](https://wiki.geant.org/display/eduGAIN/How+to+configure+Shibboleth+SP+attribute+checker)
