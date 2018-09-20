@@ -39,7 +39,7 @@
  * Place the SSL Credentials into the right place:
    * SSL Certificate: "```/etc/ssl/certs/ssl-sp.crt```"
    * SSL Key: "```/etc/ssl/private/ssl-sp.key```"
-   * SSL CA: "```/usr/share/local/ca-certificates/ssl-ca.crt```"
+   * SSL CA: "```/usr/local/share/ca-certificates/ssl-ca.crt```"
    * Run the command: "```update-ca-certificates```"
 
 ## Installation Instructions
@@ -75,20 +75,20 @@
 
 2. Install required packages SP:
    * ```bash
-     apt install apache2 openssl ntp vim php php-curl php-dom php7.0-mcrypt curl cron
+     apt install apache2 openssl ntp vim php php-curl php-dom php7.0-mcrypt curl cron --no-install-recommends
      ```
 
 3. Install the SimpleSAMLphp SP:
    * ```cd /opt/```
-   * ```wget https://github.com/simplesamlphp/simplesamlphp/releases/download/v1.15.4/simplesamlphp-1.15.4.tar.gz```
-   * ```tar xzf simplesamlphp-1.15.4.tar.gz```
-   * ```mv simplesamlphp-1.15.4 simplesamlphp```
+   * ```wget https://github.com/simplesamlphp/simplesamlphp/releases/download/v1.16.1/simplesamlphp-1.16.1.tar.gz```
+   * ```tar xzf simplesamlphp-1.16.1.tar.gz```
+   * ```mv simplesamlphp-1.16.1 simplesamlphp```
 
 ## Configuration Instructions
 
 ### Configure SSL on Apache2
 
-1. Modify the file ```/etc/apache2/sites-available/default-ssl.conf``` as follows:
+1. Create the file ```/etc/apache2/sites-available/ssp-sp.conf``` as follows:
 
    ```apache
    <IfModule mod_ssl.c>
@@ -97,7 +97,16 @@
         ServerName sp.example.org:443
         ServerAdmin admin@example.org
         DocumentRoot /var/www/html
-        ...
+        
+        # Available loglevels: trace8, ..., trace1, debug, info, notice, warn,
+		  # error, crit, alert, emerg.
+		  # It is also possible to configure the loglevel for particular
+		  # modules, e.g.
+		  #LogLevel info ssl:warn
+
+		  ErrorLog ${APACHE_LOG_DIR}/error.log
+		  CustomLog ${APACHE_LOG_DIR}/access.log combined
+        
         SSLEngine On
         
         SSLProtocol All -SSLv2 -SSLv3 -TLSv1 -TLSv1.1
@@ -115,18 +124,18 @@
         
         # Enable HTTP Strict Transport Security with a 2 year duration
         Header always set Strict-Transport-Security "max-age=63072000;includeSubDomains;preload"
-        ...
-        SSLCertificateFile /root/certificates/ssl-sp.crt
-        SSLCertificateKeyFile /root/certificates/ssl-sp.key
-        SSLCertificateChainFile /root/certificates/ssl-ca.pem
-        ...
+        
+        SSLCertificateFile /etc/ssl/certs/ssl-sp.crt
+        SSLCertificateKeyFile /etc/ssl/private/ssl-sp.key
+        SSLCertificateChainFile /etc/ssl/certs/ssl-ca.pem
+        
       </VirtualHost>
    </IfModule>
    ```
 
 2. Enable **proxy_http**, **SSL** and **headers** Apache2 modules:
    * ```a2enmod ssl headers alias include negotiation```
-   * ```a2ensite default-ssl.conf```
+   * ```a2ensite ssp-sp.conf```
    * ```systemctl restart apache2```
 
 3. Configure Apache2 to open port **80** only for localhost:
@@ -169,7 +178,7 @@
 
 2. Create the Apache2 configuration for the application: 
 
-   * ```vim /etc/apache2/site-available/simplesaml.conf```
+   * ```vim /etc/apache2/conf-available/simplesaml.conf```
   
      ```bash
      Alias /simplesaml /opt/simplesamlphp/www
@@ -183,7 +192,7 @@
 
 3. Enable the simplesaml Apache2 configuration:
 
-   * ```a2ensite simplesaml.conf```
+   * ```a2enconf simplesaml.conf```
 
    * ```systemctl reload apache2.service```
 
@@ -215,7 +224,7 @@
       ...
       'auth.adminpassword' => '#_YOUR_USER_ADMIN_PASSWORD_#',
       ...
-      'admin.protectindexpage' => 'true',
+      'admin.protectindexpage' => true,
       ...
       'logging.handler' => 'file',
       ```
@@ -329,8 +338,9 @@
                                  #'conditionalGET' => TRUE,
                                  'src' => 'http://www.garr.it/idem-metadata/idem-test-metadata-sha256.xml',
                                  'certificates' => array(
-                                    '/opt/simpleasamlphp/cert/idem_signer.crt',
+                                    '/opt/simplesamlphp/cert/idem_signer.crt',
                                  ),
+                                 validateFingerprint => '2F:F8:24:78:6A:A9:2D:91:29:19:2F:7B:33:33:FF:59:45:C1:7C:C8 ',
                                  'template' => array(
                                     'tags'  => array('idem'),
                                     'authproc' => array(
@@ -397,7 +407,9 @@
      ),
      ```
 
-   * Remove/Rename the following files:
+   * Remove/Rename all PHP files under:
+   
+     ```cd /opt/simplesamlphp/metadata ; rm *.php```
 
      ```
      adfs-idp-hosted.php
@@ -417,7 +429,7 @@
    
      ```wget https://www.idem.garr.it/documenti/doc_download/321-idem-metadata-signer-2019 -O /opt/simplesamlphp/cert/idem_signer.crt```
 
-   * Force download of Federation metadata by pressing on ```Metarefresh: fetch metadata``` or wait 1 day
+   * Go to 'https://sp.example.org/simplesaml/module.php/core/frontpage_federation.php' and forcing download of the Federation metadata by pressing on ```Metarefresh: fetch metadata``` or wait 1 day
 
 8. Set PHP 'memory_limit' to '256M' or more to allow the download of huge metadata files (like eduGAIN):
 
@@ -461,26 +473,6 @@
              // The URL to the discovery service.
              // Can be NULL/unset, in which case a builtin discovery service will be used.
              'discoURL' => null,
-
-             /*
-              * WARNING: SHA-1 is disallowed starting January the 1st, 2014.
-              *
-              * Uncomment the following option to start using SHA-256 for your signatures.
-              * Currently, SimpleSAMLphp defaults to SHA-1, which has been deprecated since
-              * 2011, and will be disallowed by NIST as of 2014. Please refer to the following
-              * document for more information:
-              *
-              * http://csrc.nist.gov/publications/nistpubs/800-131A/sp800-131A.pdf
-              *
-              * If you are uncertain about identity providers supporting SHA-256 or other
-              * algorithms of the SHA-2 family, you can configure it individually in the
-              * IdP-remote metadata set for those that support it. Once you are certain that
-              * all your configured IdPs support SHA-2, you can safely remove the configuration
-              * options in the IdP-remote metadata set and uncomment the following option.
-              *
-              * Please refer to the hosted SP configuration reference for more information.
-              */
-             'signature.algorithm' => 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha256',
 
              /*
               * The attributes parameter must contain an array of desired attributes by the SP.
@@ -551,7 +543,7 @@
                 ),
              ),
          ),
-     ...
+     );
 
      ```
 
@@ -561,6 +553,8 @@
 
      ```bash
      ...
+        public static function create()
+        {
           return new \DOMDocument('1.0','utf-8');
         }
      }
