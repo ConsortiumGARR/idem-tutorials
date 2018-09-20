@@ -173,7 +173,7 @@
 6. Verify the strength of your SP's machine on:
    * [**https://www.ssllabs.com/ssltest/analyze.html**](https://www.ssllabs.com/ssltest/analyze.html)
 
-### Configure Shibboleth SP (with IDEM WAYF)
+### Configure Shibboleth SP
 
 1. Become ROOT: 
    * ```sudo su -```
@@ -201,6 +201,7 @@
      ...
      <Sessions lifetime="28800" timeout="3600" checkAddress="false" handlerSSL="true" cookieProps="https">
      ...
+     <!-- To install and Configure the Shibboleth Embedded Discovery Service follow: http://tiny.cc/howto-idem-shib-eds -->
      <SSO discoveryProtocol="SAMLDS" discoveryURL="https://wayf.idem-test.garr.it/WAYF">
         SAML2
      </SSO>
