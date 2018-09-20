@@ -19,6 +19,7 @@
    5. [Enable Attribute Support on Shibboleth SP](#enable-attribute-support-on-shibboleth-sp)
    6. [Enable Attribute Checker Support on Shibboleth SP](#enable-attribute-checker-support-on-shibboleth-sp)
 6. [Authors](#authors)
+7. [Thanks](#thanks)
 
 
 ## Requirements Hardware
@@ -437,6 +438,6 @@
 
  * Marco Malavolti (marco.malavolti@garr.it)
  
-### BIG Thanks
+### Thanks
 
- * eduGAIN: For [How to configure Shibboleth SP attribute checker](https://wiki.geant.org/display/eduGAIN/How+to+configure+Shibboleth+SP+attribute+checker)
+ * eduGAIN Wiki: For [How to configure Shibboleth SP attribute checker](https://wiki.geant.org/display/eduGAIN/How+to+configure+Shibboleth+SP+attribute+checker)
