@@ -10,7 +10,7 @@
 4. [Installation Instructions](#installation-instructions)
    1. [Install software requirements](#install-software-requirements)
    2. [Configure the environment](#configure-the-environment)
-   3. [Install Shibboleth Service Provider](##install-shibboleth-service-provider)
+   3. [Install Shibboleth Service Provider](#install-shibboleth-service-provider)
 5. [Configuration Instructions](#configuration-instructions)
    1. [Configure SSL on Apache2](#configure-ssl-on-apache2)
    2. [Configure Shibboleth SP](#configure-shibboleth-sp)
