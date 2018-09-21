@@ -15,9 +15,9 @@
    1. [Configure SSL on Apache2](#configure-ssl-on-apache2)
    2. [Configure Shibboleth SP](#configure-shibboleth-sp)
    3. [Configure an example federated resouce "secure"](#configure-an-example-federated-resouce-secure)
-   4. [OPTIONAL - Maintain 'shibd' working](#optional---maintain-shibd-working)
-   5. [Enable Attribute Support on Shibboleth SP](#enable-attribute-support-on-shibboleth-sp)
-   6. [Enable Attribute Checker Support on Shibboleth SP](#enable-attribute-checker-support-on-shibboleth-sp)
+   4. [Enable Attribute Support on Shibboleth SP](#enable-attribute-support-on-shibboleth-sp)
+   5. [Enable Attribute Checker Support on Shibboleth SP](#enable-attribute-checker-support-on-shibboleth-sp)
+   6. [OPTIONAL - Maintain 'shibd' working](#optional---maintain-shibd-working)
 6. [Authors](#authors)
 7. [Thanks](#thanks)
 
@@ -285,52 +285,6 @@
 
    * ```systemctl restart apache2.service```
 
-
-### OPTIONAL - Maintain '```shibd```' working
-
-1. Edit '```shibd```' init script:
-   * ```vim /etc/init.d/shibd```
-
-     ```bash
-     #...other lines...
-     ### END INIT INFO
-
-     # Import useful functions like 'status_of_proc' needed to 'status'
-     . /lib/lsb/init-functions
-
-     #...other lines...
-
-     # Add 'status' operation
-     status)
-       status_of_proc -p "$PIDFILE" "$DAEMON" "$NAME" && exit 0 || exit $?
-       ;;
-     *)
-       echo "Usage: $SCRIPTNAME {start|stop|restart|force-reload|status}" >&2
-       exit 1
-       ;;
-
-     esac
-     exit 0
-     ```
-2. Create a new watchdog for '```shibd```':
-   * ```vim /etc/cron.hourly/watch-shibd.sh```
-
-     ```bash
-     #! /bin/bash
-     SERVICE=/etc/init.d/shibd
-     STOPPED_MESSAGE="failed"
-
-     if [[ "`$SERVICE status`" == *"$STOPPED_MESSAGE"* ]];
-     then
-       $SERVICE stop
-       sleep 1
-       $SERVICE start
-     fi
-     ```
-
-3. Reload daemon:
-   * ```systemctl daemon-reload```
-
 ### Enable Attribute Support on Shibboleth SP
 1. Enable attribute by remove comment from the related content into "```/etc/shibboleth/attribute-map.xml```"
 2. Disable First deprecated/incorrect version of ```persistent-id``` from ```attribute-map.xml```
@@ -431,7 +385,52 @@
    ```bash
    ./apache2/access.log:193.206.129.66 - - [20/Sep/2018:15:05:07 +0000] "GET /track.png?idp=https://garr-idp-test.irccs.garr.it/idp/shibboleth&miss=-SHIB_givenName-SHIB_cn-SHIB_sn-SHIB_eppn-SHIB_schacHomeOrganization-SHIB_schacHomeOrganizationType HTTP/1.1" 404 637 "https://sp.example.org/Shibboleth.sso/AttrChecker?return=https%3A%2F%2Fsp.example.org%2FShibboleth.sso%2FSAML2%2FPOST%3Fhook%3D1%26target%3Dss%253Amem%253A43af2031f33c3f4b1d61019471537e5bc3fde8431992247b3b6fd93a14e9802d&target=https%3A%2F%2Fsp.example.org%2Fsecure%2F"
    ```
-   
+
+### OPTIONAL - Maintain '```shibd```' working
+
+1. Edit '```shibd```' init script:
+   * ```vim /etc/init.d/shibd```
+
+     ```bash
+     #...other lines...
+     ### END INIT INFO
+
+     # Import useful functions like 'status_of_proc' needed to 'status'
+     . /lib/lsb/init-functions
+
+     #...other lines...
+
+     # Add 'status' operation
+     status)
+       status_of_proc -p "$PIDFILE" "$DAEMON" "$NAME" && exit 0 || exit $?
+       ;;
+     *)
+       echo "Usage: $SCRIPTNAME {start|stop|restart|force-reload|status}" >&2
+       exit 1
+       ;;
+
+     esac
+     exit 0
+     ```
+2. Create a new watchdog for '```shibd```':
+   * ```vim /etc/cron.hourly/watch-shibd.sh```
+
+     ```bash
+     #! /bin/bash
+     SERVICE=/etc/init.d/shibd
+     STOPPED_MESSAGE="failed"
+
+     if [[ "`$SERVICE status`" == *"$STOPPED_MESSAGE"* ]];
+     then
+       $SERVICE stop
+       sleep 1
+       $SERVICE start
+     fi
+     ```
+
+3. Reload daemon:
+   * ```systemctl daemon-reload```
+
 ### Authors
 
 #### Original Author
