@@ -253,31 +253,46 @@
 
    * ```vim /var/www/html/secure/index.php```
 
-     ```html
+     ```php
      <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-     <html>
+      <html>
        <head>
-         <title></title>
-         <meta name="GENERATOR" content="Quanta Plus">
-         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <title>Example PHP Federated Application</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
        </head>
        <body>
-         <p>
-          <a href="https://sp.example.org/privacy.html">Privacy Policy</a>
-         </p>
-         <?php
-         foreach ($_SERVER as $key => $value){
-            print $key." = ".$value."<br>";
-         }
-         /*foreach ($_ENV as $key => $value){
-            print $key." = ".$value."<br>";
-         }
-         foreach ($_COOKIE as $key => $value){
-            print $key." = ".$value."<br>";
-         }*/
-         ?>
+        <p>
+         <a href="https://sp.example.org/privacy.html">Privacy Policy</a>
+        </p>
+        <?php
+         //The REMOTE_USER variable holds the name of the user authenticated by the web server.
+         $name = getName();
+         print "<h1>Ciao " . $name . "!!!</h1>";
+
+         print "<p>Let see all other attributes:</p>";
+         print "<p>Your REMOTE_USER is <strong>" . $_SERVER["REMOTE_USER"] . "</strong></p>";
+         print "<p>Your email is <strong>" . $_SERVER['mail'] . "</strong></p>";
+         print "<p>Your eduPersonPrincipalName is <strong>" . $_SERVER["eppn"] . "</strong></p>";
+         print "<p>Your schacHomeOrganization is <strong>" . $_SERVER["schacHomeOrganization"] . "</strong></p>";
+         print "<p>Your schacHomeOrganizationType is <strong>" . $_SERVER["schacHomeOrganizationType"] . "</strong></p>";
+
+        ?>
        </body>
-     </html>
+      </html>
+
+      <?php
+      function getName() {
+       if (array_key_exists("displayName", $_SERVER)) {
+       return implode(" ", explode(";", $_SERVER["displayName"]));
+       } else if (array_key_exists("cn", $_SERVER)) {
+       return implode(" ", explode(";", $_SERVER["cn"]));
+       } else if (array_key_exists("givenName", $_SERVER) && array_key_exists("sn", $_SERVER)) {
+       return implode(" ", explode(";", $_SERVER["givenName"])) . " " .
+       implode(" ", explode(";", $_SERVER["sn"]));
+       }
+       return "Unknown";
+      }
+     ?>
      ```
 
 3. Install needed packages:
@@ -300,12 +315,12 @@
                           sessionHook="/Shibboleth.sso/AttrChecker"
                           metadataAttributePrefix="Meta-" >
      ```
-2. Add the attribute checker handler with the list of required attributes to Sessions (in the example below: `eppn`, `displayName`). The attributes' names HAVE TO MATCH with those are defined on `attribute-map.xml`:
+2. Add the attribute checker handler with the list of required attributes to Sessions (in the example below: `displayName`, `givenName`, `mail`, `cn`, `sn`, `eppn`, `schacHomeOrganization`, `schacHomeOrganizationType`). The attributes' names HAVE TO MATCH with those are defined on `attribute-map.xml`:
    * ```vim /etc/shibboleth/shibboleth2.xml```
 
      ```bash
      <!-- Attribute Checker -->
-     <Handler type="AttributeChecker" Location="/AttrChecker" template="attrChecker.html" attributes="eppn displayName" flushSession="true"/>
+        <Handler type="AttributeChecker" Location="/AttrChecker" template="attrChecker.html" attributes="displayName givenName mail cn sn eppn schacHomeOrganization schacHomeOrganizationType" flushSession="true"/>
      ```
      
      If you want to describe more complex scenarios with required attributes, operators such as "AND" and "OR" are available.
@@ -347,7 +362,7 @@
    * ```sed -i 's/supportContact/technicalContact/g' /etc/shibboleth/attrChecker.html```
    * ```sed -i 's/support/technical/g' /etc/shibboleth/attrChecker.html```
 
-   There are three locations needing modifications:
+   There are three locations needing modifications to do on `attrChecker.html`:
 
    1. The pixel tracking link after the comment "PixelTracking". 
       The Image tag and all required attributes after the variable must be configured here. 
@@ -363,7 +378,7 @@
 
       Define row for each required attribute (eg: `displayName` below)
 
-      ```bash
+      ```html
       <tr <shibmlpifnot displayName> class='warning text-danger'</shibmlpifnot>>
         <td>displayName</td>
         <td><shibmlp displayName /></td>
