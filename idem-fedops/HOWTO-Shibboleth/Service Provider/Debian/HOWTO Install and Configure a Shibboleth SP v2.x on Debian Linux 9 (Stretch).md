@@ -14,7 +14,7 @@
 5. [Configuration Instructions](#configuration-instructions)
    1. [Configure SSL on Apache2](#configure-ssl-on-apache2)
    2. [Configure Shibboleth SP](#configure-shibboleth-sp)
-   3. [Configure an example federated resouce "secure"](#configure-an-example-federated-resouce-secure)
+   3. [Configure an example federated resource "secure"](#configure-an-example-federated-resource-secure)
    4. [Enable Attribute Support on Shibboleth SP](#enable-attribute-support-on-shibboleth-sp)
    5. [Enable Attribute Checker Support on Shibboleth SP](#enable-attribute-checker-support-on-shibboleth-sp)
    6. [OPTIONAL - Maintain 'shibd' working](#optional---maintain-shibd-working)
@@ -230,7 +230,7 @@
    * Go to ```https://registry.idem.garr.it/``` and follow "Insert a New Service Provider into the IDEM Test Federation"
 
 
-### Configure an example federated resouce "secure"
+### Configure an example federated resource "secure"
 
 1. Create the Apache2 configuration for the application: 
    * ```sudo su -```
