@@ -38,8 +38,8 @@ The EDS is a set of Javascript and CSS files, so installing it and using it is s
 6. `sudo apt install make ; make install`
 
 7. Enable Discovery Service Web Page
-   * `cp shibboleth-ds.conf /etc/apache2/conf-available/shibboleth-ds.conf`
-   * `sed -i 's/Allow from All/Require all granted/g' shibboleth-ds.conf`
+   * `mv /etc/shibboleth-ds/shibboleth-ds.conf /etc/apache2/conf-available/shibboleth-ds.conf`
+   * `sed -i 's/Allow from All/Require all granted/g' /etc/apache2/conf-available/shibboleth-ds.conf`
 
 8. Update "`shibboleth2.xml`" file to the new Discovery Service page:
    * `vim /etc/shibboleth/shibboleth2.xml `
