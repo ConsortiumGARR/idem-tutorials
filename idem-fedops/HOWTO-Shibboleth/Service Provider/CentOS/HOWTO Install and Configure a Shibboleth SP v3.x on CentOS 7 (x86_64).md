@@ -17,6 +17,7 @@
    4. [Configure an example federated resource "secure"](#configure-an-example-federated-resource-secure)
    5. [Enable Attribute Support on Shibboleth SP](#enable-attribute-support-on-shibboleth-sp)
    6. [Enable Attribute Checker Support on Shibboleth SP](#enable-attribute-checker-support-on-shibboleth-sp)
+   7. [SE Linux](#se-linux)
 6. [Authors](#authors)
 7. [Thanks](#thanks)
 
