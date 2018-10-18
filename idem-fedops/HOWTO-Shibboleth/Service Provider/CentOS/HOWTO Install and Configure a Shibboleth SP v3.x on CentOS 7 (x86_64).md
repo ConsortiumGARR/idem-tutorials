@@ -443,6 +443,19 @@
      ./apache2/access.log:193.206.129.66 - - [20/Sep/2018:15:05:07 +0000] "GET /track.png?idp=https://garr-idp-test.irccs.garr.it/idp/shibboleth&miss=-SHIB_givenName-SHIB_cn-SHIB_sn-SHIB_eppn-SHIB_schacHomeOrganization-SHIB_schacHomeOrganizationType HTTP/1.1" 404 637 "https://sp.example.org/Shibboleth.sso/AttrChecker?return=https%3A%2F%2Fsp.example.org%2FShibboleth.sso%2FSAML2%2FPOST%3Fhook%3D1%26target%3Dss%253Amem%253A43af2031f33c3f4b1d61019471537e5bc3fde8431992247b3b6fd93a14e9802d&target=https%3A%2F%2Fsp.example.org%2Fsecure%2F"
      ```
 
+### SE Linux
+If you'll met problem, probably they are related to SE Linux.
+
+If you want to disable it until the next server reboot, doing this:
+
+* ```sudo setenforce 0```
+
+If you want to disable it forever do this:
+
+* ```sed -i 's/SELINUX=enforcing/SELINUX=permissive/g' /etc/selinux/config ; setenforce permissive```
+
+The SE Linux is disabled if you will find ```Current mode: permissive``` from the command ```sestatus```.
+
 ### Authors
 
 #### Original Author
