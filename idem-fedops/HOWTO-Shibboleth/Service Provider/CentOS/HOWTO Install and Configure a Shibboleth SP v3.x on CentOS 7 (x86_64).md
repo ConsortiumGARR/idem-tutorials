@@ -33,7 +33,8 @@
  * ca-certificates
  * ntp
  * vim
- * libapache2-mod-php, libapache2-mod-shib2, httpd.x86_64 (>= 2.4)
+ * httpd.x86_64 (Apache >= 2.4)
+ * php
  * openssl
  * shibboleth.x86_64
 
@@ -338,6 +339,9 @@
    
    3. Verify:
       * ```php -v```
+
+   4. Enable PHP:
+      * ```systemctl restart httpd.service```
 
 ### Enable Attribute Support on Shibboleth SP
 1. Enable attribute support by removing comment from the related content into "```/etc/shibboleth/attribute-map.xml```"
