@@ -123,7 +123,9 @@
 2. Be sure that your firewall **doesn't block** the traffic on port **443** (or you can't access to your SP)
   
    (OPTIONAL) Create a Certificate and a Key self-signed for HTTPS if you don't have yet the official ones provided by the Certificate Authority(DigicertCA):
-   * ```openssl req -x509 -newkey rsa:4096 -keyout /etc/ssl/private/ssl-sp.key -out /etc/ssl/certs/ssl-sp.crt -nodes -days 1095```
+   * ```bash
+     openssl req -x509 -newkey rsa:4096 -keyout /etc/ssl/private/ssl-sp.key -out /etc/ssl/certs/ssl-sp.crt -nodes -days 1095
+     ```
 
 ### Configure SSL on Apache2
 
@@ -133,7 +135,7 @@
 2. Modify the file ```/etc/apache2/sites-available/default-ssl.conf``` as follows:
 
    ```apache
-   SSLStaplingCache        shmcb:/var/run/ocsp(128000)
+   SSLStaplingCache shmcb:/var/run/ocsp(128000)
    <VirtualHost _default_:443>
    DocumentRoot "/var/www/html"
    ServerName sp.example.org:443
@@ -210,7 +212,9 @@
 
 2. Download Federation Metadata Signing Certificate:
    * ```cd /etc/shibboleth/```
-   * ```curl https://www.idem.garr.it/documenti/doc_download/321-idem-metadata-signer-2019 -o idem_signer.pem```
+   * ```bash
+     curl https://www.idem.garr.it/documenti/doc_download/321-idem-metadata-signer-2019 -o idem_signer.pem
+     ```
 
    * Check the validity:
      *  ```openssl x509 -in idem_signer.pem -fingerprint -sha1 -noout```
@@ -252,12 +256,19 @@
      ```
 
 4. Create SP metadata Signing and Encryption credentials:
-   * ```cd /etc/shibboleth```
-   * ```./keygen.sh -u shibd -g shibd -h $(hostname -f) -y 30 -e https://$(hostname -f)/shibboleth -n sp-signing -f```
-   * ```./keygen.sh -u shibd -g shibd -h $(hostname -f) -y 30 -e https://$(hostname -f)/shibboleth -n sp-encrypt -f```
-   * ```LD_LIBRARY_PATH=/opt/shibboleth/lib64 /usr/sbin/shibd -t``` (Check Shibboleth configuration)
-   * ```systemctl restart shibd.service```
-   * ```systemctl restart httpd.service```
+   ```bash
+   cd /etc/shibboleth
+        
+   ./keygen.sh -u shibd -g shibd -h $(hostname -f) -y 30 -e https://$(hostname -f)/shibboleth -n sp-signing -f
+        
+   ./keygen.sh -u shibd -g shibd -h $(hostname -f) -y 30 -e https://$(hostname -f)/shibboleth -n sp-encrypt -f
+        
+   LD_LIBRARY_PATH=/opt/shibboleth/lib64 /usr/sbin/shibd -t
+   
+   systemctl restart shibd.service
+  
+   systemctl restart httpd.service
+   ```
 
 5. Now you are able to reach your Shibboleth SP Metadata on:
    * ```https://sp.example.org/Shibboleth.sso/Metadata```
@@ -395,14 +406,22 @@
    * ```systemctl restart shibd.service```
    
 5. Customize Attribute Checker template:
-   * ```cd /etc/shibboleth```
-   * ```cp attrChecker.html attrChecker.html.orig```
-   * ```curl https://raw.githubusercontent.com/CSCfi/shibboleth-attrchecker/master/attrChecker.html -o attrChecker.html```
-   * ```sed -i 's/SHIB_//g' /etc/shibboleth/attrChecker.html```
-   * ```sed -i 's/eduPersonPrincipalName/eppn/g' /etc/shibboleth/attrChecker.html```
-   * ```sed -i 's/Meta-Support-Contact/Meta-Technical-Contact/g' /etc/shibboleth/attrChecker.html```
-   * ```sed -i 's/supportContact/technicalContact/g' /etc/shibboleth/attrChecker.html```
-   * ```sed -i 's/support/technical/g' /etc/shibboleth/attrChecker.html```
+   ```bash
+   cd /etc/shibboleth
+   
+   cp attrChecker.html attrChecker.html.orig
+   
+   curl https://raw.githubusercontent.com/CSCfi/shibboleth-attrchecker/master/attrChecker.html -o attrChecker.html
+   
+   sed -i 's/SHIB_//g' /etc/shibboleth/attrChecker.html
+   
+   sed -i 's/eduPersonPrincipalName/eppn/g' /etc/shibboleth/attrChecker.html
+   
+   sed -i 's/Meta-Support-Contact/Meta-Technical-Contact/g' /etc/shibboleth/attrChecker.html
+   
+   sed -i 's/supportContact/technicalContact/g' /etc/shibboleth/attrChecker.html
+   sed -i 's/support/technical/g' /etc/shibboleth/attrChecker.html
+   ```
 
    There are three locations needing modifications to do on `attrChecker.html`:
 
@@ -436,7 +455,9 @@
 
 6. Enable Logging:
    * Create your ```track.png``` with into your DocumentRoot:
-     ```echo "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==" | base64 -d > /var/www/html/track.png```
+     ```bash
+     echo "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==" | base64 -d > /var/www/html/track.png
+     ```
 
    * Result into /var/log/apache2/access.log:
      ```bash
