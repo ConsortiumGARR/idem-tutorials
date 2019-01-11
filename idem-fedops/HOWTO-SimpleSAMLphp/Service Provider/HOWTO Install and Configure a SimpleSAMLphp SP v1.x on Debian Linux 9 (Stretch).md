@@ -29,7 +29,7 @@
  * ca-certificates
  * ntp
  * vim
- * libapache2-mod-php, php, php7.0-mcrypt, php-dom, php-curl, apache2 (>= 2.4)
+ * libapache2-mod-php, php, php7.0-mcrypt, php-dom, php-curl, php-mbstring, apache2 (>= 2.4)
  * openssl
  * cron
  * curl
@@ -75,20 +75,20 @@
 
 2. Install required packages SP:
    * ```bash
-     apt install apache2 openssl ntp vim php php-curl php-dom php7.0-mcrypt curl cron --no-install-recommends
+     apt install apache2 openssl ntp vim php php-curl php-dom php7.0-mcrypt php-mbstring curl cron --no-install-recommends
      ```
 
 3. Install the SimpleSAMLphp SP:
    * ```cd /opt/```
-   * ```wget https://github.com/simplesamlphp/simplesamlphp/releases/download/v1.16.1/simplesamlphp-1.16.1.tar.gz```
-   * ```tar xzf simplesamlphp-1.16.1.tar.gz```
-   * ```mv simplesamlphp-1.16.1 simplesamlphp```
+   * ```wget https://github.com/simplesamlphp/simplesamlphp/releases/download/v1.16.3/simplesamlphp-1.16.3.tar.gz```
+   * ```tar xzf simplesamlphp-1.16.3.tar.gz```
+   * ```mv simplesamlphp-1.16.3 simplesamlphp```
 
 ## Configuration Instructions
 
 ### Configure SSL on Apache2
 
-1. Create the file ```/etc/apache2/sites-available/ssp-sp.conf``` as follows:
+1. Complete the file ```/etc/apache2/sites-available/default-ssl.conf``` as follows:
 
    ```apache
    <IfModule mod_ssl.c>
@@ -99,13 +99,13 @@
         DocumentRoot /var/www/html
         
         # Available loglevels: trace8, ..., trace1, debug, info, notice, warn,
-		  # error, crit, alert, emerg.
-		  # It is also possible to configure the loglevel for particular
-		  # modules, e.g.
-		  #LogLevel info ssl:warn
-
-		  ErrorLog ${APACHE_LOG_DIR}/error.log
-		  CustomLog ${APACHE_LOG_DIR}/access.log combined
+	# error, crit, alert, emerg.
+	# It is also possible to configure the loglevel for particular
+	# modules, e.g.
+	
+	#LogLevel info ssl:warn
+	ErrorLog ${APACHE_LOG_DIR}/error.log
+	CustomLog ${APACHE_LOG_DIR}/access.log combined
         
         SSLEngine On
         
@@ -127,6 +127,7 @@
         
         SSLCertificateFile /etc/ssl/certs/ssl-sp.crt
         SSLCertificateKeyFile /etc/ssl/private/ssl-sp.key
+	
         SSLCertificateChainFile /etc/ssl/certs/ssl-ca.pem
         
       </VirtualHost>
@@ -135,7 +136,7 @@
 
 2. Enable **proxy_http**, **SSL** and **headers** Apache2 modules:
    * ```a2enmod ssl headers alias include negotiation```
-   * ```a2ensite ssp-sp.conf```
+   * ```a2ensite default-ssl.conf```
    * ```systemctl restart apache2```
 
 3. Configure Apache2 to open port **80** only for localhost:
@@ -340,7 +341,6 @@
                                  'certificates' => array(
                                     '/opt/simplesamlphp/cert/idem_signer.crt',
                                  ),
-                                 validateFingerprint => '2F:F8:24:78:6A:A9:2D:91:29:19:2F:7B:33:33:FF:59:45:C1:7C:C8 ',
                                  'template' => array(
                                     'tags'  => array('idem'),
                                     'authproc' => array(
@@ -364,7 +364,7 @@
                               ),
                            ),
               'expireAfter'           => 60*60*24*10, // Maximum 10 days cache time
-              'outputDir'     => 'metadata/idem-test-federation/',
+              'outputDir'     => 'metadata/idem-federation/',
 
               /*
                * Which output format the metadata should be saved as.
@@ -390,7 +390,7 @@
 
      ```
 
-   * ```mkdir /opt/simplesamlphp/metadata/idem-test-federation ; chown www-data /opt/simplesamlphp/metadata/idem-test-federation```
+   * ```mkdir /opt/simplesamlphp/metadata/idem-federation ; chown www-data /opt/simplesamlphp/metadata/idem-federation```
 
    * Change the SimpleSAMLphp configuration file:
 
@@ -402,7 +402,7 @@
         array('type' => 'flatfile'),
         array(
            'type' => 'flatfile', 
-           'directory' => 'metadata/idem-test-federation'
+           'directory' => 'metadata/idem-federation'
         ),
      ),
      ```
@@ -461,6 +461,9 @@
          // and Shibboleth 1.3 IdPs.
          'default-sp' => array(
              'saml:SP',
+	     
+	     'privatekey' => 'ssp-sp.key',
+	     'certificate' => 'ssp-sp.crt',
 
              // The entity ID of this SP.
              // Can be NULL/unset, in which case an entity ID is generated based on the metadata URL.
@@ -495,6 +498,8 @@
              'attributes.required' => array (
                 'urn:oid:0.9.2342.19200300.100.1.3',
              ),
+	     
+	     'attributes.NameFormat' => 'urn:oasis:names:tc:SAML:2.0:attrname-format:uri',
 
              'description' => array(
                 'en' => 'Service Description',
@@ -549,7 +554,7 @@
 
 10. OPTIONAL: Enable UTF-8 for SP metadata:
 
-   * ```vim ./vendor/simplesamlphp/saml2/src/SAML2/DOMDocumentFactory.php```
+   * ```vim /opt/simplesamlphp/vendor/simplesamlphp/saml2/src/SAML2/DOMDocumentFactory.php```
 
      ```bash
      ...
@@ -590,11 +595,9 @@
      <?php
         require_once('/opt/simplesamlphp/lib/_autoload.php');
 
-        $as = new SimpleSAML_Auth_Simple('default-sp');
+        $as = new \SimpleSAML\Auth\Simple('default-sp');
         $as->requireAuth();
         $attributes = $as->getAttributes();
-
-        header('Content-Type: text/plain; charset=utf-8');
 
         foreach ($attributes as $name => $values) {
            echo("$name:\n");
