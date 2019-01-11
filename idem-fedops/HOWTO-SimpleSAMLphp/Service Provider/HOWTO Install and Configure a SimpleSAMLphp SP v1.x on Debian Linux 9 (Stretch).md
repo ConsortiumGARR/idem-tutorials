@@ -590,21 +590,23 @@
         </head>
 
         <body>
-          <p>This is an Example Page
-              that show the behaviour of a SimpleSAMLphp Service Provider</p>
+          <p>This is an Example Page that show the behaviour of a SimpleSAMLphp Service Provider</p>
+          <p>These are attributes released from the IdP to this <strong>secure</strong> application:</p>
      <?php
         require_once('/opt/simplesamlphp/lib/_autoload.php');
 
         $as = new \SimpleSAML\Auth\Simple('default-sp');
         $as->requireAuth();
         $attributes = $as->getAttributes();
-
+ 
+        echo "<ul>";
         foreach ($attributes as $name => $values) {
-           echo("$name:\n");
+           echo "<li><strong>$name:</strong>\n";
            foreach ($values as $value) {
-              echo("\t$value\n");
+              echo "\t$value\n";
            }
-           echo("\n");
+           echo "</li>";
+           echo "<br\>";
         }
      ?>
         </body>
