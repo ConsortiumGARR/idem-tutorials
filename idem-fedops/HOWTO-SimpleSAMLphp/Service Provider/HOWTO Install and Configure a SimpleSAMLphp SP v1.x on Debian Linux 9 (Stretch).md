@@ -50,7 +50,7 @@
    * ```sudo su -```
 
 2. Change the default mirror with the GARR ones:
-   * ```sed -i 's/deb.debian.org/mi.mirror.garr.it\/mirrors/g' /etc/apt/sources.list```
+   * ```sed -i 's/deb.debian.org/debian.mirror.garr.it/g' /etc/apt/sources.list```
    * ```apt update && apt upgrade```
   
 3. Install the packages required: 
