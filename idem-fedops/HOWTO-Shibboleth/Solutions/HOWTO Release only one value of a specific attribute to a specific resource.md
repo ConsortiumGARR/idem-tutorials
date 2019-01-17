@@ -6,6 +6,7 @@
 
 1. [Requirements](#requirements)
 2. [HOWTO Create an Attribute Filter Custom to release a specific value to a specific resource](#HOWTO-create-an-attribute-filter-custom-to-release-a-specific-value-to-a-specific-resource)
+3. [Authors](#authors)
 
 ## Requirements
 
@@ -56,3 +57,9 @@
 3. Restart the Attribute Filter service to apply:
 
    * `cd /opt/shibboleth-idp/bin ; ./reload-service.sh -id shibboleth.AttributeFilterService`
+
+### Authors
+
+#### Original Author
+
+ * Marco Malavolti (marco.malavolti@garr.it)

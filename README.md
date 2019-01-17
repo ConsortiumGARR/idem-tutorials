@@ -8,8 +8,17 @@ These GitHub Repository will contain and maintain the step-by-step tutorials pro
 
 #### HOWTO Install and Configure an Identity Provider
 
-1. [HOWTO Install and Configure a Shibboleth IdP v3.2.1 on Ubuntu Linux LTS 16.04 with Apache2 + Jetty9](https://github.com/ConsortiumGARR/idem-tutorials/blob/master/idem-fedops/HOWTO-Shibboleth/Identity%20Provider/Ubuntu/HOWTO%20Install%20and%20Configure%20a%20Shibboleth%20IdP%20v3.2.1%20on%20Ubuntu%20Linux%20LTS%2016.04%20with%20Apache2%20%2B%20Jetty9.md)
-2. [HOWTO Install and Configure a Shibboleth IdP v3.2.1 on Ubuntu Linux LTS 16.04 with Apache2 + Tomcat8](https://github.com/ConsortiumGARR/idem-tutorials/blob/master/idem-fedops/HOWTO-Shibboleth/Identity%20Provider/Ubuntu/HOWTO%20Install%20and%20Configure%20a%20Shibboleth%20IdP%20v3.2.1%20on%20Ubuntu%20Linux%20LTS%2016.04%20with%20Apache2%20%2B%20Tomcat8.md)
+1. [HOWTO Install and Configure a Shibboleth IdP v3.4.2 on Debian Linux 9 with Apache2 + Jetty9](https://github.com/ConsortiumGARR/idem-tutorials/blob/master/idem-fedops/HOWTO-Shibboleth/Identity%20Provider/Debian/%23%20HOWTO%20Install%20and%20Configure%20a%20Shibboleth%20IdP%20v3.4.2%20on%20Debian%20Linux%209%20(Stretch)%20with%20Apache2%20%2B%20Jetty9.md#howto-install-and-configure-a-shibboleth-idp-v342-on-debian-linux-9-stretch-with-apache2--jetty9)
+2. [HOWTO Install and Configure a Shibboleth IdP v3.3.2 on Ubuntu Linux LTS 16.04 with Apache2 + Jetty9](https://github.com/ConsortiumGARR/idem-tutorials/blob/master/idem-fedops/HOWTO-Shibboleth/Identity%20Provider/Ubuntu/HOWTO%20Install%20and%20Configure%20a%20Shibboleth%20IdP%20v3.3.2%20on%20Ubuntu%20Linux%20LTS%2016.04%20with%20Apache2%20%2B%20Jetty9.md)
+3. [HOWTO Install and Configure a Shibboleth IdP v3.2.1 on Ubuntu Linux LTS 16.04 with Apache2 + Jetty9](https://github.com/ConsortiumGARR/idem-tutorials/blob/master/idem-fedops/HOWTO-Shibboleth/Identity%20Provider/Ubuntu/HOWTO%20Install%20and%20Configure%20a%20Shibboleth%20IdP%20v3.2.1%20on%20Ubuntu%20Linux%20LTS%2016.04%20with%20Apache2%20%2B%20Jetty9.md)
+4. [HOWTO Install and Configure a Shibboleth IdP v3.2.1 on Ubuntu Linux LTS 16.04 with Apache2 + Tomcat8](https://github.com/ConsortiumGARR/idem-tutorials/blob/master/idem-fedops/HOWTO-Shibboleth/Identity%20Provider/Ubuntu/HOWTO%20Install%20and%20Configure%20a%20Shibboleth%20IdP%20v3.2.1%20on%20Ubuntu%20Linux%20LTS%2016.04%20with%20Apache2%20%2B%20Tomcat8.md)
+
+#### HOWTO Install and Configure a Service Provider
+
+1. [HOWTO Install and Configure a Shibboleth SP v3.x on CentOS 7 (x86_64)](https://github.com/ConsortiumGARR/idem-tutorials/blob/master/idem-fedops/HOWTO-Shibboleth/Service%20Provider/CentOS/HOWTO%20Install%20and%20Configure%20a%20Shibboleth%20SP%20v3.x%20on%20CentOS%207%20(x86_64).md)
+1. [HOWTO Install and Configure a Shibboleth SP v2.x on Debian Linux 9 (Stretch)](https://github.com/ConsortiumGARR/idem-tutorials/blob/master/idem-fedops/HOWTO-Shibboleth/Service%20Provider/Debian/HOWTO%20Install%20and%20Configure%20a%20Shibboleth%20SP%20v2.x%20on%20Debian%20Linux%209%20(Stretch).md)
+2. [HOWTO Install and Configure a Shibboleth SP v2.6.1(from source) on Debian Linux 9 (Stretch)](https://github.com/ConsortiumGARR/idem-tutorials/blob/master/idem-fedops/HOWTO-Shibboleth/Service%20Provider/Debian/HOWTO%20Install%20and%20Configure%20a%20Shibboleth%20SP%20v2.6.1(from%20source)%20on%20Debian%20Linux%209%20(Stretch).md)
+3. [HOWTO Install and Configure a SimpleSAMLphp SP v1.x on Debian Linux 9 (Stretch)](https://github.com/ConsortiumGARR/idem-tutorials/blob/master/idem-fedops/HOWTO-SimpleSAMLphp/Service%20Provider/HOWTO%20Install%20and%20Configure%20a%20SimpleSAMLphp%20SP%20v1.x%20on%20Debian%20Linux%209%20(Stretch).md)
 
 ### Linux RedHat Distributions
 
@@ -23,6 +32,8 @@ These GitHub Repository will contain and maintain the step-by-step tutorials pro
 
 * [HOWTO Configure a Shibboleth IdP v3.2.1 to authenticate users existing on different LDAP Servers](https://github.com/ConsortiumGARR/idem-tutorials/blob/master/idem-fedops/HOWTO-Shibboleth/Solutions/HOWTO%20Configure%20a%20Shibboleth%20IdP%20v3.2.1%20to%20authenticate%20Users%20existing%20on%20different%20LDAP%20Servers.md)
 * [HOWTO Release only one value of a specific attribute to a specific resource](https://github.com/ConsortiumGARR/idem-tutorials/blob/master/idem-fedops/HOWTO-Shibboleth/Solutions/HOWTO%20Release%20only%20one%20value%20of%20a%20specific%20attribute%20to%20a%20specific%20resource.md)
+* [HOWTO Install and Configure a Shibboleth Embedded Discovery Service on Ubuntu Linux](https://github.com/ConsortiumGARR/idem-tutorials/blob/master/idem-fedops/HOWTO-Shibboleth/Embedded%20Discovery%20Service/Ubuntu/HOWTO%20Install%20and%20Configure%20a%20Shibboleth%20Embedded%20Discovery%20Service%20on%20Ubuntu%20Linux.md)
+* [HOWTO Define dynamically attributes for Shibboleth IdP v3](https://github.com/ConsortiumGARR/idem-tutorials/blob/master/idem-fedops/HOWTO-Shibboleth/Solutions/HOWTO%20Define%20dynamically%20attributes%20for%20Shibboleth%20IdP%20v3.md)
 
 #### Shibboleth Statistics from Audit Logs
 
@@ -32,4 +43,6 @@ These GitHub Repository will contain and maintain the step-by-step tutorials pro
 
 #### Shibboleth
 
-* [HOWTO Setup a Shibboleth SP with NGINX](https://github.com/ConsortiumGARR/idem-tutorials/blob/master/idem-community/HOWTO-Shibboleth/Service-Provider/Debian/HOW%20TO%20SETUP%20A%20SHIBBOLETH%20SP%20WITH%20NGINX.md) Marco Cappellacci Università degli studi di Urbino Carlo Bo
+* [HOWTO Setup a Shibboleth SP with NGINX](https://github.com/ConsortiumGARR/idem-tutorials/blob/master/idem-community/HOWTO-Shibboleth/Service-Provider/Debian/HOW%20TO%20SETUP%20A%20SHIBBOLETH%20SP%20WITH%20NGINX.md) di Marco Cappellacci (Università degli studi di Urbino Carlo Bo)
+
+* [HOWTO Relase properly eduPersonEntitlement](https://github.com/speedj/IdemDay18-Daniele/tree/master/eduPersonEntitlement#edupersonentitlement-valori-strettamente-necessari-agli-sp) di Daniele Albrizio (Università degli Studi di Trieste)

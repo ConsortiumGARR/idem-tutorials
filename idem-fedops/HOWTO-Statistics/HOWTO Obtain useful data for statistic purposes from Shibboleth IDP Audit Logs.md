@@ -36,3 +36,10 @@
     21       | https://sp24-test.garr.it/shibboleth
     1        | https://met.refeds.org/saml2/metadata/
     ```
+
+### Authors
+
+#### Original Author
+
+ * Marco Malavolti (marco.malavolti@garr.it)
+ * Davide Vaghetti (davide.vaghetti@garr.it)

@@ -20,37 +20,48 @@ The EDS is a set of Javascript and CSS files, so installing it and using it is s
 8. [Credits](#credits)
 
 ## Requirements
+
+* Apache Server (>= 2.4)
 * A working Shibboleth Service Provider (>= 2.4)
 
 ## Installation
 1. `sudo su -`
+
 2. `cd /usr/local/src`
-3. `wget https://shibboleth.net/downloads/embedded-discovery-service/1.2.0/shibboleth-embedded-ds-1.2.0.tar.gz`
-4. `tar xzf shibboleth-embedded-ds-1.2.0.tar.gz`
+
+3. `wget https://shibboleth.net/downloads/embedded-discovery-service/1.2.0/shibboleth-embedded-ds-1.2.0.tar.gz -O shibboleth-eds.tar.gz`
+
+4. `tar xzf shibboleth-eds.tar.gz`
+
 5. `cd shibboleth-embedded-ds-1.2.0`
-6. `make install`
+
+6. `sudo apt install make ; make install`
+
 7. Enable Discovery Service Web Page
-  * `cp shibboleth-ds.conf /etc/apache2/sites-available/shibboleth-ds.conf`
-     (make sure that "`Allow from all`" becomes "`Require all granted`" if you have Apache >= 2.4)
+   * `mv /etc/shibboleth-ds/shibboleth-ds.conf /etc/apache2/conf-available/shibboleth-ds.conf`
+   * `sed -i 's/Allow from All/Require all granted/g' /etc/apache2/conf-available/shibboleth-ds.conf`
+
 8. Update "`shibboleth2.xml`" file to the new Discovery Service page:
-  * `vim /etc/shibboleth/shibboleth2.xml`
+   * `vim /etc/shibboleth/shibboleth2.xml `
  
-    ```xml
-    <SSO discoveryProtocol="SAMLDS" 
-         discoveryURL="https://###YOUR.SP.FQDN###/shibboleth-ds/index.html"
-         isDefault="true">
-       SAML2
-    </SSO>
-    <!-- SAML and local-only logout. -->
-    <Logout>SAML2 Local</Logout>
-    ...
-    <!-- JSON feed of discovery information. -->
-    <Handler type="DiscoveryFeed" Location="/DiscoFeed"/>
-    ```
+     ```xml
+     <SSO discoveryProtocol="SAMLDS" 
+          discoveryURL="https://###YOUR.SP.FQDN###/shibboleth-ds/index.html"
+          isDefault="true">
+        SAML2
+     </SSO>
+     <!-- SAML and local-only logout. -->
+     <Logout>SAML2 Local</Logout>
+     ...
+     <!-- JSON feed of discovery information. -->
+     <Handler type="DiscoveryFeed" Location="/DiscoFeed"/>
+     ```
+
 9. Enable the Discovery Service Page:
-  * `a2ensite shibboleth-ds.conf`
+   * `a2enconf shibboleth-ds.conf`
+
 10. Restart Apache to load the new web site:
-   * `service shibd restart ; service apache2 restart`
+    * `systemctl restart shibd.service ; systemctl restart apache2.service`
 
 ## Configuration
 The behaviour of Shibboleth Embedded Discovery Service is controlled by `IdPSelectUIParms` class contained. `idpselect_config.js`.
@@ -67,6 +78,7 @@ Find here the EDS Configuration Options: https://wiki.shibboleth.net/confluence/
                       uri="http://www.garr.it/idem-metadata/idem-metadata-sha256.xml"
                       backingFilePath="idem-metadata-sha256.xml">
        <MetadataFilter type="Signature" certificate="/etc/shibboleth/idem_signer_2019.pem"/>
+       <MetadataFilter type="RequireValidUntil" maxValidityInterval="864000" />
        <MetadataFilter type="Whitelist">
            <Include>https://entityid.idp1.permesso.it/shibboleth</Include>
            <Include>https://entityid.idp2.permesso.it/shibboleth</Include>
@@ -75,7 +87,7 @@ Find here the EDS Configuration Options: https://wiki.shibboleth.net/confluence/
     </MetadataProvider>
     ```
 2. Restart "**shibd**" service:
-  * `service shibd restart`
+  * `systemctl restart shibd.service`
 
 ### How to allow the access to IdPs that support a specific Entity Category
 1. Modify "**shibboleth2.xml**":
@@ -86,6 +98,7 @@ Find here the EDS Configuration Options: https://wiki.shibboleth.net/confluence/
                       uri="http://www.garr.it/idem-metadata/idem-metadata-sha256.xml"
                       backingFilePath="idem-metadata-sha256.xml">
        <MetadataFilter type="Signature" certificate="/etc/shibboleth/idem_signer_2019.pem"/>
+       <MetadataFilter type="RequireValidUntil" maxValidityInterval="864000" />
        <MetadataFilter type="Whitelist" matcher="EntityAttributes">
            <saml:Attribute Name="http://macedir.org/entity-category"
                            NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri">
@@ -95,7 +108,7 @@ Find here the EDS Configuration Options: https://wiki.shibboleth.net/confluence/
     </MetadataProvider>
     ```
 2. Restart "**shibd**" service:
-  * `service shibd restart`
+  * `systemctl restart shibd.service`
 
 ### How to allow the access to IdPs that support SIRTFI
 1. Modify "**shibboleth2.xml**":
@@ -106,6 +119,7 @@ Find here the EDS Configuration Options: https://wiki.shibboleth.net/confluence/
                       uri="http://www.garr.it/idem-metadata/idem-metadata-sha256.xml"
                       backingFilePath="idem-metadata-sha256.xml">
        <MetadataFilter type="Signature" certificate="/etc/shibboleth/idem_signer_2019.pem"/>
+       <MetadataFilter type="RequireValidUntil" maxValidityInterval="864000" />
        <MetadataFilter type="Whitelist" matcher="EntityAttributes">
            <saml:Attribute Name="urn:oasis:names:tc:SAML:attribute:assurancecertification"
                            NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri">
@@ -115,7 +129,7 @@ Find here the EDS Configuration Options: https://wiki.shibboleth.net/confluence/
     </MetadataProvider>
     ```
 2. Restart "**shibd**" service:
-  * `service shibd restart`
+  * `systemctl restart shibd.service`
 
 ## Blacklist - How to disallow IdPs to access the federated resource
 ### How to disallow the access to IdPs by specifying their entityID
@@ -127,6 +141,7 @@ Find here the EDS Configuration Options: https://wiki.shibboleth.net/confluence/
                       uri="http://www.garr.it/idem-metadata/idem-metadata-sha256.xml"
                       backingFilePath="idem-metadata-sha256.xml">
        <MetadataFilter type="Signature" certificate="/etc/shibboleth/idem_signer_2019.pem"/>
+       <MetadataFilter type="RequireValidUntil" maxValidityInterval="864000" />
        <MetadataFilter type="Blacklist">
            <Include>https://entityid.idp1.permesso.it/shibboleth</Include>
            <Include>https://entityid.idp2.permesso.it/shibboleth</Include>
@@ -135,7 +150,7 @@ Find here the EDS Configuration Options: https://wiki.shibboleth.net/confluence/
     </MetadataProvider>
     ```
 2. Restart "**shibd**" service:
-  * `service shibd restart`
+  * `systemctl restart shibd.service`
 
 ### How to disallow the access to IdPs that support a specific Entity Category
 1. Modify "**shibboleth2.xml**":
@@ -146,6 +161,7 @@ Find here the EDS Configuration Options: https://wiki.shibboleth.net/confluence/
                       uri="http://www.garr.it/idem-metadata/idem-metadata-sha256.xml"
                       backingFilePath="idem-metadata-sha256.xml">
        <MetadataFilter type="Signature" certificate="/etc/shibboleth/idem_signer_2019.pem"/>
+       <MetadataFilter type="RequireValidUntil" maxValidityInterval="864000" />
        <MetadataFilter type="Blacklist" matcher="EntityAttributes">
            <saml:Attribute Name="http://macedir.org/entity-category"
                            NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri">
@@ -155,7 +171,7 @@ Find here the EDS Configuration Options: https://wiki.shibboleth.net/confluence/
     </MetadataProvider>
     ```
 2. Restart "**shibd**" service:
-  * `service shibd restart`
+  * `systemctl restart shibd.service`
 
 ## Best Practices to follow to maximize the access to the resource
 * [REFEDS Discovery Guide](https://discovery.refeds.org/)

@@ -1,8 +1,8 @@
-#HOW TO SETUP A SHIBBOLETH SP WITH NGINX
+# HOW TO SETUP A SHIBBOLETH SP WITH NGINX
 
-####Author: Marco Cappellacci - Università degli Studi di Urbino Carlo Bo
+#### Author: Marco Cappellacci - Università degli Studi di Urbino Carlo Bo
 
-##TABLE OF CONTENTS
+## TABLE OF CONTENTS
 
 1. [PREREQUISITES](#prerequisites)
 2. [INTRODUCTION](#introduction)
@@ -12,6 +12,7 @@
   2. [NGINX CONFIGURATION](#nginx-configuration)
   3. [PHP5-FPM CONFIGURATION](#php5-fpm-configuration)
   4. [SHIBBOLETH CONFIGURATION](#shibboleth-configuration)
+5. [AUTHORS](#authors)
 5. [CREDITS](#credits)
 
 
@@ -211,7 +212,7 @@ More info https://www.openssl.org/docs/manmaster/apps/dhparam.html
 
 **WARNING** when the SP goes into production, the attribute list after “more_clear_input_headers” will be updated.
 
-###PHP5-FPM CONFIGURATION
+### PHP5-FPM CONFIGURATION
 
 Create a group and add a new user:
 ```bash
@@ -290,8 +291,9 @@ Insert idem test wayf:
 ```
 Add metadataprovider:
 ```bash
-      <MetadataProvider type="XML" uri="http://www.garr.it/idem-metadata/idem-test-metadata-sha256.xml" backingFilePath="idem-test-metadata-sha256.xml" reloadInterval="7200">
+<MetadataProvider type="XML" uri="http://www.garr.it/idem-metadata/idem-test-metadata-sha256.xml" backingFilePath="idem-test-metadata-sha256.xml" reloadInterval="7200">
    <MetadataFilter type="Signature" certificate="idem_signer_2019.pem"/>
+   <MetadataFilter type="RequireValidUntil" maxValidityInterval="864000" />
    <MetadataFilter type="EntityRoleWhiteList">
       <RetainedRole>md:IDPSSODescriptor</RetainedRole>
       <RetainedRole>md:AttributeAuthorityDescriptor</RetainedRole>
@@ -338,7 +340,11 @@ You can download metadata from https://sp.example.it/Shibboleth.sso/Metadata
 **BONUS:** test your SP on ssl labs: https://www.ssllabs.com/ssltest/
 
 
+### AUTHORS
 
+#### ORIGINAL AUTHORS
+
+ * Marco Cappellacci - Università degli Studi di Urbino Carlo Bo (marco.cappellacci@uniurb.it)
 
 ## CREDITS
 

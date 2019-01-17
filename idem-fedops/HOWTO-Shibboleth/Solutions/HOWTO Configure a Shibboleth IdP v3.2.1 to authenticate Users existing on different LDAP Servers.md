@@ -6,6 +6,7 @@
 
 1. [Requirements](#requirements)
 2. [OpenLDAP Case connected with bindSearchAuthenticator](#openldap-case-connected-with-bindSearchAuthenticator)
+3. [Authors](#authors)
 
 ## Requirements
 
@@ -320,3 +321,9 @@
    ```
 
 8. Restart Tomcat to apply the changes.
+
+### Authors
+
+#### Original Author
+
+ * Marco Malavolti (marco.malavolti@garr.it)

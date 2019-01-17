@@ -13,15 +13,15 @@ USE shibboleth;
 
 CREATE TABLE IF NOT EXISTS shibpid
 (
-localEntity VARCHAR(255) NOT NULL,
-peerEntity VARCHAR(255) NOT NULL,
+localEntity VARCHAR(1024) NOT NULL,
+peerEntity VARCHAR(1024) NOT NULL,
 persistentId VARCHAR(50) NOT NULL,
-principalName VARCHAR(50) NOT NULL,
-localId VARCHAR(50) NOT NULL,
-peerProvidedId VARCHAR(50) NULL,
+principalName VARCHAR(255) NOT NULL,
+localId VARCHAR(255) NOT NULL,
+peerProvidedId VARCHAR(255) NULL,
 creationDate TIMESTAMP NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
 deactivationDate TIMESTAMP NULL default NULL,
-PRIMARY KEY (localEntity, peerEntity, persistentId)
+PRIMARY KEY (localEntity(255), peerEntity(255), persistentId(50))
 );
 
 CREATE TABLE IF NOT EXISTS StorageRecords
