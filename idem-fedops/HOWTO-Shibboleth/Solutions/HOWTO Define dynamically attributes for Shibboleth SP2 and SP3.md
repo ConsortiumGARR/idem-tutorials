@@ -16,7 +16,7 @@ This guide briefly explains how to edit /etc/shibbolet2.xml to process attribute
 
 ## Requirements
 
-* A machine with Shibboleth IdP v3 installed
+* A machine with Shibboleth Spv2 or SPv3 installed
 
 ## Modify shibboleth SP configuration
 
