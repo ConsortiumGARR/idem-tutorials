@@ -6,7 +6,7 @@
 
 1. [Introduction (What is it for?)](#Introduction)
 2. [Requirements](#requirements)
-3. [Modify shibboleth SP configuration](#modify-shibboleth-sp-configuration.xml)
+3. [Modify shibboleth SP configuration](#modify-shibboleth-sp-configuration)
 4. [A complete example](#example)
 5. [Credits](#credits)
 
