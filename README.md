@@ -34,6 +34,7 @@ These GitHub Repository will contain and maintain the step-by-step tutorials pro
 * [HOWTO Release only one value of a specific attribute to a specific resource](https://github.com/ConsortiumGARR/idem-tutorials/blob/master/idem-fedops/HOWTO-Shibboleth/Solutions/HOWTO%20Release%20only%20one%20value%20of%20a%20specific%20attribute%20to%20a%20specific%20resource.md)
 * [HOWTO Install and Configure a Shibboleth Embedded Discovery Service on Ubuntu Linux](https://github.com/ConsortiumGARR/idem-tutorials/blob/master/idem-fedops/HOWTO-Shibboleth/Embedded%20Discovery%20Service/Ubuntu/HOWTO%20Install%20and%20Configure%20a%20Shibboleth%20Embedded%20Discovery%20Service%20on%20Ubuntu%20Linux.md)
 * [HOWTO Define dynamically attributes for Shibboleth IdP v3](https://github.com/ConsortiumGARR/idem-tutorials/blob/master/idem-fedops/HOWTO-Shibboleth/Solutions/HOWTO%20Define%20dynamically%20attributes%20for%20Shibboleth%20IdP%20v3.md)
+* [HOWTO Transform and add attributes dynamically for Shibboleth SP2 and SP3](https://github.com/peppelinux/idem-tutorials/blob/master/idem-fedops/HOWTO-Shibboleth/Solutions/HOWTO%20Transform%20and%20add%20attributes%20dynamically%20for%20Shibboleth%20SP2%20and%20SP3.md)
 
 #### Shibboleth Statistics from Audit Logs
 
