@@ -429,6 +429,15 @@
    
      ```wget https://md.idem.garr.it/certs/idem-signer-20220121.pem -O /opt/simplesamlphp/cert/federation-cert.pem```
 
+   * Check the validity:
+     * ```cd /opt/simplesamlphp/cert/```
+     * ```openssl x509 -in federation-cert.pem -fingerprint -sha1 -noout```
+       
+       (sha1: 2F:F8:24:78:6A:A9:2D:91:29:19:2F:7B:33:33:FF:59:45:C1:7C:C8)
+     * ```openssl x509 -in federation-cert.pem -fingerprint -md5 -noout```
+
+       (md5: AA:A7:CD:41:2D:3E:B7:F6:02:8A:D3:62:CD:21:F7:DE)
+
    * Go to 'https://sp.example.org/simplesaml/module.php/core/frontpage_federation.php' and forcing download of the Federation metadata by pressing on ```Metarefresh: fetch metadata``` or wait 1 day
 
 8. Set PHP 'memory_limit' to '256M' or more to allow the download of huge metadata files (like eduGAIN):
