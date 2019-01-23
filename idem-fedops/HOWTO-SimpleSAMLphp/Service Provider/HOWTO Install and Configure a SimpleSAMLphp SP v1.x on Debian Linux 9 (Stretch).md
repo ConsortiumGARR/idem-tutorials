@@ -264,7 +264,7 @@
      ```bash
      cd /opt/simplesamlphp/modules/metarefresh/bin
 
-     ./metarefresh.php -s http://www.garr.it/idem-metadata/idem-test-metadata-sha256.xml > metarefresh-test.txt
+     ./metarefresh.php -s http://md.idem.garr.it/metadata/idem-test-metadata-sha256.xml > metarefresh-test.txt
      ```
 
    * Change the CRON configuration file:
@@ -337,9 +337,9 @@
                                  #),
 
                                  #'conditionalGET' => TRUE,
-                                 'src' => 'http://www.garr.it/idem-metadata/idem-test-metadata-sha256.xml',
+                                 'src' => 'http://md.idem.garr.it/metadata/idem-test-metadata-sha256.xml',
                                  'certificates' => array(
-                                    '/opt/simplesamlphp/cert/idem_signer.crt',
+                                    '/opt/simplesamlphp/cert/federation-cert.pem',
                                  ),
                                  'template' => array(
                                     'tags'  => array('idem'),
@@ -427,7 +427,7 @@
 
    * Download the Federation signing certificate: 
    
-     ```wget https://www.idem.garr.it/documenti/doc_download/321-idem-metadata-signer-2019 -O /opt/simplesamlphp/cert/idem_signer.crt```
+     ```wget https://md.idem.garr.it/certs/idem-signer-20220121.pem -O /opt/simplesamlphp/cert/federation-cert.pem```
 
    * Go to 'https://sp.example.org/simplesaml/module.php/core/frontpage_federation.php' and forcing download of the Federation metadata by pressing on ```Metarefresh: fetch metadata``` or wait 1 day
 
