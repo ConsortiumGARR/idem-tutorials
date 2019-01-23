@@ -248,7 +248,7 @@
      ...
      <MetadataProvider type="XML" url="http://md.idem.garr.it/metadata/idem-test-metadata-sha256.xml"
                        legacyOrgName="true" backingFilePath="idem-test-metadata-sha256.xml" maxRefreshDelay="7200">
-           <MetadataFilter type="Signature" certificate="federation_idem.pem"/>
+           <MetadataFilter type="Signature" certificate="federation-cert.pem"/>
            <MetadataFilter type="RequireValidUntil" maxValidityInterval="864000" />
      </MetadataProvider>
      
