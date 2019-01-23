@@ -704,7 +704,7 @@
       ```
 
     * Retrieve the Federation Certificate used to verify its signed metadata:
-      *  ```wget http://md.idem.garr.it/certs/idem-signer-20220121.pem -O /opt/shibboleth-idp/metadata/federation-cert.pem```
+      *  ```wget https://md.idem.garr.it/certs/idem-signer-20220121.pem -O /opt/shibboleth-idp/metadata/federation-cert.pem```
 
     * Check the validity:
       *  ```cd /opt/shibboleth-idp/metadata```
