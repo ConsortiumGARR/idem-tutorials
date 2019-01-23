@@ -682,7 +682,7 @@
             id="URLMD-IDEM-Federation"
             xsi:type="FileBackedHTTPMetadataProvider"
             backingFile="%{idp.home}/metadata/idem-test-metadata-sha256.xml"
-            metadataURL="http://www.garr.it/idem-metadata/idem-test-metadata-sha256.xml">
+            metadataURL="http://md.idem.garr.it/metadata/idem-test-metadata-sha256.xml">
 
             <!--
                 Verify the signature on the root element of the metadata aggregate
