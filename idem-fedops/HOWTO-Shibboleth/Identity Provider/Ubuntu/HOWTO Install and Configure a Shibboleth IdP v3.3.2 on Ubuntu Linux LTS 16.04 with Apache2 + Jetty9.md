@@ -706,7 +706,6 @@
             <MetadataFilter xsi:type="EntityRoleWhiteList">
               <RetainedRole>md:SPSSODescriptor</RetainedRole>
             </MetadataFilter>
-         
       </MetadataProvider>
       ```
 
