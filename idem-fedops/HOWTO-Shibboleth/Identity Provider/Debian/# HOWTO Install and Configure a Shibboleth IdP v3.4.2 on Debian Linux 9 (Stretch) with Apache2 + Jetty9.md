@@ -698,7 +698,8 @@
 	              <RetainedRole>md:SPSSODescriptor</RetainedRole>
 	            </MetadataFilter>
 	      </MetadataProvider>
-      </MetadataProviders>
+
+      </MetadataProvider>
       ```
 
     * Retrieve the Federation Certificate used to verify its signed metadata:
