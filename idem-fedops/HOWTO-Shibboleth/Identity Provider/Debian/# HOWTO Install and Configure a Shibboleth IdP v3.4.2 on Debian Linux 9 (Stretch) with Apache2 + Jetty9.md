@@ -522,7 +522,6 @@
 
        ```xml
        idp.cookie.secure = true
-       idp.session.StorageService = shibboleth.JPAStorageService
        idp.consent.StorageService = shibboleth.JPAStorageService
        idp.replayCache.StorageService = shibboleth.JPAStorageService
        idp.artifact.StorageService = shibboleth.JPAStorageService
