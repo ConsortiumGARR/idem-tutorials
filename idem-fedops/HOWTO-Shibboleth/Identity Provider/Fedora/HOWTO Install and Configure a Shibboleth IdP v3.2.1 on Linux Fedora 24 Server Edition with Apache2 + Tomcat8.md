@@ -410,7 +410,6 @@
      * ```vim /opt/shibboleth-idp/conf/idp.properties```
 
        ```xml
-       idp.session.StorageService = shibboleth.JPAStorageService
        idp.consent.StorageService = shibboleth.JPAStorageService
        idp.replayCache.StorageService = shibboleth.JPAStorageService
        idp.artifact.StorageService = shibboleth.JPAStorageService
