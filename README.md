@@ -1,5 +1,5 @@
 # idem-tutorials
-These GitHub Repository will contain and maintain the step-by-step tutorials provided by IDEM GARR AAI and its users.
+These GitHub Repository contains step-by-step tutorials on Identity and Service Providers provided by the IDEM Federation Operator and the IDEM Community.
 
 
 ## IDEM Federation Operators HOWTOs
