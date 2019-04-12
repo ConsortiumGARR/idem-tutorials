@@ -40,6 +40,10 @@ These GitHub Repository contains step-by-step tutorials on Identity and Service 
 
 * [HOWTO Obtain useful data for statistic purposes from Shibboleth IDP Audit Logs](https://github.com/ConsortiumGARR/idem-tutorials/blob/master/idem-fedops/HOWTO-Statistics/HOWTO%20Obtain%20useful%20data%20for%20statistic%20purposes%20from%20Shibboleth%20IDP%20Audit%20Logs.md)
 
+#### OpenLDAP
+
+* [HOWTO Install and Configure IDM with OpenLDAP](https://github.com/ConsortiumGARR/idem-tutorials/blob/master/idem-fedops/miscellaneous/HOWTO%20Install%20and%20Configure%20IDM%20with%20OpenLDAP.md#howto-install-and-configure-idm-with-openldap)
+
 ## IDEM Community Users HOWTOs
 
 #### Shibboleth
