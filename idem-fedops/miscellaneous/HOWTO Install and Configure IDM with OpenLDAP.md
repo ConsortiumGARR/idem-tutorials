@@ -1,0 +1,189 @@
+# HOWTO Install and Configure IDM with OpenLDAP
+
+## Requirements
+* Debian 9 (Stretch)
+
+## Installation
+
+1. System Update:
+	* `sudo apt update ; sudo apt upgrade`
+
+2. Automate SLAPD installation (Change all "_CHANGEME" values):
+	* `sudo apt install debconf-utils`
+	* `sudo vim /root/debconf-slapd.conf`
+
+	  ```bash
+      slapd slapd/password1 password <LDAP-ROOT-PW_CHANGEME>
+      slapd slapd/password2 password <LDAP-ROOT-PW_CHANGEME>
+	  slapd slapd/move_old_database boolean true
+	  slapd slapd/domain string <INSTITUTE-DOMAIN_CHANGEME>
+	  slapd shared/organization string <ORGANIZATION-NAME_CHANGE>
+	  slapd slapd/no_configuration boolean false
+	  slapd slapd/purge_database boolean false
+	  slapd slapd/allow_ldap_v2 boolean false
+	  slapd slapd/backend select MDB
+      ```
+	* `cat /root/debconf-slapd.conf | debconf-set-selections`
+	
+    **NOTES**: From now until the end of this HOWTO, we'll consider that:
+    * `<LDAP-ROOT-PW_CHANGEME>` ==> `ciaoldap`
+    * `<INSTITUTE-DOMAIN_CHANGEME>` ==> `example.org`
+    * `<ORGANIZATION-NAME_CHANGE>` ==> `Example Org`
+
+3. Install require package:
+	* `sudo apt install slapd ldap-utils ldapscripts`
+    
+4. Create Credentials:
+	* Self Signed Credentials (2048 bit - 3 years before expiration):
+
+		* `openssl req -newkey rsa:2048 -x509 -nodes -out /etc/ldap/ldap-ssl.crt -keyout /etc/ldap/ldap-ssl.key -days 1095`
+        
+        * `chown openldap:openldap /etc/ldap/ldap-ssl.crt`
+        
+        * `chown openldap:openldap /etc/ldap/ldap-ssl.key`
+      
+    * Signed Credentials:
+      
+		`openssl req -new -newkey rsa:2048 -nodes -out /etc/ssl/certs/ldap-ssl.csr -keyout /etc/ssl/private/ldap-ssl.key -subj "/C=IT/ST=/L=Rome/O=Consortium GARR/CN=ldap.example.org"`
+        
+   **NOTES**: This HOWTO will use Self Signed Credentials for LDAP
+
+5. Enable SSL for LDAP:
+    * `sudo vim /etc/ldap/ldap.conf`
+
+       ```bash
+       TLS_CACERT      /etc/ldap/ldap-ssl.crt
+       ```
+	  * `sudo chown openldap:openldap /etc/ldap/ldap.conf`
+
+   **NOTES**: Be sure to have set the correct FQDN on your `/etc/hosts` file
+
+6. Restart OpenLDAP:
+	* `sudo service slapd restart`
+
+7. Configure LDAP for SSL:
+	* `sudo vim /etc/ldap/olcTLS.ldif`
+
+      ```bash
+      dn: cn=config
+      changetype: modify
+      replace: olcTLSCACertificateFile
+      olcTLSCACertificateFile: /etc/ldap/ldap-ssl.crt
+      -
+      replace: olcTLSCertificateFile
+      olcTLSCertificateFile: /etc/ldap/ldap-ssl.crt
+      -
+      replace: olcTLSCertificateKeyFile
+      olcTLSCertificateKeyFile: /etc/ldap/ldap-ssl.key
+      ```
+	* `sudo ldapmodify -Y EXTERNAL -H ldapi:/// -f /etc/ldap/olcTLS.ldif`
+
+8. Create the 2 main branches, 'main' and 'groups', with:
+	* `mkdir /etc/ldap/scratch`
+    * `vim /etc/ldap/scratch/add_ou.ldif`
+   
+      ```bash
+      dn: ou=people,dc=example,dc=org
+	  objectClass: organizationalUnit
+	  objectClass: top
+ 	  ou: People
+
+	  dn: ou=groups,dc=example,dc=org
+	  objectClass: organizationalUnit
+	  objectClass: top
+	  ou: Groups
+      ```
+    * `sudo ldapadd -x -D 'cn=admin,dc=example,dc=org' -w ciaoldap -H ldapi:/// -f /etc/ldap/scratch/add_ou.ldif`
+    * Verify with: `sudo ldapsearch -x -b dc=example,dc=org`
+
+9.  Install needed schemas (eduPerson, SCHAC, Password Policy):
+	* `cd /etc/ldap/schema`
+	* `wget https://raw.githubusercontent.com/malavolti/ansible-shibboleth/master/roles/openldap/files/eduperson-201602.ldif -O eduperson.ldif`
+	* `wget https://raw.githubusercontent.com/malavolti/ansible-shibboleth/master/roles/openldap/files/schac-20150413.ldif -O schac.ldif`
+	* `sudo ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/ldap/schema/eduperson.ldif`
+	* `sudo ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/ldap/schema/schac.ldif`
+	* `sudo ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/ldap/schema/ppolicy.ldif`
+	* Verify with: `ldapsearch -Q -LLL -Y EXTERNAL -H ldapi:/// -b cn=schema,cn=config dn`
+
+10. Improve performance:
+	* `sudo vim /etc/ldap/scratch/olcDbIndex.ldif`
+
+	  ```bash
+      dn: olcDatabase={1}mdb,cn=config
+      changetype: modify
+      replace: olcDbIndex
+      olcDbIndex: objectClass eq
+      olcDbIndex: member eq
+      olcDbIndex: cn pres,eq,sub
+      olcDbIndex: ou pres,eq,sub
+      olcDbIndex: uid pres,eq
+      olcDbIndex: entryUUID eq
+      olcDbIndex: sn pres,eq,sub
+      olcDbIndex: mail pres,eq,sub
+      ```
+
+   * `sudo ldapmodify -Y EXTERNAL -H ldapi:/// -f /etc/ldap/scratch/olcDbIndex.ldif`
+
+11. Configure Logging:
+    * `sudo mkdir /var/log/slapd`
+	* `sudo vim /etc/rsyslog.d/99-slapd.conf`
+
+	  ```bash
+      local4.* /var/log/slapd/slapd.log
+      ```
+    * `sudo vim /etc/ldap/scratch/olcLogLevelStats.ldif`
+
+      ```bash
+      dn: cn=config
+      changeType: modify
+      replace: olcLogLevel
+      olcLogLevel: stats
+      ```
+    * `sudo ldapmodify -Y EXTERNAL -H ldapi:/// -f /etc/ldap/scratch/olcLogLevelStats.ldif`
+    * `sudo service rsyslog restart`
+    * `sudo service slapd restart`
+
+
+12. Configure openLDAP olcSizeLimit:
+    * `sudo vim /etc/ldap/scratch/olcSizeLimit.ldif`
+
+      ```bash
+      dn: cn=config
+      changetype: modify
+      replace: olcSizeLimit
+      olcSizeLimit: unlimited
+
+      dn: olcDatabase={-1}frontend,cn=config
+      changetype: modify
+      replace: olcSizeLimit
+      olcSizeLimit: unlimited
+      ```
+    * `sudo ldapmodify -Y EXTERNAL -H ldapi:/// -f /etc/ldap/scratch/olcSizeLimit.ldif`
+ 
+ 13. Add your first user:
+	* `sudo vim /etc/ldap/scratch/user1.ldif`
+
+	  ```bash
+      # USERNAME: user1 , PASSWORD: ciaouser1
+      # Generate a new password with: sudo slappasswd -s <newPassword>
+      dn: uid=user1,ou=people,dc=example,dc=org
+      changetype: add
+      objectClass: inetOrgPerson
+      objectClass: eduPerson
+      objectClass: schacPersonalCharacteristics
+      objectClass: schacContactLocation
+      uid: user1
+      sn: User1
+      givenName: Test
+      cn: Test User1
+      displayName: Test User1
+      preferredLanguage: it
+      userPassword: {SSHA}u5tYgO6iVerMuuMJBsYnPHM+70ammhnj
+      mail: test.user1@garr.it
+      eduPersonAffiliation: student
+      eduPersonAffiliation: staff
+      eduPersonAffiliation: member
+      schacHomeOrganization: example.org
+      schacHomeOrganizationType: urn:mace:terena.org:schac:homeOrganizationType:it:university
+      ```
+    * `sudo ldapadd -D cn=admin,dc=example,dc=org -w ciaoldap -f /etc/ldap/scratch/user1.ldif`
