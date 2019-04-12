@@ -182,15 +182,16 @@
 
 2. Download Federation Metadata Signing Certificate:
    * ```cd /etc/shibboleth/```
-   * ```wget https://www.idem.garr.it/documenti/doc_download/321-idem-metadata-signer-2019 -O idem_signer.pem```
+   * ```wget https://md.idem.garr.it/certs/idem-signer-20220121.pem -O federation-cert.pem```
 
-   * Check the validity:
-     *  ```openssl x509 -in idem_signer.pem -fingerprint -sha1 -noout```
+    * Check the validity:
+      *  ```cd /etc/shibboleth```
+      *  ```openssl x509 -in federation-cert.pem -fingerprint -sha1 -noout```
        
-        (sha1: 2F:F8:24:78:6A:A9:2D:91:29:19:2F:7B:33:33:FF:59:45:C1:7C:C8)
-     *  ```openssl x509 -in federation-cert.pem -fingerprint -md5 -noout```
+         (sha1: D1:68:6C:32:A4:E3:D4:FE:47:17:58:E7:15:FC:77:A8:44:D8:40:4D)
+      *  ```openssl x509 -in federation-cert.pem -fingerprint -md5 -noout```
 
-        (md5: AA:A7:CD:41:2D:3E:B7:F6:02:8A:D3:62:CD:21:F7:DE)
+         (md5: 48:3B:EE:27:0C:88:5D:A3:E7:0B:7C:74:9D:24:24:E0)
 
 3. Edit ```shibboleth2.xml``` opportunely:
    * ```vim /etc/shibboleth/shibboleth2.xml```
@@ -208,8 +209,8 @@
         SAML2
      </SSO>
      ...
-     <MetadataProvider type="XML" uri="http://www.garr.it/idem-metadata/idem-test-metadata-sha256.xml" legacyOrgName="true" backingFilePath="idem-test-metadata-sha256.xml" reloadInterval="600">
-           <MetadataFilter type="Signature" certificate="idem_signer.pem"/>
+     <MetadataProvider type="XML" uri="http://md.idem.garr.it/metadata/idem-test-metadata-sha256.xml" legacyOrgName="true" backingFilePath="idem-test-metadata-sha256.xml" reloadInterval="600">
+           <MetadataFilter type="Signature" certificate="federation-cert.pem"/>
            <MetadataFilter type="RequireValidUntil" maxValidityInterval="864000" />
      </MetadataProvider>
      ```

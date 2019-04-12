@@ -515,7 +515,6 @@
      * ```vim /opt/shibboleth-idp/conf/idp.properties```
 
        ```xml
-       idp.session.StorageService = shibboleth.JPAStorageService
        idp.consent.StorageService = shibboleth.JPAStorageService
        idp.replayCache.StorageService = shibboleth.JPAStorageService
        idp.artifact.StorageService = shibboleth.JPAStorageService
@@ -682,7 +681,7 @@
             id="URLMD-IDEM-Federation"
             xsi:type="FileBackedHTTPMetadataProvider"
             backingFile="%{idp.home}/metadata/idem-test-metadata-sha256.xml"
-            metadataURL="http://www.garr.it/idem-metadata/idem-test-metadata-sha256.xml">
+            metadataURL="http://md.idem.garr.it/metadata/idem-test-metadata-sha256.xml">
 
             <!--
                 Verify the signature on the root element of the metadata aggregate
@@ -704,16 +703,16 @@
       ```
 
     * Retrieve the Federation Certificate used to verify its signed metadata:
-      *  ```wget https://www.idem.garr.it/documenti/doc_download/321-idem-metadata-signer-2019 -O /opt/shibboleth-idp/metadata/federation-cert.pem```
+      *  ```wget https://md.idem.garr.it/certs/idem-signer-20220121.pem -O /opt/shibboleth-idp/metadata/federation-cert.pem```
 
     * Check the validity:
       *  ```cd /opt/shibboleth-idp/metadata```
       *  ```openssl x509 -in federation-cert.pem -fingerprint -sha1 -noout```
        
-         (sha1: 2F:F8:24:78:6A:A9:2D:91:29:19:2F:7B:33:33:FF:59:45:C1:7C:C8)
+         (sha1: D1:68:6C:32:A4:E3:D4:FE:47:17:58:E7:15:FC:77:A8:44:D8:40:4D)
       *  ```openssl x509 -in federation-cert.pem -fingerprint -md5 -noout```
 
-         (md5: AA:A7:CD:41:2D:3E:B7:F6:02:8A:D3:62:CD:21:F7:DE)
+         (md5: 48:3B:EE:27:0C:88:5D:A3:E7:0B:7C:74:9D:24:24:E0)
   
 18. Reload service with id ```shibboleth.MetadataResolverService``` to retrieve the Federation Metadata:
     *  ```cd /opt/shibboleth-idp/bin```

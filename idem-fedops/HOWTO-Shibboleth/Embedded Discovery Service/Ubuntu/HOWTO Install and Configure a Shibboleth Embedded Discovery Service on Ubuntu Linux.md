@@ -29,11 +29,11 @@ The EDS is a set of Javascript and CSS files, so installing it and using it is s
 
 2. `cd /usr/local/src`
 
-3. `wget https://shibboleth.net/downloads/embedded-discovery-service/1.2.0/shibboleth-embedded-ds-1.2.0.tar.gz -O shibboleth-eds.tar.gz`
+3. `wget https://shibboleth.net/downloads/embedded-discovery-service/1.2.1/shibboleth-embedded-ds-1.2.1.tar.gz -O shibboleth-eds.tar.gz`
 
 4. `tar xzf shibboleth-eds.tar.gz`
 
-5. `cd shibboleth-embedded-ds-1.2.0`
+5. `cd shibboleth-embedded-ds-1.2.1 `
 
 6. `sudo apt install make ; make install`
 

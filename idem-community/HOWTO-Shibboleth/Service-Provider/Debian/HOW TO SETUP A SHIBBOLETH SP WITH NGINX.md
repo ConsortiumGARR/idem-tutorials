@@ -291,8 +291,8 @@ Insert idem test wayf:
 ```
 Add metadataprovider:
 ```bash
-<MetadataProvider type="XML" uri="http://www.garr.it/idem-metadata/idem-test-metadata-sha256.xml" backingFilePath="idem-test-metadata-sha256.xml" reloadInterval="7200">
-   <MetadataFilter type="Signature" certificate="idem_signer_2019.pem"/>
+<MetadataProvider type="XML" uri="http://md.idem.garr.it/metadata/idem-test-metadata-sha256.xml" backingFilePath="idem-test-metadata-sha256.xml" reloadInterval="7200">
+   <MetadataFilter type="Signature" certificate="federation-cert.pem"/>
    <MetadataFilter type="RequireValidUntil" maxValidityInterval="864000" />
    <MetadataFilter type="EntityRoleWhiteList">
       <RetainedRole>md:IDPSSODescriptor</RetainedRole>
@@ -307,9 +307,9 @@ Change Sessions in this way:
 ```
 Download idem signer and change permission:
 ```bash
-wget https://www.idem.garr.it/documenti/doc_download/321-idem-metadata-signer-2019 -O /etc/shibboleth/idem_signer_2019.pem
+wget https://md.idem.garr.it/certs/idem-signer-20220121.pem -O /etc/shibboleth/federation-cert.pem
 
-chmod 444 /etc/shibboleth/idem_signer_2019.pem
+chmod 444 /etc/shibboleth/federation-cert.pem
 ```
 Restart all services using the following script:
 ```
