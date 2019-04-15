@@ -4,6 +4,10 @@
 
 1. [Requirements](#requirements)
 2. [Installation](#installation)
+3. [Configuration](#configuration)
+4. [PhpLdapAdmin PLA](#phpldapadmin-pla)
+   1. [PLA Installation](#pla-installation)
+   2. [PLA Configuration](#pla-configuration)
 
 ## Requirements
 * Debian 9 (Stretch)
@@ -66,7 +70,9 @@
 6. Restart OpenLDAP:
    * `sudo service slapd restart`
 
-7. Configure LDAP for SSL:
+## Configuration
+
+1. Configure LDAP for SSL:
    * `sudo vim /etc/ldap/olcTLS.ldif`
 
       ```bash
@@ -83,7 +89,7 @@
       ```
    * `sudo ldapmodify -Y EXTERNAL -H ldapi:/// -f /etc/ldap/olcTLS.ldif`
 
-8. Create the 2 main branches, 'main' and 'groups', with:
+2. Create the 2 main branches, 'main' and 'groups', with:
    * `mkdir /etc/ldap/scratch`
    * `vim /etc/ldap/scratch/add_ou.ldif`
    
@@ -102,7 +108,7 @@
     * `sudo ldapadd -x -D 'cn=admin,dc=example,dc=org' -w ciaoldap -H ldapi:/// -f /etc/ldap/scratch/add_ou.ldif`
     * Verify with: `sudo ldapsearch -x -b dc=example,dc=org`
 
-9. Install needed schemas (eduPerson, SCHAC, Password Policy):
+3. Install needed schemas (eduPerson, SCHAC, Password Policy):
    * `cd /etc/ldap/schema`
    * `wget https://raw.githubusercontent.com/malavolti/ansible-shibboleth/master/roles/openldap/files/eduperson-201602.ldif -O eduperson.ldif`
    * `wget https://raw.githubusercontent.com/malavolti/ansible-shibboleth/master/roles/openldap/files/schac-20150413.ldif -O schac.ldif`
@@ -111,7 +117,7 @@
    * `sudo ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/ldap/schema/ppolicy.ldif`
    * Verify with: `ldapsearch -Q -LLL -Y EXTERNAL -H ldapi:/// -b cn=schema,cn=config dn`
 
-10. Improve performance:
+4. Improve performance:
    * `sudo vim /etc/ldap/scratch/olcDbIndex.ldif`
 
      ```bash
@@ -130,7 +136,7 @@
 
    * `sudo ldapmodify -Y EXTERNAL -H ldapi:/// -f /etc/ldap/scratch/olcDbIndex.ldif`
 
-11. Configure Logging:
+5. Configure Logging:
    * `sudo mkdir /var/log/slapd`
    * `sudo vim /etc/rsyslog.d/99-slapd.conf`
 
@@ -152,7 +158,7 @@
    * `sudo service slapd restart`
 
 
-12. Configure openLDAP olcSizeLimit:
+6. Configure openLDAP olcSizeLimit:
    * `sudo vim /etc/ldap/scratch/olcSizeLimit.ldif`
 
      ```bash
@@ -169,7 +175,7 @@
 
    * `sudo ldapmodify -Y EXTERNAL -H ldapi:/// -f /etc/ldap/scratch/olcSizeLimit.ldif`
  
- 13. Add your first user:
+7. Add your first user:
    * `sudo vim /etc/ldap/scratch/user1.ldif`
 
      ```bash
@@ -197,3 +203,23 @@
      ```
 
     * `sudo ldapadd -D cn=admin,dc=example,dc=org -w ciaoldap -f /etc/ldap/scratch/user1.ldif`
+
+# PhpLdapAdmin (PLA)
+
+## PLA Installation
+
+1. Install requiremets:
+   * `sudo apt install apache2-utils python-passlib gettext php php-ldap php-xml`
+
+2. Download and extract PLA into `/opt` directory:
+   * `cd /var/www/html ; wget https://github.com/FST777/phpLDAPadmin/archive/v2.0.0-alpha.tar.gz -O phpldapadmin.tar.gz`
+   * `tar -xzf phpldapadmin.tar.gz ; mv phpLDAPadmin-2.0.0-alpha phpldapadmin`
+
+3. Create PLA configuration file:
+   * `cd /var/www/html/phpldapadmin/config`
+   * `cp config.php.example config.php`
+
+4. Restart Apache2:
+   * `service apache2 restart`
+   
+# PLA Configuration
