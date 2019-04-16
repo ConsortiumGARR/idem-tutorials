@@ -208,18 +208,29 @@
 
 ## PLA Installation
 
-1. Install requiremets:
+1. Install requirements:
    * `sudo apt install apache2-utils python-passlib gettext php php-ldap php-xml`
 
 2. Download and extract PLA into `/opt` directory:
    * `cd /var/www/html ; wget https://github.com/FST777/phpLDAPadmin/archive/v2.0.0-alpha.tar.gz -O phpldapadmin.tar.gz`
-   * `tar -xzf phpldapadmin.tar.gz ; mv phpLDAPadmin-2.0.0-alpha phpldapadmin`
+   * `tar -xzf phpldapadmin.tar.gz ; mv phpLDAPadmin-2.0.0-alpha pla`
 
 3. Create PLA configuration file:
-   * `cd /var/www/html/phpldapadmin/config`
-   * `cp config.php.example config.php`
+   * `cd /var/www/html/pla/config`
+   * `sudo cp config.php.example config.php`
 
-4. Restart Apache2:
-   * `service apache2 restart`
+4. Enable LDAP Apache module:
+   * `sudo a2enmod ldap`
+
+5. Restart Apache2:
+   * `sudo systemctl restart apache2`
+   
+6. Login on PLA:
+   * Navigate to `http://<YOUR-LDAP-FQDN>/pla`
+   * Login with:
+     * Username: `cn=admin,dc=example,dc=org`
+     * Password: `ciaoldap`
    
 # PLA Configuration
+
+1. Edit `/var/www/html/pla/config/config.php` to configure PhpLdapAdmin.
