@@ -65,7 +65,7 @@
    * CTRL+W (search)
    * CTRL+R (replace)
    * Text to search: '`archive.ubuntu.com`'
-   * Text to replace: '`mi.mirror.garr.it`'
+   * Text to replace: '`debian.mirror.garr.it`'
    * CTRL+X (save and exit)
    * `apt-get update && apt-get upgrade`
   
