@@ -117,7 +117,56 @@
    * `sudo ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/ldap/schema/ppolicy.ldif`
    * Verify with: `ldapsearch -Q -LLL -Y EXTERNAL -H ldapi:/// -b cn=schema,cn=config dn`
 
-4. Improve performance:
+4. Add MemberOf Configuration:
+   1. `sudo vim /etc/ldap/scratch/add_memberof.ldif`
+   
+      ```bash
+      dn: cn=module,cn=config
+      cn: module
+      objectClass: olcModuleList
+      olcModuleLoad: memberof
+      olcModulePath: /usr/lib/ldap
+
+      dn: olcOverlay={0}memberof,olcDatabase={1}mdb,cn=config
+      objectClass: olcConfig
+      objectClass: olcMemberOf
+      objectClass: olcOverlayConfig
+      objectClass: top
+      olcOverlay: memberof
+      olcMemberOfDangling: ignore
+      olcMemberOfRefInt: TRUE
+      olcMemberOfGroupOC: groupOfNames
+      olcMemberOfMemberAD: member
+      olcMemberOfMemberOfAD: memberOf
+      ```
+
+   2. `sudo ldapadd -Q -Y EXTERNAL -H ldapi:/// -f /etc/ldap/scratch/add_memberof.ldif`
+   
+   3. `sudo vim /etc/ldap/scratch/add_refint1.ldif`
+   
+      ```bash
+      dn: cn=module{1},cn=config
+      add: olcmoduleload
+      olcmoduleload: refint   
+      ```
+   
+   4. `sudo ldapmodify -Q -Y EXTERNAL -H ldapi:/// -f /etc/ldap/scratch/add_refint1.ldif` 
+   
+   5. `sudo vim /etc/ldap/scratch/add_refint2.ldif`
+   
+      ```bash
+      dn: olcOverlay={1}refint,olcDatabase={1}mdb,cn=config
+      objectClass: olcConfig
+      objectClass: olcOverlayConfig
+      objectClass: olcRefintConfig
+      objectClass: top
+      olcOverlay: {1}refint
+      olcRefintAttribute: memberof member manager owner
+      ```
+   
+   6. `sudo ldapmodify -Q -Y EXTERNAL -H ldapi:/// -f /etc/ldap/scratch/add_refint2.ldif`
+   
+5. Improve performance:
    * `sudo vim /etc/ldap/scratch/olcDbIndex.ldif`
 
      ```bash
@@ -136,7 +185,7 @@
 
    * `sudo ldapmodify -Y EXTERNAL -H ldapi:/// -f /etc/ldap/scratch/olcDbIndex.ldif`
 
-5. Configure Logging:
+6. Configure Logging:
    * `sudo mkdir /var/log/slapd`
    * `sudo vim /etc/rsyslog.d/99-slapd.conf`
 
@@ -158,7 +207,7 @@
    * `sudo service slapd restart`
 
 
-6. Configure openLDAP olcSizeLimit:
+7. Configure openLDAP olcSizeLimit:
    * `sudo vim /etc/ldap/scratch/olcSizeLimit.ldif`
 
      ```bash
@@ -175,7 +224,7 @@
 
    * `sudo ldapmodify -Y EXTERNAL -H ldapi:/// -f /etc/ldap/scratch/olcSizeLimit.ldif`
  
-7. Add your first user:
+8. Add your first user:
    * `sudo vim /etc/ldap/scratch/user1.ldif`
 
      ```bash
