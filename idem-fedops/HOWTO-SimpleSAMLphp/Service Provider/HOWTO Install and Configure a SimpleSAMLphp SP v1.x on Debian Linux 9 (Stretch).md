@@ -287,7 +287,18 @@
      );
      ```
 
-   * Go to ```https://sp.example.org/simplesaml/module.php/cron/croninfo.php ``` and copy the content of the crontab file
+   * Go to ```https://sp.example.org/simplesaml/module.php/cron/croninfo.php ``` and copy the content of the crontab file:
+   
+     ```bash
+     # Run cron: [daily]
+     02 0 * * *  root  curl --silent "https://sp.example.org/simplesaml/module.php/cron/cron.php?key=<SECRET>&tag=daily" > /dev/null 2>&1
+
+     # Run cron: [hourly]
+     01 * * * *  root  curl --silent "https://sp.example.org/simplesaml/module.php/cron/cron.php?key=<SECRET>&tag=hourly" > /dev/null 2>&1
+
+     # Run cron: [frequent]
+     */30 * * * *  root  curl --silent "https://sp.example.org/simplesaml/module.php/cron/cron.php?key=<SECRET>&tag=frequent" > /dev/null 2>&1
+     ```
 
    * Paste the content copied to your ```crontab -e``` and change the value "```XXXXXXXXXX```" with "```*/30 * * * *```" under "```[frequent]```" cron.
 
