@@ -293,7 +293,7 @@
      schacHomeOrganizationType: urn:mace:terena.org:schac:homeOrganizationType:it:university
      ```
 
-    * `sudo ldapadd -D cn=admin,dc=example,dc=org -w <LDAP-ROOT-PW_CHANGEME> -f /etc/ldap/scratch/user1.ldif`
+   * `sudo ldapadd -D cn=admin,dc=example,dc=org -w <LDAP-ROOT-PW_CHANGEME> -f /etc/ldap/scratch/user1.ldif`
 
 # PhpLdapAdmin (PLA) - optional
 
