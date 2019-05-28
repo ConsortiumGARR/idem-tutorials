@@ -5,7 +5,7 @@
 1. [Requirements](#requirements)
 2. [Installation](#installation)
 3. [Configuration](#configuration)
-4. [PhpLdapAdmin (PLA) - optional](#phpldapadmin-pla-optional)
+4. [PhpLdapAdmin (PLA) - optional](#phpldapadmin-pla---optional)
    1. [PLA Installation](#pla-installation)
    2. [PLA Configuration](#pla-configuration)
 
@@ -45,15 +45,15 @@
 4. Create Credentials:
    * Self Signed Credentials (2048 bit - 3 years before expiration):
 
-      * `openssl req -newkey rsa:2048 -x509 -nodes -out /etc/ldap/ldap-ssl.crt -keyout /etc/ldap/ldap-ssl.key -days 1095`
+      * `openssl req -newkey rsa:2048 -x509 -nodes -out /etc/ldap/ldap.example.org.crt -keyout /etc/ldap/ldap.example.org.key -days 1095`
         
-      * `chown openldap:openldap /etc/ldap/ldap-ssl.crt`
+      * `chown openldap:openldap /etc/ldap/ldap.example.org.crt`
         
-      * `chown openldap:openldap /etc/ldap/ldap-ssl.key`
+      * `chown openldap:openldap /etc/ldap/ldap.example.org.key`
       
    * Signed Credentials:
       
-      * `openssl req -new -newkey rsa:2048 -nodes -out /etc/ssl/certs/ldap-ssl.csr -keyout /etc/ssl/private/ldap-ssl.key -subj "/C=IT/ST=/L=Rome/O=Consortium GARR/CN=ldap.example.org"`
+      * `openssl req -new -newkey rsa:2048 -nodes -out /etc/ssl/certs/ldap.example.org.csr -keyout /etc/ssl/private/ldap.example.org.key -subj "/C=IT/ST=/L=Rome/O=Consortium GARR/CN=ldap.example.org"`
         
    **NOTES**: This HOWTO will use Self Signed Credentials for LDAP
 
@@ -61,7 +61,7 @@
    * `sudo vim /etc/ldap/ldap.conf`
 
        ```bash
-       TLS_CACERT      /etc/ldap/ldap-ssl.crt
+       TLS_CACERT      /etc/ldap/ldap.example.org.crt
        ```
    * `sudo chown openldap:openldap /etc/ldap/ldap.conf`
 
@@ -79,13 +79,13 @@
       dn: cn=config
       changetype: modify
       replace: olcTLSCACertificateFile
-      olcTLSCACertificateFile: /etc/ldap/ldap-ssl.crt
+      olcTLSCACertificateFile: /etc/ldap/ldap.example.org.crt
       -
       replace: olcTLSCertificateFile
-      olcTLSCertificateFile: /etc/ldap/ldap-ssl.crt
+      olcTLSCertificateFile: /etc/ldap/ldap.example.org.crt
       -
       replace: olcTLSCertificateKeyFile
-      olcTLSCertificateKeyFile: /etc/ldap/ldap-ssl.key
+      olcTLSCertificateKeyFile: /etc/ldap/ldap.example.org.key
       ```
    * `sudo ldapmodify -Y EXTERNAL -H ldapi:/// -f /etc/ldap/olcTLS.ldif`
 
@@ -105,7 +105,7 @@
       ou: Groups
       ```
 
-    * `sudo ldapadd -x -D 'cn=admin,dc=example,dc=org' -w ciaoldap -H ldapi:/// -f /etc/ldap/scratch/add_ou.ldif`
+    * `sudo ldapadd -x -D 'cn=admin,dc=example,dc=org' -w <LDAP-ROOT-PW_CHANGEME> -H ldapi:/// -f /etc/ldap/scratch/add_ou.ldif`
     * Verify with: `sudo ldapsearch -x -b dc=example,dc=org`
 
 3. Install needed schemas (eduPerson, SCHAC, Password Policy):
@@ -243,7 +243,7 @@
      displayName: Test User1
      preferredLanguage: it
      userPassword: {SSHA}u5tYgO6iVerMuuMJBsYnPHM+70ammhnj
-     mail: test.user1@garr.it
+     mail: test.user1@example.org
      eduPersonAffiliation: student
      eduPersonAffiliation: staff
      eduPersonAffiliation: member
@@ -251,7 +251,7 @@
      schacHomeOrganizationType: urn:mace:terena.org:schac:homeOrganizationType:it:university
      ```
 
-    * `sudo ldapadd -D cn=admin,dc=example,dc=org -w ciaoldap -f /etc/ldap/scratch/user1.ldif`
+    * `sudo ldapadd -D cn=admin,dc=example,dc=org -w <LDAP-ROOT-PW_CHANGEME> -f /etc/ldap/scratch/user1.ldif`
 
 # PhpLdapAdmin (PLA) - optional
 
@@ -278,7 +278,7 @@
    * Navigate to `http://<YOUR-LDAP-FQDN>/pla`
    * Login with:
      * Username: `cn=admin,dc=example,dc=org`
-     * Password: `ciaoldap`
+     * Password: `<LDAP-ROOT-PW_CHANGEME>`
    
 # PLA Configuration
 
