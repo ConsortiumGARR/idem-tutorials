@@ -89,7 +89,7 @@
       ```
    * `sudo ldapmodify -Y EXTERNAL -H ldapi:/// -f /etc/ldap/olcTLS.ldif`
 
-2. Create the 2 main branches, 'main' and 'groups', with:
+2. Create the 3 main branches, 'main', 'groups' and 'system', with:
    * `mkdir /etc/ldap/scratch`
    * `vim /etc/ldap/scratch/add_ou.ldif`
    
@@ -103,12 +103,54 @@
       objectClass: organizationalUnit
       objectClass: top
       ou: Groups
+      
+      dn: ou=system,dc=example,dc=org
+      objectClass: organizationalUnit
+      objectClass: top
+      ou: System
       ```
 
     * `sudo ldapadd -x -D 'cn=admin,dc=example,dc=org' -w <LDAP-ROOT-PW_CHANGEME> -H ldapi:/// -f /etc/ldap/scratch/add_ou.ldif`
+    
     * Verify with: `sudo ldapsearch -x -b dc=example,dc=org`
+    
+3. Create the 'idpuser' needed to perform "Bind and Search" operations:
+    * `vim /etc/ldap/scratch/add_idpuser.ldif`
+    
+      ```bash
+      dn: cn=idpuser,ou=system,dc=example,dc=org
+      objectClass: inetOrgPerson
+      cn: idpuser
+      sn: idpuser
+      givenName: idpuser
+      userPassword: <INSERT-HERE-IDPUSER-PW>
+      ```
+    * `sudo ldapadd -x -D 'cn=admin,dc=example,dc=org' -w <LDAP-ROOT-PW_CHANGEME> -H ldapi:/// -f /etc/ldap/scratch/add_idpuser.ldif`
+    
+4. Configure OpenLDAP ACL to allow 'idpuser' to perform 'search' on the directory:
+    * Check which configuration your directory has with:
+      `sudo ldapsearch  -Y EXTERNAL -H ldapi:/// -b cn=config 'olcDatabase={1}mdb'`
+      
+    * Configure ACL for 'idpuser' with:
+      `vim /etc/ldap/scratch/olcAcl.ldif`
+      
+      ```bash
+      dn: olcDatabase={1}mdb,cn=config
+      changeType: modify
+      replace: olcAccess
+      olcAccess: {0}to * by dn.exact=gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth manage by * break
+      olcAccess: {1}to attrs=userPassword by self write by anonymous auth by dn="cn=admin,dc=example,dc=org" write by * none
+      olcAccess: {2}to dn.base="" by anonymous auth by * read
+      olcAccess: {3}to dn.base="cn=Subschema" by * read
+      olcAccess: {4}to * by dn.exact="cn=idpuser,ou=system,dc=example,dc=org" read by anonymous auth by self read
+      ```
 
-3. Install needed schemas (eduPerson, SCHAC, Password Policy):
+    * `sudo ldapmodify  -Y EXTERNAL -H ldapi:/// -f /etc/ldap/scratch/olcAcl.ldif`
+
+5. Check that 'idpuser' can search other users (when users exist):
+    * `sudo ldapsearch -x -D 'cn=idpuser,ou=system,dc=example,dc=org' -w <INSERT-HERE-IDPUSER-PW> -b "ou=people,dc=example,dc=org"`
+
+6. Install needed schemas (eduPerson, SCHAC, Password Policy):
    * `cd /etc/ldap/schema`
    * `wget https://raw.githubusercontent.com/malavolti/ansible-shibboleth/master/roles/openldap/files/eduperson-201602.ldif -O eduperson.ldif`
    * `wget https://raw.githubusercontent.com/malavolti/ansible-shibboleth/master/roles/openldap/files/schac-20150413.ldif -O schac.ldif`
@@ -117,7 +159,7 @@
    * `sudo ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/ldap/schema/ppolicy.ldif`
    * Verify with: `ldapsearch -Q -LLL -Y EXTERNAL -H ldapi:/// -b cn=schema,cn=config dn`
 
-4. Add MemberOf Configuration:
+7. Add MemberOf Configuration:
    1. `sudo vim /etc/ldap/scratch/add_memberof.ldif`
    
       ```bash
@@ -166,7 +208,7 @@
    
    6. `sudo ldapmodify -Q -Y EXTERNAL -H ldapi:/// -f /etc/ldap/scratch/add_refint2.ldif`
    
-5. Improve performance:
+8. Improve performance:
    * `sudo vim /etc/ldap/scratch/olcDbIndex.ldif`
 
      ```bash
@@ -185,7 +227,7 @@
 
    * `sudo ldapmodify -Y EXTERNAL -H ldapi:/// -f /etc/ldap/scratch/olcDbIndex.ldif`
 
-6. Configure Logging:
+9. Configure Logging:
    * `sudo mkdir /var/log/slapd`
    * `sudo vim /etc/rsyslog.d/99-slapd.conf`
 
@@ -207,7 +249,7 @@
    * `sudo service slapd restart`
 
 
-7. Configure openLDAP olcSizeLimit:
+10. Configure openLDAP olcSizeLimit:
    * `sudo vim /etc/ldap/scratch/olcSizeLimit.ldif`
 
      ```bash
@@ -224,7 +266,7 @@
 
    * `sudo ldapmodify -Y EXTERNAL -H ldapi:/// -f /etc/ldap/scratch/olcSizeLimit.ldif`
  
-8. Add your first user:
+11. Add your first user:
    * `sudo vim /etc/ldap/scratch/user1.ldif`
 
      ```bash
