@@ -5,7 +5,7 @@
 1. [Requirements](#requirements)
 2. [Installation](#installation)
 3. [Configuration](#configuration)
-4. [PhpLdapAdmin PLA](#phpldapadmin-pla)
+4. [PhpLdapAdmin (PLA) - optional](#phpldapadmin-pla-optional)
    1. [PLA Installation](#pla-installation)
    2. [PLA Configuration](#pla-configuration)
 
@@ -253,7 +253,7 @@
 
     * `sudo ldapadd -D cn=admin,dc=example,dc=org -w ciaoldap -f /etc/ldap/scratch/user1.ldif`
 
-# PhpLdapAdmin (PLA)
+# PhpLdapAdmin (PLA) - optional
 
 ## PLA Installation
 
