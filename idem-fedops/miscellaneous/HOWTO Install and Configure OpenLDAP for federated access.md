@@ -43,7 +43,7 @@
    * `sudo apt install slapd ldap-utils ldapscripts`
     
 4. Create Credentials:
-   * Self Signed Credentials (2048 bit - 3 years before expiration):
+   * Self signed certificate (2048 bit - 3 years before expiration):
 
       * `openssl req -newkey rsa:2048 -x509 -nodes -out /etc/ldap/ldap.example.org.crt -keyout /etc/ldap/ldap.example.org.key -days 1095`
         
@@ -51,7 +51,7 @@
         
       * `chown openldap:openldap /etc/ldap/ldap.example.org.key`
       
-   * Signed Credentials:
+   * Signed certificate:
       
       * `openssl req -new -newkey rsa:2048 -nodes -out /etc/ssl/certs/ldap.example.org.csr -keyout /etc/ssl/private/ldap.example.org.key -subj "/C=IT/ST=/L=Rome/O=Consortium GARR/CN=ldap.example.org"`
         
