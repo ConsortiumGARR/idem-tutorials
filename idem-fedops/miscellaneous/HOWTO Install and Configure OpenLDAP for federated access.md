@@ -42,8 +42,8 @@
 3. Install require package:
    * `sudo apt install slapd ldap-utils ldapscripts`
     
-4. Create Credentials:
-   * Self signed certificate (2048 bit - 3 years before expiration):
+4. Create Certificate/Key:
+   * Self signed (2048 bit - 3 years before expiration):
 
       * `openssl req -newkey rsa:2048 -x509 -nodes -out /etc/ldap/ldap.example.org.crt -keyout /etc/ldap/ldap.example.org.key -days 1095`
         
@@ -51,11 +51,11 @@
         
       * `chown openldap:openldap /etc/ldap/ldap.example.org.key`
       
-   * Signed certificate:
+   * Signed:
       
       * `openssl req -new -newkey rsa:2048 -nodes -out /etc/ssl/certs/ldap.example.org.csr -keyout /etc/ssl/private/ldap.example.org.key -subj "/C=IT/ST=/L=Rome/O=Consortium GARR/CN=ldap.example.org"`
         
-   **NOTES**: This HOWTO will use Self Signed Credentials for LDAP
+   **NOTES**: This HOWTO will use Self Signed Certificate for LDAP
 
 5. Enable SSL for LDAP:
    * `sudo vim /etc/ldap/ldap.conf`
