@@ -1,4 +1,4 @@
-# HOWTO Install and Configure IDM with OpenLDAP
+# HOWTO Install and Configure OpenLDAP for federated access
 
 ## Table of Contents
 
