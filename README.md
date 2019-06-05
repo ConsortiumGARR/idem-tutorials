@@ -43,7 +43,7 @@ These GitHub Repository contains step-by-step tutorials on Identity and Service 
 
 #### OpenLDAP
 
-* [HOWTO Install and Configure IDM with OpenLDAP](https://github.com/ConsortiumGARR/idem-tutorials/blob/master/idem-fedops/miscellaneous/HOWTO%20Install%20and%20Configure%20IDM%20with%20OpenLDAP.md#howto-install-and-configure-idm-with-openldap)
+* [HOWTO Install and Configure OpenLDAP for federated access](https://github.com/ConsortiumGARR/idem-tutorials/blob/master/idem-fedops/miscellaneous/HOWTO%20Install%20and%20Configure%20OpenLDAP%20for%20federated%20access.md#howto-install-and-configure-openldap-for-federated-access)
 
 ## IDEM Community Users HOWTOs
 
