@@ -21,40 +21,41 @@
    * `sudo apt install debconf-utils`
    * `sudo vim /root/debconf-slapd.conf`
 
-     ```bash
-     slapd slapd/password1 password <LDAP-ROOT-PW_CHANGEME>
-     slapd slapd/password2 password <LDAP-ROOT-PW_CHANGEME>
-     slapd slapd/move_old_database boolean true
-     slapd slapd/domain string <INSTITUTE-DOMAIN_CHANGEME>
-     slapd shared/organization string <ORGANIZATION-NAME_CHANGE>
-     slapd slapd/no_configuration boolean false
-     slapd slapd/purge_database boolean false
-     slapd slapd/allow_ldap_v2 boolean false
-     slapd slapd/backend select MDB
-      ```
+    ```bash
+    slapd slapd/password1 password <LDAP-ROOT-PW_CHANGEME>
+    slapd slapd/password2 password <LDAP-ROOT-PW_CHANGEME>
+    slapd slapd/move_old_database boolean true
+    slapd slapd/domain string <INSTITUTE-DOMAIN_CHANGEME>
+    slapd shared/organization string <ORGANIZATION-NAME_CHANGE>
+    slapd slapd/no_configuration boolean false
+    slapd slapd/purge_database boolean false
+    slapd slapd/allow_ldap_v2 boolean false
+    slapd slapd/backend select MDB
+    ```
+
    * `cat /root/debconf-slapd.conf | debconf-set-selections`
-	
+
    **NOTES**: From now until the end of this HOWTO, we'll consider that:
       * `<LDAP-ROOT-PW_CHANGEME>` ==> `ciaoldap`
       * `<INSTITUTE-DOMAIN_CHANGEME>` ==> `example.org`
-      * `<ORGANIZATION-NAME_CHANGE>` ==> `Example Org`
+      * `<ORGANIZATION-NAME_CHANGEME>` ==> `Example Org`
 
-3. Install require package:
+3. Install required package:
    * `sudo apt install slapd ldap-utils ldapscripts`
-    
+
 4. Create Certificate/Key:
    * Self signed (2048 bit - 3 years before expiration):
 
       * `openssl req -newkey rsa:2048 -x509 -nodes -out /etc/ldap/ldap.example.org.crt -keyout /etc/ldap/ldap.example.org.key -days 1095`
-        
+
       * `chown openldap:openldap /etc/ldap/ldap.example.org.crt`
-        
+
       * `chown openldap:openldap /etc/ldap/ldap.example.org.key`
-      
+
    * Signed:
-      
+
       * `openssl req -new -newkey rsa:2048 -nodes -out /etc/ssl/certs/ldap.example.org.csr -keyout /etc/ssl/private/ldap.example.org.key -subj "/C=IT/ST=/L=Rome/O=Consortium GARR/CN=ldap.example.org"`
-        
+
    **NOTES**: This HOWTO will use Self Signed Certificate for LDAP
 
 5. Enable SSL for LDAP:
@@ -92,7 +93,7 @@
 2. Create the 3 main branches, 'main', 'groups' and 'system', with:
    * `mkdir /etc/ldap/scratch`
    * `vim /etc/ldap/scratch/add_ou.ldif`
-   
+
       ```bash
       dn: ou=people,dc=example,dc=org
       objectClass: organizationalUnit
@@ -103,7 +104,7 @@
       objectClass: organizationalUnit
       objectClass: top
       ou: Groups
-      
+
       dn: ou=system,dc=example,dc=org
       objectClass: organizationalUnit
       objectClass: top
@@ -111,12 +112,12 @@
       ```
 
     * `sudo ldapadd -x -D 'cn=admin,dc=example,dc=org' -w <LDAP-ROOT-PW_CHANGEME> -H ldapi:/// -f /etc/ldap/scratch/add_ou.ldif`
-    
+
     * Verify with: `sudo ldapsearch -x -b dc=example,dc=org`
-    
+
 3. Create the 'idpuser' needed to perform "Bind and Search" operations:
     * `vim /etc/ldap/scratch/add_idpuser.ldif`
-    
+
       ```bash
       dn: cn=idpuser,ou=system,dc=example,dc=org
       objectClass: inetOrgPerson
@@ -126,14 +127,14 @@
       userPassword: <INSERT-HERE-IDPUSER-PW>
       ```
     * `sudo ldapadd -x -D 'cn=admin,dc=example,dc=org' -w <LDAP-ROOT-PW_CHANGEME> -H ldapi:/// -f /etc/ldap/scratch/add_idpuser.ldif`
-    
+
 4. Configure OpenLDAP ACL to allow 'idpuser' to perform 'search' on the directory:
     * Check which configuration your directory has with:
       `sudo ldapsearch  -Y EXTERNAL -H ldapi:/// -b cn=config 'olcDatabase={1}mdb'`
-      
+
     * Configure ACL for 'idpuser' with:
       `vim /etc/ldap/scratch/olcAcl.ldif`
-      
+
       ```bash
       dn: olcDatabase={1}mdb,cn=config
       changeType: modify
@@ -161,7 +162,7 @@
 
 7. Add MemberOf Configuration:
    1. `sudo vim /etc/ldap/scratch/add_memberof.ldif`
-   
+
       ```bash
       dn: cn=module,cn=config
       cn: module
@@ -183,19 +184,19 @@
       ```
 
    2. `sudo ldapadd -Q -Y EXTERNAL -H ldapi:/// -f /etc/ldap/scratch/add_memberof.ldif`
-   
+
    3. `sudo vim /etc/ldap/scratch/add_refint1.ldif`
-   
+
       ```bash
       dn: cn=module{1},cn=config
       add: olcmoduleload
       olcmoduleload: refint   
       ```
-   
-   4. `sudo ldapmodify -Q -Y EXTERNAL -H ldapi:/// -f /etc/ldap/scratch/add_refint1.ldif` 
-   
+
+   4. `sudo ldapmodify -Q -Y EXTERNAL -H ldapi:/// -f /etc/ldap/scratch/add_refint1.ldif`
+
    5. `sudo vim /etc/ldap/scratch/add_refint2.ldif`
-   
+
       ```bash
       dn: olcOverlay={1}refint,olcDatabase={1}mdb,cn=config
       objectClass: olcConfig
@@ -205,9 +206,9 @@
       olcOverlay: {1}refint
       olcRefintAttribute: memberof member manager owner
       ```
-   
+
    6. `sudo ldapmodify -Q -Y EXTERNAL -H ldapi:/// -f /etc/ldap/scratch/add_refint2.ldif`
-   
+
 8. Improve performance:
    * `sudo vim /etc/ldap/scratch/olcDbIndex.ldif`
 
@@ -234,7 +235,7 @@
       ```bash
       local4.* /var/log/slapd/slapd.log
       ```
-      
+
    * `sudo vim /etc/ldap/scratch/olcLogLevelStats.ldif`
 
      ```bash
@@ -265,7 +266,7 @@
      ```
 
    * `sudo ldapmodify -Y EXTERNAL -H ldapi:/// -f /etc/ldap/scratch/olcSizeLimit.ldif`
- 
+
 11. Add your first user:
    * `sudo vim /etc/ldap/scratch/user1.ldif`
 
@@ -315,13 +316,13 @@
 
 5. Restart Apache2:
    * `sudo systemctl restart apache2`
-   
+
 6. Login on PLA:
    * Navigate to `http://<YOUR-LDAP-FQDN>/pla`
    * Login with:
      * Username: `cn=admin,dc=example,dc=org`
      * Password: `<LDAP-ROOT-PW_CHANGEME>`
-   
+
 # PLA Configuration
 
 1. Edit `/var/www/html/pla/config/config.php` to configure PhpLdapAdmin.
