@@ -17,7 +17,7 @@
    * `sudo yum upgrade`
 
 2. Install required packages:
-   * `sudo yum install openldap openldap-clients openldap-servers openssl`
+   * `sudo yum install openldap openldap-clients openldap-servers openssl vim`
    * `sudo cp /usr/share/openldap-servers/DB_CONFIG.example /var/lib/ldap/DB_CONFIG`
    * `sudo chown -R ldap:ldap /var/lib/ldap/`
    * `sudo systemctl enable slapd`
@@ -31,7 +31,9 @@
      Re-enter new password: <LDAP-ROOT-PW_CHANGEME>
      {SSHA}nk8A/+uFKfDb1OhaYmPUFlQmWwcdtNF4
      ```
-   * `mkdir /etc/openldap/scratch`
+
+   * `sudo mkdir /etc/openldap/scratch`
+
    * `sudo vim /etc/openldap/scratch/db.ldif`
 
      ```bash
@@ -61,15 +63,15 @@
 4. Create Certificate/Key:
    * Self signed (2048 bit - 3 years before expiration):
 
-     * `openssl req -newkey rsa:2048 -x509 -nodes -out /etc/openldap/ldap.example.org.crt -keyout /etc/openldap/ldap.example.org.key -days 1095`
+     * `sudo openssl req -newkey rsa:2048 -x509 -nodes -out /etc/openldap/ldap.example.org.crt -keyout /etc/openldap/ldap.example.org.key -days 1095`
 
-     * `chown ldap:ldap /etc/openldap/ldap.example.org.crt`
+     * `sudo chown ldap:ldap /etc/openldap/ldap.example.org.crt`
 
-     * `chown ldap:ldap /etc/openldap/ldap.example.org.key`
+     * `sudo chown ldap:ldap /etc/openldap/ldap.example.org.key`
 
    * Signed:
 
-     * `openssl req -new -newkey rsa:2048 -nodes -out /etc/ssl/certs/ldap.example.org.csr -keyout /etc/ssl/private/ldap.example.org.key -subj "/C=FR/ST=/L=Rennes/O=RENATER/CN=ldap.example.org"`
+     * `sudo openssl req -new -newkey rsa:2048 -nodes -out /etc/ssl/certs/ldap.example.org.csr -keyout /etc/ssl/private/ldap.example.org.key -subj "/C=FR/ST=/L=Rennes/O=RENATER/CN=ldap.example.org"`
 
   **NOTES**: This HOWTO will use Self Signed Certificate for LDAP
 
@@ -120,7 +122,7 @@
    * `sudo vim /etc/sysconfig/slapd`
 
      ```bash
-     SLAPD_URLS="ldapi:/// ldaps:///"
+     SLAPD_URLS="ldapi:/// ldap:/// ldaps:///"
      ```
 
    * `sudo systemctl restart slapd`
@@ -165,7 +167,7 @@
 
 6. Create the 'idpuser' needed to perform "Bind and Search" operations:
    * Generate password: `slappasswd`
-   * `vim /etc/openldap/scratch/add_idpuser.ldif`
+   * `sudo vim /etc/openldap/scratch/add_idpuser.ldif`
 
      ```bash
      dn: cn=idpuser,ou=system,dc=example,dc=org
@@ -183,7 +185,7 @@
      `sudo ldapsearch  -Y EXTERNAL -H ldapi:/// -b cn=config 'olcDatabase={2}hdb'`
 
    * Configure ACL for 'idpuser' with:
-     `vim /etc/openldap/scratch/olcAcl.ldif`
+     `sudo vim /etc/openldap/scratch/olcAcl.ldif`
 
       ```bash
       dn: olcDatabase={2}hdb,cn=config
@@ -203,11 +205,11 @@
 
 9. Install needed schemas (eduPerson, SCHAC, Password Policy):
    * `cd /etc/openldap/schema`
-   * `wget https://raw.githubusercontent.com/malavolti/ansible-shibboleth/master/roles/openldap/files/eduperson-201602.ldif -O eduperson.ldif`
-   * `wget https://raw.githubusercontent.com/malavolti/ansible-shibboleth/master/roles/openldap/files/schac-20150413.ldif -O schac.ldif`
+   * `sudo curl https://raw.githubusercontent.com/GEANT/ansible-shibboleth/master/roles/openldap/files/eduperson-201602.ldif -o eduperson.ldif`
+   * `sudo curl https://raw.githubusercontent.com/GEANT/ansible-shibboleth/master/roles/openldap/files/schac-20150413.ldif -o schac.ldif`
    * `sudo ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/openldap/schema/eduperson.ldif`
    * `sudo ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/openldap/schema/schac.ldif`
-   * Verify with: `ldapsearch -Q -LLL -Y EXTERNAL -H ldapi:/// -b cn=schema,cn=config dn`
+   * Verify with: `ldapsearch -Y EXTERNAL -H ldapi:/// -b cn=schema,cn=config dn`
 
 10. Add MemberOf Configuration:
     
@@ -343,6 +345,9 @@
       ```
 
     * `sudo ldapadd -D "cn=root,dc=example,dc=org" -W -f /etc/openldap/scratch/user1.ldif`
+
+15. Check that 'idpuser' can find user1:
+    * `sudo ldapsearch -x -D 'cn=idpuser,ou=system,dc=example,dc=org' -W -b "uid=user1,ou=people,dc=example,dc=org"`
 
 ## LDAP IHM
 # Apache Directory Studio
