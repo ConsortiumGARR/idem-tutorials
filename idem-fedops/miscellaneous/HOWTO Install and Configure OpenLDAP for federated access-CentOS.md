@@ -160,9 +160,9 @@ objectClass: top
 ou: System
 ```
 
-    * `sudo ldapadd -W -D "cn=root,dc=example,dc=org" -H ldapi:/// -f /etc/openldap/scratch/add_ou.ldif`
+ * `sudo ldapadd -W -D "cn=root,dc=example,dc=org" -H ldapi:/// -f /etc/openldap/scratch/add_ou.ldif`
 
-    * Verify with: `sudo ldapsearch -x -b dc=example,dc=org`
+ * Verify with: `sudo ldapsearch -x -b dc=example,dc=org`
 
 6. Create the 'idpuser' needed to perform "Bind and Search" operations:
     * Generate password: `slappasswd`
@@ -198,7 +198,7 @@ olcAccess: {3}to dn.base="cn=Subschema" by * read
 olcAccess: {4}to * by dn.exact="cn=idpuser,ou=system,dc=example,dc=org" read by anonymous auth by self read
 ```
 
-    * `sudo ldapmodify  -Y EXTERNAL -H ldapi:/// -f /etc/openldap/scratch/olcAcl.ldif`
+* `sudo ldapmodify  -Y EXTERNAL -H ldapi:/// -f /etc/openldap/scratch/olcAcl.ldif`
 
 8. Check that 'idpuser' can search other users (when users exist):
     * `sudo ldapsearch -x -D 'cn=idpuser,ou=system,dc=example,dc=org' -W -b "ou=people,dc=example,dc=org"`
