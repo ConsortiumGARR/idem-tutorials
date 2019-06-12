@@ -53,9 +53,9 @@ olcRootPW: {SSHA}nk8A/+uFKfDb1OhaYmPUFlQmWwcdtNF4
   * `sudo ldapmodify -Y EXTERNAL -H ldapi:/// -f /etc/openldap/scratch/db.ldif`
 
   **NOTES**: From now until the end of this HOWTO, we'll consider that:
-    * `<LDAP-ROOT-PW_CHANGEME>` ==> `password`
-    * `<INSTITUTE-DOMAIN_CHANGEME>` ==> `example.org`
-    * `<ORGANIZATION-NAME_CHANGEME>` ==> `Example Org`
+   * `<LDAP-ROOT-PW_CHANGEME>` ==> `password`
+   * `<INSTITUTE-DOMAIN_CHANGEME>` ==> `example.org`
+   * `<ORGANIZATION-NAME_CHANGEME>` ==> `Example Org`
 
 4. Create Certificate/Key:
   * Self signed (2048 bit - 3 years before expiration):
@@ -209,53 +209,54 @@ olcAccess: {4}to * by dn.exact="cn=idpuser,ou=system,dc=example,dc=org" read by 
   * Verify with: `ldapsearch -Q -LLL -Y EXTERNAL -H ldapi:/// -b cn=schema,cn=config dn`
 
 10. Add MemberOf Configuration:
-  1. `sudo vim /etc/openldap/scratch/add_memberof.ldif`
+    
+    1. `sudo vim /etc/openldap/scratch/add_memberof.ldif`
 
-```bash
-dn: cn=module,cn=config
-cn: module
-objectClass: olcModuleList
-olcModuleLoad: memberof
-olcModulePath: /usr/lib64/openldap/
+        ```bash
+        dn: cn=module,cn=config
+        cn: module
+        objectClass: olcModuleList
+        olcModuleLoad: memberof
+        olcModulePath: /usr/lib64/openldap/
 
-dn: olcOverlay={0}memberof,olcDatabase={2}hdb,cn=config
-objectClass: olcConfig
-objectClass: olcMemberOf
-objectClass: olcOverlayConfig
-objectClass: top
-olcOverlay: memberof
-olcMemberOfDangling: ignore
-olcMemberOfRefInt: TRUE
-olcMemberOfGroupOC: groupOfNames
-olcMemberOfMemberAD: member
-olcMemberOfMemberOfAD: memberOf
-```
+        dn: olcOverlay={0}memberof,olcDatabase={2}hdb,cn=config
+        objectClass: olcConfig
+        objectClass: olcMemberOf
+        objectClass: olcOverlayConfig
+        objectClass: top
+        olcOverlay: memberof
+        olcMemberOfDangling: ignore
+        olcMemberOfRefInt: TRUE
+        olcMemberOfGroupOC: groupOfNames
+        olcMemberOfMemberAD: member
+        olcMemberOfMemberOfAD: memberOf
+        ```
 
-  2. `sudo ldapadd -Q -Y EXTERNAL -H ldapi:/// -f /etc/openldap/scratch/add_memberof.ldif`
+    2. `sudo ldapadd -Q -Y EXTERNAL -H ldapi:/// -f /etc/openldap/scratch/add_memberof.ldif`
 
-  3. `sudo vim /etc/openldap/scratch/add_refint1.ldif`
+    3. `sudo vim /etc/openldap/scratch/add_refint1.ldif`
 
-```bash
-dn: cn=module{0},cn=config
-add: olcmoduleload
-olcmoduleload: refint   
-```
+        ```bash
+        dn: cn=module{0},cn=config
+        add: olcmoduleload
+        olcmoduleload: refint   
+        ```
 
-  4. `sudo ldapmodify -Q -Y EXTERNAL -H ldapi:/// -f /etc/openldap/scratch/add_refint1.ldif`
+    4. `sudo ldapmodify -Q -Y EXTERNAL -H ldapi:/// -f /etc/openldap/scratch/add_refint1.ldif`
 
-  5. `sudo vim /etc/openldap/scratch/add_refint2.ldif`
+    5. `sudo vim /etc/openldap/scratch/add_refint2.ldif`
 
-```bash
-dn: olcOverlay={1}refint,olcDatabase={2}hdb,cn=config
-objectClass: olcConfig
-objectClass: olcOverlayConfig
-objectClass: olcRefintConfig
-objectClass: top
-olcOverlay: {1}refint
-olcRefintAttribute: memberof member manager owner
-```
+        ```bash
+        dn: olcOverlay={1}refint,olcDatabase={2}hdb,cn=config
+        objectClass: olcConfig
+        objectClass: olcOverlayConfig
+        objectClass: olcRefintConfig
+        objectClass: top
+        olcOverlay: {1}refint
+        olcRefintAttribute: memberof member manager owner
+        ```
 
-  6. `sudo ldapadd -Q -Y EXTERNAL -H ldapi:/// -f /etc/openldap/scratch/add_refint2.ldif`
+    6. `sudo ldapadd -Q -Y EXTERNAL -H ldapi:/// -f /etc/openldap/scratch/add_refint2.ldif`
 
 11. Improve performance:
   * `sudo vim /etc/openldap/scratch/olcDbIndex.ldif`
