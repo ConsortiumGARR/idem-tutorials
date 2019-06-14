@@ -9,14 +9,14 @@
 4. [Installation Instructions](#installation-instructions)
    1. [Install software requirements](#install-software-requirements)
    2. [Configure the environment](#configure-the-environment)
-   4. [Install Shibboleth Identity Provider 3.4.2](#install-shibboleth-identity-provider-v342)
+   3. [Install Jetty 9 Web Server](#install-jetty-9-web-server)
+   4. [Install Shibboleth Identity Provider 3.4.x](#install-shibboleth-identity-provider-v34x)
 5. [Configuration Instructions](#configuration-instructions)
-   1. [Configure SSL on Apache2 (Jetty front-end)](#configure-ssl-on-apache2-jetty-front-end)
+   1. [Configure SSL on Apache (Jetty front-end)](#configure-ssl-on-apache-jetty-front-end)
    2. [Configure Jetty](#configure-jetty)
-   3. [Configure Shibboleth Identity Provider v3.4.2 to release the persistent-id (Stored Mode)](#configure-shibboleth-identity-provider-v342-to-release-the-persistent-id-stored-mode)
-   4. [Configure Attribute Filters to release the mandatory attributes to the IDEM Default  Resources](#configure-attribute-filters-to-release-the-mandatory-attributes-to-the-idem-default-resources)
-   5. [Configure Attribute Filters to release the mandatory attributes to the IDEM Production Resources](#configure-attribute-filters-to-release-the-mandatory-attributes-to-the-idem-production-resources)
-   6. [Configure Attribute Filters for Research and Scholarship and Data Protection Code of Conduct Entity Category](#configure-attribute-filters-for-research-and-scholarship-and-data-protection-code-of-conduct-entity-category)
+   3. [Configure Shibboleth Identity Provider v3.4.x to release the persistent-id (Computed Mode)](#configure-shibboleth-identity-provider-v34x-to-release-the-persistent-id-computed-mode)
+   4. [Configure Attribute Filters to release all attributes to all ressources (outside eduGAIN)](#configure-attribute-filters-to-release-all-attributes-to-all-ressources-outside-edugain)
+   5. [Configure Attribute Filters to release recommanded attributes for eduGAIN](#configure-attribute-filters-to-release-recommanded-attributes-for-edugain)
 6. [Appendix A: Useful logs to find problems](#appendix-c-useful-logs-to-find-problems)
 9. [Authors](#authors)
 
@@ -462,7 +462,7 @@ gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-7
 
      * Solution 1: LDAP + STARTTLS:
 
-       ```xml
+       ```properties
        idp.authn.LDAP.authenticator = bindSearchAuthenticator
        idp.authn.LDAP.ldapURL = ldap://ldap.example.org:389
        idp.authn.LDAP.useStartTLS = true
@@ -477,7 +477,7 @@ gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-7
 
      * Solution 2: LDAP + TLS:
 
-       ```xml
+       ```properties
        idp.authn.LDAP.authenticator = bindSearchAuthenticator
        idp.authn.LDAP.ldapURL = ldaps://ldap.example.org:636
        idp.authn.LDAP.useStartTLS = false
@@ -492,7 +492,7 @@ gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-7
 
      * Solution 3: plain LDAP
 
-       ```xml
+       ```properties
        idp.authn.LDAP.authenticator = bindSearchAuthenticator
        idp.authn.LDAP.ldapURL = ldap://ldap.example.org:389
        idp.authn.LDAP.useStartTLS = false
@@ -502,7 +502,7 @@ gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-7
        idp.authn.LDAP.bindDN = cn=admin,dc=example,dc=org
        idp.authn.LDAP.bindDNCredential = ###LDAP_ADMIN_PASSWORD###
        ```
-       If you decide to use the Solution 3, you have to remove (or comment out) the following line from your Attribute Resolver file:
+       If you decide to use the Solution 3, you have to remove (or comment out) the following line from your Attribute Resolver file (attribute-resolver-xxx.xml):
 
        ```xml
        trustFile="%{idp.attribute.resolver.LDAP.trustCertificates}"
@@ -598,29 +598,29 @@ gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-7
     * ```vim metadata-providers.xml```
 
       ```xml
-	      <MetadataProvider
-	            id="URLMD-IDEM-Federation"
-	            xsi:type="FileBackedHTTPMetadataProvider"
-	            backingFile="%{idp.home}/metadata/idem-test-metadata-sha256.xml"
-	            metadataURL="http://md.idem.garr.it/metadata/idem-test-metadata-sha256.xml">
+      <MetadataProvider
+	    id="URLMD-IDEM-Federation"
+	    xsi:type="FileBackedHTTPMetadataProvider"
+	    backingFile="%{idp.home}/metadata/idem-test-metadata-sha256.xml"
+	    metadataURL="http://md.idem.garr.it/metadata/idem-test-metadata-sha256.xml">
 
-	            <!--
-	                Verify the signature on the root element of the metadata aggregate
-	                using a trusted metadata signing certificate.
-	            -->
-	            <MetadataFilter xsi:type="SignatureValidation" requireSignedRoot="true" certificateFile="${idp.home}/metadata/federation-cert.pem"/>
+	    <!--
+		Verify the signature on the root element of the metadata aggregate
+		using a trusted metadata signing certificate.
+	    -->
+	    <MetadataFilter xsi:type="SignatureValidation" requireSignedRoot="true" certificateFile="${idp.home}/metadata/federation-cert.pem"/>
 
-	            <!--
-	                Require a validUntil XML attribute on the root element and
-	                make sure its value is no more than 10 days into the future.
-	            -->
-	            <MetadataFilter xsi:type="RequiredValidUntil" maxValidityInterval="P10D"/>
+	    <!--
+		Require a validUntil XML attribute on the root element and
+		make sure its value is no more than 10 days into the future.
+	    -->
+	    <MetadataFilter xsi:type="RequiredValidUntil" maxValidityInterval="P10D"/>
 
-	            <!-- Consume all SP metadata in the aggregate -->
-	            <MetadataFilter xsi:type="EntityRoleWhiteList">
-	              <RetainedRole>md:SPSSODescriptor</RetainedRole>
-	            </MetadataFilter>
-	      </MetadataProvider>
+	    <!-- Consume all SP metadata in the aggregate -->
+	    <MetadataFilter xsi:type="EntityRoleWhiteList">
+	      <RetainedRole>md:SPSSODescriptor</RetainedRole>
+	    </MetadataFilter>
+      </MetadataProvider>
       ```
 
     * Retrieve the Federation Certificate used to verify its signed metadata:
@@ -644,30 +644,7 @@ gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-7
     * https://sp24-test.garr.it/secure (Service Provider provided for testing the IDEM Test Federation and IDEM Production Federation)
 
 
-### Configure Attribute Filters to release the mandatory attributes to the IDEM Default Resources:
-
-1. Make sure that you have the "```tmp/httpClientCache```" used by "```shibboleth.FileCachingHttpClient```":
-   * ```mkdir -p /opt/shibboleth-idp/tmp/httpClientCache ; chown jetty /opt/shibboleth-idp/tmp/httpClientCache```
-
-2. Modify your ```services.xml```:
-   * ```vim /opt/shibboleth-idp/conf/services.xml```
-
-     ```xml
-     <bean id="IDEM-Default-Filter" class="net.shibboleth.ext.spring.resource.FileBackedHTTPResource"
-           c:client-ref="shibboleth.FileCachingHttpClient"
-           c:url="http://www.garr.it/idem-conf/attribute-filter-v3-idem.xml"
-           c:backingFile="%{idp.home}/conf/attribute-filter-v3-idem.xml"/>
-
-     <util:list id ="shibboleth.AttributeFilterResources">
-         <value>%{idp.home}/conf/attribute-filter.xml</value>
-         <ref bean="IDEM-Default-Filter"/>
-     </util:list>
-     ```
-
-3. Restart Jetty:
-   *  ```service jetty restart```
-
-### Configure Attribute Filters to release recommanded attributes to all ressources (outside eduGAIN):
+### Configure Attribute Filters to release all attributes to all ressources (outside eduGAIN):
 
 1. Download sample Attribute Filter file:
    * ```wget -O /opt/shibboleth-idp/conf/attribute-filter-v3-all.xml https://github.com/geoffroya/idem-tutorials/raw/master/idem-fedops/HOWTO-Shibboleth/Identity%20Provider/utils/attribute-filter-v3-all.xml```
