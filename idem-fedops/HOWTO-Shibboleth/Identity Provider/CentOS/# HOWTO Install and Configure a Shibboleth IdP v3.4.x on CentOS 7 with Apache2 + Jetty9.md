@@ -330,7 +330,7 @@ gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-7
 
    From this point the variable **idp.home** refers to the directory: ```/opt/shibboleth-idp```
 
-7. Change the owner to enable **jetty** user to access on the following directories:
+6. Change the owner to enable **jetty** user to access on the following directories:
    * ```cd /opt/shibboleth-idp```
    * ```chown -R jetty:jetty logs/ metadata/ credentials/ conf/ system/ war/```
 
@@ -341,14 +341,14 @@ gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-7
 1. Modify the file ```/etc/httpd/conf.d/idp.example.org.conf``` as follows:
    ```apache
    # Redirection from port 80 to 443
-  <VirtualHost 195.98.239.235:80>
+  <VirtualHost <SERVER-IP-ADDRESS>:80>
       ServerName formsfede-024.renater.fr
       ServerAlias formsfede-024.renater.fr
 
       RedirectMatch ^/(.*)$ https://formsfede-024.renater.fr/$1
   </VirtualHost>
 
-  <VirtualHost 195.98.239.235:443>
+  <VirtualHost *:443>
       ServerName formsfede-024.renater.fr
       ServerAlias formsfede-024.renater.fr
 
@@ -365,37 +365,27 @@ gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-7
       SSLCACertificateFile /etc/pki/tls/certs/terena_ssl_ca_3.pem
 
       RequestHeader set X-Forwarded-Proto "https"
+      # Proxy configuration to Jetty
+      ProxyPreserveHost On
+      ProxyPass /idp http://localhost:8080/idp retry=5
+      ProxyPassReverse /idp http://localhost:8080/idp retry=5
+      <Location /idp>
+          Require all granted
+      </Location>
   </VirtualHost>
 
-  # Proxy configuration to Jetty
-  ProxyPreserveHost On
-  ProxyPass /idp http://localhost:8080/idp retry=5
-  ProxyPassReverse /idp http://localhost:8080/idp retry=5
-
-  <Location /idp>
-      Require all granted
-  </Location>
+  <VirtualHost 127.0.0.1:80>
+      ProxyPass /idp http://localhost:8080/idp retry=5
+      ProxyPassReverse /idp http://localhost:8080/idp retry=5
+      <Location /idp>
+          Require all granted
+      </Location>
+  </VirtualHost>
    ```
 
+2. Restart Apache: `systemctl restart httpd`
 
-<!-- 2. Enable **proxy_http**, **SSL** and **headers** Apache2 modules:
-   * ```a2enmod proxy_http ssl headers alias include negotiation```
-   * ```a2ensite default-ssl.conf```
-   * ```service apache2 restart``` -->
-
-<!-- 3. Configure Apache to redirect all on HTTPS:
-   * ```vim /etc/httpd/conf.d/idp.example.org.conf```
-
-   ```apache
-   <VirtualHost *:80>
-        ServerName "idp.example.org"
-        Redirect permanent "/" "https://idp.example.org/"
-   </VirtualHost>
-   ``` -->
-
-4. Restart Apache: `systemctl restart httpd`
-
-4. Verify the strength of your IdP's machine on:
+3. Verify the strength of your IdP's machine on:
    * [**https://www.ssllabs.com/ssltest/analyze.html**](https://www.ssllabs.com/ssltest/analyze.html)
 
 ### Configure Jetty
@@ -417,7 +407,7 @@ gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-7
      </Configure>
      ```
 
-5. Restart Jetty:
+3. Restart Jetty:
    * ```systemctl restart jetty```
 
 ### Configure Shibboleth Identity Provider v3.4.x to release the persistent-id (Computed mode)
@@ -429,19 +419,7 @@ gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-7
    * ```cd /opt/shibboleth-idp/bin```
    * ```./status.sh``` (You should see some informations about the IdP installed)
 
-<!-- 3. Install **MySQL Database Server**:
-   * ```apt install mysql-server -y --no-install-recommends``` -->
-
-<!-- 4. Create and prepare the "**shibboleth**" MySQL DB to host the values of the several **persistent-id** and **StorageRecords** MySQL DB to host other useful information about user consent:
-   * Modify the [shibboleth-db.sql](../utils/shibboleth-db.sql) by changing the *username* and *password* of the user that has write access to the "**shibboleth**" DB.
-
-   * Import the SQL modified to your MySQL Server:
-    ```mysql -u root -p < shibboleth-db.sql```
-
-   * Restart mysql service:
-    ```service mysql restart``` -->
-
-5. Enable the generation of the ```persistent-id``` (this replace the deprecated attribute *eduPersonTargetedID*)
+3. Enable the generation of the ```persistent-id``` (this replace the deprecated attribute *eduPersonTargetedID*)
    * ```vim /opt/shibboleth-idp/conf/saml-nameid.properties```
      (the *sourceAttribute* MUST BE an attribute, or a list of comma-separated attributes, that uniquely identify the subject of the generated ```persistent-id```. It MUST BE: **Stable**, **Permanent** and **Not-reassignable**)
 
@@ -469,64 +447,14 @@ gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-7
      * ```vim /opt/shibboleth-idp/conf/c14n/subject-c14n.xml```
        * Remove the comment to the bean called "**c14n/SAML2Persistent**".
 
- 6. Enable security for cookies:
+ 4. Enable security for cookies:
  * ```vim /opt/shibboleth-idp/conf/idp.properties```
 
    ```ini
    idp.cookie.secure = true
    ```
 
-
-<!-- 6. Enable **JPAStorageService** for the **StorageService** of the user consent:
-   * ```vim /opt/shibboleth-idp/conf/global.xml``` and add this piece of code to the tail (before **`</beans>`** tag):
-
-     ```xml -->
-     <!-- A DataSource bean suitable for use in the idp.persistentId.dataSource property. -->
-     <!-- <bean id="MyDataSource" class="org.apache.commons.dbcp.BasicDataSource"
-           p:driverClassName="com.mysql.jdbc.Driver"
-           p:url="jdbc:mysql://localhost:3306/shibboleth?autoReconnect=true"
-           p:username="##USER_DB_NAME##"
-           p:password="##PASSWORD##"
-           p:maxActive="10"
-           p:maxIdle="5"
-           p:maxWait="15000"
-           p:testOnBorrow="true"
-           p:validationQuery="select 1"
-           p:validationQueryTimeout="5" />
-
-     <bean id="shibboleth.JPAStorageService" class="org.opensaml.storage.impl.JPAStorageService"
-           p:cleanupInterval="%{idp.storage.cleanupInterval:PT10M}"
-           c:factory-ref="shibboleth.JPAStorageService.entityManagerFactory"/>
-
-     <bean id="shibboleth.JPAStorageService.entityManagerFactory"
-           class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
-           <property name="packagesToScan" value="org.opensaml.storage.impl"/>
-           <property name="dataSource" ref="MyDataSource"/>
-           <property name="jpaVendorAdapter" ref="shibboleth.JPAStorageService.JPAVendorAdapter"/>
-           <property name="jpaDialect">
-             <bean class="org.springframework.orm.jpa.vendor.HibernateJpaDialect" />
-           </property>
-     </bean>
-
-     <bean id="shibboleth.JPAStorageService.JPAVendorAdapter" class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
-           <property name="database" value="MYSQL" />
-     </bean> -->
-     <!-- ```
-     (and modify the "**##USER_DB_NAME##**" and "**##PASSWORD##**" for your "**shibboleth**" DB) -->
-
-   <!-- * Modify the IdP configuration file:
-     * ```vim /opt/shibboleth-idp/conf/idp.properties```
-
-       ```properties
-       idp.cookie.secure = true
-       idp.consent.StorageService = shibboleth.JPAStorageService
-       idp.replayCache.StorageService = shibboleth.JPAStorageService
-       idp.artifact.StorageService = shibboleth.JPAStorageService
-       ```
-
-       (This will indicate to IdP to store the data collected by User Consent into the "**StorageRecords**" table) -->
-
-7. Connect the openLDAP to the IdP to allow the authentication of the users:
+4. Connect the openLDAP to the IdP to allow the authentication of the users:
    * ```vim /opt/shibboleth-idp/conf/ldap.properties```
 
      (with **TLS** solutions we consider to have the LDAP certificate into ```/opt/shibboleth-idp/credentials```).
@@ -585,7 +513,7 @@ gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-7
            * the bindDN ==> ```cn=admin,dc=example,dc=org``` (distinguished name for the user that can made queries on the LDAP)
 
 
-8. Enrich IDP logs with the authentication error occurred on LDAP:
+5. Enrich IDP logs with the authentication error occurred on LDAP:
    * ```vim /opt/shibboleth-idp/conf/logback.xml```
 
      ```xml
@@ -596,7 +524,7 @@ gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-7
      <logger name="org.ldaptive.auth.Authenticator" level="INFO" />
      ```
 
-9. Define which attributes your IdP can manage into your Attribute Resolver file. Here you can find a sample **attribute-resolver-sample.xml** as example:
+6. Define which attributes your IdP can manage into your Attribute Resolver file. Here you can find a sample **attribute-resolver-sample.xml** as example:
     * Download the sample attribute resolver provided:
       ```wget https://github.com/geoffroya/idem-tutorials/raw/master/idem-fedops/HOWTO-Shibboleth/Identity%20Provider/utils/attribute-resolver-sample.xml -O /opt/shibboleth-idp/conf/attribute-resolver-sample.xml```
 
@@ -614,15 +542,14 @@ gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-7
       <value>%{idp.home}/conf/attribute-resolver-sample.xml</value>
       ```
 
-  <!-- * Configure the LDAP Data Connector to be compliant to the values put in ```ldap.properties```. (See above suggestions) -->
 
-10. Translate the IdP messages in your language:
+7. Translate the IdP messages in your language:
     * Get translated file in your language from [Shibboleth page](https://wiki.shibboleth.net/confluence/display/IDP30/MessagesTranslation) and put it into ```/opt/shibboleth-idp/messages``` directory
       ```wget "https://wiki.shibboleth.net/confluence/download/attachments/21660022/messages_it.properties?version=2&modificationDate=1541061867323&api=v2" -O /opt/shibboleth-idp/messages/messages_it.properties```
     * Restart Jetty:
       ```systemctl restart jetty```
 
-11. Enable the SAML2 support by changing the ```idp-metadata.xml``` and disabling the SAML v1.x deprecated support:
+8. Enable the SAML2 support by changing the ```idp-metadata.xml``` and disabling the SAML v1.x deprecated support:
     * ```vim /opt/shibboleth-idp/metadata/idp-metadata.xml```
       ```bash
       <EntityDescriptor> SECTION:
@@ -659,14 +586,13 @@ gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-7
         - Remove the endpoint:
           <AttributeService Binding="urn:oasis:names:tc:SAML:1.0:bindings:SOAP-binding" Location="https://idp.example.org:8443/idp/profile/SAML1/SOAP/AttributeQuery"/>
       ```
-
-12. Obtain your IdP metadata here:
+9. Obtain your IdP metadata here:
     *  ```https://idp.example.org/idp/shibboleth```
 
-13. Register you IdP on IDEM Entity Registry (your entity have to be approved by an IDEM Federation Operator before become part of IDEM Test Federation):
+10. Register you IdP on IDEM Entity Registry (your entity have to be approved by an IDEM Federation Operator before become part of IDEM Test Federation):
     * ```https://registry.idem.garr.it/```
 
-14. Configure the IdP to retrieve the Federation Metadata:
+11. Configure the IdP to retrieve the Federation Metadata:
     * ```cd /opt/shibboleth-idp/conf```
     * ```vim metadata-providers.xml```
 
@@ -708,11 +634,11 @@ gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-7
 
          (md5: 48:3B:EE:27:0C:88:5D:A3:E7:0B:7C:74:9D:24:24:E0)
 
-15. Reload service with id ```shibboleth.MetadataResolverService``` to retrieve the Federation Metadata:
+12. Reload service with id ```shibboleth.MetadataResolverService``` to retrieve the Federation Metadata:
     *  ```cd /opt/shibboleth-idp/bin```
     *  ```./reload-service.sh -id shibboleth.MetadataResolverService```
 
-16. The day after the IDEM Federation Operators approval your entity on IDEM Entity Registry, check if you can login with your IdP on the following services:
+13. The day after the IDEM Federation Operators approval your entity on IDEM Entity Registry, check if you can login with your IdP on the following services:
     * https://sp-test.garr.it/secure   (Service Provider provided for testing the IDEM Test Federation)
     * https://sp24-test.garr.it/secure (Service Provider provided for testing the IDEM Test Federation and IDEM Production Federation)
 
@@ -756,9 +682,8 @@ gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-7
      </util:list>
      ```
 
-3. Restart Jetty - or hot-reload Attribute Filters configuration
-   *  ```systemctl restart jetty``` or
-   * ```/opt/shibboleth-idp/bin/reload-service.sh -id shibboleth.AttributeFilterService```
+3. Restart Jetty
+   *  ```systemctl restart jetty```
 
 ### Configure Attribute Filters to release recommanded attributes for eduGAIN:
 
@@ -776,9 +701,8 @@ gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-7
       </util:list>
       ```
 
-3. Restart Jetty - or hot-reload Attribute Filters configuration
-   *  ```systemctl restart jetty``` or
-   * ```/opt/shibboleth-idp/bin/reload-service.sh -id shibboleth.AttributeFilterService```
+3. Restart Jetty
+   *  ```systemctl restart jetty```
 
 
 ### Appendix A: Useful logs to find problems

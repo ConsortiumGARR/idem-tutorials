@@ -20,7 +20,7 @@
 
     <AttributeFilterPolicy id="releaseToAll">
         <PolicyRequirementRule xsi:type="NOT">
-          <PolicyRequirementRule xsi:type="InEntityGroup" groupID="https://federation.renater.fr/edugain/" />
+          <Rule xsi:type="InEntityGroup" groupID="https://federation.renater.fr/edugain/" />
         </PolicyRequirementRule>
 
         <AttributeRule attributeID="eduPersonTargetedID" permitAny="true" />
