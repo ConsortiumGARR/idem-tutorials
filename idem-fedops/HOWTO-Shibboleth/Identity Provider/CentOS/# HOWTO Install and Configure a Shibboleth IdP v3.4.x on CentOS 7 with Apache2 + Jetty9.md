@@ -434,7 +434,7 @@ gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-7
      ...
      idp.persistentId.generator = shibboleth.ComputedPersistentIdGenerator
      ...
-     # idp.persistentId.computed = shibboleth.ComputedPersistentIdGenerator
+     idp.persistentId.computed = shibboleth.ComputedPersistentIdGenerator
      ```
 
    * Enable the **SAML2PersistentGenerator**:
