@@ -1,8 +1,6 @@
 
 # HOWTO Install and Configure a Shibboleth IdP v3.4.x on CentOS 7 with Apache2 + Jetty9 (Database-less)
 
-<img width="120px" src="https://wiki.idem.garrservices.it/IDEM_Approved.png" />
-
 ## Table of Contents
 
 1. [Requirements Hardware](#requirements-hardware)
@@ -46,9 +44,10 @@
 ## Other Requirements
 
  * Put HTTPS credentials in the right place:
-   * HTTPS Server Certificate (Public Key) inside ```/etc/ssl/certs```
-   * HTTPS Server Key (Private Key) inside ```/etc/ssl/private```
-   * HTTPS Certification Authority Certificate is already provided by Debian packages
+   * HTTPS Server Certificate (Public Key) inside ```/etc/pki/tls/certs```
+   * HTTPS Server Key (Private Key) inside ```/etc/pki/tls/private```
+   * Download TCS CA Cert into ```/etc/pki/tls/cert```
+     - ```wget -O /etc/pki/tls/certs/terena_ssl_ca_3.pem https://www.terena.org/activities/tcs/repository-g3/TERENA_SSL_CA_3.pem```
 
 ## Installation Instructions
 
@@ -88,7 +87,7 @@ gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-7
    * ```vim /etc/hosts```
 
      ```bash
-     127.0.1.1 idp.example.org idp
+     <YOUR SERVER IP ADDRESS> idp.example.org idp
      ```
    (*Replace ```idp.example.org``` with your IdP Full Qualified Domain Name*)
 
@@ -110,7 +109,7 @@ gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-7
    * ```openssl req -x509 -newkey rsa:4096 -keyout /etc/pki/tls/private/idp-key-server.key -out /etc/pki/tls/certs/idp-cert-server.crt -nodes -days 1095```
 
 5. Configure **/etc/default/jetty**:
-   * ```vim /etc/profile.d/jetty.sh```
+   * ```vim /etc/default/jetty```
 
      ```bash
      JETTY_HOME=/usr/local/src/jetty-src
@@ -132,21 +131,21 @@ gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-7
 
 2. Download and Extract Jetty:
    * ```cd /usr/local/src```
-   * ```wget https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-distribution/9.4.14.v20181114/jetty-distribution-9.4.14.v20181114.tar.gz```
-   * ```tar xzvf jetty-distribution-9.4.14.v20181114.tar.gz```
+   * ```wget -O jetty-distribution-9.4.tar.gz https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-distribution/9.4.18.v20190429/jetty-distribution-9.4.18.v20190429.tar.gz```
+   * ```tar -xzf jetty-distribution-9.4.tar.gz```
 
 3. Create an useful-for-updates `jetty-src` folder:
-   * ```ln -s jetty-distribution-9.4.14.v20181114 jetty-src```
+   * ```ln -s jetty-distribution-9.4.18.v20190429 jetty-src```
 
 4. Create the user/group `jetty` that can run the web server:
-   * ```adduser --system --no-create-home --group jetty```
+   * ```useradd --system --no-create-home --user-group jetty```
 
 5. Create your custom Jetty configuration that override the default ones:
    * ```mkdir /opt/jetty```
    * ```cd /opt/jetty```
    * ```vim /opt/jetty/start.ini```
 
-     ```bash
+     ```ini
      #===========================================================
      # Jetty Startup
      #
@@ -203,7 +202,7 @@ gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-7
      jetty.httpConfig.sendDateHeader=false
 
      ## Dump the state of the Jetty server, components, and webapps after startup
-     	jetty.server.dumpAfterStart=false
+     jetty.server.dumpAfterStart=false
 
      ## Dump the state of the Jetty server, components, and webapps before shutdown
      jetty.server.dumpBeforeStop=false
@@ -289,7 +288,7 @@ gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-7
    * ```systemctl start jetty```
 
    (If you receive an error likes "*Job for jetty.service failed because the control process exited with error code. See "systemctl status jetty.service" and "journalctl -xe" for details.*", try this:
-     * ```rm /var/run/jetty.pid```
+     * ```rm /var/run/jetty/jetty.pid```
      * ```service jetty start```
 
 ### Install Shibboleth Identity Provider v3.4.x
@@ -300,7 +299,7 @@ gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-7
 2. Download the Shibboleth Identity Provider v3.4.x (replace '3.4.x' with the latest version):
    * ```cd /usr/local/src```
    * ```wget https://shibboleth.net/downloads/identity-provider/3.4.x/shibboleth-identity-provider-3.4.x.tar.gz```
-   * ```tar -xzvf shibboleth-identity-provider-3.4.x.tar.gz```
+   * ```tar -xzf shibboleth-identity-provider-3.4.x.tar.gz```
 
 3. Link the needed libraries:
    * ```cd shibboleth-identity-provider-3.4.x```
@@ -342,34 +341,40 @@ gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-7
 1. Modify the file ```/etc/httpd/conf.d/idp.example.org.conf``` as follows:
    ```apache
    # Redirection from port 80 to 443
-   <VirtualHost *:80>
-       ServerName idp.example.org
-       ServerAlias idp.example.org
+  <VirtualHost 195.98.239.235:80>
+      ServerName formsfede-024.renater.fr
+      ServerAlias formsfede-024.renater.fr
 
-       RedirectMatch ^/(.*)$ https://idp.example.org/$1
-   </VirtualHost>
+      RedirectMatch ^/(.*)$ https://formsfede-024.renater.fr/$1
+  </VirtualHost>
 
-   <VirtualHost *:443>
-       ServerName idp.example.org
-       ServerAlias idp.example.org
+  <VirtualHost 195.98.239.235:443>
+      ServerName formsfede-024.renater.fr
+      ServerAlias formsfede-024.renater.fr
 
-       # SSL Configuration
-       SSLEngine On
-       SSLCertificateFile /etc/pki/tls/certs/idp-cert-server.crt
-       SSLCertificateKeyFile /etc/pki/tls/private/idp-key-server.key
-       SSLCACertificateFile /etc/pki/tls/certs/terena_ssl_ca_3.pem
+      # SSL Configuration
+      SSLEngine On
+      SSLProtocol all -SSLv2 -SSLv3
+      # ONLY If you have valid certificated
+      Header always set Strict-Transport-Security "max-age=31536000"
+      SSLHonorCipherOrder On
+      SSLCipherSuite "EECDH+ECDSA+AESGCM EECDH+aRSA+AESGCM EECDH+ECDSA+SHA384 EECDH+ECDSA+SHA256 EECDH+aRSA+SHA384 EECDH+aRSA+SHA256 EECDH+aRSA+RC4 EECDH EDH+aRSA RC4 !aNULL !eNULL !LOW !3DES !MD5 !EXP !PSK !SRP !DSS !RC4"
 
-       # Proxy configuration to Jetty
-       ProxyPreserveHost On
-       RequestHeader set X-Forwarded-Proto "https"
-       ProxyPass /idp http://localhost:8080/idp retry=5
-       ProxyPassReverse /idp http://localhost:8080/idp retry=5
+      SSLCertificateFile /etc/pki/tls/certs/idp-cert-server.crt
+      SSLCertificateKeyFile /etc/pki/tls/private/idp-key-server.key
+      SSLCACertificateFile /etc/pki/tls/certs/terena_ssl_ca_3.pem
 
-       <Location /idp>
-          Require all granted
-       </Location>
+      RequestHeader set X-Forwarded-Proto "https"
+  </VirtualHost>
 
-   </VirtualHost>
+  # Proxy configuration to Jetty
+  ProxyPreserveHost On
+  ProxyPass /idp http://localhost:8080/idp retry=5
+  ProxyPassReverse /idp http://localhost:8080/idp retry=5
+
+  <Location /idp>
+      Require all granted
+  </Location>
    ```
 
 
@@ -378,7 +383,7 @@ gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-7
    * ```a2ensite default-ssl.conf```
    * ```service apache2 restart``` -->
 
-3. Configure Apache to redirect all on HTTPS:
+<!-- 3. Configure Apache to redirect all on HTTPS:
    * ```vim /etc/httpd/conf.d/idp.example.org.conf```
 
    ```apache
@@ -386,7 +391,7 @@ gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-7
         ServerName "idp.example.org"
         Redirect permanent "/" "https://idp.example.org/"
    </VirtualHost>
-   ```
+   ``` -->
 
 4. Restart Apache: `systemctl restart httpd`
 
@@ -441,17 +446,19 @@ gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-7
      (the *sourceAttribute* MUST BE an attribute, or a list of comma-separated attributes, that uniquely identify the subject of the generated ```persistent-id```. It MUST BE: **Stable**, **Permanent** and **Not-reassignable**)
 
      ```properties
-     idp.persistentId.encoding = BASE32
+     ...
      idp.persistentId.sourceAttribute = uid
      ...
      idp.persistentId.salt = ### result of 'openssl rand -base64 36'###
      ...
+     idp.persistentId.encoding = BASE32
+     ...
      idp.persistentId.generator = shibboleth.ComputedPersistentIdGenerator
-     # ...
+     ...
      # idp.persistentId.computed = shibboleth.ComputedPersistentIdGenerator
      ```
 
-   <!-- * Enable the **SAML2PersistentGenerator**:
+   * Enable the **SAML2PersistentGenerator**:
      * ```vim /opt/shibboleth-idp/conf/saml-nameid.xml```
        * Remove the comment from the line containing:
 
@@ -460,7 +467,15 @@ gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-7
          ```
 
      * ```vim /opt/shibboleth-idp/conf/c14n/subject-c14n.xml```
-       * Remove the comment to the bean called "**c14n/SAML2Persistent**". -->
+       * Remove the comment to the bean called "**c14n/SAML2Persistent**".
+
+ 6. Enable security for cookies:
+ * ```vim /opt/shibboleth-idp/conf/idp.properties```
+
+   ```ini
+   idp.cookie.secure = true
+   ```
+
 
 <!-- 6. Enable **JPAStorageService** for the **StorageService** of the user consent:
    * ```vim /opt/shibboleth-idp/conf/global.xml``` and add this piece of code to the tail (before **`</beans>`** tag):
@@ -502,7 +517,7 @@ gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-7
    <!-- * Modify the IdP configuration file:
      * ```vim /opt/shibboleth-idp/conf/idp.properties```
 
-       ```xml
+       ```properties
        idp.cookie.secure = true
        idp.consent.StorageService = shibboleth.JPAStorageService
        idp.replayCache.StorageService = shibboleth.JPAStorageService
@@ -527,8 +542,8 @@ gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-7
        idp.authn.LDAP.trustCertificates = %{idp.home}/credentials/ldap-server.crt
        idp.authn.LDAP.baseDN = ou=people,dc=example,dc=org
        idp.authn.LDAP.userFilter = (uid={user})
-       idp.authn.LDAP.bindDN = cn=admin,dc=example,dc=org
-       idp.authn.LDAP.bindDNCredential = ###LDAP_ADMIN_PASSWORD###
+       idp.authn.LDAP.bindDN = cn=idpuser,ou=system,dc=example,dc=org
+       idp.authn.LDAP.bindDNCredential = ###LDAP_IDPUSER_PASSWORD###
        ```
 
      * Solution 2: LDAP + TLS:
@@ -542,7 +557,7 @@ gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-7
        idp.authn.LDAP.trustCertificates = %{idp.home}/credentials/ldap-server.crt
        idp.authn.LDAP.baseDN = ou=people,dc=example,dc=org
        idp.authn.LDAP.userFilter = (uid={user})
-       idp.authn.LDAP.bindDN = cn=admin,dc=example,dc=org
+       idp.authn.LDAP.bindDN = cn=idpuser,ou=system,dc=example,dc=org
        idp.authn.LDAP.bindDNCredential = ###LDAP_ADMIN_PASSWORD###
        ```
 
@@ -581,9 +596,9 @@ gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-7
      <logger name="org.ldaptive.auth.Authenticator" level="INFO" />
      ```
 
-9. Define which attributes your IdP can manage into your Attribute Resolver file. Here you can find the **attribute-resolver-v3_4-idem.xml** provided by IDEM GARR AAI as example:
-    * Download the attribute resolver provided by IDEM GARR AAI:
-      ```wget http://www.garr.it/idem-conf/attribute-resolver-v3_4-idem.xml -O /opt/shibboleth-idp/conf/attribute-resolver-v3_4-idem.xml```
+9. Define which attributes your IdP can manage into your Attribute Resolver file. Here you can find a sample **attribute-resolver-sample.xml** as example:
+    * Download the sample attribute resolver provided:
+      ```wget https://github.com/geoffroya/idem-tutorials/raw/master/idem-fedops/HOWTO-Shibboleth/Identity%20Provider/utils/attribute-resolver-sample.xml -O /opt/shibboleth-idp/conf/attribute-resolver-sample.xml```
 
     * Modify ```services.xml``` file:
       ```vim /opt/shibboleth-idp/conf/services.xml```
@@ -595,17 +610,17 @@ gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-7
       must become:
 
       ```xml
-      <value>%{idp.home}/conf/attribute-resolver.xml</value>
-      <value>%{idp.home}/conf/attribute-resolver-v3_4-idem.xml</value>
+      <!-- <value>%{idp.home}/conf/attribute-resolver.xml</value> -->
+      <value>%{idp.home}/conf/attribute-resolver-sample.xml</value>
       ```
 
-  * Configure the LDAP Data Connector to be compliant to the values put in ```ldap.properties```. (See above suggestions)
+  <!-- * Configure the LDAP Data Connector to be compliant to the values put in ```ldap.properties```. (See above suggestions) -->
 
 10. Translate the IdP messages in your language:
     * Get translated file in your language from [Shibboleth page](https://wiki.shibboleth.net/confluence/display/IDP30/MessagesTranslation) and put it into ```/opt/shibboleth-idp/messages``` directory
       ```wget "https://wiki.shibboleth.net/confluence/download/attachments/21660022/messages_it.properties?version=2&modificationDate=1541061867323&api=v2" -O /opt/shibboleth-idp/messages/messages_it.properties```
     * Restart Jetty:
-      ```service jetty restart```
+      ```systemctl restart jetty```
 
 11. Enable the SAML2 support by changing the ```idp-metadata.xml``` and disabling the SAML v1.x deprecated support:
     * ```vim /opt/shibboleth-idp/metadata/idp-metadata.xml```
@@ -624,10 +639,10 @@ gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-7
 
         – Under the comment of SingleLogoutService add the following lines:
           ```xml
-          <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</NameIDFormat>
-          <!-- <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</NameIDFormat> -->
+            <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</NameIDFormat>
+            <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</NameIDFormat>
           ```
-          <!-- (because the IdP installed with this guide releases persistent SAML NameIDs) -->
+          (because the IdP installed with this guide releases persistent SAML NameIDs)
 
         - Remove the endpoint:
           <SingleSignOnService Binding="urn:mace:shibboleth:1.0:profiles:AuthnRequest" Location="https://idp.example.org/idp/profile/Shibboleth/SSO"/>
@@ -666,7 +681,7 @@ gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-7
 	                Verify the signature on the root element of the metadata aggregate
 	                using a trusted metadata signing certificate.
 	            -->
-	            <MetadataFilter xsi:type="SignatureValidation" requireSignedRoot="true" certificateFile="${idp.home}/metadata/federation-cert.pem"/>   
+	            <MetadataFilter xsi:type="SignatureValidation" requireSignedRoot="true" certificateFile="${idp.home}/metadata/federation-cert.pem"/>
 
 	            <!--
 	                Require a validUntil XML attribute on the root element and
@@ -725,60 +740,45 @@ gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-7
 3. Restart Jetty:
    *  ```service jetty restart```
 
-### Configure Attribute Filters to release the mandatory attributes to the IDEM Production Resources:
+### Configure Attribute Filters to release recommanded attributes to all ressources (outside eduGAIN):
 
-1. Make sure that you have the "```tmp/httpClientCache```" used by "```shibboleth.FileCachingHttpClient```":
-   * ```mkdir -p /opt/shibboleth-idp/tmp/httpClientCache ; chown jetty /opt/shibboleth-idp/tmp/httpClientCache```
+1. Download sample Attribute Filter file:
+   * ```wget -O /opt/shibboleth-idp/conf/attribute-filter-v3-all.xml https://github.com/geoffroya/idem-tutorials/raw/master/idem-fedops/HOWTO-Shibboleth/Identity%20Provider/utils/attribute-filter-v3-all.xml```
 
 2. Modify your ```services.xml```:
    * ```vim /opt/shibboleth-idp/conf/services.xml```
 
      ```xml
-     <bean id="IDEM-Production-Filter" class="net.shibboleth.ext.spring.resource.FileBackedHTTPResource"
-           c:client-ref="shibboleth.FileCachingHttpClient"
-           c:url="http://www.garr.it/idem-conf/attribute-filter-v3-required.xml"
-           c:backingFile="%{idp.home}/conf/attribute-filter-v3-required.xml"/>
      ...
      <util:list id ="shibboleth.AttributeFilterResources">
-         <value>%{idp.home}/conf/attribute-filter.xml</value>
-         <ref bean="IDEM-Default-Filter"/>
-         <ref bean="IDEM-Production-Filter"/>
+         <!-- <value>%{idp.home}/conf/attribute-filter.xml</value> -->
+         <value>%{idp.home}/conf/attribute-filter-v3-all.xml</value>
      </util:list>
      ```
 
-3. Restart Jetty:
-   *  ```service jetty restart```
+3. Restart Jetty - or hot-reload Attribute Filters configuration
+   *  ```systemctl restart jetty``` or
+   * ```/opt/shibboleth-idp/bin/reload-service.sh -id shibboleth.AttributeFilterService```
 
-### Configure Attribute Filters for Research and Scholarship and Data Protection Code of Conduct Entity Category
+### Configure Attribute Filters to release recommanded attributes for eduGAIN:
 
-1. Make sure that you have the "```tmp/httpClientCache```" used by "```shibboleth.FileCachingHttpClient```":
-   * ```mkdir -p /opt/shibboleth-idp/tmp/httpClientCache ; chown jetty /opt/shibboleth-idp/tmp/httpClientCache```
+1. Download sample Attribute Filter file:
+   * ```wget -O /opt/shibboleth-idp/conf/attribute-filter-v3-eduGAIN.xml https://github.com/geoffroya/idem-tutorials/raw/master/idem-fedops/HOWTO-Shibboleth/Identity%20Provider/utils/attribute-filter-v3-eduGAIN.xml```
 
 2. Modify your ```services.xml```:
    * ```vim /opt/shibboleth-idp/conf/services.xml```
 
      ```xml
-     <bean id="ResearchAndScholarship" class="net.shibboleth.ext.spring.resource.FileBackedHTTPResource"
-           c:client-ref="shibboleth.FileCachingHttpClient"
-           c:url="http://www.garr.it/idem-conf/attribute-filter-v3-rs.xml"
-           c:backingFile="%{idp.home}/conf/attribute-filter-v3-rs.xml"/>
-
-     <bean id="CodeOfConduct" class="net.shibboleth.ext.spring.resource.FileBackedHTTPResource"
-           c:client-ref="shibboleth.FileCachingHttpClient"
-           c:url="http://www.garr.it/idem-conf/attribute-filter-v3-coco.xml"
-           c:backingFile="%{idp.home}/conf/attribute-filter-v3-coco.xml"/>
-
      <util:list id ="shibboleth.AttributeFilterResources">
-         <value>%{idp.home}/conf/attribute-filter.xml</value>
-         <ref bean="IDEM-Default-Filter"/>
-         <ref bean="IDEM-Production-Filter"/>
-         <ref bean="ResearchAndScholarship"/>
-         <ref bean="CodeOfConduct"/>
+         <!-- <value>%{idp.home}/conf/attribute-filter.xml</value> -->
+         <value>%{idp.home}/conf/attribute-filter-v3-all.xml</value>
+         <value>%{idp.home}/conf/attribute-filter-v3-eduGAIN.xml</value>
       </util:list>
       ```
 
-3. Restart Jetty:
-   *  ```service jetty restart```
+3. Restart Jetty - or hot-reload Attribute Filters configuration
+   *  ```systemctl restart jetty``` or
+   * ```/opt/shibboleth-idp/bin/reload-service.sh -id shibboleth.AttributeFilterService```
 
 
 ### Appendix A: Useful logs to find problems

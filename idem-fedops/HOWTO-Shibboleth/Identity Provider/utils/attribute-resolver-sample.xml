@@ -129,8 +129,7 @@
   </AttributeDefinition>
 
   <AttributeDefinition xsi:type="SAML2NameID" nameIdFormat="urn:oasis:names:tc:SAML:2.0:nameid-format:persistent" id="eduPersonTargetedID">
-    <InputDataConnector ref="myStoredId" attributeNames="persistentID"/>
-    ???
+    <InputDataConnector ref="computed" attributeNames="computedId"/>
     <DisplayName xml:lang="en">Opaque per-service identifier eduPersonTargetedID</DisplayName>
     <DisplayName xml:lang="it">Identificatore opaco diverso per ogni servizio eduPersonTargetedID</DisplayName>
     <DisplayDescription xml:lang="en">Opaque per-service identifier eduPersonTargetedID</DisplayDescription>
@@ -138,7 +137,7 @@
     <AttributeEncoder xsi:type="SAML2XMLObject" name="urn:oid:1.3.6.1.4.1.5923.1.1.1.10" friendlyName="eduPersonTargetedID" encodeType="false"/>
   </AttributeDefinition>
 
-  <AttributeDefinition xsi:type="Simple" id="email">
+  <AttributeDefinition xsi:type="Simple" id="mail">
     <InputDataConnector ref="myLDAP" attributeNames="mail"/>
     <DisplayName xml:lang="en">E-mail</DisplayName>
     <DisplayName xml:lang="it">E-mail</DisplayName>
