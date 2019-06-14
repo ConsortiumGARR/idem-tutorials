@@ -339,18 +339,18 @@ gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-7
 ### Configure SSL on Apache (Jetty front-end)
 
 1. Modify the file ```/etc/httpd/conf.d/idp.example.org.conf``` as follows:
-   ```apache
-   # Redirection from port 80 to 443
-  <VirtualHost <SERVER-IP-ADDRESS>:80>
-      ServerName formsfede-024.renater.fr
-      ServerAlias formsfede-024.renater.fr
+    ```apache
+    # Redirection from port 80 to 443
+    <VirtualHost <SERVER-IP-ADDRESS>:80>
+      ServerName idp.example.org
+      ServerAlias idp.example.org
 
-      RedirectMatch ^/(.*)$ https://formsfede-024.renater.fr/$1
-  </VirtualHost>
+      RedirectMatch ^/(.*)$ https://idp.example.org/$1
+    </VirtualHost>
 
-  <VirtualHost *:443>
-      ServerName formsfede-024.renater.fr
-      ServerAlias formsfede-024.renater.fr
+    <VirtualHost *:443>
+      ServerName idp.example.org
+      ServerAlias idp.example.org
 
       # SSL Configuration
       SSLEngine On
@@ -370,18 +370,19 @@ gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-7
       ProxyPass /idp http://localhost:8080/idp retry=5
       ProxyPassReverse /idp http://localhost:8080/idp retry=5
       <Location /idp>
-          Require all granted
+        Require all granted
       </Location>
-  </VirtualHost>
+    </VirtualHost>
 
-  <VirtualHost 127.0.0.1:80>
+    # This virtualhost is only here to handle administrative commands for Shibboleth, executed from localhost
+    <VirtualHost 127.0.0.1:80>
       ProxyPass /idp http://localhost:8080/idp retry=5
       ProxyPassReverse /idp http://localhost:8080/idp retry=5
       <Location /idp>
-          Require all granted
+        Require all granted
       </Location>
-  </VirtualHost>
-   ```
+    </VirtualHost>
+    ```
 
 2. Restart Apache: `systemctl restart httpd`
 
