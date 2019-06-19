@@ -299,7 +299,7 @@
 12. Check that 'idpuser' can find user1:
     * `sudo ldapsearch -x -D 'cn=idpuser,ou=system,dc=example,dc=org' -W -b "uid=user1,ou=people,dc=example,dc=org"`
 
-13. Check that LDAP has TLS:
+13. Check that LDAP has TLS ('anonymous' MUST BE returned):
     * `sudo ldapwhoami -H ldap:// -x -ZZ`
 
 # PhpLdapAdmin (PLA) - optional
