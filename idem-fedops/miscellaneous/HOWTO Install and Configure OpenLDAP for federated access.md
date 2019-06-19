@@ -146,7 +146,7 @@
       olcAccess: {4}to * by dn.exact="cn=idpuser,ou=system,dc=example,dc=org" read by anonymous auth by self read
       ```
 
-    * `sudo ldapmodify  -Y EXTERNAL -H ldapi:/// -f /etc/ldap/scratch/olcAcl.ldif`
+    * `sudo ldapadd  -Y EXTERNAL -H ldapi:/// -f /etc/ldap/scratch/olcAcl.ldif`
 
 5. Check that 'idpuser' can search other users (when users exist):
     * `sudo ldapsearch -x -D 'cn=idpuser,ou=system,dc=example,dc=org' -w <INSERT-HERE-IDPUSER-PW> -b "ou=people,dc=example,dc=org"`
