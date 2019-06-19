@@ -207,7 +207,7 @@
       olcRefintAttribute: memberof member manager owner
       ```
 
-   6. `sudo ldapmodify -Q -Y EXTERNAL -H ldapi:/// -f /etc/ldap/scratch/add_refint2.ldif`
+   6. `sudo ldapadd -Q -Y EXTERNAL -H ldapi:/// -f /etc/ldap/scratch/add_refint2.ldif`
 
 8. Improve performance:
    * `sudo vim /etc/ldap/scratch/olcDbIndex.ldif`
