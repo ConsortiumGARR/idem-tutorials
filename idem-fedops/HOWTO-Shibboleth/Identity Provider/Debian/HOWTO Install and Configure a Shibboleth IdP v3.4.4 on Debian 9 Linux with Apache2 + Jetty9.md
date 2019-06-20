@@ -13,7 +13,7 @@
    3. [Install Jetty 9 Web Server](#install-jetty-9-web-server)
    4. [Install Shibboleth Identity Provider 3.4.4](#install-shibboleth-identity-provider-v344)
 5. [Configuration Instructions](#configuration-instructions)
-   1. [Configure SSL on Apache2 (Jetty front-end)](#configure-ssl-on-apache2-jetty-front-end)
+   1. [Configure SSL on Apache2 (front-end of Jetty)](#configure-ssl-on-apache2-jetty-front-end)
    2. [Configure Jetty](#configure-jetty)
    3. [Configure Shibboleth Identity Provider StorageRecords (Computed Mode) - Default](#configure-shibboleth-identity-provider-storagerecords-computed-mode---default)
    4. [Configure Shibboleth Identity Provider StorageRecords (Stored Mode)](#configure-shibboleth-identity-provider-storagerecords-stored-mode)
@@ -68,12 +68,7 @@
    * `sudo su -`
 
 2. Change the default mirror with the GARR ones:
-   * `nano /etc/apt/sources.list`
-   * CTRL+W (search)
-   * CTRL+R (replace)
-   * Text to search: '`archive.ubuntu.com`'
-   * Text to replace: '`debian.mirror.garr.it`'
-   * CTRL+X (save and exit)
+   * `sed -i 's/deb.debian.org/debian.mirror.garr.it/g' /etc/apt/sources.list`
    * `apt update && apt-get upgrade -y --no-install-recommends`
   
 3. Install the packages required: 
@@ -87,7 +82,7 @@
 1. Modify your `/etc/hosts`:
    * `vim /etc/hosts`
   
-        `127.0.1.1 idp.example.org idp`
+     `127.0.1.1 idp.example.org idp`
 
      (Replace `127.0.1.1` with the *IdP's private IP* and `idp.example.org` with your IdP *Full Qualified Domain Name*)
 
@@ -96,7 +91,7 @@
 3. Define the costant `JAVA_HOME` inside `/etc/environment`:
    * `vim /etc/environment`
 
-        `JAVA_HOME=/usr/lib/jvm/default-java/jre`
+     `JAVA_HOME=/usr/lib/jvm/default-java/jre`
 
    * `source /etc/environment`
 
@@ -463,7 +458,18 @@
 4. Check that IdP metadata is available on:
    * https://idp.example.org/idp/shibboleth
 
-5. Check IdP Status:
+5. Enable IdP Status page for the IdP local IP:
+   * `vim /opt/shibboleth-idp/conf/access-control.xml`
+     
+     ```bash
+     <bean id="AccessByIPAddress" parent="shibboleth.IPRangeAccessControl"
+		     p:allowedRanges="#{ {'127.0.0.1/32', '::1/128', '192.168.XX.YY/32'} }" />
+     ```
+
+7. Restart Jetty:
+   * `systemctl restart jetty`
+
+8. Check IdP Status:
    * `export JAVA_HOME=/usr/lib/jvm/default-java`
    * `cd /opt/shibboleth-idp/bin`
    * `./status.sh -u https://idp.example.org/idp`
@@ -496,30 +502,30 @@ Default behaviour provided by Shibboleth, you don't have to do nothing
    * `vim shib-ss-db.sql`:
 
      ```bash
-        SET NAMES 'utf8';
+     SET NAMES 'utf8';
 
-        SET CHARACTER SET utf8;
+     SET CHARACTER SET utf8;
 
-        CREATE DATABASE IF NOT EXISTS storageservice CHARACTER SET=utf8;
+     CREATE DATABASE IF NOT EXISTS storageservice CHARACTER SET=utf8;
 
-        GRANT ALL PRIVILEGES ON storageservice.* TO root@localhost IDENTIFIED BY '##ROOT-DB-PASSWORD-CHANGEME##';
-        GRANT ALL PRIVILEGES ON storageservice.* TO ##USERNAME-CHANGEME##@localhost IDENTIFIED BY '##USER-PASSWORD-CHANGEME##';
+     GRANT ALL PRIVILEGES ON storageservice.* TO root@localhost IDENTIFIED BY '##ROOT-DB-PASSWORD-CHANGEME##';
+     GRANT ALL PRIVILEGES ON storageservice.* TO ##USERNAME-CHANGEME##@localhost IDENTIFIED BY '##USER-PASSWORD-CHANGEME##';
 
-        FLUSH PRIVILEGES;
+     FLUSH PRIVILEGES;
 
-        USE storageservice;
+     USE storageservice;
 
-        CREATE TABLE IF NOT EXISTS StorageRecords
-        (
-        context VARCHAR(255) NOT NULL,
-        id VARCHAR(255) NOT NULL,
-        expires BIGINT(20) DEFAULT NULL,
-        value LONGTEXT NOT NULL,
-        version BIGINT(20) NOT NULL,
-        PRIMARY KEY (context, id)
-        );
+     CREATE TABLE IF NOT EXISTS StorageRecords
+     (
+     context VARCHAR(255) NOT NULL,
+     id VARCHAR(255) NOT NULL,
+     expires BIGINT(20) DEFAULT NULL,
+     value LONGTEXT NOT NULL,
+     version BIGINT(20) NOT NULL,
+     PRIMARY KEY (context, id)
+     );
 
-        quit
+     quit
      ```
 
    * `mysql -u root -p < shib-ss-db.sql`
@@ -531,38 +537,38 @@ Default behaviour provided by Shibboleth, you don't have to do nothing
    * `vim /opt/shibboleth-idp/conf/global.xml` and add this piece of code to the tail (before **`</beans>`** tag):
 
      ```bash
-        <!-- Add bean to store info on StorageRecords database -->
+     <!-- Add bean to store info on StorageRecords database -->
 
-        <bean id="storageservice.JPAStorageService" class="org.opensaml.storage.impl.JPAStorageService"
-              p:cleanupInterval="%{idp.storage.cleanupInterval:PT10M}"
-              c:factory-ref="storageservice.JPAStorageService.entityManagerFactory"/>
+     <bean id="storageservice.JPAStorageService" class="org.opensaml.storage.impl.JPAStorageService"
+           p:cleanupInterval="%{idp.storage.cleanupInterval:PT10M}"
+           c:factory-ref="storageservice.JPAStorageService.entityManagerFactory"/>
 
-        <bean id="storageservice.JPAStorageService.entityManagerFactory"
-              class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
-              <property name="packagesToScan" value="org.opensaml.storage.impl"/>
-              <property name="dataSource" ref="storageservice.JPAStorageService.DataSource"/>
-              <property name="jpaVendorAdapter" ref="storageservice.JPAStorageService.JPAVendorAdapter"/>
-              <property name="jpaDialect">
-                <bean class="org.springframework.orm.jpa.vendor.HibernateJpaDialect" />
-              </property>
-        </bean>
+     <bean id="storageservice.JPAStorageService.entityManagerFactory"
+           class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+           <property name="packagesToScan" value="org.opensaml.storage.impl"/>
+           <property name="dataSource" ref="storageservice.JPAStorageService.DataSource"/>
+           <property name="jpaVendorAdapter" ref="storageservice.JPAStorageService.JPAVendorAdapter"/>
+           <property name="jpaDialect">
+             <bean class="org.springframework.orm.jpa.vendor.HibernateJpaDialect" />
+           </property>
+     </bean>
 
-        <bean id="storageservice.JPAStorageService.DataSource"
-            class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close" lazy-init="true"
-            p:driverClassName="com.mysql.jdbc.Driver"
-            p:url="jdbc:mysql://localhost:3306/storageservice?autoReconnect=true"
-            p:username="##USERNAME-CHANGEME##"
-            p:password="##USER-PASSWORD-CHANGEME##"
-            p:maxActive="10"
-            p:maxIdle="5"
-            p:maxWait="15000"
-            p:testOnBorrow="true"
-            p:validationQuery="select 1"
-            p:validationQueryTimeout="5" />
+     <bean id="storageservice.JPAStorageService.DataSource"
+           class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close" lazy-init="true"
+           p:driverClassName="com.mysql.jdbc.Driver"
+           p:url="jdbc:mysql://localhost:3306/storageservice?autoReconnect=true"
+           p:username="##USERNAME-CHANGEME##"
+           p:password="##USER-PASSWORD-CHANGEME##"
+           p:maxActive="10"
+           p:maxIdle="5"
+           p:maxWait="15000"
+           p:testOnBorrow="true"
+           p:validationQuery="select 1"
+           p:validationQueryTimeout="5" />
 
-        <bean id="storageservice.JPAStorageService.JPAVendorAdapter" class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
-            <property name="database" value="MYSQL" />
-        </bean>
+     <bean id="storageservice.JPAStorageService.JPAVendorAdapter" class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+         <property name="database" value="MYSQL" />
+     </bean>
      ```
      (and modify the "**##USERNAME-CHANGEME##**" and "**##USER-PASSWORD-CHANGEME##**" for your "**storageservice**" DB)
 
@@ -638,33 +644,33 @@ Default behaviour provided by Shibboleth, you don't have to do nothing
    * `vim shib-pid-db.sql`:
 
      ```bash
-        SET NAMES 'utf8';
+     SET NAMES 'utf8';
 
-        SET CHARACTER SET utf8;
+     SET CHARACTER SET utf8;
 
-        CREATE DATABASE IF NOT EXISTS shibboleth CHARACTER SET=utf8;
+     CREATE DATABASE IF NOT EXISTS shibboleth CHARACTER SET=utf8;
 
-        GRANT ALL PRIVILEGES ON shibboleth.* TO root@localhost IDENTIFIED BY '##ROOT-DB-PASSWORD-CHANGEME##';
-        GRANT ALL PRIVILEGES ON shibboleth.* TO ##USERNAME-CHANGEME##@localhost IDENTIFIED BY '##USER-PASSWORD-CHANGEME##';
+     GRANT ALL PRIVILEGES ON shibboleth.* TO root@localhost IDENTIFIED BY '##ROOT-DB-PASSWORD-CHANGEME##';
+     GRANT ALL PRIVILEGES ON shibboleth.* TO ##USERNAME-CHANGEME##@localhost IDENTIFIED BY '##USER-PASSWORD-CHANGEME##';
 
-        FLUSH PRIVILEGES;
+     FLUSH PRIVILEGES;
 
-        USE shibboleth;
+     USE shibboleth;
 
-        CREATE TABLE IF NOT EXISTS shibpid
-        (
-        localEntity VARCHAR(1024) NOT NULL,
-        peerEntity VARCHAR(1024) NOT NULL,
-        persistentId VARCHAR(50) NOT NULL,
-        principalName VARCHAR(255) NOT NULL,
-        localId VARCHAR(255) NOT NULL,
-        peerProvidedId VARCHAR(255) NULL,
-        creationDate TIMESTAMP NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
-        deactivationDate TIMESTAMP NULL default NULL,
-        PRIMARY KEY (localEntity(255), peerEntity(255), persistentId(50))
-        );
+     CREATE TABLE IF NOT EXISTS shibpid
+     (
+     localEntity VARCHAR(1024) NOT NULL,
+     peerEntity VARCHAR(1024) NOT NULL,
+     persistentId VARCHAR(50) NOT NULL,
+     principalName VARCHAR(255) NOT NULL,
+     localId VARCHAR(255) NOT NULL,
+     peerProvidedId VARCHAR(255) NULL,
+     creationDate TIMESTAMP NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+     deactivationDate TIMESTAMP NULL default NULL,
+     PRIMARY KEY (localEntity(255), peerEntity(255), persistentId(50))
+     );
 
-        quit
+     quit
      ```
 
    * `mysql -u root -p < shib-pid-db.sql`
@@ -736,7 +742,7 @@ Default behaviour provided by Shibboleth, you don't have to do nothing
 
      (with **TLS** solutions we consider to have the LDAP certificate into `/opt/shibboleth-idp/credentials`).
 
-     * Solution 1: LDAP + STARTTLS:
+     * Solution 1: LDAP + STARTTLS
 
        ```xml
        idp.authn.LDAP.authenticator = bindSearchAuthenticator
@@ -752,7 +758,7 @@ Default behaviour provided by Shibboleth, you don't have to do nothing
        idp.authn.LDAP.bindDNCredential = ###LDAP_ADMIN_PASSWORD###
        ```
 
-     * Solution 2: LDAP + TLS:
+     * Solution 2: LDAP + TLS
 
        ```xml
        idp.authn.LDAP.authenticator = bindSearchAuthenticator
@@ -766,7 +772,7 @@ Default behaviour provided by Shibboleth, you don't have to do nothing
        idp.authn.LDAP.userFilter = (uid={user})
        idp.authn.LDAP.bindDN = uid=idpuser,ou=system,dc=example,dc=org
        idp.authn.LDAP.bindDNCredential = ###LDAP_ADMIN_PASSWORD###
-       `
+       ```
 
      * Solution 3: plain LDAP
 
