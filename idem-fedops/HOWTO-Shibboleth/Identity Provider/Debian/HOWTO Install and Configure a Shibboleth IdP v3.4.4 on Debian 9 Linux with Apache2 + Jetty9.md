@@ -387,7 +387,7 @@
    ```
    
 3. Configure Apache2 to redirect all on HTTPS:
-   * `vim /etc/apache2/sites-enabled/idp.example.org.conf`
+   * `vim /etc/apache2/sites-available/idp.example.org.conf`
    
    ```apache
    <VirtualHost *:80>
