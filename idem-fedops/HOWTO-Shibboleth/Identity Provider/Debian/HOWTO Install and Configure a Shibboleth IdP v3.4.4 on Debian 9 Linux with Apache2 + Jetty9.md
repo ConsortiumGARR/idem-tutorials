@@ -370,7 +370,7 @@
         
         SSLCertificateFile /etc/ssl/certs/idp.example.org.crt
         SSLCertificateKeyFile /etc/ssl/private/idp.example.org.key
-        SSLCACertificatePath /etc/ssl/certs/ca-certificates.crt
+        SSLCACertificateFile /etc/ssl/certs/ca-certificates.crt
 
         <IfModule mod_proxy.c>
            ProxyPreserveHost Off
