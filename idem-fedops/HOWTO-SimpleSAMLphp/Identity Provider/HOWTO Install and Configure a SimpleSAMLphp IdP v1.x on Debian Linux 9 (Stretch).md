@@ -572,9 +572,6 @@ The software installation provided by this guide is intended to run by ROOT user
  
         // If language is set in Consent module it will be added as an attribute
         99 => 'core:LanguageAdaptor',
-
-        // Convert LDAP names to oids.
-        100 => array('class' => 'core:AttributeMap', 'name2oid'),
      ],
      ...
      ```
