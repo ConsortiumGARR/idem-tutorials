@@ -368,7 +368,7 @@
         SSLCACertificateFile /etc/ssl/certs/ca-certificates.crt
 
         <IfModule mod_proxy.c>
-           ProxyPreserveHost Off
+           ProxyPreserveHost On
            RequestHeader set X-Forwarded-Proto "https"
            ProxyPass /idp http://localhost:8080/idp retry=5
            ProxyPassReverse /idp http://localhost:8080/idp retry=5
@@ -806,7 +806,7 @@ Default behaviour provided by Shibboleth, you don't have to do nothing
 
    * `cp attribute-resolver-full.xml attribute-resolver.xml`
 
-   * `vim attribute-resolver.conf`
+   * `vim attribute-resolver.xml`
      * Remove comment for all schemas supported by your OpenLDAP
      * Remove comment for the Example LDAP Connector
      * Save
