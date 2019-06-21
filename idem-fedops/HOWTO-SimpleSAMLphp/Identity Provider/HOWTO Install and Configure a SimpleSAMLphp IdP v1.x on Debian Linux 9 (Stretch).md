@@ -13,6 +13,7 @@
    1. [Configure SSL on Apache2](#configure-ssl-on-apache2)
    2. [Configure SimpleSAMLphp](#configure-simplesamlphp)
    3. [Configure the Identity Provider](#configure-the-identity-provider)
+6. [Appendix A - How to release attributes to specific SP only](#appendix-a---how-to-release-attributes-to-specific-sp-only)
 5. [Authors](#authors)
 
 
@@ -639,7 +640,37 @@ The software installation provided by this guide is intended to run by ROOT user
 8. Register you SP on IDEM Entity Registry (your entity have to be approved by an IDEM Federation Operator before become part of IDEM Test Federation):
    * Go to `https://registry.idem.garr.it/` and follow "**Insert a New Identity Provider into the IDEM Test Federation**"
 
-### Appendix A - How to manage sessions with Memcached
+### Appendix A - How to release attributes to specific SP only
+
+1. Download and extract `attributepolicy` module:
+   * `wget https://github.com/RikV/simplesaml-attributepolicy/archive/1.1.tar.gz -O /usr/local/src/ssp-attributepolicy.tar.gz`
+   * `cd /usr/local/src`
+   * `tar xzf ssp-attributepolicy.tar.gz`
+   * `rm -R ssp-attributepolicy.tar.gz`
+   
+2. Load module in SimpleSAMLphp:
+   * `ln -s /usr/local/src/simplesaml-attributepolicy-1.1/attributepolicy/ /var/simplesamlphp/modules/`
+   
+3. Activate module:
+   * `vim /var/simplesamlphp/config/config.php`
+
+     ```bash
+     ...
+     'module.enable' => [
+        'cron' => true,
+        'metarefresh' => true,
+        'consent' => true,
+        'attributepolicy' => true,
+     ],
+     ...
+     ```
+
+4. Create the Attribute Release Policy for IDEM Test Federation:
+   * Copy the content of [module_attributepolicy_test.php](utils/module_attributepolicy_test.php) and paste it into `/var/simplesamlphp/config/module_attributepolicy.php`
+   
+   (the default template is into `/var/simplesamlphp/modules/attributepolicy/config-templates/module_attributepolicy.php`)
+
+### Appendix B - How to manage sessions with Memcached
 
 ### Authors
 
