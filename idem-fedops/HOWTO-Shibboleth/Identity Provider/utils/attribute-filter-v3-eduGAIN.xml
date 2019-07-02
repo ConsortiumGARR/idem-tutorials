@@ -19,7 +19,9 @@
         xsi:schemaLocation="urn:mace:shibboleth:2.0:afp http://shibboleth.net/schema/idp/shibboleth-afp.xsd">
 
     <AttributeFilterPolicy id="releaseToEduGAIN">
-        <PolicyRequirementRule xsi:type="InEntityGroup" groupID="https://federation.renater.fr/edugain/" />
+        <PolicyRequirementRule xsi:type="NOT">
+          <Rule xsi:type="RegistrationAuthority" registrars="http://cif.cynet.ac.cy"/>
+        </PolicyRequirementRule>
 
         <AttributeRule attributeID="eduPersonTargetedID" permitAny="true" />
         <AttributeRule attributeID="eduPersonPrincipalName" permitAny="true" />
