@@ -21,7 +21,7 @@
       3. [JPA Storage Service - using a database](#jpa-storage-service---using-a-database)
    4. [Configure Shibboleth Identity Provider to release the persistent-id](#configure-shibboleth-identity-provider-to-release-the-persistent-id)
       1. [Computed mode - Default & Recommended](#computed-mode---default--recommended)
-      2. [Stored Mode](#stored-mode)
+      2. [Stored Mode - using a database](#stored-mode---using-a-database)
    5. [Configure Logout](#configure-logout)
    6. [Configure the directory (openLDAP) connection](#configure-the-directory-openldap-connection)
    7. [Configure IdP Logging](#configure-idp-logging)
@@ -76,7 +76,7 @@
    * `apt update && apt-get upgrade -y --no-install-recommends`
   
 3. Install the packages required: 
-   * `apt install vim default-jdk ca-certificates openssl apache2 ntp expat --no-install-recommends`
+   * `apt install vim wget default-jdk ca-certificates openssl apache2 ntp expat --no-install-recommends`
 
 4. Check that Java is working:
    * `update-alternatives --config java`
@@ -658,7 +658,7 @@ If you don't change anything you will use cookies that can store an extremely sm
    * `cd /opt/shibboleth-idp/bin`
    * `./status.sh -u https://idp.example.org/idp`
 
-#### Stored mode
+#### Stored mode - using a database
 
 1. Become ROOT: 
    * `sudo su -`
