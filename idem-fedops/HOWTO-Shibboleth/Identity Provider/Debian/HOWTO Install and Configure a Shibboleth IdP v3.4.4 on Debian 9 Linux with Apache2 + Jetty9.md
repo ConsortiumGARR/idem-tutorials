@@ -20,7 +20,7 @@
       2. [HTML Local Storage - Recommended](#html-local-storage---recommended)
       3. [JPA Storage Service - using a database](#jpa-storage-service---using-a-database)
    4. [Configure Shibboleth Identity Provider to release the persistent-id](#configure-shibboleth-identity-provider-to-release-the-persistent-id)
-      1. [Computed mode - Default & Recommended](#computed-mode---default-recommended)
+      1. [Computed mode - Default & Recommended](#computed-mode---default--recommended)
       2. [Stored Mode](#stored-mode)
    5. [Configure Logout](#configure-logout)
    6. [Configure the directory (openLDAP) connection](#configure-the-directory-openldap-connection)
