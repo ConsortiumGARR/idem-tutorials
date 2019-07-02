@@ -639,7 +639,7 @@ Default behaviour provided by Shibboleth, you don't have to do nothing
 
    * `bin/build.sh`
 
-3. Create `StorageRegords` table on `shibboleth` database.
+3. Create `shibpid` table on `shibboleth` database.
 
    * `vim shib-pid-db.sql`:
 
@@ -814,6 +814,8 @@ Default behaviour provided by Shibboleth, you don't have to do nothing
      Here you can find the **attribute-resolver-v3_4-idem.xml** provided by IDEM GARR AAI as example:
        * Download the attribute resolver provided by IDEM GARR AAI:
          `wget http://www.garr.it/idem-conf/attribute-resolver-v3_4-idem.xml -O /opt/shibboleth-idp/conf/attribute-resolver-v3_4-idem.xml`
+	 
+     **Pay attention on `<DataConnector id="myStoredId"`. You have to put the right bean ID into `<BeanManagedConnection>` or IdP will not work. You have to put there the ID of the `BasicDataSource` bean**
 
 3. Restart Jetty to apply changes:
    * `systemctl restart jetty.service`
