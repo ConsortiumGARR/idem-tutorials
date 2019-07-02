@@ -13,20 +13,24 @@
    3. [Install Jetty 9 Web Server](#install-jetty-9-web-server)
    4. [Install Shibboleth Identity Provider 3.4.4](#install-shibboleth-identity-provider-v344)
 5. [Configuration Instructions](#configuration-instructions)
-   1. [Configure SSL on Apache2 (front-end of Jetty)](#configure-ssl-on-apache2-jetty-front-end)
+   1. [Configure SSL on Apache2 (front-end of Jetty)](#configure-ssl-on-apache2-front-end-of-jetty)
    2. [Configure Jetty](#configure-jetty)
-   3. [Configure Shibboleth Identity Provider StorageRecords (Computed Mode) - Default](#configure-shibboleth-identity-provider-storagerecords-computed-mode---default)
-   4. [Configure Shibboleth Identity Provider StorageRecords (Stored Mode)](#configure-shibboleth-identity-provider-storagerecords-stored-mode)
-   5. [Configure Shibboleth Identity Provider to release the persistent-id (Computed mode) - Default](#configure-shibboleth-identity-provider-to-release-the-persistent-id-computed-mode---default)
-   6. [Configure Shibboleth Identity Provider to release the persistent-id (Stored Mode)](#configure-shibboleth-identity-provider-to-release-the-persistent-id-stored-mode)
-   7. [Configure the directory (openLDAP) connection](#configure-the-directory-openldap-connection)
-   8. [Configure IdP Logging](#configure-idp-logging)
-   9. [Translate IdP messages into preferred language](#translate-idp-messages-into-preferred-language)
-   10. [Disable SAML1 Deprecated Protocol](#disable-saml1-deprecated-protocol)
-   11. [Register the IdP on the Federation](#register-the-idp-on-the-federation)
-   12. [Configure Attribute Filters to release the mandatory attributes to the IDEM Default  Resources](#configure-attribute-filters-to-release-the-mandatory-attributes-to-the-idem-default-resources)
-   13. [Configure Attribute Filters to release the mandatory attributes to the IDEM Production Resources](#configure-attribute-filters-to-release-the-mandatory-attributes-to-the-idem-production-resources)
-   14. [Configure Attribute Filters for Research and Scholarship and Data Protection Code of Conduct Entity Category](#configure-attribute-filters-for-research-and-scholarship-and-data-protection-code-of-conduct-entity-category)
+   3. [Configure Shibboleth Identity Provider StorageRecords (User Consent)](#configure-shibboleth-identity-provider-storagerecords-user-consent)
+      1. [Default - Not Recommended](#default---not-recommended)
+      2. [HTML Local Storage - Recommended](#html-local-storage---recommended)
+      3. [JPA Storage Service - using a database](#jpa-storage-service---using-a-database)
+   4. [Configure Shibboleth Identity Provider to release the persistent-id](#configure-shibboleth-identity-provider-to-release-the-persistent-id)
+      1. [Computed mode - Default & Recommended](#computed-mode---default-recommended)
+      2. [Stored Mode](#stored-mode)
+   5. [Configure Logout](#configure-logout)
+   6. [Configure the directory (openLDAP) connection](#configure-the-directory-openldap-connection)
+   7. [Configure IdP Logging](#configure-idp-logging)
+   8. [Translate IdP messages into preferred language](#translate-idp-messages-into-preferred-language)
+   9. [Disable SAML1 Deprecated Protocol](#disable-saml1-deprecated-protocol)
+   10. [Register the IdP on the Federation](#register-the-idp-on-the-federation)
+   11. [Configure Attribute Filters to release the mandatory attributes to the IDEM Default  Resources](#configure-attribute-filters-to-release-the-mandatory-attributes-to-the-idem-default-resources)
+   12. [Configure Attribute Filters to release the mandatory attributes to the IDEM Production Resources](#configure-attribute-filters-to-release-the-mandatory-attributes-to-the-idem-production-resources)
+   13. [Configure Attribute Filters for Research and Scholarship and Data Protection Code of Conduct Entity Category](#configure-attribute-filters-for-research-and-scholarship-and-data-protection-code-of-conduct-entity-category)
 6. [Appendix A: Import metadata from previous IDP v2.x](#appendix-a-import-metadata-from-previous-idp-v2x)
 7. [Appendix B: Import persistent-id from a previous database](#appendix-b-import-persistent-id-from-a-previous-database)
 8. [Appendix C: Useful logs to find problems](#appendix-c-useful-logs-to-find-problems)
@@ -474,11 +478,35 @@
    * `cd /opt/shibboleth-idp/bin`
    * `./status.sh -u https://idp.example.org/idp`
 
-### Configure Shibboleth Identity Provider StorageRecords (Computed Mode) - Default
+### Configure Shibboleth Identity Provider StorageRecords (User Consent)
 
-Default behaviour provided by Shibboleth, you don't have to do nothing
+#### Default - Not Recommended
 
-### Configure Shibboleth Identity Provider StorageRecords (Stored Mode)
+If you don't change anything you will use cookies that can store an extremely small number of records.
+
+#### HTML Local Storage - Recommended
+
+1. Become ROOT: 
+   * `sudo su -`
+
+2. Enable HTML Local Storage:
+   * `vim /opt/shibboleth-idp/conf/idp.properties`
+   
+     ```bash
+     idp.storage.htmlLocalStorage = true
+     ```
+3. Restart Jetty to apply changes:
+   * `systemctl restart jetty.service`
+
+4. Check that metadata is available on:
+   * https://idp.example.org/idp/shibboleth
+
+5. Check IdP Status:
+   * `export JAVA_HOME=/usr/lib/jvm/default-java`
+   * `cd /opt/shibboleth-idp/bin`
+   * `./status.sh -u https://idp.example.org/idp`
+
+#### JPA Storage Service - using a database
 
 1. Become ROOT: 
    * `sudo su -`
@@ -532,7 +560,7 @@ Default behaviour provided by Shibboleth, you don't have to do nothing
 
    * `systemctl restart mysql`
 
-4. Enable stored StorageRecords:
+4. Enable JPA Storage Service:
 
    * `vim /opt/shibboleth-idp/conf/global.xml` and add this piece of code to the tail (before **`</beans>`** tag):
 
@@ -582,7 +610,7 @@ Default behaviour provided by Shibboleth, you don't have to do nothing
      (This will indicate to IdP to store the data collected by User Consent into the "**StorageRecords**" table)
 
 6. Restart Jetty to apply changes:
-   * `systemctl restart jetty`
+   * `systemctl restart jetty.service`
 
 7. Check that metadata is available on:
    * https://idp.example.org/idp/shibboleth
@@ -592,7 +620,9 @@ Default behaviour provided by Shibboleth, you don't have to do nothing
    * `cd /opt/shibboleth-idp/bin`
    * `./status.sh -u https://idp.example.org/idp`
 
-### Configure Shibboleth Identity Provider to release the persistent-id (Computed mode) - Default
+### Configure Shibboleth Identity Provider to release the persistent-id
+
+#### Computed mode - Default & Recommended
 
 1. Become ROOT: 
    * `sudo su -`
@@ -620,7 +650,15 @@ Default behaviour provided by Shibboleth, you don't have to do nothing
 3. Restart Jetty:
    * `systemctl restart jetty.service`
 
-### Configure Shibboleth Identity Provider to release the persistent-id (Stored mode)
+4. Check that metadata is available on:
+   * https://idp.example.org/idp/shibboleth
+
+5. Check IdP Status:
+   * `export JAVA_HOME=/usr/lib/jvm/default-java`
+   * `cd /opt/shibboleth-idp/bin`
+   * `./status.sh -u https://idp.example.org/idp`
+
+#### Stored mode
 
 1. Become ROOT: 
    * `sudo su -`
@@ -731,6 +769,30 @@ Default behaviour provided by Shibboleth, you don't have to do nothing
    * https://idp.example.org/idp/shibboleth
 
 8. Check IdP Status:
+   * `export JAVA_HOME=/usr/lib/jvm/default-java`
+   * `cd /opt/shibboleth-idp/bin`
+   * `./status.sh -u https://idp.example.org/idp`
+
+### Configure Logout
+
+1. Become ROOT: 
+   * `sudo su -`
+
+2. Enable Shibboleth Logout:
+   * `vim /opt/shibboleth-idp/conf/idp.properties`
+   
+     ```bash
+     idp.session.trackSPSessions = true
+     idp.session.secondaryServiceIndex = true
+     ```
+
+3. Restart Jetty to apply changes:
+   * `systemctl restart jetty.service`
+
+4. Check that metadata is available on:
+   * https://idp.example.org/idp/shibboleth
+
+5. Check IdP Status:
    * `export JAVA_HOME=/usr/lib/jvm/default-java`
    * `cd /opt/shibboleth-idp/bin`
    * `./status.sh -u https://idp.example.org/idp`
