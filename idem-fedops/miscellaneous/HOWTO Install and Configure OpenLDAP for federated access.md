@@ -33,7 +33,7 @@
     slapd slapd/backend select MDB
     ```
 
-   * `cat /root/debconf-slapd.conf | debconf-set-selections`
+   * `sudo cat /root/debconf-slapd.conf | debconf-set-selections`
 
    **NOTES**: From now until the end of this HOWTO, we'll consider that:
       * `<LDAP-ROOT-PW_CHANGEME>` ==> `ciaoldap`
@@ -91,8 +91,8 @@
    * `sudo ldapmodify -Y EXTERNAL -H ldapi:/// -f /etc/ldap/olcTLS.ldif`
 
 2. Create the 3 main branches, 'main', 'groups' and 'system', with:
-   * `mkdir /etc/ldap/scratch`
-   * `vim /etc/ldap/scratch/add_ou.ldif`
+   * `sudo mkdir /etc/ldap/scratch`
+   * `sudo vim /etc/ldap/scratch/add_ou.ldif`
 
       ```bash
       dn: ou=people,dc=example,dc=org
@@ -116,7 +116,7 @@
     * Verify with: `sudo ldapsearch -x -b dc=example,dc=org`
 
 3. Create the 'idpuser' needed to perform "Bind and Search" operations:
-    * `vim /etc/ldap/scratch/add_idpuser.ldif`
+    * `sudo vim /etc/ldap/scratch/add_idpuser.ldif`
 
       ```bash
       dn: cn=idpuser,ou=system,dc=example,dc=org
@@ -133,7 +133,7 @@
       `sudo ldapsearch  -Y EXTERNAL -H ldapi:/// -b cn=config 'olcDatabase={1}mdb'`
 
     * Configure ACL for 'idpuser' with:
-      `vim /etc/ldap/scratch/olcAcl.ldif`
+      `sudo vim /etc/ldap/scratch/olcAcl.ldif`
 
       ```bash
       dn: olcDatabase={1}mdb,cn=config
@@ -146,15 +146,15 @@
       olcAccess: {4}to * by dn.exact="cn=idpuser,ou=system,dc=example,dc=org" read by anonymous auth by self read
       ```
 
-    * `sudo ldapmodify  -Y EXTERNAL -H ldapi:/// -f /etc/ldap/scratch/olcAcl.ldif`
+    * `sudo ldapadd  -Y EXTERNAL -H ldapi:/// -f /etc/ldap/scratch/olcAcl.ldif`
 
 5. Check that 'idpuser' can search other users (when users exist):
     * `sudo ldapsearch -x -D 'cn=idpuser,ou=system,dc=example,dc=org' -w <INSERT-HERE-IDPUSER-PW> -b "ou=people,dc=example,dc=org"`
 
 6. Install needed schemas (eduPerson, SCHAC, Password Policy):
-   * `cd /etc/ldap/schema`
-   * `wget https://raw.githubusercontent.com/malavolti/ansible-shibboleth/master/roles/openldap/files/eduperson-201602.ldif -O eduperson.ldif`
-   * `wget https://raw.githubusercontent.com/malavolti/ansible-shibboleth/master/roles/openldap/files/schac-20150413.ldif -O schac.ldif`
+   * `sudo cd /etc/ldap/schema`
+   * `sudo wget https://raw.githubusercontent.com/malavolti/ansible-shibboleth/master/roles/openldap/files/eduperson-201602.ldif -O eduperson.ldif`
+   * `sudo wget https://raw.githubusercontent.com/malavolti/ansible-shibboleth/master/roles/openldap/files/schac-20150413.ldif -O schac.ldif`
    * `sudo ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/ldap/schema/eduperson.ldif`
    * `sudo ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/ldap/schema/schac.ldif`
    * `sudo ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/ldap/schema/ppolicy.ldif`
@@ -207,7 +207,7 @@
       olcRefintAttribute: memberof member manager owner
       ```
 
-   6. `sudo ldapmodify -Q -Y EXTERNAL -H ldapi:/// -f /etc/ldap/scratch/add_refint2.ldif`
+   6. `sudo ldapadd -Q -Y EXTERNAL -H ldapi:/// -f /etc/ldap/scratch/add_refint2.ldif`
 
 8. Improve performance:
    * `sudo vim /etc/ldap/scratch/olcDbIndex.ldif`
@@ -295,6 +295,12 @@
      ```
 
    * `sudo ldapadd -D cn=admin,dc=example,dc=org -w <LDAP-ROOT-PW_CHANGEME> -f /etc/ldap/scratch/user1.ldif`
+
+12. Check that 'idpuser' can find user1:
+    * `sudo ldapsearch -x -D 'cn=idpuser,ou=system,dc=example,dc=org' -W -b "uid=user1,ou=people,dc=example,dc=org"`
+
+13. Check that LDAP has TLS ('anonymous' MUST BE returned):
+    * `sudo ldapwhoami -H ldap:// -x -ZZ`
 
 # PhpLdapAdmin (PLA) - optional
 
