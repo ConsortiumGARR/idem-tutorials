@@ -315,15 +315,7 @@ Jetty is a Java HTTP (Web) server and Java Servlet container that will be used t
 11. Check if the Apache Welcome page is available:
     * https://idp.example.org
 
-**Note:** Jetty will show some WARN messages like this:
-`2019-07-03 10:01:10.306:WARN:oeja.AnnotationParser:qtp399573350-19: org.apache.taglibs.standard.tei.DeclareTEI scanned from multiple locations: 
-jar:file:///usr/local/src/jetty-distribution-9.4.19.v20190610/lib/apache-jstl/org.apache.taglibs.taglibs-standard-impl-1.2.5.jar!/org/apache/taglibs/standard/tei/DeclareTEI.class, 
-jar:file:///opt/jetty/tmp/jetty-localhost-8080-idp.war-_idp-any-4002882914382542777.dir/webinf/WEB-INF/lib/jstl-1.2.jar!/org/apache/taglibs/standard/tei/DeclareTEI.class`
-
-This is a warning produced during the bytecode scanning for annotations of a webapp startup. In this case, we have 2 versions of the same class, version 1.2.5 and 1.2 as seen by the JAR filenames.
-*These warnings don't prevent the IdP working and can be ignored.*
-
-### Install Shibboleth Identity Provider v3.4.4
+### Install Shibboleth Identity Provider v3.4.x
 
 The Identity Provider (IdP) is responsible for user authentication and providing user information to the Service Provider (SP). It is located at the home organization, which is the organization which maintains the user's account.
 It is a Java Web Application that can be deployed with its WAR file.
@@ -331,22 +323,22 @@ It is a Java Web Application that can be deployed with its WAR file.
 1. Become ROOT:
    * `sudo su -`
 
-2. Download the Shibboleth Identity Provider v3.4.4:
+2. Download the Shibboleth Identity Provider v3.4.x (replace '3.4.x' with the latest version):
    * `cd /usr/local/src`
-   * `wget http://shibboleth.net/downloads/identity-provider/3.4.4/shibboleth-identity-provider-3.4.4.tar.gz`
-   * `tar -xzvf shibboleth-identity-provider-3.4.4.tar.gz`
+   * `wget http://shibboleth.net/downloads/identity-provider/3.4.x/shibboleth-identity-provider-3.4.x.tar.gz`
+   * `tar -xzvf shibboleth-identity-provider-3.4.x.tar.gz`
 
 3. Import the JST libraries to visualize the IdP `status` page:
-   * `cd /usr/local/src/shibboleth-identity-provider-3.4.4/webapp/WEB-INF/lib`
+   * `cd /usr/local/src/shibboleth-identity-provider-3.4.x/webapp/WEB-INF/lib`
    * `wget https://build.shibboleth.net/nexus/service/local/repositories/thirdparty/content/javax/servlet/jstl/1.2/jstl-1.2.jar`
 
 4. Run the installer `install.sh`:
-   * `cd /usr/local/src/shibboleth-identity-provider-3.4.4`
+   * `cd /usr/local/src/shibboleth-identity-provider-3.4.x`
    * `./bin/install.sh`
   
    ```bash
-   root@idp:/usr/local/src/shibboleth-identity-provider-3.4.4# ./bin/install.sh
-   Source (Distribution) Directory: [/usr/local/src/shibboleth-identity-provider-3.4.4]
+   root@idp:/usr/local/src/shibboleth-identity-provider-3.4.x# ./bin/install.sh
+   Source (Distribution) Directory: [/usr/local/src/shibboleth-identity-provider-3.4.x]
    Installation Directory: [/opt/shibboleth-idp]
    Hostname: [localhost.localdomain]
    idp.example.org
@@ -509,12 +501,20 @@ Apache HTTP (Web) Server will manage the HTTPS part (certificate and key) and fo
    Note: Remember to change `192.168.XX.YY` to your private IP
 
 6. Restart Jetty:
-   * `systemctl restart jetty`
+   * `systemctl restart jetty.service`
 
 7. Check IdP Status:
    * `export JAVA_HOME=/usr/lib/jvm/default-java`
    * `cd /opt/shibboleth-idp/bin`
    * `./status.sh -u https://idp.example.org/idp`
+
+**Note:** Jetty will show some WARN messages like this on its `/var/log/jetty/*.jetty.log`:
+`2019-07-03 10:01:10.306:WARN:oeja.AnnotationParser:qtp399573350-19: org.apache.taglibs.standard.tei.DeclareTEI scanned from multiple locations: 
+jar:file:///usr/local/src/jetty-distribution-9.4.19.v20190610/lib/apache-jstl/org.apache.taglibs.taglibs-standard-impl-1.2.5.jar!/org/apache/taglibs/standard/tei/DeclareTEI.class, 
+jar:file:///opt/jetty/tmp/jetty-localhost-8080-idp.war-_idp-any-4002882914382542777.dir/webinf/WEB-INF/lib/jstl-1.2.jar!/org/apache/taglibs/standard/tei/DeclareTEI.class`
+
+This is a warning produced during the bytecode scanning for annotations of a webapp startup. In this case, we have 2 versions of the same class, version 1.2.5 and 1.2 as seen by the JAR filenames.
+*These warnings don't prevent the IdP working and can be ignored.*
 
 ### Configure Shibboleth Identity Provider StorageRecords (User Consent)
 
