@@ -970,6 +970,9 @@ Translate the IdP messages in your language:
    * `vim /opt/shibboleth-idp/metadata/idp-metadata.xml`
 
       ```bash
+      <EntityDescriptor> SECTION:
+        – Remove `validUntil` XML attribute.
+	
       <IDPSSODescriptor> SECTION:
         - From the list of "protocolSupportEnumeration" remove:
           - urn:oasis:names:tc:SAML:1.1:protocol
@@ -1179,6 +1182,9 @@ Translate the IdP messages in your language:
    * `vim /opt/shibboleth-idp/metadata/idp-metadata.xml`
  
       ```bash
+      <EntityDescriptor> SECTION:
+        – Remove `validUntil` XML attribute.
+
       <IDPSSODescriptor> SECTION:
         – From the list of "protocolSupportEnumeration" remove:
           - urn:oasis:names:tc:SAML:1.1:protocol
