@@ -11,6 +11,7 @@
   <!-- Attribute Definitions -->
   <!-- ========================================== -->
 
+  <!-- eduGAIN attribute definitions -->
   <AttributeDefinition xsi:type="Simple" id="surname">
     <InputDataConnector ref="myLDAP" attributeNames="sn"/>
     <DisplayName xml:lang="en">Surname</DisplayName>
@@ -36,15 +37,6 @@
     <DisplayDescription xml:lang="en">Affiliation Scoped: Type of affiliation with Home Organization with scope</DisplayDescription>
     <DisplayDescription xml:lang="it">Affiliazione con ambito: ruolo ricoperto con dominio dell'Organizzazione</DisplayDescription>
     <AttributeEncoder xsi:type="SAML2ScopedString" name="urn:oid:1.3.6.1.4.1.5923.1.1.1.9" friendlyName="eduPersonScopedAffiliation" encodeType="false"/>
-  </AttributeDefinition>
-
-  <AttributeDefinition xsi:type="Simple" id="eduPersonEntitlement">
-    <InputDataConnector ref="myLDAP" attributeNames="eduPersonEntitlement"/>
-    <DisplayName xml:lang="en">Entitlement</DisplayName>
-    <DisplayName xml:lang="it">Entitlement</DisplayName>
-    <DisplayDescription xml:lang="en">Entitlement: URI (either URL or URN) that indicates a set of rights to specific resources based on an agreement across the releavant community</DisplayDescription>
-    <DisplayDescription xml:lang="it">Entitlement: URI (sia URL o URN) che rappresenta diritti specifici d'accesso validi in tutta la community</DisplayDescription>
-    <AttributeEncoder xsi:type="SAML2String" name="urn:oid:1.3.6.1.4.1.5923.1.1.1.7" friendlyName="eduPersonEntitlement" encodeType="false"/>
   </AttributeDefinition>
 
   <AttributeDefinition xsi:type="Simple" id="eduPersonAffiliation">
@@ -118,6 +110,34 @@
     <DisplayDescription xml:lang="en">Home Organization Type: Type of a Home Organization</DisplayDescription>
     <DisplayDescription xml:lang="it">Tipo dell'organizzazione di appartenenza</DisplayDescription>
     <AttributeEncoder xsi:type="SAML2String" name="urn:oid:1.3.6.1.4.1.25178.1.2.10" friendlyName="schacHomeOrganizationType" encodeType="false"/>
+  </AttributeDefinition>
+  
+  <!-- Other useful attribute definitions -->
+  <AttributeDefinition xsi:type="Simple" id="eduPersonEntitlement">
+    <InputDataConnector ref="myLDAP" attributeNames="eduPersonEntitlement"/>
+    <DisplayName xml:lang="en">Entitlement</DisplayName>
+    <DisplayName xml:lang="it">Entitlement</DisplayName>
+    <DisplayDescription xml:lang="en">Entitlement: URI (either URL or URN) that indicates a set of rights to specific resources based on an agreement across the releavant community</DisplayDescription>
+    <DisplayDescription xml:lang="it">Entitlement: URI (sia URL o URN) che rappresenta diritti specifici d'accesso validi in tutta la community</DisplayDescription>
+    <AttributeEncoder xsi:type="SAML2String" name="urn:oid:1.3.6.1.4.1.5923.1.1.1.7" friendlyName="eduPersonEntitlement" encodeType="false"/>
+  </AttributeDefinition>
+
+  <AttributeDefinition xsi:type="Simple" id="eduPersonOrcid">
+    <InputDataConnector ref="myLDAP" attributeNames="eduPersonOrcid"/>
+    <DisplayName xml:lang="en">ORCID</DisplayName>
+    <DisplayName xml:lang="it">ORCID</DisplayName>
+    <DisplayDescription xml:lang="en">ORCID user identifier released and managed by orcid.org</DisplayDescription>
+    <DisplayDescription xml:lang="it">Identificativi ricercatore ORCID dell’utente assegnati e gestiti da orcid.org</DisplayDescription>
+    <AttributeEncoder xsi:type="SAML2String" name="urn:oid:1.3.6.1.4.1.5923.1.1.1.16" friendlyName="eduPersonOrcid" encodeType="false"/>
+  </AttributeDefinition>
+
+  <AttributeDefinition xsi:type="Simple" id="givenName">
+    <InputDataConnector ref="myLDAP" attributeNames="givenName"/>
+    <DisplayName xml:lang="en">Nome</DisplayName>
+    <DisplayName xml:lang="it">Nome</DisplayName>
+    <DisplayDescription xml:lang="en">Given name of a person</DisplayDescription>
+    <DisplayDescription xml:lang="it">Nome proprio di una persona</DisplayDescription>
+    <AttributeEncoder xsi:type="SAML2String" name="urn:oid:2.5.4.42" friendlyName="givenName" encodeType="false"/>
   </AttributeDefinition>
 
   <!-- ========================================== -->
