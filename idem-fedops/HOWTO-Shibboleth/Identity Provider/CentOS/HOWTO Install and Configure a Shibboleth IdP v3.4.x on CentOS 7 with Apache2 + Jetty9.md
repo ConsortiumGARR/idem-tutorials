@@ -29,12 +29,12 @@
    10. [Register the IdP on the Federation](#register-the-idp-on-the-federation)
    11. [Configure Attribute Filters to release all attributes to all resources](#configure-attribute-filters-to-release-all-attributes-to-all-resources)
    12. [Configure Attribute Filters to release recommended attributes for eduGAIN](#configure-attribute-filters-to-release-recommended-attributes-for-edugain)
-   13. [Configure Attribute Filters to release the mandatory attributes to the IDEM Default  Resources](#configure-attribute-filters-to-release-the-mandatory-attributes-to-the-idem-default-resources)
-   14. [Configure Attribute Filters to release the mandatory attributes to the IDEM Production Resources](#configure-attribute-filters-to-release-the-mandatory-attributes-to-the-idem-production-resources)
-   15. [Configure Attribute Filters for Research and Scholarship and Data Protection Code of Conduct Entity Category](#configure-attribute-filters-for-research-and-scholarship-and-data-protection-code-of-conduct-entity-category)
-6. [Appendix A: Import metadata from previous IDP v2.x](#appendix-a-import-metadata-from-previous-idp-v2x)
-7. [Appendix B: Import persistent-id from a previous database](#appendix-b-import-persistent-id-from-a-previous-database)
-8. [Appendix C: Useful logs to find problems](#appendix-c-useful-logs-to-find-problems)
+6. [Appendix A: Configure Attribute Filters to release the mandatory attributes to the IDEM Default  Resources](#appendix-a-configure-attribute-filters-to-release-the-mandatory-attributes-to-the-idem-default-resources)
+7. [Appendix B: Configure Attribute Filters to release the mandatory attributes to the IDEM Production Resources](#appendix-b-configure-attribute-filters-to-release-the-mandatory-attributes-to-the-idem-production-resources)
+8. [Appendix C: Configure Attribute Filters for Research and Scholarship and Data Protection Code of Conduct Entity Category](#appendix-c-configure-attribute-filters-for-research-and-scholarship-and-data-protection-code-of-conduct-entity-category)
+6. [Appendix D: Import metadata from previous IDP v2.x](#appendix-d-import-metadata-from-previous-idp-v2x)
+7. [Appendix E: Import persistent-id from a previous database](#appendix-e-import-persistent-id-from-a-previous-database)
+8. [Appendix F: Useful logs to find problems](#appendix-f-useful-logs-to-find-problems)
 9. [Authors](#authors)
 
 ## Requirements Hardware
@@ -1005,6 +1005,8 @@ Translate the IdP messages in your language:
           <SingleSignOnService Binding="urn:mace:shibboleth:1.0:profiles:AuthnRequest" Location="https://idp.example.org/idp/profile/Shibboleth/SSO"/>
 
         - Remove all ":8443" from the existing URL (such port is not used anymore)
+	
+	- Remove comment from each <SingleLogoutService> endpoint
 
       <AttributeAuthorityDescriptor> Section:
         - From the list "protocolSupportEnumeration" replace the value of:
@@ -1120,7 +1122,7 @@ Translate the IdP messages in your language:
 3. Restart Jetty
    *  ```systemctl restart jetty```
 
-### Configure Attribute Filters to release the mandatory attributes to the IDEM Default Resources:
+### Appendix A: Configure Attribute Filters to release the mandatory attributes to the IDEM Default Resources
 
 1. Become ROOT:
    * `sudo su -`
@@ -1146,7 +1148,7 @@ Translate the IdP messages in your language:
 4. Restart Jetty to apply changes:
    *  `systemctl restart jetty.service`
 
-### Configure Attribute Filters to release the mandatory attributes to the IDEM Production Resources:
+### Appendix B: Configure Attribute Filters to release the mandatory attributes to the IDEM Production Resources
 
 1. Make sure that you have the "`tmp/httpClientCache`" used by "`shibboleth.FileCachingHttpClient`":
    * `mkdir -p /opt/shibboleth-idp/tmp/httpClientCache ; chown jetty /opt/shibboleth-idp/tmp/httpClientCache`
@@ -1170,7 +1172,7 @@ Translate the IdP messages in your language:
 3. Restart Jetty to apply changes:
    *  `systemctl restart jetty.service`
 
-### Configure Attribute Filters for Research and Scholarship and Data Protection Code of Conduct Entity Category
+### Appendix C: Configure Attribute Filters for Research and Scholarship and Data Protection Code of Conduct Entity Category
 
 1. Make sure that you have the "`tmp/httpClientCache`" used by "`shibboleth.FileCachingHttpClient`":
    * `mkdir -p /opt/shibboleth-idp/tmp/httpClientCache ; chown jetty /opt/shibboleth-idp/tmp/httpClientCache`
@@ -1201,7 +1203,7 @@ Translate the IdP messages in your language:
 3. Restart Jetty to apply changes:
    *  `systemctl restart jetty.service`
 
-### Appendix A: Import metadata from previous IDP v2.x ###
+### Appendix D: Import metadata from previous IDP v2.x ###
 
 1. Store into /tmp directory the following files:
    * `idp-metadata.xml`
@@ -1249,6 +1251,8 @@ Translate the IdP messages in your language:
           <SingleSignOnService Binding="urn:mace:shibboleth:1.0:profiles:AuthnRequest" Location="https://idp.example.org/idp/profile/Shibboleth/SSO"/>
        
         - Remove all ":8443" from the existing URL (such port is not used anymore)
+	
+        - Remove comment from each <SingleLogoutService> endpoint
 
       <AttributeAuthorityDescriptor> Section:
         - From the list "protocolSupportEnumeration" replace the value of:
@@ -1270,7 +1274,7 @@ Translate the IdP messages in your language:
   
 6. Don't forget to update your IdP Metadata on [IDEM Entity Registry](https://registry.idem.garr.it/rr3) to apply changes on the federation IDEM! For any help write to idem-help@garr.it
 
-### Appendix B: Import persistent-id from a previous database ###
+### Appendix E: Import persistent-id from a previous database ###
 
 1. Become ROOT:
    * `sudo su -`
@@ -1287,7 +1291,7 @@ Translate the IdP messages in your language:
 5. Delete `/tmp/userdb_shibpid.sql`:
    * `rm /tmp/userdb_shibpid.sql`
    
-### Appendix C: Useful logs to find problems
+### Appendix F: Useful logs to find problems
 
 1. Jetty Logs:
    * ```cd /opt/jetty/logs```
