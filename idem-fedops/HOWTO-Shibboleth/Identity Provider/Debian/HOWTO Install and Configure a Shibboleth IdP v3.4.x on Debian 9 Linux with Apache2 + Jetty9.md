@@ -536,11 +536,12 @@ This feature is safe to enable globally. The implementation is written to check 
 1. Become ROOT: 
    * `sudo su -`
 
-2. Enable HTML Local Storage:
+2. Enable HTML Local Storage and security for cookies:
    * `vim /opt/shibboleth-idp/conf/idp.properties`
    
      ```bash
      idp.storage.htmlLocalStorage = true
+     idp.cookie.secure = true
      ```
 3. Restart Jetty to apply changes:
    * `systemctl restart jetty.service`
