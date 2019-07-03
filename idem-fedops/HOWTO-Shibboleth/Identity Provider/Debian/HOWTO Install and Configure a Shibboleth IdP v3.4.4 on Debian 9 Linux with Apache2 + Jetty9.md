@@ -106,8 +106,6 @@
    (OPTIONAL) Create a Certificate and a Key self-signed for HTTPS if you don't have ones provided by a Certification Authority like DigiCert:
    * `openssl req -x509 -newkey rsa:4096 -keyout /etc/ssl/private/idp.example.org.key -out /etc/ssl/certs/idp.example.org.crt -nodes -days 1095`
 
-
-
 ### Install Jetty 9 Web Server
 
 Jetty is a Java HTTP (Web) server and Java Servlet container that will be used to load IdP application through its WAR file.
@@ -304,11 +302,6 @@ Jetty is a Java HTTP (Web) server and Java Servlet container that will be used t
      JETTY_START_LOG=/var/log/jetty/start.log
      TMPDIR=/opt/jetty/tmp
      ```
-
-     (This settings configure the memory of the JVM that will host the IdP Web Application. 
-     The Memory value depends on the phisical memory installed on the machine. 
-     Set the "**Xmx**" (max heap space available to the JVM) at least to **2GB**. 
-     It will use for metadata parsing process)
 
 10. Check if all settings are OK:
    * `service jetty check`   (Jetty NOT running)
