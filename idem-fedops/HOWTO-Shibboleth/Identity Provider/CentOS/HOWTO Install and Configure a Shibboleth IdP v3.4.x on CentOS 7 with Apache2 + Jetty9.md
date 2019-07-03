@@ -1087,6 +1087,11 @@ Translate the IdP messages in your language:
     * https://sp-test.garr.it/secure   (Service Provider provided for testing the IDEM Test Federation)
     * https://sp24-test.garr.it/secure (Service Provider provided for testing the IDEM Test Federation and IDEM Production Federation)
 
+    or check which attributes are released to them with AACLI:
+
+    * `cd /opt/shibboleth-idp/bin`
+    * `./aacli.sh -n user1 -r https://sp24-test.garr.it/shibboleth --saml2`
+
 ### Configure Attribute Filters to release all attributes to all resources
 
 1. Download sample Attribute Filter file:
