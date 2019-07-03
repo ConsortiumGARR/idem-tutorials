@@ -381,7 +381,7 @@ Apache HTTP (Web) Server will manage the HTTPS part (certificate and key) and fo
         SSLEngine On
         
         SSLProtocol All -SSLv2 -SSLv3 -TLSv1 -TLSv1.1
-        SSLCipherSuite "EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH"
+        SSLCipherSuite "EECDH+ECDSA+AESGCM EECDH+aRSA+AESGCM EECDH+ECDSA+SHA384 EECDH+ECDSA+SHA256 EECDH+aRSA+SHA384 EECDH+aRSA+SHA256 EECDH+aRSA+RC4 EECDH EDH+aRSA RC4 !aNULL !eNULL !LOW !3DES !MD5 !EXP !PSK !SRP !DSS !RC4"
 
         SSLHonorCipherOrder on
 
