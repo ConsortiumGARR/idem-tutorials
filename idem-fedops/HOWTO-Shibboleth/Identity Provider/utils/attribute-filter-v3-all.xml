@@ -19,13 +19,13 @@
         xsi:schemaLocation="urn:mace:shibboleth:2.0:afp http://shibboleth.net/schema/idp/shibboleth-afp.xsd">
 
     <AttributeFilterPolicy id="releaseToAll">
-        <Rule xsi:type="RegistrationAuthority" registrars="http://cif.cynet.ac.cy"/>
+        <Rule xsi:type="RegistrationAuthority" registrars="https://cif.cynet.ac.cy"/>
 
         <AttributeRule attributeID="eduPersonTargetedID" permitAny="true" />
         <AttributeRule attributeID="eduPersonPrincipalName" permitAny="true" />
         <AttributeRule attributeID="displayName" permitAny="true" />
         <AttributeRule attributeID="commonName" permitAny="true" />
-        <AttributeRule attributeID="mail" permitAny="true" />
+        <AttributeRule attributeID="email" permitAny="true" />
         <AttributeRule attributeID="eduPersonAffiliation" permitAny="true" />
         <AttributeRule attributeID="eduPersonScopedAffiliation" permitAny="true" />
         <AttributeRule attributeID="schacHomeOrganization" permitAny="true" />
