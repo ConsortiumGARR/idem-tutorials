@@ -1039,6 +1039,9 @@ Translate the IdP messages in your language:
     * ```vim metadata-providers.xml```
 
       ```xml
+      <!-- Piece of code to add before the last </MetadataProvider> -->
+
+      <!-- IDEM Test Federation -->
       <MetadataProvider
 	    id="URLMD-IDEM-Federation"
 	    xsi:type="FileBackedHTTPMetadataProvider"
@@ -1061,7 +1064,6 @@ Translate the IdP messages in your language:
 	    <MetadataFilter xsi:type="EntityRoleWhiteList">
 	      <RetainedRole>md:SPSSODescriptor</RetainedRole>
 	    </MetadataFilter>
-      </MetadataProvider>
       ```
 
     * Retrieve the Federation Certificate used to verify its signed metadata:
