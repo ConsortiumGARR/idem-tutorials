@@ -422,6 +422,15 @@ Apache HTTP (Web) Server will manage the HTTPS part (certificate and key) and fo
       ServerName "idp.example.org"
       Redirect permanent "/" "https://idp.example.org/"
    </VirtualHost>
+   
+   # This virtualhost is only here to handle administrative commands for Shibboleth, executed from localhost
+   <VirtualHost 127.0.0.1:80>
+     ProxyPass /idp http://localhost:8080/idp retry=5
+     ProxyPassReverse /idp http://localhost:8080/idp retry=5
+     <Location /idp>
+       Require all granted
+     </Location>
+   </VirtualHost>
    ```
 
 4. Enable **proxy_http**, **SSL** and **headers** Apache2 modules:
@@ -492,22 +501,13 @@ Apache HTTP (Web) Server will manage the HTTPS part (certificate and key) and fo
 4. Check that IdP metadata is available on:
    * https://idp.example.org/idp/shibboleth
 
-5. Enable IdP Status page for the IdP private IP:
-   * `vim /opt/shibboleth-idp/conf/access-control.xml`
-     
-     ```bash
-     <bean id="AccessByIPAddress" parent="shibboleth.IPRangeAccessControl" 
-           p:allowedRanges="#{ {'127.0.0.1/32', '::1/128', '192.168.XX.YY/32'} }" />
-     ```
-   Note: Remember to change `192.168.XX.YY` to your private IP
-
-6. Restart Jetty:
+5. Restart Jetty:
    * `systemctl restart jetty.service`
 
-7. Check IdP Status:
+6. Check IdP Status:
    * `export JAVA_HOME=/usr/lib/jvm/default-java`
    * `cd /opt/shibboleth-idp/bin`
-   * `./status.sh -u https://idp.example.org/idp`
+   * `./status.sh`
 
 **Note:** Jetty will show some WARN messages like this on its `/var/log/jetty/*.jetty.log`:
 `2019-07-03 10:01:10.306:WARN:oeja.AnnotationParser:qtp399573350-19: org.apache.taglibs.standard.tei.DeclareTEI scanned from multiple locations: 
@@ -551,7 +551,7 @@ This feature is safe to enable globally. The implementation is written to check 
 5. Check IdP Status:
    * `export JAVA_HOME=/usr/lib/jvm/default-java`
    * `cd /opt/shibboleth-idp/bin`
-   * `./status.sh -u https://idp.example.org/idp`
+   * `./status.sh`
 
 #### JPA Storage Service - using a database
 
@@ -667,7 +667,7 @@ This Storage service will memorize User Consent data on persistent database SQL.
 8. Check IdP Status:
    * `export JAVA_HOME=/usr/lib/jvm/default-java`
    * `cd /opt/shibboleth-idp/bin`
-   * `./status.sh -u https://idp.example.org/idp`
+   * `./status.sh`
 
 ### Configure Shibboleth Identity Provider to release the persistent-id
 
@@ -713,7 +713,7 @@ By default, a transient NameID will always release to the Service Provider if th
 5. Check IdP Status:
    * `export JAVA_HOME=/usr/lib/jvm/default-java`
    * `cd /opt/shibboleth-idp/bin`
-   * `./status.sh -u https://idp.example.org/idp`
+   * `./status.sh`
 
 #### Stored mode - using a database
 
@@ -828,7 +828,7 @@ By default, a transient NameID will always release to the Service Provider if th
 8. Check IdP Status:
    * `export JAVA_HOME=/usr/lib/jvm/default-java`
    * `cd /opt/shibboleth-idp/bin`
-   * `./status.sh -u https://idp.example.org/idp`
+   * `./status.sh`
 
 ### Configure Logout
 
@@ -852,7 +852,7 @@ By default, a transient NameID will always release to the Service Provider if th
 5. Check IdP Status:
    * `export JAVA_HOME=/usr/lib/jvm/default-java`
    * `cd /opt/shibboleth-idp/bin`
-   * `./status.sh -u https://idp.example.org/idp`
+   * `./status.sh`
 
 ### Configure the Directory (openLDAP) Connection
 
@@ -942,12 +942,12 @@ By default, a transient NameID will always release to the Service Provider if th
 4. Check to be able to retrieve transient NameID for an user:
    * `export JAVA_HOME=/usr/lib/jvm/default-java`
    * `cd /opt/shibboleth-idp/bin`
-   * `./aacli.sh -n user1 -r https://sp.example.org/shibboleth --saml2 -u https://idp.example.org/idp`
+   * `./aacli.sh -n user1 -r https://sp.example.org/shibboleth --saml2`
 
 5. Check IdP Status:
    * `export JAVA_HOME=/usr/lib/jvm/default-java`
    * `cd /opt/shibboleth-idp/bin`
-   * `./status.sh -u https://idp.example.org/idp`
+   * `./status.sh`
 
 ### Configure IdP Logging
 
@@ -1059,7 +1059,7 @@ Translate the IdP messages in your language:
   
 3. Reload service with id `shibboleth.MetadataResolverService` to retrieve the Federation Metadata:
     *  `cd /opt/shibboleth-idp/bin`
-    *  `./reload-service.sh -id shibboleth.MetadataResolverService -u https://idp.example.org/idp`
+    *  `./reload-service.sh -id shibboleth.MetadataResolverService`
 
 4. The day after the IDEM Federation Operators approval your entity on IDEM Entity Registry, check if you can login with your IdP on the following services:
     * https://sp-test.garr.it/secure   (Service Provider provided for testing the IDEM Test Federation)
@@ -1068,7 +1068,7 @@ Translate the IdP messages in your language:
     or check which attributes are released to them with AACLI:
 
     * `cd /opt/shibboleth-idp/bin`
-    * `./aacli.sh -n user1 -r https://sp24-test.garr.it/shibboleth --saml2 -u https://idp.example.org/idp`
+    * `./aacli.sh -n user1 -r https://sp24-test.garr.it/shibboleth --saml2`
 
 
 ### Configure Attribute Filters to release the mandatory attributes to the IDEM Default Resources:
