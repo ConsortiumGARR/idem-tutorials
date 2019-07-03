@@ -71,7 +71,7 @@
 1. Become ROOT:
    * `sudo su -`
 
-2. Change the default mirror with the GARR ones:
+2. Change the default mirror with the GARR ones (OPTIONAL):
    * `sed -i 's/deb.debian.org/debian.mirror.garr.it/g' /etc/apt/sources.list`
    * `apt update && apt-get upgrade -y --no-install-recommends`
   
@@ -90,39 +90,27 @@
 
      (Replace `127.0.1.1` with the *IdP's private IP* and `idp.example.org` with your IdP *Full Qualified Domain Name*)
 
-2. Be sure that your firewall **doesn't block** the traffic on port **443** (or you can't access to your IdP)
+2. Be sure that your firewall **doesn't block** the traffic on port **443** and **80** (or you can't access to your IdP)
 
 3. Define the costant `JAVA_HOME` inside `/etc/environment`:
    * `vim /etc/environment`
 
-     `JAVA_HOME=/usr/lib/jvm/default-java/jre`
+     `JAVA_HOME=/usr/lib/jvm/default-java`
 
    * `source /etc/environment`
 
-4. Put the Certificate and Key used by HTTPS into the `/etc/ssl` directory and set the right privileges:
+4. Set the right privileges for HTTPS Certificate and Key:
    * `chmod 400 /etc/ssl/private/idp.example.org.key`
    * `chmod 644 /etc/ssl/certs/idp.example.org.crt`
 
-   (OPTIONAL) Create a Certificate and a Key self-signed for HTTPS if you don't have the official ones provided by a Certification Authority like DigiCert:
+   (OPTIONAL) Create a Certificate and a Key self-signed for HTTPS if you don't have ones provided by a Certification Authority like DigiCert:
    * `openssl req -x509 -newkey rsa:4096 -keyout /etc/ssl/private/idp.example.org.key -out /etc/ssl/certs/idp.example.org.crt -nodes -days 1095`
 
-5. Configure **/etc/default/jetty**:
-   * `vim /etc/default/jetty`
-  
-     ```bash
-     JETTY_HOME=/usr/local/src/jetty-src
-     JETTY_BASE=/opt/jetty
-     JETTY_USER=jetty
-     JETTY_START_LOG=/var/log/jetty/start.log
-     TMPDIR=/opt/jetty/tmp
-     JAVA_OPTIONS="-Djava.awt.headless=true -XX:+DisableExplicitGC -XX:+UseParallelOldGC -Xms256m -Xmx2g -Djava.security.egd=file:/dev/./urandom -Didp.home=/opt/shibboleth-idp"
-     ```
 
-     (This settings configure the memory of the JVM that will host the IdP Web Application. 
-     The Memory value depends on the phisical memory installed on the machine. 
-     Set the "**Xmx**" (max heap space available to the JVM) at least to **2GB**)
 
 ### Install Jetty 9 Web Server
+
+Jetty is a Java HTTP (Web) server and Java Servlet container that will be used to load IdP application through its WAR file.
 
 1. Become ROOT: 
    * `sudo su -`
@@ -132,13 +120,13 @@
    * `wget http://central.maven.org/maven2/org/eclipse/jetty/jetty-distribution/9.4.19.v20190610/jetty-distribution-9.4.19.v20190610.tar.gz`
    * `tar xzvf jetty-distribution-9.4.19.v20190610.tar.gz`
 
-3. Create an useful-for-updates `jetty-src` folder:
+3. Create the `jetty-src` folder as symbolic link. It will be useful on Jetty updates:
    * `ln -s jetty-distribution-9.4.19.v20190610 jetty-src`
 
 4. Create the user `jetty` that can run the web server:
    * `useradd -r -m jetty`
 
-5. Create your custom Jetty configuration that override the default ones:
+5. Create your custom Jetty configuration that overrides the default one and will survive upgrades:
    * `mkdir /opt/jetty`
    * `cd /opt/jetty`
    * `vim /opt/jetty/start.ini`
@@ -200,7 +188,7 @@
      jetty.httpConfig.sendDateHeader=false
 
      ## Dump the state of the Jetty server, components, and webapps after startup
-     	jetty.server.dumpAfterStart=false
+     jetty.server.dumpAfterStart=false
 
      ## Dump the state of the Jetty server, components, and webapps before shutdown
      jetty.server.dumpBeforeStop=false
@@ -264,6 +252,32 @@
      # ---------------------------------------
      # Mwdule: http-forwarded
      --module=http-forwarded
+     
+     # Allows setting Java system properties (-Dname=value)
+     # and JVM flags (-X, -XX) in this file
+     # NOTE: spawns child Java process
+     --exec
+
+     # Set the IdP home dir
+     -Didp.home=/opt/shibboleth-idp
+
+     # Newer garbage collector that reduces memory needed for larger metadata files
+     -XX:+UseG1GC
+ 
+     # Maximum amount of memory that Jetty may use, at least 1.5G is recommended
+     # for handling larger (> 25M) metadata files but you will need to test on
+     # your particular metadata configuration
+     -Xmx2000m
+
+     # Prevent blocking for entropy.
+     -Djava.security.egd=file:/dev/urandom
+
+     # Set Java tmp location
+     -Djava.io.tmpdir=tmp
+     
+     # Java contains a lot of classes which assume that there is a some sort of display and a keyboard attached. 
+     # A code that runs on a server does not have them and this is called Headless mode.
+     -Djava.awt.headless=true
      ```
 
 6. Create the TMPDIR directory used by Jetty:
@@ -280,19 +294,46 @@
    * `mkdir /opt/jetty/logs`
    * `chown jetty:jetty /var/log/jetty /opt/jetty/logs`
 
-9. Check if all settings are OK:
+9. Configure **/etc/default/jetty**:
+   * `vim /etc/default/jetty`
+  
+     ```bash
+     JETTY_HOME=/usr/local/src/jetty-src
+     JETTY_BASE=/opt/jetty
+     JETTY_USER=jetty
+     JETTY_START_LOG=/var/log/jetty/start.log
+     TMPDIR=/opt/jetty/tmp
+     ```
+
+     (This settings configure the memory of the JVM that will host the IdP Web Application. 
+     The Memory value depends on the phisical memory installed on the machine. 
+     Set the "**Xmx**" (max heap space available to the JVM) at least to **2GB**. 
+     It will use for metadata parsing process)
+
+10. Check if all settings are OK:
    * `service jetty check`   (Jetty NOT running)
    * `service jetty start`
    * `service jetty check`   (Jetty running pid=XXXX)
   
    If you receive an error likes "*Job for jetty.service failed because the control process exited with error code. See "systemctl status jetty.service" and "journalctl -xe" for details.*", try this: 
      * `rm /var/run/jetty.pid`
-     * `systemctl start jetty`
+     * `systemctl start jetty.service`
 
-10. Check if the Apache Welcome page is available:
+11. Check if the Apache Welcome page is available:
     * https://idp.example.org
 
+**Note:** Jetty will show some WARN messages like this:
+`2019-07-03 10:01:10.306:WARN:oeja.AnnotationParser:qtp399573350-19: org.apache.taglibs.standard.tei.DeclareTEI scanned from multiple locations: 
+jar:file:///usr/local/src/jetty-distribution-9.4.19.v20190610/lib/apache-jstl/org.apache.taglibs.taglibs-standard-impl-1.2.5.jar!/org/apache/taglibs/standard/tei/DeclareTEI.class, 
+jar:file:///opt/jetty/tmp/jetty-localhost-8080-idp.war-_idp-any-4002882914382542777.dir/webinf/WEB-INF/lib/jstl-1.2.jar!/org/apache/taglibs/standard/tei/DeclareTEI.class`
+
+This is a warning produced during the bytecode scanning for annotations of a webapp startup. In this case, we have 2 versions of the same class, version 1.2.5 and 1.2 as seen by the JAR filenames.
+*These warnings don't prevent the IdP working and can be ignored.*
+
 ### Install Shibboleth Identity Provider v3.4.4
+
+The Identity Provider (IdP) is responsible for user authentication and providing user information to the Service Provider (SP). It is located at the home organization, which is the organization which maintains the user's account.
+It is a Java Web Application that can be deployed with its WAR file.
 
 1. Become ROOT:
    * `sudo su -`
@@ -334,6 +375,8 @@
 ## Configuration Instructions
 
 ### Configure SSL on Apache2 (front-end of Jetty)
+
+Apache HTTP (Web) Server will manage the HTTPS part (certificate and key) and forward each IdP request to Jetty
 
 1. Create the server's directory:
    * `mkdir /var/www/html/idp.example.org`
@@ -390,8 +433,8 @@
    
    ```apache
    <VirtualHost *:80>
-        ServerName "idp.example.org"
-        Redirect permanent "/" "https://idp.example.org/"
+      ServerName "idp.example.org"
+      Redirect permanent "/" "https://idp.example.org/"
    </VirtualHost>
    ```
 
@@ -442,7 +485,7 @@
 1. Become ROOT: 
    * `sudo su -`
 
-2. Configure IdP Context Descriptor
+2. Configure IdP Context Descriptor:
    * `mkdir /opt/jetty/webapps`
    * `vim /opt/jetty/webapps/idp.xml`
 
@@ -453,38 +496,48 @@
        <Set name="extractWAR">false</Set>
        <Set name="copyWebDir">false</Set>
        <Set name="copyWebInf">true</Set>
+       <Set name="persistTempDirectory">false</Set>
      </Configure>
      ```
 
 3. Restart Jetty:
-   * `systemctl restart jetty`
+   * `systemctl restart jetty.service`
 
 4. Check that IdP metadata is available on:
    * https://idp.example.org/idp/shibboleth
 
-5. Enable IdP Status page for the IdP local IP:
+5. Enable IdP Status page for the IdP private IP:
    * `vim /opt/shibboleth-idp/conf/access-control.xml`
      
      ```bash
-     <bean id="AccessByIPAddress" parent="shibboleth.IPRangeAccessControl"
-		     p:allowedRanges="#{ {'127.0.0.1/32', '::1/128', '192.168.XX.YY/32'} }" />
+     <bean id="AccessByIPAddress" parent="shibboleth.IPRangeAccessControl" 
+           p:allowedRanges="#{ {'127.0.0.1/32', '::1/128', '192.168.XX.YY/32'} }" />
      ```
+   Note: Remember to change `192.168.XX.YY` to your private IP
 
-7. Restart Jetty:
+6. Restart Jetty:
    * `systemctl restart jetty`
 
-8. Check IdP Status:
+7. Check IdP Status:
    * `export JAVA_HOME=/usr/lib/jvm/default-java`
    * `cd /opt/shibboleth-idp/bin`
    * `./status.sh -u https://idp.example.org/idp`
 
 ### Configure Shibboleth Identity Provider StorageRecords (User Consent)
 
+Shibboleth Documentation used to provide the following part can be found here: https://wiki.shibboleth.net/confluence/display/IDP30/StorageConfiguration
+
+The IdP provides a number of general-purpose storage facilities that can be used by core subsystems like session management and consent. 
+This HOWTO, in the JPA Storage Service part, will change the default behaviour for storage to use for consent and terms-of-use records only to use a database instead of a Local Storage.
+
 #### Default - Not Recommended
 
-If you don't change anything you will use cookies that can store an extremely small number of records.
+If you don't change anything, the IdP stores data in a long-lived browser cookie that can contain an extremely small number of records. This could bring problems in the long term period.
 
 #### HTML Local Storage - Recommended
+
+It requires JavaScript be enabled, because reading and writing to the client requires an explicit page be rendered.
+This feature is safe to enable globally. The implementation is written to check for this capability in each client, and to back off to cookies.
 
 1. Become ROOT: 
    * `sudo su -`
@@ -508,6 +561,8 @@ If you don't change anything you will use cookies that can store an extremely sm
 
 #### JPA Storage Service - using a database
 
+This Storage service will memorize User Consent data on persistent database SQL.
+
 1. Become ROOT: 
    * `sudo su -`
 
@@ -525,7 +580,7 @@ If you don't change anything you will use cookies that can store an extremely sm
 
    * `bin/build.sh`
 
-3. Create `StorageRegords` table on `shibboleth` database.
+3. Create `StorageRegords` table on `storageservice` database.
 
    * `vim shib-ss-db.sql`:
 
@@ -558,7 +613,7 @@ If you don't change anything you will use cookies that can store an extremely sm
 
    * `mysql -u root -p < shib-ss-db.sql`
 
-   * `systemctl restart mysql`
+   * `systemctl restart mysql.service`
 
 4. Enable JPA Storage Service:
 
@@ -600,7 +655,7 @@ If you don't change anything you will use cookies that can store an extremely sm
      ```
      (and modify the "**##USERNAME-CHANGEME##**" and "**##USER-PASSWORD-CHANGEME##**" for your "**storageservice**" DB)
 
-5. Modify the IdP properties properly:
+5. Modify the IdP properties properly with the bean ID:
    * `vim /opt/shibboleth-idp/conf/idp.properties`
 
      ```xml
@@ -621,6 +676,14 @@ If you don't change anything you will use cookies that can store an extremely sm
    * `./status.sh -u https://idp.example.org/idp`
 
 ### Configure Shibboleth Identity Provider to release the persistent-id
+
+Shibboleth Documentation used to provide the following part can be found here:
+https://wiki.shibboleth.net/confluence/display/IDP30/PersistentNameIDGenerationConfiguration
+
+SAML 2.0 (but not SAML 1.x) defines a kind of NameID called a "persistent" identifier that every SP receives for the IdP users.
+This part will teach you how to release the "persistent" identifiers with (Stored Mode) or without (Computed Mode) a database.
+
+By default, a transient NameID will always release to the Service Provider if the persistent one is not requested.
 
 #### Computed mode - Default & Recommended
 
@@ -713,7 +776,7 @@ If you don't change anything you will use cookies that can store an extremely sm
 
    * `mysql -u root -p < shib-pid-db.sql`
 
-   * `systemctl restart mysql`
+   * `systemctl restart mysql.service`
 
 4. Enable Persistent Identifier's store:
 
@@ -861,7 +924,7 @@ If you don't change anything you will use cookies that can store an extremely sm
            * the baseDN ==> `ou=people, dc=example,dc=org` (branch containing the registered users)
            * the bindDN ==> `cn=admin,dc=example,dc=org` (distinguished name for the user that can made queries on the LDAP)
 
-2. Configure your "attribute-resolver.xml" to define and support attributes:
+2. Configure your "`attribute-resolver.xml`" to define and support attributes:
    * `cd /opt/shibboleth-idp/conf`
    
    * `cp attribute-resolver.xml attribute-resolver.xml.orig`
@@ -882,10 +945,10 @@ If you don't change anything you will use cookies that can store an extremely sm
 3. Restart Jetty to apply changes:
    * `systemctl restart jetty.service`
 
-4. Check to be able to retrieve user's info:
+4. Check to be able to retrieve transient NameID for an user:
    * `export JAVA_HOME=/usr/lib/jvm/default-java`
    * `cd /opt/shibboleth-idp/bin`
-   * `./aacli.sh -n user1 -r https://sp24-test.garr.it/shibboleth --saml2 -u https://idp.example.org/idp`
+   * `./aacli.sh -n user1 -r https://sp.example.org/shibboleth --saml2 -u https://idp.example.org/idp`
 
 5. Check IdP Status:
    * `export JAVA_HOME=/usr/lib/jvm/default-java`
@@ -925,7 +988,7 @@ Translate the IdP messages in your language:
           <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</NameIDFormat>
           <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</NameIDFormat>
 
-          (because the IdP installed with this guide will release transient, by default, and persistent SAML NameIDs)
+          (because the IdP installed with this guide will release transient, by default, and persistent NameID if requested.)
 
         - Remove the endpoint: 
           <SingleSignOnService Binding="urn:mace:shibboleth:1.0:profiles:AuthnRequest" Location="https://idp.example.org/idp/profile/Shibboleth/SSO"/>
@@ -955,7 +1018,7 @@ Translate the IdP messages in your language:
 
 ### Register the IdP on the Federation
 
-1. Register you IdP metdata on IDEM Entity Registry (your entity have to be approved by an IDEM Federation Operator before become part of IDEM Test Federation):
+1. Register you IdP metadata on IDEM Entity Registry (your entity have to be approved by an IDEM Federation Operator before become part of IDEM Test Federation):
    * `https://registry.idem.garr.it/`
 
 2. Configure the IdP to retrieve the Federation Metadata:
@@ -988,7 +1051,7 @@ Translate the IdP messages in your language:
       </MetadataProvider>
       ```
 
-   * Retrieve the Federation Certificate used to verify its signed metadata:
+   * Retrieve the Federation Certificate used to verify signed metadata:
      *  `wget https://md.idem.garr.it/certs/idem-signer-20220121.pem -O /opt/shibboleth-idp/metadata/federation-cert.pem`
 
    * Check the validity:
@@ -1134,7 +1197,7 @@ Translate the IdP messages in your language:
           <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</NameIDFormat>
           <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</NameIDFormat>
 
-          (because the IdP installed with this guide will release transient, by default, and persistent SAML NameIDs)
+          (because the IdP installed with this guide will release transient, by default, and persistent NameID if requested.)
 
         - Remove the endpoint: 
           <SingleSignOnService Binding="urn:mace:shibboleth:1.0:profiles:AuthnRequest" Location="https://idp.example.org/idp/profile/Shibboleth/SSO"/>
