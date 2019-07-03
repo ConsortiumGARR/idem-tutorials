@@ -28,12 +28,14 @@
    8. [Translate IdP messages into preferred language](#translate-idp-messages-into-preferred-language)
    9. [Disable SAML1 Deprecated Protocol](#disable-saml1-deprecated-protocol)
    10. [Register the IdP on the Federation](#register-the-idp-on-the-federation)
-   11. [Configure Attribute Filters to release the mandatory attributes to the IDEM Default  Resources](#configure-attribute-filters-to-release-the-mandatory-attributes-to-the-idem-default-resources)
-   12. [Configure Attribute Filters to release the mandatory attributes to the IDEM Production Resources](#configure-attribute-filters-to-release-the-mandatory-attributes-to-the-idem-production-resources)
-   13. [Configure Attribute Filters for Research and Scholarship and Data Protection Code of Conduct Entity Category](#configure-attribute-filters-for-research-and-scholarship-and-data-protection-code-of-conduct-entity-category)
-6. [Appendix A: Import metadata from previous IDP v2.x](#appendix-a-import-metadata-from-previous-idp-v2x)
-7. [Appendix B: Import persistent-id from a previous database](#appendix-b-import-persistent-id-from-a-previous-database)
-8. [Appendix C: Useful logs to find problems](#appendix-c-useful-logs-to-find-problems)
+   11. [Configure Attribute Filters to release all attributes to all resources](#configure-attribute-filters-to-release-all-attributes-to-all-resources)
+   12. [Configure Attribute Filters to release recommended attributes for eduGAIN](#configure-attribute-filters-to-release-recommended-attributes-for-edugain)
+6. [Appendix A: Configure Attribute Filters to release the mandatory attributes to the IDEM Default  Resources](#appendix-a-configure-attribute-filters-to-release-the-mandatory-attributes-to-the-idem-default-resources)
+7. [Appendix B: Configure Attribute Filters to release the mandatory attributes to the IDEM Production Resources](#appendix-b-configure-attribute-filters-to-release-the-mandatory-attributes-to-the-idem-production-resources)
+8. [Appendix C: Configure Attribute Filters for Research and Scholarship and Data Protection Code of Conduct Entity Category](#appendix-c-configure-attribute-filters-for-research-and-scholarship-and-data-protection-code-of-conduct-entity-category)
+6. [Appendix D: Import metadata from previous IDP v2.x](#appendix-d-import-metadata-from-previous-idp-v2x)
+7. [Appendix E: Import persistent-id from a previous database](#appendix-e-import-persistent-id-from-a-previous-database)
+8. [Appendix F: Useful logs to find problems](#appendix-f-useful-logs-to-find-problems)
 9. [Authors](#authors)
 
 ## Requirements Hardware
@@ -1080,7 +1082,45 @@ Translate the IdP messages in your language:
     * `./aacli.sh -n user1 -r https://sp24-test.garr.it/shibboleth --saml2`
 
 
-### Configure Attribute Filters to release the mandatory attributes to the IDEM Default Resources:
+### Configure Attribute Filters to release all attributes to all resources
+
+1. Download sample Attribute Filter file:
+   * ```wget -O /opt/shibboleth-idp/conf/attribute-filter-v3-all.xml https://github.com/ConsortiumGARR/idem-tutorials/raw/master/idem-fedops/HOWTO-Shibboleth/Identity%20Provider/utils/attribute-filter-v3-all.xml```
+
+2. Modify your ```services.xml```:
+   * ```vim /opt/shibboleth-idp/conf/services.xml```
+
+     ```xml
+     ...
+     <util:list id ="shibboleth.AttributeFilterResources">
+         <!-- <value>%{idp.home}/conf/attribute-filter.xml</value> -->
+         <value>%{idp.home}/conf/attribute-filter-v3-all.xml</value>
+     </util:list>
+     ```
+
+3. Restart Jetty
+   *  ```systemctl restart jetty```
+
+### Configure Attribute Filters to release recommended attributes for eduGAIN:
+
+1. Download sample Attribute Filter file:
+   * ```wget -O /opt/shibboleth-idp/conf/attribute-filter-v3-eduGAIN.xml https://github.com/ConsortiumGARR/idem-tutorials/raw/master/idem-fedops/HOWTO-Shibboleth/Identity%20Provider/utils/attribute-filter-v3-eduGAIN.xml```
+
+2. Modify your ```services.xml```:
+   * ```vim /opt/shibboleth-idp/conf/services.xml```
+
+     ```xml
+     <util:list id ="shibboleth.AttributeFilterResources">
+         <!-- <value>%{idp.home}/conf/attribute-filter.xml</value> -->
+         <value>%{idp.home}/conf/attribute-filter-v3-all.xml</value>
+         <value>%{idp.home}/conf/attribute-filter-v3-eduGAIN.xml</value>
+      </util:list>
+      ```
+
+3. Restart Jetty
+   *  ```systemctl restart jetty```
+
+### Appendix A: Configure Attribute Filters to release the mandatory attributes to the IDEM Default Resources
 
 1. Become ROOT:
    * `sudo su -`
@@ -1106,7 +1146,7 @@ Translate the IdP messages in your language:
 4. Restart Jetty to apply changes:
    *  `systemctl restart jetty.service`
 
-### Configure Attribute Filters to release the mandatory attributes to the IDEM Production Resources:
+### Appendix B: Configure Attribute Filters to release the mandatory attributes to the IDEM Production Resources
 
 1. Make sure that you have the "`tmp/httpClientCache`" used by "`shibboleth.FileCachingHttpClient`":
    * `mkdir -p /opt/shibboleth-idp/tmp/httpClientCache ; chown jetty /opt/shibboleth-idp/tmp/httpClientCache`
@@ -1130,7 +1170,7 @@ Translate the IdP messages in your language:
 3. Restart Jetty to apply changes:
    *  `systemctl restart jetty.service`
 
-### Configure Attribute Filters for Research and Scholarship and Data Protection Code of Conduct Entity Category
+### Appendix C: Configure Attribute Filters for Research and Scholarship and Data Protection Code of Conduct Entity Category
 
 1. Make sure that you have the "`tmp/httpClientCache`" used by "`shibboleth.FileCachingHttpClient`":
    * `mkdir -p /opt/shibboleth-idp/tmp/httpClientCache ; chown jetty /opt/shibboleth-idp/tmp/httpClientCache`
@@ -1161,7 +1201,7 @@ Translate the IdP messages in your language:
 3. Restart Jetty to apply changes:
    *  `systemctl restart jetty.service`
 
-### Appendix A: Import metadata from previous IDP v2.x ###
+### Appendix D: Import metadata from previous IDP v2.x ###
 
 1. Store into /tmp directory the following files:
    * `idp-metadata.xml`
@@ -1232,7 +1272,7 @@ Translate the IdP messages in your language:
   
 6. Don't forget to update your IdP Metadata on [IDEM Entity Registry](https://registry.idem.garr.it/rr3) to apply changes on the federation IDEM! For any help write to idem-help@garr.it
 
-### Appendix B: Import persistent-id from a previous database ###
+### Appendix E: Import persistent-id from a previous database ###
 
 1. Become ROOT:
    * `sudo su -`
@@ -1248,19 +1288,19 @@ Translate the IdP messages in your language:
 
 5. Delete `/tmp/userdb_shibpid.sql`:
    * `rm /tmp/userdb_shibpid.sql`
-
-### Appendix C: Useful logs to find problems
+   
+### Appendix F: Useful logs to find problems
 
 1. Jetty Logs:
-   * `cd /opt/jetty/logs`
-   * `ls -l *.stderrout.log`
+   * ```cd /opt/jetty/logs```
+   * ```ls -l *.stderrout.log```
 
 2. Shibboleth IdP Logs:
-   * `cd /opt/shibboleth-idp/logs`
-   * **Audit Log:** `vim idp-audit.log`
-   * **Consent Log:** `vim idp-consent-audit.log`
-   * **Warn Log:** `vim idp-warn.log`
-   * **Process Log:** `vim idp-process.log`
+   * ```cd /opt/shibboleth-idp/logs```
+   * **Audit Log:** ```vim idp-audit.log```
+   * **Consent Log:** ```vim idp-consent-audit.log```
+   * **Warn Log:** ```vim idp-warn.log```
+   * **Process Log:** ```vim idp-process.log```
 
 ### Authors
 
