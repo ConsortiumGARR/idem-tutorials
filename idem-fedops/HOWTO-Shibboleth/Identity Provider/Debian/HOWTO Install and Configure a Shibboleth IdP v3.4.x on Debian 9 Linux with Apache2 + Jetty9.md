@@ -1026,6 +1026,9 @@ Translate the IdP messages in your language:
    * `vim metadata-providers.xml`
 
      ```xml
+     <!-- Piece of code to add before the last </MetadataProvider> -->
+
+     <!-- IDEM Test Federation -->
      <MetadataProvider
            id="URLMD-IDEM-Federation"
            xsi:type="FileBackedHTTPMetadataProvider"
