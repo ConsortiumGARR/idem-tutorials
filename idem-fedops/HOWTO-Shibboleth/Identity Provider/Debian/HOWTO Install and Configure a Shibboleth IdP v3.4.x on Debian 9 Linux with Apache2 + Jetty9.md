@@ -1006,6 +1006,8 @@ Translate the IdP messages in your language:
           <AttributeService Binding="urn:oasis:names:tc:SAML:2.0:bindings:SOAP" Location="https://idp.example.org/idp/profile/SAML2/SOAP/AttributeQuery"/>
 
         - Remove all ":8443" from the existing URL (such port is not used anymore)
+	
+        - Remove comment from each <SingleLogoutService> endpoint
       ```
 
 2. Restart Jetty to apply changes: 
@@ -1218,6 +1220,8 @@ Translate the IdP messages in your language:
           <AttributeService Binding="urn:oasis:names:tc:SAML:2.0:bindings:SOAP" Location="https://idp.example.org/idp/profile/SAML2/SOAP/AttributeQuery"/>
 
         - Remove all ":8443" from the existing URL (such port is not used anymore)
+	
+        - Remove comment from each <SingleLogoutService> endpoint
       ```
 
 5. Restart Jetty:
