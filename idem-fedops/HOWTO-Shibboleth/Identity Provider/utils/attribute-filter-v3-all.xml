@@ -18,7 +18,7 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="urn:mace:shibboleth:2.0:afp http://shibboleth.net/schema/idp/shibboleth-afp.xsd">
 
-    <AttributeFilterPolicy id="releaseToAll">
+    <AttributeFilterPolicy id="releaseToAllCynetSP">
         <Rule xsi:type="RegistrationAuthority" registrars="https://cif.cynet.ac.cy"/>
 
         <AttributeRule attributeID="eduPersonTargetedID" permitAny="true" />
