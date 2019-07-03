@@ -1,4 +1,4 @@
-# HOWTO Install and Configure a Shibboleth IdP v3.4.4 on Debian 9 Linux with Apache2 + Jetty9 
+# HOWTO Install and Configure a Shibboleth IdP v3.4.x on Debian 9 Linux with Apache2 + Jetty9 
 
 [comment]: # (<img width="120px" src="https://wiki.idem.garr.it/IDEM_Approved.png" />)
 
@@ -11,7 +11,7 @@
    1. [Install software requirements](#install-software-requirements)
    2. [Configure the environment](#configure-the-environment)
    3. [Install Jetty 9 Web Server](#install-jetty-9-web-server)
-   4. [Install Shibboleth Identity Provider 3.4.4](#install-shibboleth-identity-provider-v344)
+   4. [Install Shibboleth Identity Provider 3.4.x](#install-shibboleth-identity-provider-v34x)
 5. [Configuration Instructions](#configuration-instructions)
    1. [Configure SSL on Apache2 (front-end of Jetty)](#configure-ssl-on-apache2-front-end-of-jetty)
    2. [Configure Jetty](#configure-jetty)
