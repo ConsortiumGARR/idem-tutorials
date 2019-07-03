@@ -62,7 +62,8 @@
  * Put HTTPS credentials in the right place:
    * HTTPS Server Certificate (Public Key) inside `/etc/ssl/certs` 
    * HTTPS Server Key (Private Key) inside `/etc/ssl/private`
-   * HTTPS Certification Authority Certificate is already provided by Debian packages
+   * Download TCS CA Cert into `/etc/ssl/certs`
+     - `wget -O /etc/ssl/certs/TERENA_SSL_CA_3.pem https://www.terena.org/activities/tcs/repository-g3/TERENA_SSL_CA_3.pem`
 
 ## Installation Instructions
 
@@ -397,7 +398,7 @@ Apache HTTP (Web) Server will manage the HTTPS part (certificate and key) and fo
         
         SSLCertificateFile /etc/ssl/certs/idp.example.org.crt
         SSLCertificateKeyFile /etc/ssl/private/idp.example.org.key
-        SSLCACertificateFile /etc/ssl/certs/ca-certificates.crt
+        SSLCACertificateFile /etc/ssl/certs/TERENA_SSL_CA_3.pem
 
         <IfModule mod_proxy.c>
            ProxyPreserveHost On
