@@ -875,7 +875,7 @@ By default, a transient NameID will always release to the Service Provider if th
        idp.authn.LDAP.baseDN = ou=people,dc=example,dc=org
        idp.authn.LDAP.userFilter = (uid={user})
        idp.authn.LDAP.bindDN = uid=idpuser,ou=system,dc=example,dc=org
-       idp.authn.LDAP.bindDNCredential = ###LDAP_ADMIN_PASSWORD###
+       idp.authn.LDAP.bindDNCredential = ###LDAP_IDPUSER_PASSWORD###
        ```
 
      * Solution 2: LDAP + TLS
@@ -891,7 +891,7 @@ By default, a transient NameID will always release to the Service Provider if th
        idp.authn.LDAP.baseDN = ou=people,dc=example,dc=org
        idp.authn.LDAP.userFilter = (uid={user})
        idp.authn.LDAP.bindDN = uid=idpuser,ou=system,dc=example,dc=org
-       idp.authn.LDAP.bindDNCredential = ###LDAP_ADMIN_PASSWORD###
+       idp.authn.LDAP.bindDNCredential = ###LDAP_IDPUSER_PASSWORD###
        ```
 
      * Solution 3: plain LDAP
@@ -905,7 +905,7 @@ By default, a transient NameID will always release to the Service Provider if th
        idp.authn.LDAP.baseDN = ou=people,dc=example,dc=org
        idp.authn.LDAP.userFilter = (uid={user})
        idp.authn.LDAP.bindDN = uid=idpuser,ou=system,dc=example,dc=org
-       idp.authn.LDAP.bindDNCredential = ###LDAP_ADMIN_PASSWORD###
+       idp.authn.LDAP.bindDNCredential = ###LDAP_IDPUSER_PASSWORD###
        ```
        (If you decide to use the Solution 3, you have to remove (or comment out) the following code from your Attribute Resolver file:
       
