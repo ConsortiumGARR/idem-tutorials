@@ -1064,6 +1064,7 @@ Translate the IdP messages in your language:
 	    <MetadataFilter xsi:type="EntityRoleWhiteList">
 	      <RetainedRole>md:SPSSODescriptor</RetainedRole>
 	    </MetadataFilter>
+      </MetadataProvider>
       ```
 
     * Retrieve the Federation Certificate used to verify its signed metadata:
