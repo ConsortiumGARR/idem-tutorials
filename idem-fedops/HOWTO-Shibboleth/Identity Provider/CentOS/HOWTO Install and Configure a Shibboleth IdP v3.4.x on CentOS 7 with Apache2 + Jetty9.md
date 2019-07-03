@@ -12,7 +12,7 @@
    3. [Install Jetty 9 Web Server](#install-jetty-9-web-server)
    4. [Install Shibboleth Identity Provider 3.4.x](#install-shibboleth-identity-provider-v34x)
 5. [Configuration Instructions](#configuration-instructions)
-   1. [Configure SSL on Apache (front-end of Jetty)](#configure-ssl-on-apache2-front-end-of-jetty)
+   1. [Configure SSL on Apache (front-end of Jetty)](#configure-ssl-on-apache-front-end-of-jetty)
    2. [Configure Jetty](#configure-jetty)
    3. [Configure Shibboleth Identity Provider StorageRecords (User Consent)](#configure-shibboleth-identity-provider-storagerecords-user-consent)
       1. [Default - Not Recommended](#default---not-recommended)
@@ -27,7 +27,7 @@
    8. [Translate IdP messages into preferred language](#translate-idp-messages-into-preferred-language)
    9. [Disable SAML1 Deprecated Protocol](#disable-saml1-deprecated-protocol)
    10. [Register the IdP on the Federation](#register-the-idp-on-the-federation)
-   11. [Configure Attribute Filters to release all attributes to all resources (outside eduGAIN)](#configure-attribute-filters-to-release-all-attributes-to-all-ressources-outside-edugain)
+   11. [Configure Attribute Filters to release all attributes to all resources](#configure-attribute-filters-to-release-all-attributes-to-all-ressources)
    12. [Configure Attribute Filters to release recommended attributes for eduGAIN](#configure-attribute-filters-to-release-recommended-attributes-for-edugain)
    13. [Configure Attribute Filters to release the mandatory attributes to the IDEM Default  Resources](#configure-attribute-filters-to-release-the-mandatory-attributes-to-the-idem-default-resources)
    14. [Configure Attribute Filters to release the mandatory attributes to the IDEM Production Resources](#configure-attribute-filters-to-release-the-mandatory-attributes-to-the-idem-production-resources)
@@ -428,13 +428,13 @@ Apache HTTP (Web) Server will manage the HTTPS part (certificate and key) and fo
         SSLStaplingReturnResponderErrors off
         
         # Enable HTTP Strict Transport Security with a 2 year duration
-	# ONLY If you have valid certificated
+        # ONLY If you have valid certificated
         Header always set Strict-Transport-Security "max-age=63072000;includeSubDomains;preload"
-        
+
         SSLCertificateFile /etc/pki/tls/certs/idp.example.org.crt
         SSLCertificateKeyFile /etc/pki/tls/private/idp.example.org.key
         SSLCACertificateFile /etc/pki/tls/certs/terena_ssl_ca_3.pem
-	
+
         <IfModule mod_proxy.c>
            ProxyPreserveHost On
            RequestHeader set X-Forwarded-Proto "https"
@@ -977,8 +977,6 @@ Translate the IdP messages in your language:
    * Restart Jetty to apply changes: 
       `systemctl restart jetty.service`
    
-   
-
 ### Disable SAML1 Deprecated Protocol
 
 1. Modify IdP metadata to enable only the SAML2 protocol:
@@ -1084,7 +1082,7 @@ Translate the IdP messages in your language:
     * https://sp-test.garr.it/secure   (Service Provider provided for testing the IDEM Test Federation)
     * https://sp24-test.garr.it/secure (Service Provider provided for testing the IDEM Test Federation and IDEM Production Federation)
 
-### Configure Attribute Filters to release all attributes to all resources:
+### Configure Attribute Filters to release all attributes to all resources
 
 1. Download sample Attribute Filter file:
    * ```wget -O /opt/shibboleth-idp/conf/attribute-filter-v3-all.xml https://github.com/ConsortiumGARR/idem-tutorials/raw/master/idem-fedops/HOWTO-Shibboleth/Identity%20Provider/utils/attribute-filter-v3-all.xml```
