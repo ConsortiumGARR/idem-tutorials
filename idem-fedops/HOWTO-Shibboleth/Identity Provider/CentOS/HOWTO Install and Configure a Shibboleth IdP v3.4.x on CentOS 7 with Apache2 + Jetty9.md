@@ -981,21 +981,21 @@ Translate the IdP messages in your language:
 
 1. Modify IdP metadata to enable only the SAML2 protocol:
    * `vim /opt/shibboleth-idp/metadata/idp-metadata.xml`
-
+ 
       ```bash
       <EntityDescriptor> SECTION:
         – Remove `validUntil` XML attribute.
-	
+
       <IDPSSODescriptor> SECTION:
-        - From the list of "protocolSupportEnumeration" remove:
+        – From the list of "protocolSupportEnumeration" remove:
           - urn:oasis:names:tc:SAML:1.1:protocol
           - urn:mace:shibboleth:1.0
 
-        - Remove the endpoint:
+        – Remove the endpoint:
           <ArtifactResolutionService Binding="urn:oasis:names:tc:SAML:1.0:bindings:SOAP-binding" Location="https://idp.example.org:8443/idp/profile/SAML1/SOAP/ArtifactResolution" index="1"/>
           (and modify the index value of the next one to “1”)
 
-        - Before the </IDPSSODescriptor> add:
+        – Before the </IDPSSODescriptor> add:
           <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</NameIDFormat>
           <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</NameIDFormat>
 
@@ -1003,10 +1003,10 @@ Translate the IdP messages in your language:
 
         - Remove the endpoint: 
           <SingleSignOnService Binding="urn:mace:shibboleth:1.0:profiles:AuthnRequest" Location="https://idp.example.org/idp/profile/Shibboleth/SSO"/>
-
+       
         - Remove all ":8443" from the existing URL (such port is not used anymore)
 	
-	- Remove comment from each <SingleLogoutService> endpoint
+        - Remove comment from each <SingleLogoutService> endpoint
 
       <AttributeAuthorityDescriptor> Section:
         - From the list "protocolSupportEnumeration" replace the value of:
