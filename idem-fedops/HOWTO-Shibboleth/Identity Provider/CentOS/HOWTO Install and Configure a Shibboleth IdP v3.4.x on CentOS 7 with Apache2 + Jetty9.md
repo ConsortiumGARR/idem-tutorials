@@ -27,7 +27,7 @@
    8. [Translate IdP messages into preferred language](#translate-idp-messages-into-preferred-language)
    9. [Disable SAML1 Deprecated Protocol](#disable-saml1-deprecated-protocol)
    10. [Register the IdP on the Federation](#register-the-idp-on-the-federation)
-   11. [Configure Attribute Filters to release all attributes to all resources](#configure-attribute-filters-to-release-all-attributes-to-all-ressources)
+   11. [Configure Attribute Filters to release all attributes to all resources](#configure-attribute-filters-to-release-all-attributes-to-all-resources)
    12. [Configure Attribute Filters to release recommended attributes for eduGAIN](#configure-attribute-filters-to-release-recommended-attributes-for-edugain)
    13. [Configure Attribute Filters to release the mandatory attributes to the IDEM Default  Resources](#configure-attribute-filters-to-release-the-mandatory-attributes-to-the-idem-default-resources)
    14. [Configure Attribute Filters to release the mandatory attributes to the IDEM Production Resources](#configure-attribute-filters-to-release-the-mandatory-attributes-to-the-idem-production-resources)
@@ -1120,7 +1120,174 @@ Translate the IdP messages in your language:
 3. Restart Jetty
    *  ```systemctl restart jetty```
 
-### Appendix A: Useful logs to find problems
+### Configure Attribute Filters to release the mandatory attributes to the IDEM Default Resources:
+
+1. Become ROOT:
+   * `sudo su -`
+
+2. Make sure to you have "`tmp/httpClientCache`" used by "`shibboleth.FileCachingHttpClient`":
+   * `mkdir -p /opt/shibboleth-idp/tmp/httpClientCache ; chown jetty /opt/shibboleth-idp/tmp/httpClientCache`
+
+3. Modify your `services.xml`:
+   * `vim /opt/shibboleth-idp/conf/services.xml`
+
+     ```xml
+     <bean id="IDEM-Default-Filter" class="net.shibboleth.ext.spring.resource.FileBackedHTTPResource"
+           c:client-ref="shibboleth.FileCachingHttpClient"
+           c:url="http://www.garr.it/idem-conf/attribute-filter-v3-idem.xml"
+           c:backingFile="%{idp.home}/conf/attribute-filter-v3-idem.xml"/>
+          
+     <util:list id ="shibboleth.AttributeFilterResources">
+         <value>%{idp.home}/conf/attribute-filter.xml</value>
+         <ref bean="IDEM-Default-Filter"/>
+     </util:list>
+     ```
+
+4. Restart Jetty to apply changes:
+   *  `systemctl restart jetty.service`
+
+### Configure Attribute Filters to release the mandatory attributes to the IDEM Production Resources:
+
+1. Make sure that you have the "`tmp/httpClientCache`" used by "`shibboleth.FileCachingHttpClient`":
+   * `mkdir -p /opt/shibboleth-idp/tmp/httpClientCache ; chown jetty /opt/shibboleth-idp/tmp/httpClientCache`
+
+2. Modify your `services.xml`:
+   * `vim /opt/shibboleth-idp/conf/services.xml`
+
+     ```xml
+     <bean id="IDEM-Production-Filter" class="net.shibboleth.ext.spring.resource.FileBackedHTTPResource"
+           c:client-ref="shibboleth.FileCachingHttpClient"
+           c:url="http://www.garr.it/idem-conf/attribute-filter-v3-required.xml"
+           c:backingFile="%{idp.home}/conf/attribute-filter-v3-required.xml"/>
+     ...
+     <util:list id ="shibboleth.AttributeFilterResources">
+         <value>%{idp.home}/conf/attribute-filter.xml</value>
+         <ref bean="IDEM-Default-Filter"/>
+         <ref bean="IDEM-Production-Filter"/>
+     </util:list>
+     ```
+
+3. Restart Jetty to apply changes:
+   *  `systemctl restart jetty.service`
+
+### Configure Attribute Filters for Research and Scholarship and Data Protection Code of Conduct Entity Category
+
+1. Make sure that you have the "`tmp/httpClientCache`" used by "`shibboleth.FileCachingHttpClient`":
+   * `mkdir -p /opt/shibboleth-idp/tmp/httpClientCache ; chown jetty /opt/shibboleth-idp/tmp/httpClientCache`
+
+2. Modify your `services.xml`:
+   * `vim /opt/shibboleth-idp/conf/services.xml`
+
+     ```xml
+     <bean id="ResearchAndScholarship" class="net.shibboleth.ext.spring.resource.FileBackedHTTPResource"
+           c:client-ref="shibboleth.FileCachingHttpClient"
+           c:url="http://www.garr.it/idem-conf/attribute-filter-v3-rs.xml"
+           c:backingFile="%{idp.home}/conf/attribute-filter-v3-rs.xml"/>
+          
+     <bean id="CodeOfConduct" class="net.shibboleth.ext.spring.resource.FileBackedHTTPResource"
+           c:client-ref="shibboleth.FileCachingHttpClient"
+           c:url="http://www.garr.it/idem-conf/attribute-filter-v3-coco.xml"
+           c:backingFile="%{idp.home}/conf/attribute-filter-v3-coco.xml"/>
+    
+     <util:list id ="shibboleth.AttributeFilterResources">
+         <value>%{idp.home}/conf/attribute-filter.xml</value>
+         <ref bean="IDEM-Default-Filter"/>
+         <ref bean="IDEM-Production-Filter"/>
+         <ref bean="ResearchAndScholarship"/>
+         <ref bean="CodeOfConduct"/>
+      </util:list>
+      ```
+
+3. Restart Jetty to apply changes:
+   *  `systemctl restart jetty.service`
+
+### Appendix A: Import metadata from previous IDP v2.x ###
+
+1. Store into /tmp directory the following files:
+   * `idp-metadata.xml`
+   * `idp.crt`
+   * `idp.key`
+
+2. Follow the steps on your IdP v3.x:
+   * `sudo su -`
+   * `mv /tmp/idp-metadata.xml /opt/shibboleth-idp/metadata`
+   * `mv /tmp/idp.crt /tmp/idp.key /opt/shibboleth-idp/credentials`
+   * `cd /opt/shibboleth-idp/credentials/`
+   * `rm idp-encryption.crt idp-backchannel.crt idp-encryption.key idp-signing.crt idp-signing.key`
+   * `ln -s idp.crt idp-encryption.crt`
+   * `ln -s idp.key idp-encryption.key`
+   * `ln -s idp.key idp-signing.key`
+   * `ln -s idp.crt idp-signing.crt`
+   * `ln -s idp.crt idp-backchannel.crt`
+   * `openssl pkcs12 -export -in idp-encryption.crt -inkey idp-encryption.key -out idp-backchannel.p12 -password pass:#YOUR.BACKCHANNEL.CERT.PASSWORD#`
+
+3. Check that *idp.entityID* property value on *idp.properties* file is equal to the previous entityID value into *idp-metadata.xml*.
+
+4. Modify IdP metadata to enable only the SAML2 protocol:
+   * `vim /opt/shibboleth-idp/metadata/idp-metadata.xml`
+ 
+      ```bash
+      <EntityDescriptor> SECTION:
+        – Remove `validUntil` XML attribute.
+
+      <IDPSSODescriptor> SECTION:
+        – From the list of "protocolSupportEnumeration" remove:
+          - urn:oasis:names:tc:SAML:1.1:protocol
+          - urn:mace:shibboleth:1.0
+
+        – Remove the endpoint:
+          <ArtifactResolutionService Binding="urn:oasis:names:tc:SAML:1.0:bindings:SOAP-binding" Location="https://idp.example.org:8443/idp/profile/SAML1/SOAP/ArtifactResolution" index="1"/>
+          (and modify the index value of the next one to “1”)
+
+        – Before the </IDPSSODescriptor> add:
+          <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</NameIDFormat>
+          <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</NameIDFormat>
+
+          (because the IdP installed with this guide will release transient, by default, and persistent NameID if requested.)
+
+        - Remove the endpoint: 
+          <SingleSignOnService Binding="urn:mace:shibboleth:1.0:profiles:AuthnRequest" Location="https://idp.example.org/idp/profile/Shibboleth/SSO"/>
+       
+        - Remove all ":8443" from the existing URL (such port is not used anymore)
+
+      <AttributeAuthorityDescriptor> Section:
+        - From the list "protocolSupportEnumeration" replace the value of:
+          - urn:oasis:names:tc:SAML:1.1:protocol
+          with
+          - urn:oasis:names:tc:SAML:2.0:protocol
+
+        - Remove the endpoint: 
+          <AttributeService Binding="urn:oasis:names:tc:SAML:1.0:bindings:SOAP-binding" Location="https://idp.example.org:8443/idp/profile/SAML1/SOAP/AttributeQuery"/>
+
+        - Remove the comment from:
+          <AttributeService Binding="urn:oasis:names:tc:SAML:2.0:bindings:SOAP" Location="https://idp.example.org/idp/profile/SAML2/SOAP/AttributeQuery"/>
+
+        - Remove all ":8443" from the existing URL (such port is not used anymore)
+      ```
+
+5. Restart Jetty:
+   * `systemctl restart jetty.service`
+  
+6. Don't forget to update your IdP Metadata on [IDEM Entity Registry](https://registry.idem.garr.it/rr3) to apply changes on the federation IDEM! For any help write to idem-help@garr.it
+
+### Appendix B: Import persistent-id from a previous database ###
+
+1. Become ROOT:
+   * `sudo su -`
+
+2. Create a DUMP of `shibpid` table from the previous DB `userdb` on the OLD IdP:
+   * `cd /tmp`
+   * `mysqldump --complete-insert --no-create-db --no-create-info -u root -p userdb shibpid > /tmp/userdb_shibpid.sql`
+
+3. Move the `/tmp/userdb_shibpid.sql` of old IdP into `/tmp/userdb_shibpid.sql` on the new IdP.
+ 
+4. Import the content of `/tmp/userdb_shibpid.sql` into the DB of the new IDP:
+   * `cd /tmp ; mysql -u root -p shibboleth < /tmp/userdb_shibpid.sql`
+
+5. Delete `/tmp/userdb_shibpid.sql`:
+   * `rm /tmp/userdb_shibpid.sql`
+   
+### Appendix C: Useful logs to find problems
 
 1. Jetty Logs:
    * ```cd /opt/jetty/logs```
