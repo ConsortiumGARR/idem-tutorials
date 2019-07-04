@@ -86,25 +86,22 @@
 
 ### Configure the environment
 
-2. Be sure that your firewall **is not blocking** the traffic on port **443** and **80**.
+1. Be sure that your firewall **is not blocking** the traffic on port **443** and **80**.
 
-3. Set the variable `JAVA_HOME` in `/etc/environment`:
+2. Set the variable `JAVA_HOME` in `/etc/environment`:
    * `vim /etc/environment`
 
      `JAVA_HOME=/usr/lib/jvm/default-java`
 
    * `source /etc/environment`
 
-4. Install the SSL certificates for HTTPS:
-   * 
-
-4. Install the SSL Certificate and Key for HTTP and set the right privileges:
+3. Install the SSL Certificate and Key for HTTP and set the right privileges:
    * `cp /path/to/certificate/idp.example.org.crt /etc/ssl/certs/idp.example.org.crt`
    * `cp /path/to/key/idp.example.org.key /etc/ssl/private/idp.example.org.key`
    * `chmod 400 /etc/ssl/private/idp.example.org.key`
    * `chmod 644 /etc/ssl/certs/idp.example.org.crt`
 
-   **(ALTERNATIVE)**Create a self-signed certificate:
+   **(ALTERNATIVE)** Create a self-signed certificate:
    * `openssl req -x509 -newkey rsa:4096 -keyout /etc/ssl/private/idp.example.org.key -out /etc/ssl/certs/idp.example.org.crt -nodes -days 1095`
 
 ### Install Jetty 9 Web Server
@@ -417,21 +414,21 @@ The Apache HTTP Server will be configured as a reverse proxy and it will be used
 3. Configure Apache2 to redirect HTTP traffic to HTTPS:
    * `vim /etc/apache2/sites-available/idp.example.org.conf`
    
-   ```apache
-   <VirtualHost *:80>
-      ServerName "idp.example.org"
-      Redirect permanent "/" "https://idp.example.org/"
-   </VirtualHost>
+     ```apache
+     <VirtualHost *:80>
+        ServerName "idp.example.org"
+        Redirect permanent "/" "https://idp.example.org/"
+     </VirtualHost>
    
-   # This virtualhost is only here to handle administrative commands for Shibboleth, executed from localhost
-   <VirtualHost 127.0.0.1:80>
-     ProxyPass /idp http://localhost:8080/idp retry=5
-     ProxyPassReverse /idp http://localhost:8080/idp retry=5
-     <Location /idp>
-       Require all granted
-     </Location>
-   </VirtualHost>
-   ```
+     # This virtualhost is only here to handle administrative commands for Shibboleth, executed from localhost
+     <VirtualHost 127.0.0.1:80>
+       ProxyPass /idp http://localhost:8080/idp retry=5
+       ProxyPassReverse /idp http://localhost:8080/idp retry=5
+       <Location /idp>
+         Require all granted
+       </Location>
+     </VirtualHost>
+     ```
 
 4. Enable the required Apache2 modules and the virtual hosts:
    * `a2enmod proxy_http ssl headers alias include negotiation`
