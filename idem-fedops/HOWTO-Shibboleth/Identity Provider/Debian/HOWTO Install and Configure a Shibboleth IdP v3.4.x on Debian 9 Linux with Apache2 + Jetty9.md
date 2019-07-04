@@ -631,7 +631,7 @@ This Storage service will memorize User Consent data on persistent database SQL.
 
 8. Check the IdP Status:
    * `export JAVA_HOME=/usr/lib/jvm/default-java`
-   * `cd /opts/hibboleth-idp/bin`
+   * `cd /opt/shibboleth-idp/bin`
    * `./status.sh`
 
 ### Configure Shibboleth Identity Provider to release the persistent-id
