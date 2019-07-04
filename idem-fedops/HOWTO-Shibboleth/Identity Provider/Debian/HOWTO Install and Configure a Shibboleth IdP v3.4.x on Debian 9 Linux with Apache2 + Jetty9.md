@@ -27,16 +27,16 @@
    7. [Configure IdP Logging](#configure-idp-logging)
    8. [Translate IdP messages into preferred language](#translate-idp-messages-into-preferred-language)
    9. [Disable SAML1 Deprecated Protocol](#disable-saml1-deprecated-protocol)
-   10. [Register the IdP on the Federation](#register-the-idp-on-the-federation)
-   11. [Configure Attribute Filters to release all attributes to all resources](#configure-attribute-filters-to-release-all-attributes-to-all-resources)
-   12. [Configure Attribute Filters to release recommended attributes for eduGAIN](#configure-attribute-filters-to-release-recommended-attributes-for-edugain)
-6. [Appendix A: Configure Attribute Filters to release the mandatory attributes to the IDEM Default Resources](#appendix-a-configure-attribute-filters-to-release-the-mandatory-attributes-to-the-idem-default-resources)
-7. [Appendix B: Configure Attribute Filters to release the mandatory attributes to the IDEM Production Resources](#appendix-b-configure-attribute-filters-to-release-the-mandatory-attributes-to-the-idem-production-resources)
-8. [Appendix C: Configure Attribute Filters for Research and Scholarship and Data Protection Code of Conduct Entity Category](#appendix-c-configure-attribute-filters-for-research-and-scholarship-and-data-protection-code-of-conduct-entity-category)
-6. [Appendix D: Import metadata from previous IDP v2.x](#appendix-d-import-metadata-from-previous-idp-v2x)
-7. [Appendix E: Import persistent-id from a previous database](#appendix-e-import-persistent-id-from-a-previous-database)
-8. [Appendix F: Useful logs to find problems](#appendix-f-useful-logs-to-find-problems)
-9. [Authors](#authors)
+   10. [(ONLY FOR IDEM Federation members) Register the IdP on the Federation](#only-for-idem-federation-members-register-the-idp-on-the-federation)
+   11. [Configure attribute filter policies for the REFEDS Research and Scholarship and the GEANT Data Protection Code of Conduct Entity Categories](#configure-attribute-filter-policies-for-the-refeds-research-and-scholarship-and-the-geant-data-protection-code-of-conduct-entity-categories)
+   12. [(ONLY FOR IDP TRAINING AT CYNET) Configure Attribute Filters to release all attributes to all resources](#only-for-idp-training-at-cynet-configure-attribute-filters-to-release-all-attributes-to-all-resources)
+   13. [(ONLY FOR IDP TRAINING AT CYNET) Configure Attribute Filters to release recommended attributes for eduGAIN](#only-for-idp-training-at-cynet-configure-attribute-filters-to-release-recommended-attributes-for-edugain)
+6. [Appendix A: (ONLY FOR IDEM Federation members) Configure Attribute Filters to release the mandatory attributes to the IDEM Default Resources](#appendix-a-only-for-idem-federation-members-configure-attribute-filters-to-release-the-mandatory-attributes-to-the-idem-default-resources)
+7. [Appendix B: (ONLY FOR IDEM Federation members) Configure Attribute Filters to release the mandatory attributes to the IDEM Production Resources](#appendix-b-only-for-idem-federation-members-configure-attribute-filters-to-release-the-mandatory-attributes-to-the-idem-production-resources)
+8. [Appendix C: Import metadata from previous IDP v2.x](#appendix-c-import-metadata-from-previous-idp-v2x)
+9. [Appendix D: Import persistent-id from a previous database](#appendix-d-import-persistent-id-from-a-previous-database)
+10. [Appendix E: Useful logs to find problems](#appendix-e-useful-logs-to-find-problems)
+11. [Authors](#authors)
 
 ## Hardware Requirements
 
@@ -915,8 +915,8 @@ By default, a transient NameID will always be released to the Service Provider i
 ### Configure IdP Logging
 
 Enrich IDP logs with the authentication error occurred on LDAP:
-   * sed -i '/^    <logger name="org.ldaptive".*/a \\n    <!-- Logs on LDAP user authentication - ADDED -->' /opt/shibboleth-idp/conf/logback.xml
-   * sed -i '/^    <!-- Logs on LDAP user authentication - ADDED -->/a \ \ \ \ \<logger name="org.ldaptive.auth.Authenticator" level="INFO" />' /opt/shibboleth-idp/conf/logback.xml
+   * `sed -i '/^    <logger name="org.ldaptive".*/a \\n    <!-- Logs on LDAP user authentication - ADDED -->' /opt/shibboleth-idp/conf/logback.xml`
+   * `sed -i '/^    <!-- Logs on LDAP user authentication - ADDED -->/a \ \ \ \ \<logger name="org.ldaptive.auth.Authenticator" level="INFO" />' /opt/shibboleth-idp/conf/logback.xml`
 
 ### Translate IdP messages into preferred language
 
@@ -1079,7 +1079,7 @@ Translate the IdP messages in your language:
 3. Restart Jetty:
    *  ```systemctl restart jetty```
 
-### (ONLY FOR IDP TRAINING AT CYNET) Configure Attribute Filters to release recommended attributes for eduGAIN:
+### (ONLY FOR IDP TRAINING AT CYNET) Configure Attribute Filters to release recommended attributes for eduGAIN
 
 1. Download sample Attribute Filter file:
    * ```wget -O /opt/shibboleth-idp/conf/attribute-filter-v3-eduGAIN.xml https://github.com/ConsortiumGARR/idem-tutorials/raw/master/idem-fedops/HOWTO-Shibboleth/Identity%20Provider/utils/attribute-filter-v3-eduGAIN.xml```
