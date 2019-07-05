@@ -1052,8 +1052,7 @@ Translate the IdP messages in your language:
         id="URLMD-Training-Federation"
         xsi:type="FileBackedHTTPMetadataProvider"
         backingFile="%{idp.home}/metadata/training-test-federation-sha256.xml"
-        metadataURL="https://registry-test.idem.garr.it/rr3/signedmetadata/federation/cyprusIDPtraining/metadata.xml
-">
+        metadataURL="https://registry-test.idem.garr.it/rr3/signedmetadata/federation/cyprusIDPtraining/metadata.xml">
 
         <!--
             Verify the signature on the root element of the metadata aggregate
