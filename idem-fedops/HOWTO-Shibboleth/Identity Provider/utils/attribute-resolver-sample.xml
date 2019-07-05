@@ -186,12 +186,17 @@
   <!-- Data Connector for eduPersonTargetedID -->
   <!-- In Version 3.4.x a Warning about deprecation will be issued. This can be ignored (the attribute is required by the schema). However this attribute will be removed in V4.x and the source attribute supplied using <InputAttributeDefinition> and
   <InputDataConnector> elements. -->
-  <!-- <DataConnector id="myStoredId" xsi:type="StoredId" generatedAttributeID="persistentID" salt="%{idp.persistentId.salt}" sourceAttributeID="%{idp.persistentId.sourceAttribute}" queryTimeout="0">
+  <!-- 
+  <DataConnector id="myStoredId" xsi:type="StoredId" generatedAttributeID="persistentID" salt="%{idp.persistentId.salt}" sourceAttributeID="%{idp.persistentId.sourceAttribute}" queryTimeout="0">
     <InputAttributeDefinition ref="%{idp.persistentId.sourceAttribute}"/>
     <BeanManagedConnection>MyDataSource</BeanManagedConnection>
-  </DataConnector> -->
+  </DataConnector>
+  -->
 
-  <!-- Static Data Connector for SCHAC attributes using Active Directory -->
+  <!-- 
+      Static Data Connector for SCHAC attributes using Active Directory
+      SchacHomeOrgType usage: https://wiki.refeds.org/display/STAN/SchacHomeOrgType+usage
+  -->
   <DataConnector id="staticAttributes" xsi:type="Static">
     <Attribute id="schacHomeOrganization">
       <Value>%{idp.scope}</Value>
