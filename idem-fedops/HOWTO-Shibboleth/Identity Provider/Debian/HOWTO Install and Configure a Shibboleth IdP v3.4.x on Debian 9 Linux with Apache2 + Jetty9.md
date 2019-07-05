@@ -366,9 +366,14 @@ The Apache HTTP Server will be configured as a reverse proxy and it will be used
    * `mkdir /var/www/html/idp.example.org`
    * `sudo chown -R www-data: /var/www/html/idp.example.org`
 
-2. Create the Virtualhost file `/etc/apache2/sites-available/idp.example.org-ssl.conf` and set the content as follows:
+2. Create the Virtualhost file `/etc/apache2/sites-available/idp.example.org.conf` and set the content as follows:
 
    ```apache
+   <VirtualHost *:80>
+      ServerName "idp.example.org"
+      Redirect permanent "/" "https://idp.example.org/"
+   </VirtualHost>
+
    <IfModule mod_ssl.c>
       SSLStaplingCache shmcb:/var/run/ocsp(128000)
       <VirtualHost _default_:443>
@@ -410,35 +415,24 @@ The Apache HTTP Server will be configured as a reverse proxy and it will be used
         </IfModule>
       </VirtualHost>
    </IfModule>
-   ```
-   
-3. Configure Apache2 to redirect HTTP traffic to HTTPS:
-   * `vim /etc/apache2/sites-available/idp.example.org.conf`
-   
-     ```apache
-     <VirtualHost *:80>
-        ServerName "idp.example.org"
-        Redirect permanent "/" "https://idp.example.org/"
-     </VirtualHost>
-   
-     # This virtualhost is only here to handle administrative commands for Shibboleth, executed from localhost
-     <VirtualHost 127.0.0.1:80>
-       ProxyPass /idp http://localhost:8080/idp retry=5
-       ProxyPassReverse /idp http://localhost:8080/idp retry=5
-       <Location /idp>
-         Require all granted
-       </Location>
-     </VirtualHost>
-     ```
 
-4. Enable the required Apache2 modules and the virtual hosts:
+   # This virtualhost is only here to handle administrative commands for Shibboleth, executed from localhost
+   <VirtualHost 127.0.0.1:80>
+     ProxyPass /idp http://localhost:8080/idp retry=5
+     ProxyPassReverse /idp http://localhost:8080/idp retry=5
+     <Location /idp>
+       Require all granted
+     </Location>
+   </VirtualHost>
+   ```
+
+3. Enable the required Apache2 modules and the virtual hosts:
    * `a2enmod proxy_http ssl headers alias include negotiation`
-   * `a2ensite idp.example.org-ssl.conf`
    * `a2ensite idp.example.org.conf`
    * `a2dissite 000-default.conf`
    * `systemctl restart apache2.service`
 
-5. Verify the quality and the strength of the SSL configuration:
+4. Verify the quality and the strength of the SSL configuration:
    * [**https://www.ssllabs.com/ssltest/analyze.html**](https://www.ssllabs.com/ssltest/analyze.html)
 
 ### Configure Jetty
