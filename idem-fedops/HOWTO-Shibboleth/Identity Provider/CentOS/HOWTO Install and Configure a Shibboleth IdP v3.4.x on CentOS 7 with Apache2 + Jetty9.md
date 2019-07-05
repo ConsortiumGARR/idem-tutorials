@@ -1069,7 +1069,7 @@ Translate the IdP messages in your language:
     or check which attributes are released to them with AACLI:
 
     * `cd /opt/shibboleth-idp/bin`
-    * `./aacli.sh -n user1 -r https://sp24-test.garr.it/shibboleth --saml2`
+    * `./aacli.sh -n <USERNAME> -r https://sp24-test.garr.it/shibboleth --saml2`
 
 ### Configure attribute filter policies for the REFEDS Research and Scholarship and the GEANT Data Protection Code of Conduct Entity Categories
 
