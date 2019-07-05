@@ -29,8 +29,9 @@
    9. [Disable SAML1 Deprecated Protocol](#disable-saml1-deprecated-protocol)
    10. [(ONLY FOR IDEM Federation members) Register the IdP on the Federation](#only-for-idem-federation-members-register-the-idp-on-the-federation)
    11. [Configure attribute filter policies for the REFEDS Research and Scholarship and the GEANT Data Protection Code of Conduct Entity Categories](#configure-attribute-filter-policies-for-the-refeds-research-and-scholarship-and-the-geant-data-protection-code-of-conduct-entity-categories)
-   12. [(ONLY FOR IDP TRAINING AT CYNET) Configure Attribute Filters to release all attributes to all resources](#only-for-idp-training-at-cynet-configure-attribute-filters-to-release-all-attributes-to-all-resources)
-   13. [(ONLY FOR IDP TRAINING AT CYNET) Configure Attribute Filters to release recommended attributes for eduGAIN](#only-for-idp-training-at-cynet-configure-attribute-filters-to-release-recommended-attributes-for-edugain)
+   12. [(ONLY FOR IDP TRAINING AT CYNET) Register the IdP on the Training Test Federation](#only-for-idp-training-at-cynet-register-the-idp-on-the-training-test-federation)
+   13. [(ONLY FOR IDP TRAINING AT CYNET) Configure Attribute Filters to release all attributes to all resources](#only-for-idp-training-at-cynet-configure-attribute-filters-to-release-all-attributes-to-all-resources)
+   14. [(ONLY FOR IDP TRAINING AT CYNET) Configure Attribute Filters to release recommended attributes for eduGAIN](#only-for-idp-training-at-cynet-configure-attribute-filters-to-release-recommended-attributes-for-edugain)
 6. [Appendix A: (ONLY FOR IDEM Federation members) Configure Attribute Filters to release the mandatory attributes to the IDEM Default Resources](#appendix-a-only-for-idem-federation-members-configure-attribute-filters-to-release-the-mandatory-attributes-to-the-idem-default-resources)
 7. [Appendix B: (ONLY FOR IDEM Federation members) Configure Attribute Filters to release the mandatory attributes to the IDEM Production Resources](#appendix-b-only-for-idem-federation-members-configure-attribute-filters-to-release-the-mandatory-attributes-to-the-idem-production-resources)
 8. [Appendix C: Import metadata from previous IDP v2.x](#appendix-c-import-metadata-from-previous-idp-v2x)
@@ -334,22 +335,22 @@ It is a Java Web Application that can be deployed with its WAR file.
    * `cd /usr/local/src/shibboleth-identity-provider-3.4.x`
    * `./bin/install.sh`
   
-   ```bash
-   root@idp:/usr/local/src/shibboleth-identity-provider-3.4.x# ./bin/install.sh
-   Source (Distribution) Directory: [/usr/local/src/shibboleth-identity-provider-3.4.x]
-   Installation Directory: [/opt/shibboleth-idp]
-   Hostname: [localhost.localdomain]
-   idp.example.org
-   SAML EntityID: [https://idp.example.org/idp/shibboleth]
-   Attribute Scope: [localdomain]
-   example.org
-   Backchannel PKCS12 Password: ###PASSWORD-FOR-BACKCHANNEL###
-   Re-enter password:           ###PASSWORD-FOR-BACKCHANNEL###
-   Cookie Encryption Key Password: ###PASSWORD-FOR-COOKIE-ENCRYPTION###
-   Re-enter password:              ###PASSWORD-FOR-COOKIE-ENCRYPTION###
-   ```
-  
-   From this point on the variable **idp.home** refers to the directory: `/opt/shibboleth-idp`
+     ```bash
+     root@idp:/usr/local/src/shibboleth-identity-provider-3.4.x# ./bin/install.sh
+     Source (Distribution) Directory: [/usr/local/src/shibboleth-identity-provider-3.4.x]
+     Installation Directory: [/opt/shibboleth-idp]
+     Hostname: [localhost.localdomain]
+     idp.example.org
+     SAML EntityID: [https://idp.example.org/idp/shibboleth]
+     Attribute Scope: [localdomain]
+     example.org
+     Backchannel PKCS12 Password: ###PASSWORD-FOR-BACKCHANNEL###
+     Re-enter password:           ###PASSWORD-FOR-BACKCHANNEL###
+     Cookie Encryption Key Password: ###PASSWORD-FOR-COOKIE-ENCRYPTION###
+     Re-enter password:              ###PASSWORD-FOR-COOKIE-ENCRYPTION###
+     ```
+
+     From this point on the variable **idp.home** refers to the directory: `/opt/shibboleth-idp`
 
 5. Make the **jetty** user able to access the IdP main directories:
    * `cd /opt/shibboleth-idp`
@@ -494,7 +495,7 @@ If you don't change anything, the IdP stores data in a long-lived browser cookie
 
 #### HTML Local Storage - Recommended
 
-> it requires JavaScript be enabled because reading and writing to the client requires an explicit page be rendered.
+> It requires JavaScript be enabled because reading and writing to the client requires an explicit page be rendered.
 > Note that this feature is safe to enable globally. The implementation is written to check for this capability in each client, and to back off to cookies.
 
 1. Become ROOT: 
@@ -526,21 +527,14 @@ This Storage service will memorize User Consent data on persistent database SQL.
    * `sudo su -`
 
 2. Rebuild the IdP with the needed libraries:
-
    * `apt install mysql-server libmysql-java libcommons-dbcp-java libcommons-pool-java --no-install-recommends`
-
    * `cd /opt/shibboleth-idp`
-
    * `ln -s /usr/share/java/mysql-connector-java.jar edit-webapp/WEB-INF/lib`
-
    * `ln -s /usr/share/java/commons-dbcp.jar edit-webapp/WEB-INF/lib`
-
    * `ln -s /usr/share/java/commons-pool.jar edit-webapp/WEB-INF/lib`
-
    * `bin/build.sh`
 
 3. Create the `StorageRegords` table on the `storageservice` database.
-
    * `vim shib-ss-db.sql`:
 
      ```bash
@@ -571,11 +565,9 @@ This Storage service will memorize User Consent data on persistent database SQL.
      ```
 
    * `mysql -u root -p < shib-ss-db.sql`
-
    * `systemctl restart mysql.service`
 
 4. Enable JPA Storage Service:
-
    * `vim /opt/shibboleth-idp/conf/global.xml` and add the following directives to the tail, just before the **`</beans>`** tag (**IMPORTANT** remeber to modify the "**##USERNAME-CHANGEME##**" and "**##USER-PASSWORD-CHANGEME##**" with your DB user and password):
 
      ```bash
@@ -682,21 +674,14 @@ By default, a transient NameID will always be released to the Service Provider i
    * `sudo su -`
 
 2. Rebuild the IdP with the required libraries:
-
    * `apt install mysql-server libmysql-java libcommons-dbcp-java libcommons-pool-java --no-install-recommends`
-
    * `cd /opt/shibboleth-idp`
-
    * `ln -s /usr/share/java/mysql-connector-java.jar edit-webapp/WEB-INF/lib`
-
    * `ln -s /usr/share/java/commons-dbcp.jar edit-webapp/WEB-INF/lib`
-
    * `ln -s /usr/share/java/commons-pool.jar edit-webapp/WEB-INF/lib`
-
    * `bin/build.sh`
 
 3. Create `shibpid` table on `shibboleth` database.
-
    * `vim shib-pid-db.sql`:
 
      ```bash
@@ -730,11 +715,9 @@ By default, a transient NameID will always be released to the Service Provider i
      ```
 
    * `mysql -u root -p < shib-pid-db.sql`
-
    * `systemctl restart mysql.service`
 
 4. Enable Persistent Identifier's store:
-
    * `vim /opt/shibboleth-idp/conf/global.xml` and add the following directives to the tail, just before the **`</beans>`** tag (**IMPORTANT** remeber to modify the "**##USERNAME-CHANGEME##**" and "**##USER-PASSWORD-CHANGEME##**" with your DB user and password):
 
      ```bash
@@ -880,11 +863,8 @@ By default, a transient NameID will always be released to the Service Provider i
 
 2. Configure your "`attribute-resolver.xml`" to define and support attributes:
    * `cd /opt/shibboleth-idp/conf`
-   
    * `cp attribute-resolver.xml attribute-resolver.xml.orig`
-
    * `cp attribute-resolver-full.xml attribute-resolver.xml`
-
    * `vim attribute-resolver.xml`
      * Remove comment for all schemas supported by your OpenLDAP
      * Remove comment for the Example LDAP Connector
@@ -989,29 +969,29 @@ Translate the IdP messages in your language:
 
      <!-- IDEM Test Federation -->
      <MetadataProvider
-           id="URLMD-IDEM-Federation"
-           xsi:type="FileBackedHTTPMetadataProvider"
-           backingFile="%{idp.home}/metadata/idem-test-metadata-sha256.xml"
-           metadataURL="http://md.idem.garr.it/metadata/idem-test-metadata-sha256.xml">
+        id="URLMD-IDEM-Federation"
+        xsi:type="FileBackedHTTPMetadataProvider"
+        backingFile="%{idp.home}/metadata/idem-test-metadata-sha256.xml"
+        metadataURL="http://md.idem.garr.it/metadata/idem-test-metadata-sha256.xml">
 
-           <!--
-               Verify the signature on the root element of the metadata aggregate
-               using a trusted metadata signing certificate.
-           -->
-           <MetadataFilter xsi:type="SignatureValidation" requireSignedRoot="true" certificateFile="${idp.home}/metadata/federation-cert.pem"/>   
+        <!--
+            Verify the signature on the root element of the metadata aggregate
+            using a trusted metadata signing certificate.
+        -->
+        <MetadataFilter xsi:type="SignatureValidation" requireSignedRoot="true" certificateFile="${idp.home}/metadata/federation-cert.pem"/>   
 
-           <!--
-               Require a validUntil XML attribute on the root element and
-               make sure its value is no more than 10 days into the future.
-           -->
-           <MetadataFilter xsi:type="RequiredValidUntil" maxValidityInterval="P10D"/>
+        <!--
+            Require a validUntil XML attribute on the root element and
+            make sure its value is no more than 10 days into the future.
+        -->
+        <MetadataFilter xsi:type="RequiredValidUntil" maxValidityInterval="P10D"/>
    
-           <!-- Consume all SP metadata in the aggregate -->
-           <MetadataFilter xsi:type="EntityRoleWhiteList">
-             <RetainedRole>md:SPSSODescriptor</RetainedRole>
-           </MetadataFilter>
-      </MetadataProvider>
-      ```
+        <!-- Consume all SP metadata in the aggregate -->
+        <MetadataFilter xsi:type="EntityRoleWhiteList">
+          <RetainedRole>md:SPSSODescriptor</RetainedRole>
+        </MetadataFilter>
+     </MetadataProvider>
+     ```
 
    * Retrieve the Federation Certificate used to verify signed metadata:
      *  `wget https://md.idem.garr.it/certs/idem-signer-20220121.pem -O /opt/shibboleth-idp/metadata/federation-cert.pem`
@@ -1041,10 +1021,10 @@ Translate the IdP messages in your language:
 ### Configure attribute filter policies for the REFEDS Research and Scholarship and the GEANT Data Protection Code of Conduct Entity Categories
 
 1. Download the attribute filter file:
-   * ```wget -O /opt/shibboleth-idp/conf/attribute-filter-v3-RS-CoCo.xml https://github.com/ConsortiumGARR/idem-tutorials/raw/master/idem-fedops/HOWTO-Shibboleth/Identity%20Provider/utils/attribute-filter-v3-RS-CoCo.xml```
+   * `wget -O /opt/shibboleth-idp/conf/attribute-filter-v3-RS-CoCo.xml https://github.com/ConsortiumGARR/idem-tutorials/raw/master/idem-fedops/HOWTO-Shibboleth/Identity%20Provider/utils/attribute-filter-v3-RS-CoCo.xml`
 
-2. Modify your ```services.xml```:
-   * ```vim /opt/shibboleth-idp/conf/services.xml```
+2. Modify your `services.xml`:
+   * `vim /opt/shibboleth-idp/conf/services.xml`
 
      ```xml
      <util:list id ="shibboleth.AttributeFilterResources">
@@ -1054,15 +1034,74 @@ Translate the IdP messages in your language:
       ```
 
 3. Restart Jetty
-   *  ```systemctl restart jetty```
+   *  `systemctl restart jetty`
+
+### (ONLY FOR IDP TRAINING AT CYNET) Register the IdP on the Training Test Federation
+
+1. Send your IdP Metadata URL to [marco.malavolti@garr.it](mailto:marco.malavolti@garr.it)
+
+2. Configure the IdP to retrieve the Federation Metadata:
+   * `cd /opt/shibboleth-idp/conf`
+   * `vim metadata-providers.xml`
+
+     ```xml
+     <!-- Piece of code to add before the last </MetadataProvider> -->
+
+     <!-- IDEM Test Federation -->
+     <MetadataProvider
+        id="URLMD-Training-Federation"
+        xsi:type="FileBackedHTTPMetadataProvider"
+        backingFile="%{idp.home}/metadata/training-test-federation-sha256.xml"
+        metadataURL="https://registry-test.idem.garr.it/rr3/signedmetadata/federation/cyprusIDPtraining/metadata.xml
+">
+
+        <!--
+            Verify the signature on the root element of the metadata aggregate
+            using a trusted metadata signing certificate.
+        -->
+        <MetadataFilter xsi:type="SignatureValidation" requireSignedRoot="true" certificateFile="${idp.home}/metadata/federation-cert.pem"/>   
+
+        <!--
+            Require a validUntil XML attribute on the root element and
+            make sure its value is no more than 10 days into the future.
+        -->
+        <MetadataFilter xsi:type="RequiredValidUntil" maxValidityInterval="P10D"/>
+   
+        <!-- Consume all SP metadata in the aggregate -->
+        <MetadataFilter xsi:type="EntityRoleWhiteList">
+          <RetainedRole>md:SPSSODescriptor</RetainedRole>
+        </MetadataFilter>
+     </MetadataProvider>
+     ```
+
+   * Retrieve the Federation Certificate used to verify signed metadata:
+     *  `wget https://registry-test.idem.garr.it/rr3/signedmetadata/federation/cyprusIDPtraining/metadata-signer.crt -O /opt/shibboleth-idp/metadata/federation-cert.pem`
+
+   * Check the validity:
+     *  `cd /opt/shibboleth-idp/metadata`
+     *  `openssl x509 -in federation-cert.pem -fingerprint -sha1 -noout`
+       
+        (sha1: 76:18:EA:B6:D4:9D:0C:C0:A0:16:FD:C0:2D:7C:B1:CD:44:26:B6:94)
+     *  `openssl x509 -in federation-cert.pem -fingerprint -md5 -noout`
+
+        (md5: 01:59:50:95:83:26:F2:8D:BA:50:9D:10:30:1D:19:3A)
+  
+3. Wait that your IdP Metadata is approved and reload service `shibboleth.MetadataResolverService` to refresh Training Test Federation metadata:
+    *  `cd /opt/shibboleth-idp/bin`
+    *  `./reload-service.sh -id shibboleth.MetadataResolverService`
+
+4. Check which attributes are released to test SP with AACLI:
+    * `cd /opt/shibboleth-idp/bin`
+    * `./aacli.sh -n <USERNAME> -r https://geanttraining.cynet.ac.cy/sp-garr --saml2`
+
 
 ### (ONLY FOR IDP TRAINING AT CYNET) Configure Attribute Filters to release all attributes to all resources
 
 1. Download sample Attribute Filter file:
-   * ```wget -O /opt/shibboleth-idp/conf/attribute-filter-v3-all.xml https://github.com/ConsortiumGARR/idem-tutorials/raw/master/idem-fedops/HOWTO-Shibboleth/Identity%20Provider/utils/attribute-filter-v3-all.xml```
+   * `wget -O /opt/shibboleth-idp/conf/attribute-filter-v3-all.xml https://github.com/ConsortiumGARR/idem-tutorials/raw/master/idem-fedops/HOWTO-Shibboleth/Identity%20Provider/utils/attribute-filter-v3-all.xml`
 
-2. Modify your ```services.xml```:
-   * ```vim /opt/shibboleth-idp/conf/services.xml```
+2. Modify your `services.xml`:
+   * `vim /opt/shibboleth-idp/conf/services.xml`
 
      ```xml
      ...
@@ -1074,15 +1113,15 @@ Translate the IdP messages in your language:
      ```
 
 3. Restart Jetty:
-   *  ```systemctl restart jetty```
+   *  `systemctl restart jetty`
 
 ### (ONLY FOR IDP TRAINING AT CYNET) Configure Attribute Filters to release recommended attributes for eduGAIN
 
 1. Download sample Attribute Filter file:
-   * ```wget -O /opt/shibboleth-idp/conf/attribute-filter-v3-eduGAIN.xml https://github.com/ConsortiumGARR/idem-tutorials/raw/master/idem-fedops/HOWTO-Shibboleth/Identity%20Provider/utils/attribute-filter-v3-eduGAIN.xml```
+   * `wget -O /opt/shibboleth-idp/conf/attribute-filter-v3-eduGAIN.xml https://github.com/ConsortiumGARR/idem-tutorials/raw/master/idem-fedops/HOWTO-Shibboleth/Identity%20Provider/utils/attribute-filter-v3-eduGAIN.xml`
 
-2. Modify your ```services.xml```:
-   * ```vim /opt/shibboleth-idp/conf/services.xml```
+2. Modify your `services.xml`:
+   * `vim /opt/shibboleth-idp/conf/services.xml`
 
      ```xml
      <util:list id ="shibboleth.AttributeFilterResources">
@@ -1094,7 +1133,7 @@ Translate the IdP messages in your language:
       ```
 
 3. Restart Jetty:
-   *  ```systemctl restart jetty.service```
+   *  `systemctl restart jetty.service`
 
 ### Appendix A: (ONLY FOR IDEM Federation members) Configure Attribute Filters to release the mandatory attributes to the IDEM Default Resources
 
@@ -1173,10 +1212,10 @@ Translate the IdP messages in your language:
    * `vim /opt/shibboleth-idp/metadata/idp-metadata.xml`
  
       ```bash
-      <EntityDescriptor> SECTION:
+      <EntityDescriptor> Section:
         – Remove `validUntil` XML attribute.
 
-      <IDPSSODescriptor> SECTION:
+      <IDPSSODescriptor> Section:
         – From the list of "protocolSupportEnumeration" remove:
           - urn:oasis:names:tc:SAML:1.1:protocol
           - urn:mace:shibboleth:1.0
