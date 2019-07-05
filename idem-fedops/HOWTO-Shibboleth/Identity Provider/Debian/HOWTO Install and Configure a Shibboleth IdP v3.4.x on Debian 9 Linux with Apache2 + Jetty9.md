@@ -461,10 +461,7 @@ The Apache HTTP Server will be configured as a reverse proxy and it will be used
 4. Check that IdP metadata is available on:
    * https://idp.example.org/idp/shibboleth
 
-5. Restart Jetty:
-   * `systemctl restart jetty.service`
-
-6. Check IdP Status:
+5. Check IdP Status:
    * `export JAVA_HOME=/usr/lib/jvm/default-java`
    * `cd /opt/shibboleth-idp/bin`
    * `./status.sh`
@@ -557,12 +554,22 @@ This Storage service will memorize User Consent data on persistent database SQL.
 
      quit
      ```
+     
+    * (OPTIONAL) MySQL DB Access without password:
+      * vim /root/.my.cnf
 
-   * `mysql -u root -p < shib-ss-db.sql`
+       ```bash
+       [client]
+       user=root
+       password=##ROOT-DB-PASSWORD-CHANGEME##
+       ```
+
+   * `mysql -u root < shib-ss-db.sql`
    * `systemctl restart mysql.service`
 
 4. Enable JPA Storage Service:
-   * `vim /opt/shibboleth-idp/conf/global.xml` and add the following directives to the tail, just before the **`</beans>`** tag (**IMPORTANT** remeber to modify the "**##USERNAME-CHANGEME##**" and "**##USER-PASSWORD-CHANGEME##**" with your DB user and password):
+   * `vim /opt/shibboleth-idp/conf/global.xml` 
+     and add the following directives to the tail, just before the **`</beans>`** tag (**IMPORTANT** remeber to modify the "**##USERNAME-CHANGEME##**" and "**##USER-PASSWORD-CHANGEME##**" with your DB user and password):
 
      ```bash
      <!-- Add bean to store info on StorageRecords database -->
@@ -708,11 +715,21 @@ By default, a transient NameID will always be released to the Service Provider i
      quit
      ```
 
-   * `mysql -u root -p < shib-pid-db.sql`
+    * (OPTIONAL) MySQL DB Access without password:
+      * vim /root/.my.cnf
+
+       ```bash
+       [client]
+       user=root
+       password=##ROOT-DB-PASSWORD-CHANGEME##
+       ```
+       
+   * `mysql -u root < shib-pid-db.sql`
    * `systemctl restart mysql.service`
 
 4. Enable Persistent Identifier's store:
-   * `vim /opt/shibboleth-idp/conf/global.xml` and add the following directives to the tail, just before the **`</beans>`** tag (**IMPORTANT** remeber to modify the "**##USERNAME-CHANGEME##**" and "**##USER-PASSWORD-CHANGEME##**" with your DB user and password):
+   * `vim /opt/shibboleth-idp/conf/global.xml` 
+     and add the following directives to the tail, just before the **`</beans>`** tag (**IMPORTANT** remeber to modify the "**##USERNAME-CHANGEME##**" and "**##USER-PASSWORD-CHANGEME##**" with your DB user and password):
 
      ```bash
      <!-- Add bean to store persistent-id on shibboleth database -->
@@ -796,7 +813,7 @@ By default, a transient NameID will always be released to the Service Provider i
 1. Connect the openLDAP to the IdP to allow the authentication of the users:
    * `vim /opt/shibboleth-idp/conf/ldap.properties`
 
-     (with **TLS** solutions we consider to have the LDAP certificate into `/opt/shibboleth-idp/credentials`).
+     (with **TLS** solutions we consider to have the LDAP certificate into `/opt/shibboleth-idp/credentials/ldap-server.crt`).
 
      * Solution 1: LDAP + STARTTLS
 
@@ -855,20 +872,31 @@ By default, a transient NameID will always be released to the Service Provider i
            * the baseDN ==> `ou=people, dc=example,dc=org` (branch containing the registered users)
            * the bindDN ==> `cn=admin,dc=example,dc=org` (distinguished name for the user that can made queries on the LDAP)
 
-2. Configure your "`attribute-resolver.xml`" to define and support attributes:
-   * `cd /opt/shibboleth-idp/conf`
-   * `cp attribute-resolver.xml attribute-resolver.xml.orig`
-   * `cp attribute-resolver-full.xml attribute-resolver.xml`
-   * `vim attribute-resolver.xml`
-     * Remove comment for all schemas supported by your OpenLDAP
-     * Remove comment for the Example LDAP Connector
-     * Save
+2. Define which attributes your IdP can manage into your Attribute Resolver file. Here you can find a sample **attribute-resolver-sample.xml** as example:
+   * Download the sample attribute resolver provided:
+      `wget https://github.com/ConsortiumGARR/idem-tutorials/raw/master/idem-fedops/HOWTO-Shibboleth/Identity%20Provider/utils/attribute-resolver-sample.xml -O /opt/shibboleth-idp/conf/attribute-resolver-sample.xml`
 
-     Here you can find the **attribute-resolver-v3_4-idem.xml** provided by IDEM GARR AAI as example:
-       * Download the attribute resolver provided by IDEM GARR AAI:
-         `wget http://www.garr.it/idem-conf/attribute-resolver-v3_4-idem.xml -O /opt/shibboleth-idp/conf/attribute-resolver-v3_4-idem.xml`
-	 
-     **Pay attention on `<DataConnector id="myStoredId"`. You have to put the right bean ID into `<BeanManagedConnection>` or IdP will not work. You have to put there the ID of the `BasicDataSource` bean**
+   * Configure the right owner/group:
+      `chown jetty:jetty /opt/shibboleth-idp/conf/attribute-resolver-sample.xml`
+
+   * Modify `services.xml` file:
+      `vim /opt/shibboleth-idp/conf/services.xml`
+
+      ```xml
+      <value>%{idp.home}/conf/attribute-resolver.xml</value>
+      ```
+
+      must become:
+
+      ```xml
+      <!-- <value>%{idp.home}/conf/attribute-resolver.xml</value> -->
+      <value>%{idp.home}/conf/attribute-resolver-sample.xml</value>
+
+   Here you can find the **attribute-resolver-v3_4-idem.xml** provided by IDEM GARR AAI as example:
+      * Download the attribute resolver provided by IDEM GARR AAI:
+        `wget http://www.garr.it/idem-conf/attribute-resolver-v3_4-idem.xml -O /opt/shibboleth-idp/conf/attribute-resolver-v3_4-idem.xml`
+
+        **Pay attention on `<DataConnector id="myStoredId"`. You have to put the right bean ID into `<BeanManagedConnection>` or IdP will not work. You have to put there the ID of the `BasicDataSource` bean**
 
 3. Restart Jetty to apply changes:
    * `systemctl restart jetty.service`
@@ -876,7 +904,7 @@ By default, a transient NameID will always be released to the Service Provider i
 4. Check to be able to retrieve transient NameID for an user:
    * `export JAVA_HOME=/usr/lib/jvm/default-java`
    * `cd /opt/shibboleth-idp/bin`
-   * `./aacli.sh -n user1 -r https://sp.example.org/shibboleth --saml2`
+   * `./aacli.sh -n <USERNAME> -r https://sp.example.org/shibboleth --saml2`
 
 5. Check IdP Status:
    * `export JAVA_HOME=/usr/lib/jvm/default-java`
@@ -903,10 +931,10 @@ Translate the IdP messages in your language:
    * `vim /opt/shibboleth-idp/metadata/idp-metadata.xml`
 
       ```bash
-      <EntityDescriptor> SECTION:
+      <EntityDescriptor> Section:
         – Remove `validUntil` XML attribute.
 	
-      <IDPSSODescriptor> SECTION:
+      <IDPSSODescriptor> Section:
         - From the list of "protocolSupportEnumeration" remove:
           - urn:oasis:names:tc:SAML:1.1:protocol
           - urn:mace:shibboleth:1.0
@@ -1010,7 +1038,7 @@ Translate the IdP messages in your language:
     or check which attributes are released to one the above SP with AACLI:
 
     * `cd /opt/shibboleth-idp/bin`
-    * `./aacli.sh -n user1 -r https://sp24-test.garr.it/shibboleth --saml2`
+    * `./aacli.sh -n <USERNAME> -r https://sp24-test.garr.it/shibboleth --saml2`
 
 ### Configure attribute filter policies for the REFEDS Research and Scholarship and the GEANT Data Protection Code of Conduct Entity Categories
 
@@ -1028,7 +1056,7 @@ Translate the IdP messages in your language:
       ```
 
 3. Restart Jetty
-   *  `systemctl restart jetty`
+   *  `systemctl restart jetty.service`
 
 ### (ONLY FOR IDP TRAINING AT CYNET) Register the IdP on the Training Test Federation
 
@@ -1087,7 +1115,6 @@ Translate the IdP messages in your language:
     * `cd /opt/shibboleth-idp/bin`
     * `./aacli.sh -n <USERNAME> -r https://geanttraining.cynet.ac.cy/sp-garr --saml2`
 
-
 ### (ONLY FOR IDP TRAINING AT CYNET) Configure Attribute Filters to release all attributes to all resources
 
 1. Download sample Attribute Filter file:
@@ -1106,7 +1133,7 @@ Translate the IdP messages in your language:
      ```
 
 3. Restart Jetty:
-   *  `systemctl restart jetty`
+   *  `systemctl restart jetty.service`
 
 ### (ONLY FOR IDP TRAINING AT CYNET) Configure Attribute Filters to release recommended attributes for eduGAIN
 
@@ -1250,7 +1277,7 @@ Translate the IdP messages in your language:
   
 6. Don't forget to update your IdP Metadata on [IDEM Entity Registry](https://registry.idem.garr.it/rr3) to apply changes on the federation IDEM! For any help write to idem-help@garr.it
 
-### Appendix D: Import persistent-id from a previous database ###
+### Appendix E: Import persistent-id from a previous database
 
 1. Become ROOT:
    * `sudo su -`
@@ -1267,7 +1294,7 @@ Translate the IdP messages in your language:
 5. Delete `/tmp/userdb_shibpid.sql`:
    * `rm /tmp/userdb_shibpid.sql`
    
-### Appendix E: Useful logs to find problems
+### Appendix F: Useful logs to find problems
 
 1. Jetty Logs:
    * ```cd /opt/jetty/logs```
