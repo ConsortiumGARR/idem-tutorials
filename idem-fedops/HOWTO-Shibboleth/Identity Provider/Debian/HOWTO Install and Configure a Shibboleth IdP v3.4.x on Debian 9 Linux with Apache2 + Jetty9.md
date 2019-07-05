@@ -24,14 +24,15 @@
       2. [Stored Mode - using a database](#stored-mode---using-a-database)
    5. [Configure Logout](#configure-logout)
    6. [Configure the directory (openLDAP) connection](#configure-the-directory-openldap-connection)
-   7. [Configure IdP Logging](#configure-idp-logging)
-   8. [Translate IdP messages into preferred language](#translate-idp-messages-into-preferred-language)
-   9. [Disable SAML1 Deprecated Protocol](#disable-saml1-deprecated-protocol)
-   10. [(ONLY FOR IDEM Federation members) Register the IdP on the Federation](#only-for-idem-federation-members-register-the-idp-on-the-federation)
-   11. [Configure attribute filter policies for the REFEDS Research and Scholarship and the GEANT Data Protection Code of Conduct Entity Categories](#configure-attribute-filter-policies-for-the-refeds-research-and-scholarship-and-the-geant-data-protection-code-of-conduct-entity-categories)
-   12. [(ONLY FOR IDP TRAINING AT CYNET) Register the IdP on the Training Test Federation](#only-for-idp-training-at-cynet-register-the-idp-on-the-training-test-federation)
-   13. [(ONLY FOR IDP TRAINING AT CYNET) Configure Attribute Filters to release all attributes to all resources](#only-for-idp-training-at-cynet-configure-attribute-filters-to-release-all-attributes-to-all-resources)
-   14. [(ONLY FOR IDP TRAINING AT CYNET) Configure Attribute Filters to release recommended attributes for eduGAIN](#only-for-idp-training-at-cynet-configure-attribute-filters-to-release-recommended-attributes-for-edugain)
+   7. [Configure the attribute resolver (sample)](#configure-the-attribute-resolver-sample)
+   8. [Configure IdP Logging](#configure-idp-logging)
+   9. [Translate IdP messages into preferred language](#translate-idp-messages-into-preferred-language)
+   10. [Disable SAML1 Deprecated Protocol](#disable-saml1-deprecated-protocol)
+   11. [(ONLY FOR IDEM Federation members) Register the IdP on the Federation](#only-for-idem-federation-members-register-the-idp-on-the-federation)
+   12. [Configure attribute filter policies for the REFEDS Research and Scholarship and the GEANT Data Protection Code of Conduct Entity Categories](#configure-attribute-filter-policies-for-the-refeds-research-and-scholarship-and-the-geant-data-protection-code-of-conduct-entity-categories)
+   13. [(ONLY FOR IDP TRAINING AT CYNET) Register the IdP on the Training Test Federation](#only-for-idp-training-at-cynet-register-the-idp-on-the-training-test-federation)
+   14. [(ONLY FOR IDP TRAINING AT CYNET) Configure Attribute Filters to release all attributes to all resources](#only-for-idp-training-at-cynet-configure-attribute-filters-to-release-all-attributes-to-all-resources)
+   15. [(ONLY FOR IDP TRAINING AT CYNET) Configure Attribute Filters to release recommended attributes for eduGAIN](#only-for-idp-training-at-cynet-configure-attribute-filters-to-release-recommended-attributes-for-edugain)
 6. [Appendix A: (ONLY FOR IDEM Federation members) Configure Attribute Filters to release the mandatory attributes to the IDEM Default Resources](#appendix-a-only-for-idem-federation-members-configure-attribute-filters-to-release-the-mandatory-attributes-to-the-idem-default-resources)
 7. [Appendix B: (ONLY FOR IDEM Federation members) Configure Attribute Filters to release the mandatory attributes to the IDEM Production Resources](#appendix-b-only-for-idem-federation-members-configure-attribute-filters-to-release-the-mandatory-attributes-to-the-idem-production-resources)
 8. [Appendix C: Import metadata from previous IDP v2.x](#appendix-c-import-metadata-from-previous-idp-v2x)
@@ -872,14 +873,16 @@ By default, a transient NameID will always be released to the Service Provider i
            * the baseDN ==> `ou=people, dc=example,dc=org` (branch containing the registered users)
            * the bindDN ==> `cn=admin,dc=example,dc=org` (distinguished name for the user that can made queries on the LDAP)
 
-2. Define which attributes your IdP can manage into your Attribute Resolver file. Here you can find a sample **attribute-resolver-sample.xml** as example:
-   * Download the sample attribute resolver provided:
-      `wget https://github.com/ConsortiumGARR/idem-tutorials/raw/master/idem-fedops/HOWTO-Shibboleth/Identity%20Provider/utils/attribute-resolver-sample.xml -O /opt/shibboleth-idp/conf/attribute-resolver-sample.xml`
+#### Configure the attribute resolver (sample)
 
-   * Configure the right owner/group:
+1. Define which attributes your IdP can manage into your Attribute Resolver file. Here you can find a sample **attribute-resolver-sample.xml** as example:
+    * Download the sample attribute resolver provided:
+      `wget https://github.com/ConsortiumGARR/idem-tutorials/raw/master/idem-fedops/HOWTO-Shibboleth/Identity%20Provider/utils/attribute-resolver-sample.xml -O /opt/shibboleth-idp/conf/attribute-resolver-sample.xml`
+    
+    * Configure the right owner/group:
       `chown jetty:jetty /opt/shibboleth-idp/conf/attribute-resolver-sample.xml`
 
-   * Modify `services.xml` file:
+    * Modify `services.xml` file:
       `vim /opt/shibboleth-idp/conf/services.xml`
 
       ```xml
@@ -893,20 +896,19 @@ By default, a transient NameID will always be released to the Service Provider i
       <value>%{idp.home}/conf/attribute-resolver-sample.xml</value>
 
    Here you can find the **attribute-resolver-v3_4-idem.xml** provided by IDEM GARR AAI as example:
-      * Download the attribute resolver provided by IDEM GARR AAI:
-        `wget http://www.garr.it/idem-conf/attribute-resolver-v3_4-idem.xml -O /opt/shibboleth-idp/conf/attribute-resolver-v3_4-idem.xml`
+      * http://www.garr.it/idem-conf/attribute-resolver-v3_4-idem.xml
 
         **Pay attention on `<DataConnector id="myStoredId"`. You have to put the right bean ID into `<BeanManagedConnection>` or IdP will not work. You have to put there the ID of the `BasicDataSource` bean**
 
-3. Restart Jetty to apply changes:
+2. Restart Jetty to apply changes:
    * `systemctl restart jetty.service`
 
-4. Check to be able to retrieve transient NameID for an user:
-   * `export JAVA_HOME=/usr/lib/jvm/default-java`
+3. Check to be able to retrieve transient NameID for an user:
+   * `export JAVA_HOME=/etc/alternatives/jre_1.8.0_openjdk`
    * `cd /opt/shibboleth-idp/bin`
    * `./aacli.sh -n <USERNAME> -r https://sp.example.org/shibboleth --saml2`
 
-5. Check IdP Status:
+4. Check IdP Status:
    * `export JAVA_HOME=/usr/lib/jvm/default-java`
    * `cd /opt/shibboleth-idp/bin`
    * `./status.sh`
@@ -1277,7 +1279,7 @@ Translate the IdP messages in your language:
   
 6. Don't forget to update your IdP Metadata on [IDEM Entity Registry](https://registry.idem.garr.it/rr3) to apply changes on the federation IDEM! For any help write to idem-help@garr.it
 
-### Appendix E: Import persistent-id from a previous database
+### Appendix D: Import persistent-id from a previous database
 
 1. Become ROOT:
    * `sudo su -`
@@ -1294,7 +1296,7 @@ Translate the IdP messages in your language:
 5. Delete `/tmp/userdb_shibpid.sql`:
    * `rm /tmp/userdb_shibpid.sql`
    
-### Appendix F: Useful logs to find problems
+### Appendix E: Useful logs to find problems
 
 1. Jetty Logs:
    * `cd /opt/jetty/logs`
