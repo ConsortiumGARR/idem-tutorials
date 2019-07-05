@@ -1,4 +1,3 @@
-
 # HOWTO Install and Configure a Shibboleth IdP v3.4.x on CentOS 7 with Apache2 + Jetty9 (Database-less)
 
 ## Table of Contents
@@ -94,9 +93,9 @@
    * `update-alternatives --config java` (press [Enter] to leave settings unchanged)
 
 5. Activate NTP:
-   * ```systemctl enable ntpd```
-   * ```systemctl start ntpd```
-   * ```date```
+   * `systemctl enable ntpd`
+   * `systemctl start ntpd`
+   * `date`
 
 ### Configure the environment
 
@@ -109,7 +108,7 @@
      ```bash
      <YOUR SERVER IP ADDRESS> idp.example.org idp
      ```
-     (*Replace ```idp.example.org``` with your IdP Full Qualified Domain Name*)
+     (*Replace `idp.example.org` with your IdP Full Qualified Domain Name*)
 
    * `hostnamectl set-hostname idp.example.org`
 
@@ -374,7 +373,7 @@ It is a Java Web Application that can be deployed with its WAR file.
      Re-enter password:              ###PASSWORD-FOR-COOKIE-ENCRYPTION###
      ```
 
-     From this point the variable **idp.home** refers to the directory: ```/opt/shibboleth-idp```
+     From this point the variable **idp.home** refers to the directory: `/opt/shibboleth-idp`
 
 5. Make the **jetty** user able to access the IdP main directories:
    * `cd /opt/shibboleth-idp`
@@ -586,7 +585,7 @@ This Storage service will memorize User Consent data on persistent database SQL.
      ```
    
    * (OPTIONAL) MySQL DB Access without password:
-     * vim /root/.my.cnf
+     * `vim /root/.my.cnf`
      
        ```bash
        [client]
@@ -1046,11 +1045,11 @@ Translate the IdP messages in your language:
       ```
 
     * Retrieve the Federation Certificate used to verify signed metadata:
-      *  `wget https://md.idem.garr.it/certs/idem-signer-20220121.pem -O /opt/shibboleth-idp/metadata/federation-cert.pem```
+      *  `wget https://md.idem.garr.it/certs/idem-signer-20220121.pem -O /opt/shibboleth-idp/metadata/federation-cert.pem`
 
     * Check the validity:
-      *  `cd /opt/shibboleth-idp/metadata```
-      *  ```openssl x509 -in federation-cert.pem -fingerprint -sha1 -noout`
+      *  `cd /opt/shibboleth-idp/metadata`
+      *  `openssl x509 -in federation-cert.pem -fingerprint -sha1 -noout`
 
          (sha1: D1:68:6C:32:A4:E3:D4:FE:47:17:58:E7:15:FC:77:A8:44:D8:40:4D)
       *  `openssl x509 -in federation-cert.pem -fingerprint -md5 -noout`
@@ -1325,15 +1324,15 @@ Translate the IdP messages in your language:
 ### Appendix F: Useful logs to find problems
 
 1. Jetty Logs:
-   * ```cd /opt/jetty/logs```
-   * ```ls -l *.stderrout.log```
+   * `cd /opt/jetty/logs`
+   * `ls -l *.stderrout.log`
 
 2. Shibboleth IdP Logs:
-   * ```cd /opt/shibboleth-idp/logs```
-   * **Audit Log:** ```vim idp-audit.log```
-   * **Consent Log:** ```vim idp-consent-audit.log```
-   * **Warn Log:** ```vim idp-warn.log```
-   * **Process Log:** ```vim idp-process.log```
+   * ```cd /opt/shibboleth-idp/logs`
+   * **Audit Log:** `vim idp-audit.log`
+   * **Consent Log:** `vim idp-consent-audit.log`
+   * **Warn Log:** `vim idp-warn.log`
+   * **Process Log:** `vim idp-process.log`
 
 ### Authors
 
