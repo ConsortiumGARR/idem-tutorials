@@ -56,10 +56,10 @@
  * apache2 (>= 2.4)
  * expat
  * openssl
- * mysql-server (if Stored mode is used)
- * libmysql-java (if Stored mode is used)
- * libcommons-dbcp-java (if Stored mode is used)
- * libcommons-pool-java (if Stored mode is used)
+ * mysql-server (if JPAStorageService is used)
+ * libmysql-java (if JPAStorageService is used)
+ * libcommons-dbcp-java (if JPAStorageService is used)
+ * libcommons-pool-java (if JPAStorageService is used)
 
 ## Other Requirements
 
