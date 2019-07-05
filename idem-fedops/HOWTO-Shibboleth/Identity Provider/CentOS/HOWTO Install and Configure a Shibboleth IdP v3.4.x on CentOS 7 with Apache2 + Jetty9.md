@@ -381,7 +381,7 @@ It is a Java Web Application that can be deployed with its WAR file.
 
 ## Configuration Instructions
 
-### Configure SSL on Apache (front-end of Jetty)
+### Configure SSL on Apache2 (front-end of Jetty)
 
 The Apache HTTP Server will be configured as a reverse proxy and it will be used for SSL offloading.
 
@@ -900,8 +900,10 @@ By default, a transient NameID will always be released to the Service Provider i
          * `ldapsearch -H ldap:// -x -b "dc=example,dc=it" -LLL dn`
            * the baseDN ==> `ou=people, dc=example,dc=org` (branch containing the registered users)
            * the bindDN ==> `cn=admin,dc=example,dc=org` (distinguished name for the user that can made queries on the LDAP)
-	   
-2. Define which attributes your IdP can manage into your Attribute Resolver file. Here you can find a sample **attribute-resolver-sample.xml** as example:
+
+#### Configure the attribute resolver (sample)
+
+1. Define which attributes your IdP can manage into your Attribute Resolver file. Here you can find a sample **attribute-resolver-sample.xml** as example:
     * Download the sample attribute resolver provided:
       `wget https://github.com/ConsortiumGARR/idem-tutorials/raw/master/idem-fedops/HOWTO-Shibboleth/Identity%20Provider/utils/attribute-resolver-sample.xml -O /opt/shibboleth-idp/conf/attribute-resolver-sample.xml`
     
@@ -922,20 +924,19 @@ By default, a transient NameID will always be released to the Service Provider i
       <value>%{idp.home}/conf/attribute-resolver-sample.xml</value>
 
    Here you can find the **attribute-resolver-v3_4-idem.xml** provided by IDEM GARR AAI as example:
-      * Download the attribute resolver provided by IDEM GARR AAI:
-        `wget http://www.garr.it/idem-conf/attribute-resolver-v3_4-idem.xml -O /opt/shibboleth-idp/conf/attribute-resolver-v3_4-idem.xml`
+      * http://www.garr.it/idem-conf/attribute-resolver-v3_4-idem.xml
 
         **Pay attention on `<DataConnector id="myStoredId"`. You have to put the right bean ID into `<BeanManagedConnection>` or IdP will not work. You have to put there the ID of the `BasicDataSource` bean**
 
-3. Restart Jetty to apply changes:
+2. Restart Jetty to apply changes:
    * `systemctl restart jetty.service`
 
-4. Check to be able to retrieve transient NameID for an user:
+3. Check to be able to retrieve transient NameID for an user:
    * `export JAVA_HOME=/etc/alternatives/jre_1.8.0_openjdk`
    * `cd /opt/shibboleth-idp/bin`
    * `./aacli.sh -n <USERNAME> -r https://sp.example.org/shibboleth --saml2`
 
-5. Check IdP Status:
+4. Check IdP Status:
    * `export JAVA_HOME=/etc/alternatives/jre_1.8.0_openjdk`
    * `cd /opt/shibboleth-idp/bin`
    * `./status.sh`
@@ -1304,7 +1305,7 @@ Translate the IdP messages in your language:
   
 6. Don't forget to update your IdP Metadata on [IDEM Entity Registry](https://registry.idem.garr.it/rr3) to apply changes on the federation IDEM! For any help write to idem-help@garr.it
 
-### Appendix E: Import persistent-id from a previous database
+### Appendix D: Import persistent-id from a previous database
 
 1. Become ROOT:
    * `sudo su -`
@@ -1321,14 +1322,14 @@ Translate the IdP messages in your language:
 5. Delete `/tmp/userdb_shibpid.sql`:
    * `rm /tmp/userdb_shibpid.sql`
    
-### Appendix F: Useful logs to find problems
+### Appendix E: Useful logs to find problems
 
 1. Jetty Logs:
    * `cd /opt/jetty/logs`
    * `ls -l *.stderrout.log`
 
 2. Shibboleth IdP Logs:
-   * ```cd /opt/shibboleth-idp/logs`
+   * `cd /opt/shibboleth-idp/logs`
    * **Audit Log:** `vim idp-audit.log`
    * **Consent Log:** `vim idp-consent-audit.log`
    * **Warn Log:** `vim idp-warn.log`
