@@ -302,13 +302,13 @@ Jetty is a Web server and a Java Servlet container. It will be used to run the I
      ```
 
 10. Check if all settings are OK:
-   * `service jetty check`   (Jetty NOT running)
-   * `service jetty start`
-   * `service jetty check`   (Jetty running pid=XXXX)
+    * `service jetty check`   (Jetty NOT running)
+    * `service jetty start`
+    * `service jetty check`   (Jetty running pid=XXXX)
   
-   If you get an error likes "*Job for jetty.service failed because the control process exited with error code. See "systemctl status jetty.service" and "journalctl -xe" for details.*", try this: 
-     * `rm /var/run/jetty.pid`
-     * `systemctl start jetty.service`
+    If you get an error likes "*Job for jetty.service failed because the control process exited with error code. See "systemctl status jetty.service" and "journalctl -xe" for details.*", try this: 
+      * `rm /var/run/jetty.pid`
+      * `systemctl start jetty.service`
 
 11. Check if the Apache Welcome page is available:
     * https://idp.example.org
