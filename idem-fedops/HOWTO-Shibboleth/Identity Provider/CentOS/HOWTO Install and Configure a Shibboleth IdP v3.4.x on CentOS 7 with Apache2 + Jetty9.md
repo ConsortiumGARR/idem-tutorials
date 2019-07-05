@@ -1,4 +1,6 @@
-# HOWTO Install and Configure a Shibboleth IdP v3.4.x on CentOS 7 with Apache2 + Jetty9 (Database-less)
+# HOWTO Install and Configure a Shibboleth IdP v3.4.x on CentOS 7 with Apache2 + Jetty9
+
+[comment]: # (<img width="120px" src="https://wiki.idem.garr.it/IDEM_Approved.png" />)
 
 ## Table of Contents
 
@@ -56,6 +58,9 @@
  * apache2 (>= 2.4)
  * expat
  * openssl
+ * mariadb-server (if JPAStorageService is used)
+ * mysql-connector-java (if JPAStorageService is used)
+ * apache-commons-dbcp (if JPAStorageService is used)
 
 
 ## Other Requirements
