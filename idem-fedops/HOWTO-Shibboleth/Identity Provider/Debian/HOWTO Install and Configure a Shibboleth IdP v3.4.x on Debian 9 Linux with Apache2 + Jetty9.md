@@ -556,7 +556,7 @@ This Storage service will memorize User Consent data on persistent database SQL.
      ```
      
     * (OPTIONAL) MySQL DB Access without password:
-      * vim /root/.my.cnf
+      * `vim /root/.my.cnf`
 
        ```bash
        [client]
@@ -716,7 +716,7 @@ By default, a transient NameID will always be released to the Service Provider i
      ```
 
     * (OPTIONAL) MySQL DB Access without password:
-      * vim /root/.my.cnf
+      * `vim /root/.my.cnf`
 
        ```bash
        [client]
@@ -1297,15 +1297,15 @@ Translate the IdP messages in your language:
 ### Appendix F: Useful logs to find problems
 
 1. Jetty Logs:
-   * ```cd /opt/jetty/logs```
-   * ```ls -l *.stderrout.log```
+   * `cd /opt/jetty/logs`
+   * `ls -l *.stderrout.log`
 
 2. Shibboleth IdP Logs:
-   * ```cd /opt/shibboleth-idp/logs```
-   * **Audit Log:** ```vim idp-audit.log```
-   * **Consent Log:** ```vim idp-consent-audit.log```
-   * **Warn Log:** ```vim idp-warn.log```
-   * **Process Log:** ```vim idp-process.log```
+   * `cd /opt/shibboleth-idp/logs`
+   * **Audit Log:** `vim idp-audit.log`
+   * **Consent Log:** `vim idp-consent-audit.log`
+   * **Warn Log:** `vim idp-warn.log`
+   * **Process Log:** `vim idp-process.log`
 
 ### Authors
 
