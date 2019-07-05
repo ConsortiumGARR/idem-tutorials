@@ -3,16 +3,16 @@
 
 ## Table of Contents
 
-1. [Requirements Hardware](#requirements-hardware)
+1. [Hardware Requirements](#hardware-requirements)
 2. [Software that will be installed](#software-that-will-be-installed)
 3. [Other Requirements](#other-requirements)
-4. [Installation Instructions](#installation-instructions)
+4. [Install Instructions](#install-instructions)
    1. [Install software requirements](#install-software-requirements)
    2. [Configure the environment](#configure-the-environment)
    3. [Install Jetty 9 Web Server](#install-jetty-9-web-server)
    4. [Install Shibboleth Identity Provider 3.4.x](#install-shibboleth-identity-provider-v34x)
 5. [Configuration Instructions](#configuration-instructions)
-   1. [Configure SSL on Apache (front-end of Jetty)](#configure-ssl-on-apache-front-end-of-jetty)
+   1. [Configure SSL on Apache2 (front-end of Jetty)](#configure-ssl-on-apache2-front-end-of-jetty)
    2. [Configure Jetty](#configure-jetty)
    3. [Configure Shibboleth Identity Provider StorageRecords (User Consent)](#configure-shibboleth-identity-provider-storagerecords-user-consent)
       1. [Default - Not Recommended](#default---not-recommended)
@@ -26,18 +26,19 @@
    7. [Configure IdP Logging](#configure-idp-logging)
    8. [Translate IdP messages into preferred language](#translate-idp-messages-into-preferred-language)
    9. [Disable SAML1 Deprecated Protocol](#disable-saml1-deprecated-protocol)
-   10. [Register the IdP on the Federation](#register-the-idp-on-the-federation)
-   11. [Configure Attribute Filters to release all attributes to all resources](#configure-attribute-filters-to-release-all-attributes-to-all-resources)
-   12. [Configure Attribute Filters to release recommended attributes for eduGAIN](#configure-attribute-filters-to-release-recommended-attributes-for-edugain)
-6. [Appendix A: Configure Attribute Filters to release the mandatory attributes to the IDEM Default  Resources](#appendix-a-configure-attribute-filters-to-release-the-mandatory-attributes-to-the-idem-default-resources)
-7. [Appendix B: Configure Attribute Filters to release the mandatory attributes to the IDEM Production Resources](#appendix-b-configure-attribute-filters-to-release-the-mandatory-attributes-to-the-idem-production-resources)
-8. [Appendix C: Configure Attribute Filters for Research and Scholarship and Data Protection Code of Conduct Entity Category](#appendix-c-configure-attribute-filters-for-research-and-scholarship-and-data-protection-code-of-conduct-entity-category)
-6. [Appendix D: Import metadata from previous IDP v2.x](#appendix-d-import-metadata-from-previous-idp-v2x)
-7. [Appendix E: Import persistent-id from a previous database](#appendix-e-import-persistent-id-from-a-previous-database)
-8. [Appendix F: Useful logs to find problems](#appendix-f-useful-logs-to-find-problems)
-9. [Authors](#authors)
+   10. [(ONLY FOR IDEM Federation members) Register the IdP on the Federation](#only-for-idem-federation-members-register-the-idp-on-the-federation)
+   11. [Configure attribute filter policies for the REFEDS Research and Scholarship and the GEANT Data Protection Code of Conduct Entity Categories](#configure-attribute-filter-policies-for-the-refeds-research-and-scholarship-and-the-geant-data-protection-code-of-conduct-entity-categories)
+   12. [(ONLY FOR IDP TRAINING AT CYNET) Register the IdP on the Training Test Federation](#only-for-idp-training-at-cynet-register-the-idp-on-the-training-test-federation)
+   13. [(ONLY FOR IDP TRAINING AT CYNET) Configure Attribute Filters to release all attributes to all resources](#only-for-idp-training-at-cynet-configure-attribute-filters-to-release-all-attributes-to-all-resources)
+   14. [(ONLY FOR IDP TRAINING AT CYNET) Configure Attribute Filters to release recommended attributes for eduGAIN](#only-for-idp-training-at-cynet-configure-attribute-filters-to-release-recommended-attributes-for-edugain)
+6. [Appendix A: (ONLY FOR IDEM Federation members) Configure Attribute Filters to release the mandatory attributes to the IDEM Default Resources](#appendix-a-only-for-idem-federation-members-configure-attribute-filters-to-release-the-mandatory-attributes-to-the-idem-default-resources)
+7. [Appendix B: (ONLY FOR IDEM Federation members) Configure Attribute Filters to release the mandatory attributes to the IDEM Production Resources](#appendix-b-only-for-idem-federation-members-configure-attribute-filters-to-release-the-mandatory-attributes-to-the-idem-production-resources)
+8. [Appendix C: Import metadata from previous IDP v2.x](#appendix-c-import-metadata-from-previous-idp-v2x)
+9. [Appendix D: Import persistent-id from a previous database](#appendix-d-import-persistent-id-from-a-previous-database)
+10. [Appendix E: Useful logs to find problems](#appendix-e-useful-logs-to-find-problems)
+11. [Authors](#authors)
 
-## Requirements Hardware
+## Hardware Requirements
 
  * CPU: 2 Core
  * RAM: 4 GB
@@ -65,7 +66,7 @@
    * Download TCS CA Cert into `/etc/pki/tls/cert`
      - `wget -O /etc/pki/tls/certs/TERENA_SSL_CA_3.pem https://www.terena.org/activities/tcs/repository-g3/TERENA_SSL_CA_3.pem`
 
-## Installation Instructions
+## Install Instructions
 
 ### Install software requirements
 
@@ -98,6 +99,7 @@
    * ```date```
 
 ### Configure the environment
+
 1. Become ROOT:
    * `sudo su -`
    
@@ -111,7 +113,7 @@
 
    * `hostnamectl set-hostname idp.example.org`
 
-3. Be sure that your firewall **doesn't block** the traffic on port **443** (or you can't access to your IdP)
+3. Be sure that your firewall **is not blocking** the traffic on port **443** and **80**.
 
 4. Define the costant `JAVA_HOME`:
    * `vim /etc/profile.d/java.sh`
@@ -122,34 +124,25 @@
      
    * `export JAVA_HOME=/etc/alternatives/jre_1.8.0_openjdk`
 
-5. Set the right privileges for HTTPS Certificate and Key:
+5. Install the SSL Certificate and Key for HTTP and set the right privileges:
+   * `cp /path/to/certificate/idp.example.org.crt /etc/pki/tls/certs/idp.example.org.crt`
+   * `cp /path/to/key/idp.example.org.key /etc/pki/tls/private/idp.example.org.key`
    * `chmod 400 /etc/pki/tls/private/idp.example.org.key`
    * `chmod 644 /etc/pki/tls/certs/idp.example.org.crt`
 
    (OPTIONAL) Create a Certificate and a Key self-signed for HTTPS if you don't have the official ones provided by DigiCert:
    * `openssl req -x509 -newkey rsa:4096 -keyout /etc/pki/tls/private/idp.example.org.key -out /etc/pki/tls/certs/idp.example.org.crt -nodes -days 1095`
 
-6. Configure **/etc/default/jetty**:
-   * `vim /etc/default/jetty`
-
-     ```bash
-     JETTY_HOME=/usr/local/src/jetty-src
-     JETTY_BASE=/opt/jetty
-     JETTY_USER=jetty
-     JETTY_START_LOG=/var/log/jetty/start.log
-     TMPDIR=/opt/jetty/tmp
-     ```
-
 ### Install Jetty 9 Web Server
 
-Jetty is a Java HTTP (Web) server and Java Servlet container that will be used to load IdP application through its WAR file.
+Jetty is a Web server and a Java Servlet container. It will be used to run the IdP application through its WAR file.
 
 1. Become ROOT:
    * `sudo su -`
 
 2. Download and Extract Jetty:
    * `cd /usr/local/src`
-   * `wget https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-distribution/9.4.18.v20190429/jetty-distribution-9.4.18.v20190429.tar.gz`
+   * `wget http://central.maven.org/maven2/org/eclipse/jetty/jetty-distribution/9.4.19.v20190610/jetty-distribution-9.4.19.v20190610.tar.gz`
    * `tar xzvf jetty-distribution-9.4.19.v20190610.tar.gz`
 
 3. Create the `jetty-src` folder as symbolic link. It will be useful on Jetty updates:
@@ -337,12 +330,15 @@ Jetty is a Java HTTP (Web) server and Java Servlet container that will be used t
    * `systemctl enable jetty`
 
 10. Check if all settings are OK:
-   * `systemctl check jetty`
-   * `systemctl start jetty`
+    * `systemctl check jetty` (Jetty NOT running)
+    * `systemctl start jetty` (Jetty running pid=XXXX)  
 
-   (If you receive an error likes "*Job for jetty.service failed because the control process exited with error code. See "systemctl status jetty.service" and "journalctl -xe" for details.*", try this:
-     * `rm /var/run/jetty/jetty.pid`
-     * `service jetty start`
+    (If you receive an error likes "*Job for jetty.service failed because the control process exited with error code. See "systemctl status jetty.service" and "journalctl -xe" for details.*", try this:
+      * `rm /var/run/jetty/jetty.pid`
+      * `service jetty start`
+
+11. Check if the Apache Welcome page is available:
+    * https://idp.example.org
 
 ### Install Shibboleth Identity Provider v3.4.x
 
@@ -364,139 +360,109 @@ It is a Java Web Application that can be deployed with its WAR file.
 4. Run the installer `install.sh`:
    * `bash /usr/local/src/shibboleth-identity-provider-3.4.x/bin/install.sh`
 
-   ```bash
-   Source (Distribution) Directory: [/usr/local/src/shibboleth-identity-provider-3.4.x]
-   Installation Directory: [/opt/shibboleth-idp]
-   Hostname: [localhost.localdomain]
-   idp.example.org
-   SAML EntityID: [https://idp.example.org/idp/shibboleth]
-   Attribute Scope: [localdomain]
-   example.org
-   Backchannel PKCS12 Password: ###PASSWORD-FOR-BACKCHANNEL###
-   Re-enter password:           ###PASSWORD-FOR-BACKCHANNEL###
-   Cookie Encryption Key Password: ###PASSWORD-FOR-COOKIE-ENCRYPTION###
-   Re-enter password:              ###PASSWORD-FOR-COOKIE-ENCRYPTION###
-   ```
+     ```bash
+     Source (Distribution) Directory: [/usr/local/src/shibboleth-identity-provider-3.4.x]
+     Installation Directory: [/opt/shibboleth-idp]
+     Hostname: [localhost.localdomain]
+     idp.example.org
+     SAML EntityID: [https://idp.example.org/idp/shibboleth]
+     Attribute Scope: [localdomain]
+     example.org
+     Backchannel PKCS12 Password: ###PASSWORD-FOR-BACKCHANNEL###
+     Re-enter password:           ###PASSWORD-FOR-BACKCHANNEL###
+     Cookie Encryption Key Password: ###PASSWORD-FOR-COOKIE-ENCRYPTION###
+     Re-enter password:              ###PASSWORD-FOR-COOKIE-ENCRYPTION###
+     ```
 
-   From this point the variable **idp.home** refers to the directory: ```/opt/shibboleth-idp```
+     From this point the variable **idp.home** refers to the directory: ```/opt/shibboleth-idp```
 
-5. Change the owner to enable **jetty** user to access on the following directories:
+5. Make the **jetty** user able to access the IdP main directories:
    * `cd /opt/shibboleth-idp`
-   * `chown -R jetty:jetty logs/ metadata/ credentials/ conf/ system/ war/`
+   * `chown -R jetty logs/ metadata/ credentials/ conf/ system/ war/`
 
 ## Configuration Instructions
 
 ### Configure SSL on Apache (front-end of Jetty)
 
-Apache HTTP (Web) Server will manage the HTTPS part (certificate and key) and forward each IdP request to Jetty
+The Apache HTTP Server will be configured as a reverse proxy and it will be used for SSL offloading.
 
-1. Create the server's directory:
+1. Create the DocumentRoot:
    * `mkdir /var/www/html/idp.example.org`
    * `sudo chown -R apache: /var/www/html/idp.example.org`
 
-2. Create a new Virtualhost file `/etc/httpd/conf.d/idp.example.org.conf` as follows:
+2. Create the Virtualhost file `/etc/httpd/conf.d/idp.example.org.conf` and set the content as follows:
+   * `vim /etc/httpd/conf.g/idp.example.org.conf`
 
-   ```apache
-   # Redirection from port 80 to 443
-   <VirtualHost <SERVER-IP-ADDRESS>:80>
-     ServerName idp.example.org
-     ServerAlias idp.example.org
+     ```apache
+     # Redirection from port 80 to 443
+     <VirtualHost <SERVER-IP-ADDRESS>:80>
+       ServerName idp.example.org
+       ServerAlias idp.example.org
 
-     RedirectMatch ^/(.*)$ https://idp.example.org/$1
-   </VirtualHost>
+       RedirectMatch ^/(.*)$ https://idp.example.org/$1
+     </VirtualHost>
 
-   <IfModule mod_ssl.c>
-      SSLStaplingCache shmcb:/var/run/ocsp(128000)
-      <VirtualHost _default_:443>
-        ServerName idp.example.org:443
-        ServerAdmin admin@example.org
-        DocumentRoot /var/www/html/idp.example.org
+     <IfModule mod_ssl.c>
+        SSLStaplingCache shmcb:/var/run/ocsp(128000)
+        <VirtualHost _default_:443>
+          ServerName idp.example.org:443
+          ServerAdmin admin@example.org
+          DocumentRoot /var/www/html/idp.example.org
         
-        SSLEngine On
+          SSLEngine On
         
-        SSLProtocol All -SSLv2 -SSLv3 -TLSv1 -TLSv1.1
-        SSLCipherSuite "EECDH+ECDSA+AESGCM EECDH+aRSA+AESGCM EECDH+ECDSA+SHA384 EECDH+ECDSA+SHA256 EECDH+aRSA+SHA384 EECDH+aRSA+SHA256 EECDH+aRSA+RC4 EECDH EDH+aRSA RC4 !aNULL !eNULL !LOW !3DES !MD5 !EXP !PSK !SRP !DSS !RC4"
+          SSLProtocol All -SSLv2 -SSLv3 -TLSv1 -TLSv1.1
+          SSLCipherSuite "EECDH+ECDSA+AESGCM EECDH+aRSA+AESGCM EECDH+ECDSA+SHA384 EECDH+ECDSA+SHA256 EECDH+aRSA+SHA384 EECDH+aRSA+SHA256 EECDH+aRSA+RC4 EECDH EDH+aRSA RC4 !aNULL !eNULL !LOW !3DES !MD5 !EXP !PSK !SRP !DSS !RC4"
 
-        SSLHonorCipherOrder on
+          SSLHonorCipherOrder on
 
-        # Disable SSL Compression
-        SSLCompression Off
+          # Disable SSL Compression
+          SSLCompression Off
         
-        # OCSP Stapling, only in httpd/apache >= 2.3.3
-        SSLUseStapling          on
-        SSLStaplingResponderTimeout 5
-        SSLStaplingReturnResponderErrors off
+          # OCSP Stapling, only in httpd/apache >= 2.3.3
+          SSLUseStapling          on
+          SSLStaplingResponderTimeout 5
+          SSLStaplingReturnResponderErrors off
         
-        # Enable HTTP Strict Transport Security with a 2 year duration
-        # ONLY If you have valid certificated
-        Header always set Strict-Transport-Security "max-age=63072000;includeSubDomains;preload"
+          # Enable HTTP Strict Transport Security with a 2 year duration
+          # ONLY If you have valid certificated
+          Header always set Strict-Transport-Security "max-age=63072000;includeSubDomains;preload"
 
-        SSLCertificateFile /etc/pki/tls/certs/idp.example.org.crt
-        SSLCertificateKeyFile /etc/pki/tls/private/idp.example.org.key
-        SSLCACertificateFile /etc/pki/tls/certs/terena_ssl_ca_3.pem
+          SSLCertificateFile /etc/pki/tls/certs/idp.example.org.crt
+          SSLCertificateKeyFile /etc/pki/tls/private/idp.example.org.key
+          SSLCACertificateFile /etc/pki/tls/certs/terena_ssl_ca_3.pem
 
-        <IfModule mod_proxy.c>
-           ProxyPreserveHost On
-           RequestHeader set X-Forwarded-Proto "https"
-           ProxyPass /idp http://localhost:8080/idp retry=5
-           ProxyPassReverse /idp http://localhost:8080/idp retry=5
+          <IfModule mod_proxy.c>
+             ProxyPreserveHost On
+             RequestHeader set X-Forwarded-Proto "https"
+             ProxyPass /idp http://localhost:8080/idp retry=5
+             ProxyPassReverse /idp http://localhost:8080/idp retry=5
 
-           <Location /idp>
-              Require all granted
-           </Location>
-        </IfModule>
-      </VirtualHost>
-   </IfModule>
+             <Location /idp>
+                Require all granted
+             </Location>
+          </IfModule>
+        </VirtualHost>
+     </IfModule>
    
-   # This virtualhost is only here to handle administrative commands for Shibboleth, executed from localhost
-   <VirtualHost 127.0.0.1:80>
-     ProxyPass /idp http://localhost:8080/idp retry=5
-     ProxyPassReverse /idp http://localhost:8080/idp retry=5
-     <Location /idp>
-       Require all granted
-     </Location>
-   </VirtualHost>
-   ```
+     # This virtualhost is only here to handle administrative commands for Shibboleth, executed from localhost
+     <VirtualHost 127.0.0.1:80>
+       ProxyPass /idp http://localhost:8080/idp retry=5
+       ProxyPassReverse /idp http://localhost:8080/idp retry=5
+       <Location /idp>
+         Require all granted
+       </Location>
+     </VirtualHost>
+     ```
 
 3. Configure SELinux to allow `mod_proxy` to initiate outbound connections:
    * `/usr/sbin/setsebool -P httpd_can_network_connect 1`
 
-4. Restart Apache: `systemctl restart httpd`
+4. Restart Apache: 
+   * `systemctl restart httpd`
 
 5. Verify the strength of your IdP's machine on:
    * [**https://www.ssllabs.com/ssltest/analyze.html**](https://www.ssllabs.com/ssltest/analyze.html)
-
-6. **OPTIONAL STEPS**:
-   If you want to host your IdP's Information/Privacy pages on the IdP itself, follow the next steps:
-  
-   1. Create all needed files with:
-      * `vim /var/www/html/idp.example.org/info_page.html`
-
-         ```bash
-         <html>
-            <head><title>Information Page</title></head>
-            <body>
-               <h1>Put here IdP Information page content</h1>
-            </body>
-         </html>
-         ```
-
-      * `vim /var/www/html/idp.example.org/privacy_page.html`
-
-         ```bash
-         <html>
-            <head><title>Privacy Page</title></head>
-            <body>
-               <h1>Put here IdP Privacy page content</h1>
-            </body>
-         </html>
-         ```
-
-      * `touch /var/www/html/idp.example.org/logo80x60.png`
-
-      * `touch /var/www/html/idp.example.org/favicon16x16.png`
-
-   2. Replace them with the correct content.
 
 ### Configure Jetty
 
@@ -519,14 +485,29 @@ Apache HTTP (Web) Server will manage the HTTPS part (certificate and key) and fo
      ```
 
 3. Restart Jetty:
-   * `systemctl restart jetty`
+   * `systemctl restart jetty.service`
 
+4. Check that IdP metadata is available on:
+   * https://idp.example.org/idp/shibboleth
+
+5. Check IdP Status:
+   * `export JAVA_HOME=/etc/alternatives/jre_1.8.0_openjdk`
+   * `cd /opt/shibboleth-idp/bin`
+   * `./status.sh`
+
+**Note:** Jetty will show some WARN messages like this on its `/var/log/jetty/*.jetty.log`:
+`2019-07-03 10:01:10.306:WARN:oeja.AnnotationParser:qtp399573350-19: org.apache.taglibs.standard.tei.DeclareTEI scanned from multiple locations: 
+jar:file:///usr/local/src/jetty-distribution-9.4.19.v20190610/lib/apache-jstl/org.apache.taglibs.taglibs-standard-impl-1.2.5.jar!/org/apache/taglibs/standard/tei/DeclareTEI.class, 
+jar:file:///opt/jetty/tmp/jetty-localhost-8080-idp.war-_idp-any-4002882914382542777.dir/webinf/WEB-INF/lib/jstl-1.2.jar!/org/apache/taglibs/standard/tei/DeclareTEI.class`
+
+This is a warning produced during the bytecode scanning for annotations of a webapp startup. In this case, we have 2 versions of the same class, version 1.2.5 and 1.2 as seen by the JAR filenames.
+*These warnings don't prevent the IdP working and can be ignored.*
+   
 ### Configure Shibboleth Identity Provider StorageRecords (User Consent)
 
-Shibboleth Documentation used to provide the following part can be found here: https://wiki.shibboleth.net/confluence/display/IDP30/StorageConfiguration
+**Shibboleth Documentation reference** https://wiki.shibboleth.net/confluence/display/IDP30/StorageConfiguration
 
-The IdP provides a number of general-purpose storage facilities that can be used by core subsystems like session management and consent. 
-This HOWTO, in the JPA Storage Service part, will change the default behaviour for storage to use for consent and terms-of-use records only to use a database instead of a Local Storage.
+> The IdP provides a number of general-purpose storage facilities that can be used by core subsystems like session management and consent. 
 
 #### Default - Not Recommended
 
@@ -534,8 +515,8 @@ If you don't change anything, the IdP stores data in a long-lived browser cookie
 
 #### HTML Local Storage - Recommended
 
-It requires JavaScript be enabled, because reading and writing to the client requires an explicit page be rendered.
-This feature is safe to enable globally. The implementation is written to check for this capability in each client, and to back off to cookies.
+> It requires JavaScript be enabled because reading and writing to the client requires an explicit page be rendered.
+> Note that this feature is safe to enable globally. The implementation is written to check for this capability in each client, and to back off to cookies.
 
 1. Become ROOT: 
    * `sudo su -`
@@ -567,21 +548,14 @@ This Storage service will memorize User Consent data on persistent database SQL.
 
 2. Rebuild IdP with the needed libraries:
    * `yum install mariadb-server mysql-connector-java apache-commons-dbcp`
-   
    * `cd /opt/shibboleth-idp`
-
    * `ln -s /usr/share/java/mysql-connector-java.jar edit-webapp/WEB-INF/lib`
-
    * `ln -s /usr/share/java/commons-dbcp.jar edit-webapp/WEB-INF/lib`
-
    * `ln -s /usr/share/java/commons-pool.jar edit-webapp/WEB-INF/lib`
-
    * `bin/build.sh`
-   
    * `systemctl start mariadb.service`
 
 3. Create `StorageRegords` table on `storageservice` database:
-
    * `vim shib-ss-db.sql`:
 
      ```bash
@@ -621,12 +595,10 @@ This Storage service will memorize User Consent data on persistent database SQL.
        ```
        
    * `mysql -u root < shib-ss-db.sql`
-
    * `systemctl restart mariadb.service`
 
 4. Enable JPA Storage Service:
-
-   * `vim /opt/shibboleth-idp/conf/global.xml` and add this piece of code to the tail (before **`</beans>`** tag):
+   * `vim /opt/shibboleth-idp/conf/global.xml` and add the following directives to the tail, just before the **`</beans>`** tag (**IMPORTANT** remeber to modify the "**##USERNAME-CHANGEME##**" and "**##USER-PASSWORD-CHANGEME##**" with your DB user and password):
 
      ```bash
      <!-- Add bean to store info on StorageRecords database -->
@@ -670,10 +642,8 @@ This Storage service will memorize User Consent data on persistent database SQL.
      ```xml
      idp.consent.StorageService = storageservice.JPAStorageService
      ```
-  
-     (This will indicate to IdP to store the data collected by User Consent into the "**StorageRecords**" table)
 
-6. Restart Jetty to apply changes:
+6. Restart Jetty to apply the changes:
    * `systemctl restart jetty.service`
 
 7. Check that metadata is available on:
@@ -686,13 +656,12 @@ This Storage service will memorize User Consent data on persistent database SQL.
 
 ### Configure Shibboleth Identity Provider to release the persistent-id
 
-Shibboleth Documentation used to provide the following part can be found here:
-https://wiki.shibboleth.net/confluence/display/IDP30/PersistentNameIDGenerationConfiguration
+**Shibboleth Documentation reference** https://wiki.shibboleth.net/confluence/display/IDP30/PersistentNameIDGenerationConfiguration
 
 SAML 2.0 (but not SAML 1.x) defines a kind of NameID called a "persistent" identifier that every SP receives for the IdP users.
-This part will teach you how to release the "persistent" identifiers with (Stored Mode) or without (Computed Mode) a database.
+This part will teach you how to release the "persistent" identifiers with a database (Stored Mode) or without it (Computed Mode).
 
-By default, a transient NameID will always release to the Service Provider if the persistent one is not requested.
+By default, a transient NameID will always be released to the Service Provider if the persistent one is not requested.
 
 #### Computed mode - Default & Recommended
 
@@ -701,7 +670,7 @@ By default, a transient NameID will always release to the Service Provider if th
 
 2. Enable the generation of the computed `persistent-id` (this replace the deprecated attribute *eduPersonTargetedID*) with:
    * `vim /opt/shibboleth-idp/conf/saml-nameid.properties`
-     (the *sourceAttribute* MUST BE an attribute, or a list of comma-separated attributes, that uniquely identify the subject of the generated `persistent-id`. It MUST BE: **Stable**, **Permanent** and **Not-reassignable**)
+     (the *sourceAttribute* MUST be an attribute, or a list of comma-separated attributes, that uniquely identify the subject of the generated `persistent-id`. The sourceAttribute MUST be **Stable**, **Permanent** and **Not-reassignable** attribute.)
 
      ```xml
      idp.persistentId.sourceAttribute = uid
@@ -737,17 +706,11 @@ By default, a transient NameID will always release to the Service Provider if th
 
 2. Rebuild IdP with the needed libraries:
    * `yum install mariadb-server mysql-connector-java apache-commons-dbcp`
-   
    * `cd /opt/shibboleth-idp`
-
    * `ln -s /usr/share/java/mysql-connector-java.jar edit-webapp/WEB-INF/lib`
-
    * `ln -s /usr/share/java/commons-dbcp.jar edit-webapp/WEB-INF/lib`
-
    * `ln -s /usr/share/java/commons-pool.jar edit-webapp/WEB-INF/lib`
-
    * `bin/build.sh`
-   
    * `systemctl start mariadb.service`
 
 3. Create `shibpid` table on `shibboleth` database.
@@ -784,13 +747,21 @@ By default, a transient NameID will always release to the Service Provider if th
      quit
      ```
 
-   * `mysql -u root < shib-pid-db.sql`
+    * (OPTIONAL) MySQL DB Access without password:
+      * vim /root/.my.cnf
 
+       ```bash
+       [client]
+       user=root
+       password=##ROOT-DB-PASSWORD-CHANGEME##
+       ```
+       
+   * `mysql -u root < shib-pid-db.sql`
    * `systemctl restart mariadb.service`
 
 4. Enable Persistent Identifier's store:
-
-   * `vim /opt/shibboleth-idp/conf/global.xml` and add this piece of code to the tail (before **`</beans>`** tag):
+   * `vim /opt/shibboleth-idp/conf/global.xml` 
+     and add the following directives to the tail, just before the **`</beans>`** tag (**IMPORTANT** remeber to modify the "**##USERNAME-CHANGEME##**" and "**##USER-PASSWORD-CHANGEME##**" with your DB user and password):
 
      ```bash
      <!-- Add bean to store persistent-id on shibboleth database -->
@@ -810,7 +781,7 @@ By default, a transient NameID will always release to the Service Provider if th
      ```
      (and modify the "**##USERNAME-CHANGEME##**" and "**##USER-PASSWORD-CHANGEME##**" for your "**shibboleth**" DB)
 
-5. Enable the generation of the `persistent-id` (this replace the deprecated attribute *eduPersonTargetedID*)
+5. Enable the generation of the `persistent-id`:
    * `vim /opt/shibboleth-idp/conf/saml-nameid.properties`
      (the *sourceAttribute* MUST BE an attribute, or a list of comma-separated attributes, that uniquely identify the subject of the generated `persistent-id`. It MUST BE: **Stable**, **Permanent** and **Not-reassignable**)
 
@@ -875,7 +846,7 @@ By default, a transient NameID will always release to the Service Provider if th
 1. Connect the openLDAP to the IdP to allow the authentication of the users:
    * `vim /opt/shibboleth-idp/conf/ldap.properties`
 
-     (with **TLS** solutions we consider to have the LDAP certificate into ```/opt/shibboleth-idp/credentials```).
+     (with **TLS** solutions we consider to have the LDAP certificate into `/opt/shibboleth-idp/credentials/ldap-server.crt`).
 
      * Solution 1: LDAP + STARTTLS:
 
@@ -919,10 +890,11 @@ By default, a transient NameID will always release to the Service Provider if th
        idp.authn.LDAP.bindDN = cn=admin,dc=example,dc=org
        idp.authn.LDAP.bindDNCredential = ###LDAP_IDPUSER_PASSWORD###
        ```
-       If you decide to use the Solution 3, you have to remove (or comment out) the following line from your Attribute Resolver file (attribute-resolver-xxx.xml):
+       If you decide to use the Solution 3, remove or comment the following directives from your Attribute Resolver file:
 
        ```xml
-       trustFile="%{idp.attribute.resolver.LDAP.trustCertificates}"
+       Line 1:  useStartTLS="%{idp.attribute.resolver.LDAP.useStartTLS:true}"
+       Line 2:  trustFile="%{idp.attribute.resolver.LDAP.trustCertificates}"
        ```
 
        **UTILITY FOR OPENLDAP ADMINISTRATOR:**
@@ -950,13 +922,19 @@ By default, a transient NameID will always release to the Service Provider if th
       <!-- <value>%{idp.home}/conf/attribute-resolver.xml</value> -->
       <value>%{idp.home}/conf/attribute-resolver-sample.xml</value>
 
+   Here you can find the **attribute-resolver-v3_4-idem.xml** provided by IDEM GARR AAI as example:
+      * Download the attribute resolver provided by IDEM GARR AAI:
+        `wget http://www.garr.it/idem-conf/attribute-resolver-v3_4-idem.xml -O /opt/shibboleth-idp/conf/attribute-resolver-v3_4-idem.xml`
+
+        **Pay attention on `<DataConnector id="myStoredId"`. You have to put the right bean ID into `<BeanManagedConnection>` or IdP will not work. You have to put there the ID of the `BasicDataSource` bean**
+
 3. Restart Jetty to apply changes:
    * `systemctl restart jetty.service`
 
 4. Check to be able to retrieve transient NameID for an user:
    * `export JAVA_HOME=/etc/alternatives/jre_1.8.0_openjdk`
    * `cd /opt/shibboleth-idp/bin`
-   * `./aacli.sh -n user1 -r https://sp.example.org/shibboleth --saml2`
+   * `./aacli.sh -n <USERNAME> -r https://sp.example.org/shibboleth --saml2`
 
 5. Check IdP Status:
    * `export JAVA_HOME=/etc/alternatives/jre_1.8.0_openjdk`
@@ -983,10 +961,10 @@ Translate the IdP messages in your language:
    * `vim /opt/shibboleth-idp/metadata/idp-metadata.xml`
  
       ```bash
-      <EntityDescriptor> SECTION:
+      <EntityDescriptor> Section:
         – Remove `validUntil` XML attribute.
 
-      <IDPSSODescriptor> SECTION:
+      <IDPSSODescriptor> Section:
         – From the list of "protocolSupportEnumeration" remove:
           - urn:oasis:names:tc:SAML:1.1:protocol
           - urn:mace:shibboleth:1.0
@@ -1029,59 +1007,59 @@ Translate the IdP messages in your language:
 3. Obtain your IdP metadata on:
    *  `https://idp.example.org/idp/shibboleth`
 
-### Register the IdP on the Federation
+### (ONLY FOR IDEM Federation members) Register the IdP on the Federation
 
 1. Register you IdP on IDEM Entity Registry (your entity have to be approved by an IDEM Federation Operator before become part of IDEM Test Federation):
-    * ```https://registry.idem.garr.it/```
+    * `https://registry.idem.garr.it/`
 
 11. Configure the IdP to retrieve the Federation Metadata:
-    * ```cd /opt/shibboleth-idp/conf```
-    * ```vim metadata-providers.xml```
+    * `cd /opt/shibboleth-idp/conf`
+    * `vim metadata-providers.xml`
 
       ```xml
       <!-- Piece of code to add before the last </MetadataProvider> -->
 
       <!-- IDEM Test Federation -->
       <MetadataProvider
-	    id="URLMD-IDEM-Federation"
-	    xsi:type="FileBackedHTTPMetadataProvider"
-	    backingFile="%{idp.home}/metadata/idem-test-metadata-sha256.xml"
-	    metadataURL="http://md.idem.garr.it/metadata/idem-test-metadata-sha256.xml">
+	 id="URLMD-IDEM-Federation"
+	 xsi:type="FileBackedHTTPMetadataProvider"
+	 backingFile="%{idp.home}/metadata/idem-test-metadata-sha256.xml"
+	 metadataURL="http://md.idem.garr.it/metadata/idem-test-metadata-sha256.xml">
 
-	    <!--
-		Verify the signature on the root element of the metadata aggregate
-		using a trusted metadata signing certificate.
-	    -->
-	    <MetadataFilter xsi:type="SignatureValidation" requireSignedRoot="true" certificateFile="${idp.home}/metadata/federation-cert.pem"/>
+	 <!--
+            Verify the signature on the root element of the metadata aggregate
+            using a trusted metadata signing certificate.
+	 -->
+	 <MetadataFilter xsi:type="SignatureValidation" requireSignedRoot="true" certificateFile="${idp.home}/metadata/federation-cert.pem"/>
 
-	    <!--
-		Require a validUntil XML attribute on the root element and
-		make sure its value is no more than 10 days into the future.
-	    -->
-	    <MetadataFilter xsi:type="RequiredValidUntil" maxValidityInterval="P10D"/>
+	 <!--
+	   Require a validUntil XML attribute on the root element and
+	   make sure its value is no more than 10 days into the future.
+	 -->
+	 <MetadataFilter xsi:type="RequiredValidUntil" maxValidityInterval="P10D"/>
 
-	    <!-- Consume all SP metadata in the aggregate -->
-	    <MetadataFilter xsi:type="EntityRoleWhiteList">
-	      <RetainedRole>md:SPSSODescriptor</RetainedRole>
-	    </MetadataFilter>
+	 <!-- Consume all SP metadata in the aggregate -->
+	 <MetadataFilter xsi:type="EntityRoleWhiteList">
+	   <RetainedRole>md:SPSSODescriptor</RetainedRole>
+	 </MetadataFilter>
       </MetadataProvider>
       ```
 
-    * Retrieve the Federation Certificate used to verify its signed metadata:
-      *  ```wget https://md.idem.garr.it/certs/idem-signer-20220121.pem -O /opt/shibboleth-idp/metadata/federation-cert.pem```
+    * Retrieve the Federation Certificate used to verify signed metadata:
+      *  `wget https://md.idem.garr.it/certs/idem-signer-20220121.pem -O /opt/shibboleth-idp/metadata/federation-cert.pem```
 
     * Check the validity:
-      *  ```cd /opt/shibboleth-idp/metadata```
-      *  ```openssl x509 -in federation-cert.pem -fingerprint -sha1 -noout```
+      *  `cd /opt/shibboleth-idp/metadata```
+      *  ```openssl x509 -in federation-cert.pem -fingerprint -sha1 -noout`
 
          (sha1: D1:68:6C:32:A4:E3:D4:FE:47:17:58:E7:15:FC:77:A8:44:D8:40:4D)
-      *  ```openssl x509 -in federation-cert.pem -fingerprint -md5 -noout```
+      *  `openssl x509 -in federation-cert.pem -fingerprint -md5 -noout`
 
          (md5: 48:3B:EE:27:0C:88:5D:A3:E7:0B:7C:74:9D:24:24:E0)
 
-12. Reload service with id ```shibboleth.MetadataResolverService``` to retrieve the Federation Metadata:
-    *  ```cd /opt/shibboleth-idp/bin```
-    *  ```./reload-service.sh -id shibboleth.MetadataResolverService```
+12. Reload service with id `shibboleth.MetadataResolverService` to retrieve the Federation Metadata:
+    *  `cd /opt/shibboleth-idp/bin`
+    *  `./reload-service.sh -id shibboleth.MetadataResolverService`
 
 13. The day after the IDEM Federation Operators approval your entity on IDEM Entity Registry, check if you can login with your IdP on the following services:
     * https://sp-test.garr.it/secure   (Service Provider provided for testing the IDEM Test Federation)
@@ -1092,13 +1070,88 @@ Translate the IdP messages in your language:
     * `cd /opt/shibboleth-idp/bin`
     * `./aacli.sh -n user1 -r https://sp24-test.garr.it/shibboleth --saml2`
 
-### Configure Attribute Filters to release all attributes to all resources
+### Configure attribute filter policies for the REFEDS Research and Scholarship and the GEANT Data Protection Code of Conduct Entity Categories
+
+1. Download the attribute filter file:
+   * `wget -O /opt/shibboleth-idp/conf/attribute-filter-v3-RS-CoCo.xml https://github.com/ConsortiumGARR/idem-tutorials/raw/master/idem-fedops/HOWTO-Shibboleth/Identity%20Provider/utils/attribute-filter-v3-RS-CoCo.xml`
+
+2. Modify your `services.xml`:
+   * `vim /opt/shibboleth-idp/conf/services.xml`
+
+     ```xml
+     <util:list id ="shibboleth.AttributeFilterResources">
+         <!-- <value>%{idp.home}/conf/attribute-filter.xml</value> -->
+         <value>%{idp.home}/conf/attribute-filter-v3-RS-CoCo.xml</value>
+      </util:list>
+      ```
+
+3. Restart Jetty
+   *  `systemctl restart jetty.service`
+
+### (ONLY FOR IDP TRAINING AT CYNET) Register the IdP on the Training Test Federation
+
+1. Send your IdP Metadata URL to [marco.malavolti@garr.it](mailto:marco.malavolti@garr.it)
+
+2. Configure the IdP to retrieve the Federation Metadata:
+   * `cd /opt/shibboleth-idp/conf`
+   * `vim metadata-providers.xml`
+
+     ```xml
+     <!-- Piece of code to add before the last </MetadataProvider> -->
+
+     <!-- IDEM Test Federation -->
+     <MetadataProvider
+        id="URLMD-Training-Federation"
+        xsi:type="FileBackedHTTPMetadataProvider"
+        backingFile="%{idp.home}/metadata/training-test-federation-sha256.xml"
+        metadataURL="https://registry-test.idem.garr.it/rr3/signedmetadata/federation/cyprusIDPtraining/metadata.xml">
+
+        <!--
+            Verify the signature on the root element of the metadata aggregate
+            using a trusted metadata signing certificate.
+        -->
+        <MetadataFilter xsi:type="SignatureValidation" requireSignedRoot="true" certificateFile="${idp.home}/metadata/federation-cert.pem"/>   
+
+        <!--
+            Require a validUntil XML attribute on the root element and
+            make sure its value is no more than 10 days into the future.
+        -->
+        <MetadataFilter xsi:type="RequiredValidUntil" maxValidityInterval="P10D"/>
+   
+        <!-- Consume all SP metadata in the aggregate -->
+        <MetadataFilter xsi:type="EntityRoleWhiteList">
+          <RetainedRole>md:SPSSODescriptor</RetainedRole>
+        </MetadataFilter>
+     </MetadataProvider>
+     ```
+
+   * Retrieve the Federation Certificate used to verify signed metadata:
+     *  `wget https://registry-test.idem.garr.it/rr3/signedmetadata/federation/cyprusIDPtraining/metadata-signer.crt -O /opt/shibboleth-idp/metadata/federation-cert.pem`
+
+   * Check the validity:
+     *  `cd /opt/shibboleth-idp/metadata`
+     *  `openssl x509 -in federation-cert.pem -fingerprint -sha1 -noout`
+       
+        (sha1: 76:18:EA:B6:D4:9D:0C:C0:A0:16:FD:C0:2D:7C:B1:CD:44:26:B6:94)
+     *  `openssl x509 -in federation-cert.pem -fingerprint -md5 -noout`
+
+        (md5: 01:59:50:95:83:26:F2:8D:BA:50:9D:10:30:1D:19:3A)
+  
+3. Wait that your IdP Metadata is approved and reload service `shibboleth.MetadataResolverService` to refresh Training Test Federation metadata:
+    *  `cd /opt/shibboleth-idp/bin`
+    *  `./reload-service.sh -id shibboleth.MetadataResolverService`
+
+4. Check which attributes are released to test SP with AACLI:
+    * `cd /opt/shibboleth-idp/bin`
+    * `./aacli.sh -n <USERNAME> -r https://geanttraining.cynet.ac.cy/sp-garr --saml2`
+
+### (ONLY FOR IDP TRAINING AT CYNET) Configure Attribute Filters to release all attributes to all resources
 
 1. Download sample Attribute Filter file:
-   * ```wget -O /opt/shibboleth-idp/conf/attribute-filter-v3-all.xml https://github.com/ConsortiumGARR/idem-tutorials/raw/master/idem-fedops/HOWTO-Shibboleth/Identity%20Provider/utils/attribute-filter-v3-all.xml```
+   * `wget -O /opt/shibboleth-idp/conf/attribute-filter-v3-all.xml https://github.com/ConsortiumGARR/idem-tutorials/raw/master/idem-fedops/HOWTO-Shibboleth/Identity%20Provider/utils/attribute-filter-v3-all.xml`
 
-2. Modify your ```services.xml```:
-   * ```vim /opt/shibboleth-idp/conf/services.xml```
+2. Modify your `services.xml`:
+   * `vim /opt/shibboleth-idp/conf/services.xml`
 
      ```xml
      ...
@@ -1109,28 +1162,29 @@ Translate the IdP messages in your language:
      ```
 
 3. Restart Jetty
-   *  ```systemctl restart jetty```
+   *  `systemctl restart jetty.service`
 
-### Configure Attribute Filters to release recommended attributes for eduGAIN:
+### (ONLY FOR IDP TRAINING AT CYNET) Configure Attribute Filters to release recommended attributes for eduGAIN
 
 1. Download sample Attribute Filter file:
-   * ```wget -O /opt/shibboleth-idp/conf/attribute-filter-v3-eduGAIN.xml https://github.com/ConsortiumGARR/idem-tutorials/raw/master/idem-fedops/HOWTO-Shibboleth/Identity%20Provider/utils/attribute-filter-v3-eduGAIN.xml```
+   * `wget -O /opt/shibboleth-idp/conf/attribute-filter-v3-eduGAIN.xml https://github.com/ConsortiumGARR/idem-tutorials/raw/master/idem-fedops/HOWTO-Shibboleth/Identity%20Provider/utils/attribute-filter-v3-eduGAIN.xml`
 
-2. Modify your ```services.xml```:
-   * ```vim /opt/shibboleth-idp/conf/services.xml```
+2. Modify your `services.xml`:
+   * `vim /opt/shibboleth-idp/conf/services.xml`
 
      ```xml
      <util:list id ="shibboleth.AttributeFilterResources">
          <!-- <value>%{idp.home}/conf/attribute-filter.xml</value> -->
+	 <value>%{idp.home}/conf/attribute-filter-v3-RS-CoCo.xml</value>
          <value>%{idp.home}/conf/attribute-filter-v3-all.xml</value>
          <value>%{idp.home}/conf/attribute-filter-v3-eduGAIN.xml</value>
       </util:list>
       ```
 
 3. Restart Jetty
-   *  ```systemctl restart jetty```
+   *  `systemctl restart jetty`
 
-### Appendix A: Configure Attribute Filters to release the mandatory attributes to the IDEM Default Resources
+### Appendix A: (ONLY FOR IDEM Federation members) Configure Attribute Filters to release the mandatory attributes to the IDEM Default Resources
 
 1. Become ROOT:
    * `sudo su -`
@@ -1156,7 +1210,7 @@ Translate the IdP messages in your language:
 4. Restart Jetty to apply changes:
    *  `systemctl restart jetty.service`
 
-### Appendix B: Configure Attribute Filters to release the mandatory attributes to the IDEM Production Resources
+### Appendix B: (ONLY FOR IDEM Federation members) Configure Attribute Filters to release the mandatory attributes to the IDEM Production Resources
 
 1. Make sure that you have the "`tmp/httpClientCache`" used by "`shibboleth.FileCachingHttpClient`":
    * `mkdir -p /opt/shibboleth-idp/tmp/httpClientCache ; chown jetty /opt/shibboleth-idp/tmp/httpClientCache`
@@ -1180,38 +1234,7 @@ Translate the IdP messages in your language:
 3. Restart Jetty to apply changes:
    *  `systemctl restart jetty.service`
 
-### Appendix C: Configure Attribute Filters for Research and Scholarship and Data Protection Code of Conduct Entity Category
-
-1. Make sure that you have the "`tmp/httpClientCache`" used by "`shibboleth.FileCachingHttpClient`":
-   * `mkdir -p /opt/shibboleth-idp/tmp/httpClientCache ; chown jetty /opt/shibboleth-idp/tmp/httpClientCache`
-
-2. Modify your `services.xml`:
-   * `vim /opt/shibboleth-idp/conf/services.xml`
-
-     ```xml
-     <bean id="ResearchAndScholarship" class="net.shibboleth.ext.spring.resource.FileBackedHTTPResource"
-           c:client-ref="shibboleth.FileCachingHttpClient"
-           c:url="http://www.garr.it/idem-conf/attribute-filter-v3-rs.xml"
-           c:backingFile="%{idp.home}/conf/attribute-filter-v3-rs.xml"/>
-          
-     <bean id="CodeOfConduct" class="net.shibboleth.ext.spring.resource.FileBackedHTTPResource"
-           c:client-ref="shibboleth.FileCachingHttpClient"
-           c:url="http://www.garr.it/idem-conf/attribute-filter-v3-coco.xml"
-           c:backingFile="%{idp.home}/conf/attribute-filter-v3-coco.xml"/>
-    
-     <util:list id ="shibboleth.AttributeFilterResources">
-         <value>%{idp.home}/conf/attribute-filter.xml</value>
-         <ref bean="IDEM-Default-Filter"/>
-         <ref bean="IDEM-Production-Filter"/>
-         <ref bean="ResearchAndScholarship"/>
-         <ref bean="CodeOfConduct"/>
-      </util:list>
-      ```
-
-3. Restart Jetty to apply changes:
-   *  `systemctl restart jetty.service`
-
-### Appendix D: Import metadata from previous IDP v2.x ###
+### Appendix C: Import metadata from previous IDP v2.x ###
 
 1. Store into /tmp directory the following files:
    * `idp-metadata.xml`
@@ -1237,10 +1260,10 @@ Translate the IdP messages in your language:
    * `vim /opt/shibboleth-idp/metadata/idp-metadata.xml`
  
       ```bash
-      <EntityDescriptor> SECTION:
+      <EntityDescriptor> Section:
         – Remove `validUntil` XML attribute.
 
-      <IDPSSODescriptor> SECTION:
+      <IDPSSODescriptor> Section:
         – From the list of "protocolSupportEnumeration" remove:
           - urn:oasis:names:tc:SAML:1.1:protocol
           - urn:mace:shibboleth:1.0
@@ -1282,7 +1305,7 @@ Translate the IdP messages in your language:
   
 6. Don't forget to update your IdP Metadata on [IDEM Entity Registry](https://registry.idem.garr.it/rr3) to apply changes on the federation IDEM! For any help write to idem-help@garr.it
 
-### Appendix E: Import persistent-id from a previous database ###
+### Appendix E: Import persistent-id from a previous database
 
 1. Become ROOT:
    * `sudo su -`
