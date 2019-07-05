@@ -943,8 +943,8 @@ By default, a transient NameID will always be released to the Service Provider i
 ### Configure IdP Logging
 
 Enrich IDP logs with the authentication error occurred on LDAP:
-   * sed -i '/^    <logger name="org.ldaptive".*/a \\n    <!-- Logs on LDAP user authentication - ADDED -->' /opt/shibboleth-idp/conf/logback.xml
-   * sed -i '/^    <!-- Logs on LDAP user authentication - ADDED -->/a \ \ \ \ \<logger name="org.ldaptive.auth.Authenticator" level="INFO" />' /opt/shibboleth-idp/conf/logback.xml 
+   * `sed -i '/^    <logger name="org.ldaptive".*/a \\n    <!-- Logs on LDAP user authentication - ADDED -->' /opt/shibboleth-idp/conf/logback.xml`
+   * `sed -i '/^    <!-- Logs on LDAP user authentication - ADDED -->/a \ \ \ \ \<logger name="org.ldaptive.auth.Authenticator" level="INFO" />' /opt/shibboleth-idp/conf/logback.xml`
    
 ### Translate IdP messages into preferred language
 
