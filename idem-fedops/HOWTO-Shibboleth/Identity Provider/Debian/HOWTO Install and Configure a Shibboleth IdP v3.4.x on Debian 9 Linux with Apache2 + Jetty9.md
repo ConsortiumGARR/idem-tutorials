@@ -76,14 +76,17 @@
 1. Become ROOT:
    * `sudo su -`
 
-2. Change the default mirror to the GARR ones (OPTIONAL):
-   * `sed -i 's/deb.debian.org/debian.mirror.garr.it/g' /etc/apt/sources.list`
+2. Change the default mirror to the GARR ones on `/etc/apt/sources.list` (OPTIONAL):
+   * `debian.mirror.garr.it` (Debian)
+   * `ubuntu.mirror.garr.it` (Ubuntu)
+   
+3. Update packages:
    * `apt update && apt-get upgrade -y --no-install-recommends`
   
-3. Install the required packages: 
+4. Install the required packages: 
    * `apt install vim wget default-jdk ca-certificates openssl apache2 ntp expat --no-install-recommends`
 
-4. Check that Java is working:
+5. Check that Java is working:
    * `update-alternatives --config java`
 
 ### Configure the environment
