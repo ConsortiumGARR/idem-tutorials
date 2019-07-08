@@ -7,7 +7,7 @@
 
       <AttributeFilterPolicy id="releaseDynamicSubsetRandSAttributeBundle">
 
-      <PolicyRequirementRule xsi:type="saml:EntityAttributeExactMatch"
+      <PolicyRequirementRule xsi:type="EntityAttributeExactMatch"
           attributeName="http://macedir.org/entity-category"
           attributeValue="http://refeds.org/category/research-and-scholarship"/>
 
