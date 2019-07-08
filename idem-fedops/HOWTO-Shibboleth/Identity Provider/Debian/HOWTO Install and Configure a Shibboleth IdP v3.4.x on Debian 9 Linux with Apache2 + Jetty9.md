@@ -31,7 +31,7 @@
    11. [(ONLY FOR IDEM Federation members) Register the IdP on the Federation](#only-for-idem-federation-members-register-the-idp-on-the-federation)
    12. [Configure attribute filter policies for the REFEDS Research and Scholarship and the GEANT Data Protection Code of Conduct Entity Categories](#configure-attribute-filter-policies-for-the-refeds-research-and-scholarship-and-the-geant-data-protection-code-of-conduct-entity-categories)
    13. [(ONLY FOR IDP TRAINING AT CYNET) Register the IdP on the Training Test Federation](#only-for-idp-training-at-cynet-register-the-idp-on-the-training-test-federation)
-   14. [(ONLY FOR IDP TRAINING AT CYNET) Configure Attribute Filters to release all attributes to all resources](#only-for-idp-training-at-cynet-configure-attribute-filters-to-release-all-attributes-to-all-resources)
+   14. [(ONLY FOR IDP TRAINING AT CYNET) Configure Attribute Filters to release all attributes to all federation resources](#only-for-idp-training-at-cynet-configure-attribute-filters-to-release-all-attributes-to-all-federation-resources)
    15. [(ONLY FOR IDP TRAINING AT CYNET) Configure Attribute Filters to release recommended attributes for eduGAIN](#only-for-idp-training-at-cynet-configure-attribute-filters-to-release-recommended-attributes-for-edugain)
 6. [Appendix A: (ONLY FOR IDEM Federation members) Configure Attribute Filters to release the mandatory attributes to the IDEM Default Resources](#appendix-a-only-for-idem-federation-members-configure-attribute-filters-to-release-the-mandatory-attributes-to-the-idem-default-resources)
 7. [Appendix B: (ONLY FOR IDEM Federation members) Configure Attribute Filters to release the mandatory attributes to the IDEM Production Resources](#appendix-b-only-for-idem-federation-members-configure-attribute-filters-to-release-the-mandatory-attributes-to-the-idem-production-resources)
@@ -99,6 +99,7 @@
      `JAVA_HOME=/usr/lib/jvm/default-java`
 
    * `source /etc/environment`
+   * `export JAVA_HOME=/usr/lib/jvm/default-java`
 
 3. Install the SSL Certificate and Key for HTTP and set the right privileges:
    * `cp /path/to/certificate/idp.example.org.crt /etc/ssl/certs/idp.example.org.crt`
@@ -326,7 +327,7 @@ It is a Java Web Application that can be deployed with its WAR file.
 1. Become ROOT:
    * `sudo su -`
 
-2. Download the Shibboleth Identity Provider v3.4.x (replace '3.4.x' with the latest version):
+2. Download the Shibboleth Identity Provider v3.4.x (replace '3.4.x' with the latest version found [here](https://shibboleth.net/downloads/identity-provider/)):
    * `cd /usr/local/src`
    * `wget http://shibboleth.net/downloads/identity-provider/3.4.x/shibboleth-identity-provider-3.4.x.tar.gz`
    * `tar -xzvf shibboleth-identity-provider-3.4.x.tar.gz`
@@ -480,7 +481,7 @@ This is a warning produced during the bytecode scanning for annotations of a web
 
 ### Configure Shibboleth Identity Provider StorageRecords (User Consent)
 
-**Shibboleth Documentation reference** https://wiki.shibboleth.net/confluence/display/IDP30/StorageConfiguration
+*Shibboleth Documentation reference*: https://wiki.shibboleth.net/confluence/display/IDP30/StorageConfiguration
 
 > The IdP provides a number of general-purpose storage facilities that can be used by core subsystems like session management and consent. 
 
@@ -576,7 +577,7 @@ This Storage service will memorize User Consent data on persistent database SQL.
      and add the following directives to the tail, just before the **`</beans>`** tag (**IMPORTANT** remeber to modify the "**##USERNAME-CHANGEME##**" and "**##USER-PASSWORD-CHANGEME##**" with your DB user and password):
 
      ```bash
-     <!-- Add bean to store info on StorageRecords database -->
+     <!-- Add bean to store User Consent data on StorageRecords database -->
 
      <bean id="storageservice.JPAStorageService" class="org.opensaml.storage.impl.JPAStorageService"
            p:cleanupInterval="%{idp.storage.cleanupInterval:PT10M}"
@@ -831,7 +832,7 @@ By default, a transient NameID will always be released to the Service Provider i
        idp.authn.LDAP.returnAttributes = passwordExpirationTime,loginGraceRemainig
        idp.authn.LDAP.baseDN = ou=people,dc=example,dc=org
        idp.authn.LDAP.userFilter = (uid={user})
-       idp.authn.LDAP.bindDN = uid=idpuser,ou=system,dc=example,dc=org
+       idp.authn.LDAP.bindDN = cn=idpuser,ou=system,dc=example,dc=org
        idp.authn.LDAP.bindDNCredential = ###LDAP_IDPUSER_PASSWORD###
        ```
 
@@ -847,7 +848,7 @@ By default, a transient NameID will always be released to the Service Provider i
        idp.authn.LDAP.returnAttributes = passwordExpirationTime,loginGraceRemainig
        idp.authn.LDAP.baseDN = ou=people,dc=example,dc=org
        idp.authn.LDAP.userFilter = (uid={user})
-       idp.authn.LDAP.bindDN = uid=idpuser,ou=system,dc=example,dc=org
+       idp.authn.LDAP.bindDN = cn=idpuser,ou=system,dc=example,dc=org
        idp.authn.LDAP.bindDNCredential = ###LDAP_IDPUSER_PASSWORD###
        ```
 
@@ -861,7 +862,7 @@ By default, a transient NameID will always be released to the Service Provider i
        idp.authn.LDAP.returnAttributes = passwordExpirationTime,loginGraceRemainig
        idp.authn.LDAP.baseDN = ou=people,dc=example,dc=org
        idp.authn.LDAP.userFilter = (uid={user})
-       idp.authn.LDAP.bindDN = uid=idpuser,ou=system,dc=example,dc=org
+       idp.authn.LDAP.bindDN = cn=idpuser,ou=system,dc=example,dc=org
        idp.authn.LDAP.bindDNCredential = ###LDAP_IDPUSER_PASSWORD###
        ```
        If you decide to use the Solution 3, remove or comment the following directives from your Attribute Resolver file:
@@ -872,9 +873,9 @@ By default, a transient NameID will always be released to the Service Provider i
        ```
 
        **UTILITY FOR OPENLDAP ADMINISTRATOR:**
-         * `ldapsearch -H ldap:// -x -b "dc=example,dc=it" -LLL dn`
-           * the baseDN ==> `ou=people, dc=example,dc=org` (branch containing the registered users)
-           * the bindDN ==> `cn=admin,dc=example,dc=org` (distinguished name for the user that can made queries on the LDAP)
+         * `slapcat | grep dn`
+           * the baseDN ==> `ou=people,dc=example,dc=org` (branch containing the registered users)
+           * the bindDN ==> `cn=idpuser,ou=system,dc=example,dc=org` (distinguished name for the user that can made queries on the LDAP)
 
 #### Configure the attribute resolver (sample)
 
@@ -898,7 +899,8 @@ By default, a transient NameID will always be released to the Service Provider i
       <!-- <value>%{idp.home}/conf/attribute-resolver.xml</value> -->
       <value>%{idp.home}/conf/attribute-resolver-sample.xml</value>
 
-   Here you can find the **attribute-resolver-v3_4-idem.xml** provided by IDEM GARR AAI as example:
+   
+    (ONLY FOR IDEM Federation MEMBERS) The following sample is provided by IDEM GARR AAI:
       * http://www.garr.it/idem-conf/attribute-resolver-v3_4-idem.xml
 
         **Pay attention on `<DataConnector id="myStoredId"`. You have to put the right bean ID into `<BeanManagedConnection>` or IdP will not work. You have to put there the ID of the `BasicDataSource` bean**
@@ -907,7 +909,7 @@ By default, a transient NameID will always be released to the Service Provider i
    * `systemctl restart jetty.service`
 
 3. Check to be able to retrieve transient NameID for an user:
-   * `export JAVA_HOME=/etc/alternatives/jre_1.8.0_openjdk`
+   * `export JAVA_HOME=/usr/lib/jvm/default-java`
    * `cd /opt/shibboleth-idp/bin`
    * `./aacli.sh -n <USERNAME> -r https://sp.example.org/shibboleth --saml2`
 
@@ -947,19 +949,19 @@ Translate the IdP messages in your language:
         - Remove the endpoint:
           <ArtifactResolutionService Binding="urn:oasis:names:tc:SAML:1.0:bindings:SOAP-binding" Location="https://idp.example.org:8443/idp/profile/SAML1/SOAP/ArtifactResolution" index="1"/>
           (and modify the index value of the next one to “1”)
+	      
+	- Remove comment from SingleLogoutService endpoints
 
         - In the middle of <SingleSignOnService> and <SingleLogoutService> endpoints add:
           <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</NameIDFormat>
           <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</NameIDFormat>
 
-          (because the IdP installed with this guide will release transient, by default, and persistent NameID if requested.)
+          (because the IdP installed with this guide will release transient NameID, by default, and persistent NameID if requested.)
 
         - Remove the endpoint: 
           <SingleSignOnService Binding="urn:mace:shibboleth:1.0:profiles:AuthnRequest" Location="https://idp.example.org/idp/profile/Shibboleth/SSO"/>
 
         - Remove all ":8443" from the existing URL (such port is not used anymore)
-
-        - Remove comment from each <SingleLogoutService> endpoint
 
       <AttributeAuthorityDescriptor> Section:
         - From the list "protocolSupportEnumeration" replace the value of:
@@ -1074,7 +1076,7 @@ Translate the IdP messages in your language:
      ```xml
      <!-- Piece of code to add before the last </MetadataProvider> -->
 
-     <!-- IDEM Test Federation -->
+     <!-- Training Test Test Federation -->
      <MetadataProvider
         id="URLMD-Training-Federation"
         xsi:type="FileBackedHTTPMetadataProvider"
@@ -1120,7 +1122,7 @@ Translate the IdP messages in your language:
     * `cd /opt/shibboleth-idp/bin`
     * `./aacli.sh -n <USERNAME> -r https://geanttraining.cynet.ac.cy/sp-garr --saml2`
 
-### (ONLY FOR IDP TRAINING AT CYNET) Configure Attribute Filters to release all attributes to all resources
+### (ONLY FOR IDP TRAINING AT CYNET) Configure Attribute Filters to release all attributes to all federation resources
 
 1. Download sample Attribute Filter file:
    * `wget -O /opt/shibboleth-idp/conf/attribute-filter-v3-all.xml https://github.com/ConsortiumGARR/idem-tutorials/raw/master/idem-fedops/HOWTO-Shibboleth/Identity%20Provider/utils/attribute-filter-v3-all.xml`
@@ -1132,7 +1134,7 @@ Translate the IdP messages in your language:
      ...
      <util:list id ="shibboleth.AttributeFilterResources">
          <!-- <value>%{idp.home}/conf/attribute-filter.xml</value> -->
-		 <value>%{idp.home}/conf/attribute-filter-v3-RS-CoCo.xml</value>
+         <value>%{idp.home}/conf/attribute-filter-v3-RS-CoCo.xml</value>
          <value>%{idp.home}/conf/attribute-filter-v3-all.xml</value>
      </util:list>
      ```
