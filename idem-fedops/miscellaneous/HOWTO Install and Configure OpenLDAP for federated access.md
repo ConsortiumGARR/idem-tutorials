@@ -1,4 +1,4 @@
-# HOWTO Install and Configure OpenLDAP for federated access
+# HOWTO Install and Configure OpenLDAP for federated access (Debian/Ubuntu)
 
 ## Table of Contents
 
@@ -10,7 +10,7 @@
    2. [PLA Configuration](#pla-configuration)
 
 ## Requirements
-* Debian 9 (Stretch)
+* Debian 9 (Stretch) or Ubuntu 18.04 (Bionic Beaver)
 
 ## Installation
 
