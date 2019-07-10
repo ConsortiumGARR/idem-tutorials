@@ -915,7 +915,7 @@ By default, a transient NameID will always be released to the Service Provider i
          idp.attribute.resolver.LDAP.returnAttributes    = %{idp.authn.LDAP.returnAttributes:undefined}
          ```
 
-     * For AD:
+     * For Active Directory:
        * Solution 1: LDAP + STARTTLS:
 
          ```properties
