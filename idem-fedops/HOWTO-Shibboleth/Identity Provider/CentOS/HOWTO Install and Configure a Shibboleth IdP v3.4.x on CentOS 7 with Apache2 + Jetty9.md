@@ -396,7 +396,7 @@ The Apache HTTP Server will be configured as a reverse proxy and it will be used
    * `sudo chown -R apache: /var/www/html/idp.example.org`
 
 2. Create the Virtualhost file `/etc/httpd/conf.d/idp.example.org.conf` and set the content as follows:
-   * `vim /etc/httpd/conf.g/idp.example.org.conf`
+   * `vim /etc/httpd/conf.d/idp.example.org.conf`
 
      ```apache
      # Redirection from port 80 to 443
@@ -435,7 +435,7 @@ The Apache HTTP Server will be configured as a reverse proxy and it will be used
 
           SSLCertificateFile /etc/pki/tls/certs/idp.example.org.crt
           SSLCertificateKeyFile /etc/pki/tls/private/idp.example.org.key
-          SSLCACertificateFile /etc/pki/tls/certs/terena_ssl_ca_3.pem
+          SSLCACertificateFile /etc/pki/tls/certs/TERENA_SSL_CA_3.pem
 
           <IfModule mod_proxy.c>
              ProxyPreserveHost On
