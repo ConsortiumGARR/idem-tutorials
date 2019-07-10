@@ -957,8 +957,8 @@ Translate the IdP messages in your language:
         - Remove the endpoint:
           <ArtifactResolutionService Binding="urn:oasis:names:tc:SAML:1.0:bindings:SOAP-binding" Location="https://idp.example.org:8443/idp/profile/SAML1/SOAP/ArtifactResolution" index="1"/>
           (and modify the index value of the next one to “1”)
-	      
-	- Remove comment from SingleLogoutService endpoints
+
+        - Remove comment from SingleLogoutService endpoints
 
         - Between the last <SingleSignOnService> and the first <SingleLogoutService> endpoints add:
           <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</NameIDFormat>
