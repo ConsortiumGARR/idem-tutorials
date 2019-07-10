@@ -93,7 +93,15 @@
 
 1. Be sure that your firewall **is not blocking** the traffic on port **443** and **80**.
 
-2. Set the variable `JAVA_HOME` in `/etc/environment`:
+2. Set the IdP hostname:
+   * `vim /etc/hosts`
+
+     ```bash
+     <YOUR SERVER IP ADDRESS> idp.example.org idp
+     ```
+     (*Replace `idp.example.org` with your IdP Full Qualified Domain Name*)
+
+3. Set the variable `JAVA_HOME` in `/etc/environment`:
    * `vim /etc/environment`
 
      `JAVA_HOME=/usr/lib/jvm/default-java`
@@ -101,7 +109,7 @@
    * `source /etc/environment`
    * `export JAVA_HOME=/usr/lib/jvm/default-java`
 
-3. Install the SSL Certificate and Key for HTTP and set the right privileges:
+4. Install the SSL Certificate and Key for HTTP and set the right privileges:
    * `cp /path/to/certificate/idp.example.org.crt /etc/ssl/certs/idp.example.org.crt`
    * `cp /path/to/key/idp.example.org.key /etc/ssl/private/idp.example.org.key`
    * `chmod 400 /etc/ssl/private/idp.example.org.key`
