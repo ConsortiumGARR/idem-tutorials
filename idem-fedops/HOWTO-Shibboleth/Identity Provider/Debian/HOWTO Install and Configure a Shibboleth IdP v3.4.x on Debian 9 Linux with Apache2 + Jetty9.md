@@ -828,53 +828,184 @@ By default, a transient NameID will always be released to the Service Provider i
 
      (with **TLS** solutions we consider to have the LDAP certificate into `/opt/shibboleth-idp/credentials/ldap-server.crt`).
 
-     * Solution 1: LDAP + STARTTLS
+     * For OpenLDAP:
+       * Solution 1: LDAP + STARTTLS:
 
-       ```xml
-       idp.authn.LDAP.authenticator = bindSearchAuthenticator
-       idp.authn.LDAP.ldapURL = ldap://ldap.example.org:389
-       idp.authn.LDAP.useStartTLS = true
-       idp.authn.LDAP.useSSL = false
-       idp.authn.LDAP.sslConfig = certificateTrust
-       idp.authn.LDAP.trustCertificates = %{idp.home}/credentials/ldap-server.crt
-       idp.authn.LDAP.returnAttributes = passwordExpirationTime,loginGraceRemainig
-       idp.authn.LDAP.baseDN = ou=people,dc=example,dc=org
-       idp.authn.LDAP.userFilter = (uid={user})
-       idp.authn.LDAP.bindDN = cn=idpuser,ou=system,dc=example,dc=org
-       idp.authn.LDAP.bindDNCredential = ###LDAP_IDPUSER_PASSWORD###
-       ```
+         ```properties
+         idp.authn.LDAP.authenticator = bindSearchAuthenticator
+         idp.authn.LDAP.ldapURL = ldap://ldap.example.org:389
+         idp.authn.LDAP.useStartTLS = true
+         idp.authn.LDAP.useSSL = false
+         idp.authn.LDAP.sslConfig = certificateTrust
+         idp.authn.LDAP.trustCertificates = %{idp.home}/credentials/ldap-server.crt
+         idp.authn.LDAP.returnAttributes = ###List space-separated of attributes to retrieve from OpenLDAP ###
+         idp.authn.LDAP.baseDN = ou=people,dc=example,dc=org
+         idp.authn.LDAP.userFilter = (uid={user})
+         idp.authn.LDAP.bindDN = cn=idpuser,ou=system,dc=example,dc=org
+         idp.authn.LDAP.bindDNCredential = ###LDAP_IDPUSER_PASSWORD###
+         idp.authn.LDAP.searchFilter = (uid=$resolutionContext.principal)
 
-     * Solution 2: LDAP + TLS
+         # LDAP attribute configuration, see attribute-resolver.xml
+         # Note, this likely won't apply to the use of legacy V2 resolver configurations
+         idp.attribute.resolver.LDAP.ldapURL             = %{idp.authn.LDAP.ldapURL}
+         idp.attribute.resolver.LDAP.connectTimeout      = %{idp.authn.LDAP.connectTimeout:PT3S}
+         idp.attribute.resolver.LDAP.responseTimeout     = %{idp.authn.LDAP.responseTimeout:PT3S}
+         idp.attribute.resolver.LDAP.baseDN              = %{idp.authn.LDAP.baseDN:undefined}
+         idp.attribute.resolver.LDAP.bindDN              = %{idp.authn.LDAP.bindDN:undefined}
+         idp.attribute.resolver.LDAP.bindDNCredential    = %{idp.authn.LDAP.bindDNCredential:undefined}
+         idp.attribute.resolver.LDAP.useStartTLS         = %{idp.authn.LDAP.useStartTLS:true}
+         idp.attribute.resolver.LDAP.trustCertificates   = %{idp.authn.LDAP.trustCertificates:undefined}
+         idp.attribute.resolver.LDAP.searchFilter        = %{idp.authn.LDAP.searchFilter:undefined}
+         idp.attribute.resolver.LDAP.returnAttributes    = %{idp.authn.LDAP.returnAttributes:undefined}
+         ```
 
-       ```xml
-       idp.authn.LDAP.authenticator = bindSearchAuthenticator
-       idp.authn.LDAP.ldapURL = ldaps://ldap.example.org:636
-       idp.authn.LDAP.useStartTLS = false
-       idp.authn.LDAP.useSSL = true
-       idp.authn.LDAP.sslConfig = certificateTrust
-       idp.authn.LDAP.trustCertificates = %{idp.home}/credentials/ldap-server.crt
-       idp.authn.LDAP.returnAttributes = passwordExpirationTime,loginGraceRemainig
-       idp.authn.LDAP.baseDN = ou=people,dc=example,dc=org
-       idp.authn.LDAP.userFilter = (uid={user})
-       idp.authn.LDAP.bindDN = cn=idpuser,ou=system,dc=example,dc=org
-       idp.authn.LDAP.bindDNCredential = ###LDAP_IDPUSER_PASSWORD###
-       ```
+       * Solution 2: LDAP + TLS:
 
-     * Solution 3: plain LDAP
+         ```properties
+         idp.authn.LDAP.authenticator = bindSearchAuthenticator
+         idp.authn.LDAP.ldapURL = ldaps://ldap.example.org:636
+         idp.authn.LDAP.useStartTLS = false
+         idp.authn.LDAP.useSSL = true
+         idp.authn.LDAP.sslConfig = certificateTrust
+         idp.authn.LDAP.trustCertificates = %{idp.home}/credentials/ldap-server.crt
+         idp.authn.LDAP.returnAttributes = ###List space-separated of attributes to retrieve from OpenLDAP ###
+         idp.authn.LDAP.baseDN = ou=people,dc=example,dc=org
+         idp.authn.LDAP.userFilter = (uid={user})
+         idp.authn.LDAP.bindDN = cn=idpuser,ou=system,dc=example,dc=org
+         idp.authn.LDAP.bindDNCredential = ###LDAP_IDPUSER_PASSWORD###
+         idp.authn.LDAP.searchFilter = (uid=$resolutionContext.principal)
 
-       ```xml
-       idp.authn.LDAP.authenticator = bindSearchAuthenticator
-       idp.authn.LDAP.ldapURL = ldap://ldap.example.org:389
-       idp.authn.LDAP.useStartTLS = false
-       idp.authn.LDAP.useSSL = false
-       idp.authn.LDAP.returnAttributes = passwordExpirationTime,loginGraceRemainig
-       idp.authn.LDAP.baseDN = ou=people,dc=example,dc=org
-       idp.authn.LDAP.userFilter = (uid={user})
-       idp.authn.LDAP.bindDN = cn=idpuser,ou=system,dc=example,dc=org
-       idp.authn.LDAP.bindDNCredential = ###LDAP_IDPUSER_PASSWORD###
-       ```
+         # LDAP attribute configuration, see attribute-resolver.xml
+         # Note, this likely won't apply to the use of legacy V2 resolver configurations
+         idp.attribute.resolver.LDAP.ldapURL             = %{idp.authn.LDAP.ldapURL}
+         idp.attribute.resolver.LDAP.connectTimeout      = %{idp.authn.LDAP.connectTimeout:PT3S}
+         idp.attribute.resolver.LDAP.responseTimeout     = %{idp.authn.LDAP.responseTimeout:PT3S}
+         idp.attribute.resolver.LDAP.baseDN              = %{idp.authn.LDAP.baseDN:undefined}
+         idp.attribute.resolver.LDAP.bindDN              = %{idp.authn.LDAP.bindDN:undefined}
+         idp.attribute.resolver.LDAP.bindDNCredential    = %{idp.authn.LDAP.bindDNCredential:undefined}
+         idp.attribute.resolver.LDAP.useStartTLS         = %{idp.authn.LDAP.useStartTLS:true}
+         idp.attribute.resolver.LDAP.trustCertificates   = %{idp.authn.LDAP.trustCertificates:undefined}
+         idp.attribute.resolver.LDAP.searchFilter        = %{idp.authn.LDAP.searchFilter:undefined}
+         idp.attribute.resolver.LDAP.returnAttributes    = %{idp.authn.LDAP.returnAttributes:undefined}
+         ```
+
+       * Solution 3: plain LDAP
+
+         ```properties
+         idp.authn.LDAP.authenticator = bindSearchAuthenticator
+         idp.authn.LDAP.ldapURL = ldap://ldap.example.org:389
+         idp.authn.LDAP.useStartTLS = false
+         idp.authn.LDAP.useSSL = false
+         idp.authn.LDAP.returnAttributes = ###List space-separated of attributes to retrieve from OpenLDAP###
+         idp.authn.LDAP.baseDN = ou=people,dc=example,dc=org
+         idp.authn.LDAP.userFilter = (uid={user})
+         idp.authn.LDAP.bindDN = cn=idpuser,ou=system,dc=example,dc=org
+         idp.authn.LDAP.bindDNCredential = ###LDAP_IDPUSER_PASSWORD###
+         idp.authn.LDAP.searchFilter = (uid=$resolutionContext.principal)
+
+         # LDAP attribute configuration, see attribute-resolver.xml
+         # Note, this likely won't apply to the use of legacy V2 resolver configurations
+         idp.attribute.resolver.LDAP.ldapURL             = %{idp.authn.LDAP.ldapURL}
+         idp.attribute.resolver.LDAP.connectTimeout      = %{idp.authn.LDAP.connectTimeout:PT3S}
+         idp.attribute.resolver.LDAP.responseTimeout     = %{idp.authn.LDAP.responseTimeout:PT3S}
+         idp.attribute.resolver.LDAP.baseDN              = %{idp.authn.LDAP.baseDN:undefined}
+         idp.attribute.resolver.LDAP.bindDN              = %{idp.authn.LDAP.bindDN:undefined}
+         idp.attribute.resolver.LDAP.bindDNCredential    = %{idp.authn.LDAP.bindDNCredential:undefined}
+         idp.attribute.resolver.LDAP.searchFilter        = %{idp.authn.LDAP.searchFilter:undefined}
+         idp.attribute.resolver.LDAP.returnAttributes    = %{idp.authn.LDAP.returnAttributes:undefined}
+         ```
+
+     * For AD:
+       * Solution 1: LDAP + STARTTLS:
+
+         ```properties
+         idp.authn.LDAP.authenticator = bindSearchAuthenticator
+         idp.authn.LDAP.ldapURL = ldap://ldap.example.org:389
+         idp.authn.LDAP.useStartTLS = true
+         idp.authn.LDAP.useSSL = false
+         idp.authn.LDAP.sslConfig = certificateTrust
+         idp.authn.LDAP.trustCertificates = %{idp.home}/credentials/ldap-server.crt
+         idp.authn.LDAP.returnAttributes = ###List space-separated of attributes to retrieve from AD###
+         idp.authn.LDAP.baseDN = CN=Users,DC=ad,DC=example,DC=org
+         idp.authn.LDAP.userFilter = (sAMAccountName={user})
+         idp.authn.LDAP.bindDN = CN=idpuser,DC=ad,DC=example,DC=org
+         idp.authn.LDAP.bindDNCredential = ###LDAP_IDPUSER_PASSWORD###
+
+         idp.authn.LDAP.searchFilter = (sAMAccountName=$resolutionContext.principal)
+
+         # LDAP attribute configuration, see attribute-resolver.xml
+         # Note, this likely won't apply to the use of legacy V2 resolver configurations
+         idp.attribute.resolver.LDAP.ldapURL             = %{idp.authn.LDAP.ldapURL}
+         idp.attribute.resolver.LDAP.connectTimeout      = %{idp.authn.LDAP.connectTimeout:PT3S}
+         idp.attribute.resolver.LDAP.responseTimeout     = %{idp.authn.LDAP.responseTimeout:PT3S}
+         idp.attribute.resolver.LDAP.baseDN              = %{idp.authn.LDAP.baseDN:undefined}
+         idp.attribute.resolver.LDAP.bindDN              = %{idp.authn.LDAP.bindDN:undefined}
+         idp.attribute.resolver.LDAP.bindDNCredential    = %{idp.authn.LDAP.bindDNCredential:undefined}
+         idp.attribute.resolver.LDAP.useStartTLS         = %{idp.authn.LDAP.useStartTLS:true}
+         idp.attribute.resolver.LDAP.trustCertificates   = %{idp.authn.LDAP.trustCertificates:undefined}
+         idp.attribute.resolver.LDAP.searchFilter        = %{idp.authn.LDAP.searchFilter:undefined}
+         idp.attribute.resolver.LDAP.returnAttributes    = %{idp.authn.LDAP.returnAttributes:undefined}
+         ```
+
+       * Solution 2: LDAP + TLS:
+
+         ```properties
+         idp.authn.LDAP.authenticator = bindSearchAuthenticator
+         idp.authn.LDAP.ldapURL = ldaps://ldap.example.org:636
+         idp.authn.LDAP.useStartTLS = false
+         idp.authn.LDAP.useSSL = true
+         idp.authn.LDAP.sslConfig = certificateTrust
+         idp.authn.LDAP.trustCertificates = %{idp.home}/credentials/ldap-server.crt
+         idp.authn.LDAP.returnAttributes = ###List space-separated of attributes to retrieve from AD###
+         idp.authn.LDAP.baseDN = CN=Users,DC=ad,DC=example,DC=org
+         idp.authn.LDAP.userFilter = (sAMAccountName={user})
+         idp.authn.LDAP.bindDN = CN=idpuser,DC=ad,DC=example,DC=org
+         idp.authn.LDAP.bindDNCredential = ###LDAP_IDPUSER_PASSWORD###
+         idp.authn.LDAP.searchFilter = (sAMAccountName=$resolutionContext.principal)
+
+         # LDAP attribute configuration, see attribute-resolver.xml
+         # Note, this likely won't apply to the use of legacy V2 resolver configurations
+         idp.attribute.resolver.LDAP.ldapURL             = %{idp.authn.LDAP.ldapURL}
+         idp.attribute.resolver.LDAP.connectTimeout      = %{idp.authn.LDAP.connectTimeout:PT3S}
+         idp.attribute.resolver.LDAP.responseTimeout     = %{idp.authn.LDAP.responseTimeout:PT3S}
+         idp.attribute.resolver.LDAP.baseDN              = %{idp.authn.LDAP.baseDN:undefined}
+         idp.attribute.resolver.LDAP.bindDN              = %{idp.authn.LDAP.bindDN:undefined}
+         idp.attribute.resolver.LDAP.bindDNCredential    = %{idp.authn.LDAP.bindDNCredential:undefined}
+         idp.attribute.resolver.LDAP.useStartTLS         = %{idp.authn.LDAP.useStartTLS:true}
+         idp.attribute.resolver.LDAP.trustCertificates   = %{idp.authn.LDAP.trustCertificates:undefined}
+         idp.attribute.resolver.LDAP.searchFilter        = %{idp.authn.LDAP.searchFilter:undefined}
+         idp.attribute.resolver.LDAP.returnAttributes    = %{idp.authn.LDAP.returnAttributes:undefined}
+         ```
+
+       * Solution 3: plain LDAP
+
+         ```properties
+         idp.authn.LDAP.authenticator = bindSearchAuthenticator
+         idp.authn.LDAP.ldapURL = ldap://ldap.example.org:389
+         idp.authn.LDAP.useStartTLS = false
+         idp.authn.LDAP.useSSL = false
+         idp.authn.LDAP.returnAttributes = ###List space-separated of attributes to retrieve from AD###
+         idp.authn.LDAP.baseDN = CN=Users,DC=ad,DC=example,DC=org
+         idp.authn.LDAP.userFilter = (sAMAccountName={user})
+         idp.authn.LDAP.bindDN = CN=idpuser,DC=ad,DC=example,DC=org
+         idp.authn.LDAP.bindDNCredential = ###LDAP_IDPUSER_PASSWORD###
+         idp.authn.LDAP.searchFilter = (sAMAccountName=$resolutionContext.principal)
+
+         # LDAP attribute configuration, see attribute-resolver.xml
+         # Note, this likely won't apply to the use of legacy V2 resolver configurations
+         idp.attribute.resolver.LDAP.ldapURL             = %{idp.authn.LDAP.ldapURL}
+         idp.attribute.resolver.LDAP.connectTimeout      = %{idp.authn.LDAP.connectTimeout:PT3S}
+         idp.attribute.resolver.LDAP.responseTimeout     = %{idp.authn.LDAP.responseTimeout:PT3S}
+         idp.attribute.resolver.LDAP.baseDN              = %{idp.authn.LDAP.baseDN:undefined}
+         idp.attribute.resolver.LDAP.bindDN              = %{idp.authn.LDAP.bindDN:undefined}
+         idp.attribute.resolver.LDAP.bindDNCredential    = %{idp.authn.LDAP.bindDNCredential:undefined}
+         idp.attribute.resolver.LDAP.useStartTLS         = %{idp.authn.LDAP.useStartTLS:true}
+         idp.attribute.resolver.LDAP.searchFilter        = %{idp.authn.LDAP.searchFilter:undefined}
+         idp.attribute.resolver.LDAP.returnAttributes    = %{idp.authn.LDAP.returnAttributes:undefined}
+         ```
+
        If you decide to use the Solution 3, remove or comment the following directives from your Attribute Resolver file:
-      
+
        ```xml
        Line 1:  useStartTLS="%{idp.attribute.resolver.LDAP.useStartTLS:true}"
        Line 2:  trustFile="%{idp.attribute.resolver.LDAP.trustCertificates}"
@@ -889,7 +1020,8 @@ By default, a transient NameID will always be released to the Service Provider i
 
 1. Define which attributes your IdP can manage into your Attribute Resolver file. Here you can find a sample **attribute-resolver-sample.xml** as example:
     * Download the sample attribute resolver provided:
-      `wget https://github.com/ConsortiumGARR/idem-tutorials/raw/master/idem-fedops/HOWTO-Shibboleth/Identity%20Provider/utils/attribute-resolver-sample.xml -O /opt/shibboleth-idp/conf/attribute-resolver-sample.xml`
+      * For OpenLDAP use: `wget https://github.com/ConsortiumGARR/idem-tutorials/raw/master/idem-fedops/HOWTO-Shibboleth/Identity%20Provider/utils/attribute-resolver-sample.xml -O /opt/shibboleth-idp/conf/attribute-resolver-sample.xml`
+      * For AD use: `wget https://github.com/ConsortiumGARR/idem-tutorials/raw/master/idem-fedops/HOWTO-Shibboleth/Identity%20Provider/utils/attribute-resolver-AD-sample.xml -O /opt/shibboleth-idp/conf/attribute-resolver-sample.xml`
     
     * Configure the right owner/group:
       `chown jetty:jetty /opt/shibboleth-idp/conf/attribute-resolver-sample.xml`
