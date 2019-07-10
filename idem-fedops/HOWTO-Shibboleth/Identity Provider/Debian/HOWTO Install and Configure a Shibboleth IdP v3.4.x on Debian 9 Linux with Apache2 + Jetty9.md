@@ -960,7 +960,7 @@ Translate the IdP messages in your language:
 	      
 	- Remove comment from SingleLogoutService endpoints
 
-        - In the middle of <SingleSignOnService> and <SingleLogoutService> endpoints add:
+        - Between the last <SingleSignOnService> and the first <SingleLogoutService> endpoints add:
           <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</NameIDFormat>
           <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</NameIDFormat>
 
@@ -1259,7 +1259,7 @@ Translate the IdP messages in your language:
           <ArtifactResolutionService Binding="urn:oasis:names:tc:SAML:1.0:bindings:SOAP-binding" Location="https://idp.example.org:8443/idp/profile/SAML1/SOAP/ArtifactResolution" index="1"/>
           (and modify the index value of the next one to “1”)
 
-        – In the middle of <SingleSignOnService> and <SingleLogoutService> endpoints add:
+        - Between the last <SingleSignOnService> and the first <SingleLogoutService> endpoints add:
           <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</NameIDFormat>
           <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</NameIDFormat>
 
