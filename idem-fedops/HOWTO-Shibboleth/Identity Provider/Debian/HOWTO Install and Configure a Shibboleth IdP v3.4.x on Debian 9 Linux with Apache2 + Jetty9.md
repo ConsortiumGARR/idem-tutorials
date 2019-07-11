@@ -823,7 +823,11 @@ By default, a transient NameID will always be released to the Service Provider i
 
 ### Configure the Directory (openLDAP) Connection
 
-1. Connect the openLDAP to the IdP to allow the authentication of the users:
+1. Check that you can reach the Directory from your IDP server:
+   * For Active Directory: `ldapsearch -x -h <LDAP-SERVER-FQDN-OR-IP> -D 'CN=idpuser,CN=Users,DC=ad,DC=aai-test,DC=garr,DC=it' -w '<IDPUSER-PASSWORD>' -b "CN=Users,DC=ad,DC=aai-test,DC=garr,DC=it"`
+   * For OpenLDAP: `ldapsearch -x -h <LDAP-SERVER-FQDN-OR-IP> -D 'cn=idpuser,ou=system,dc=example,dc=org' -w '<IDPUSER-PASSWORD>' -b "ou=people,dc=example,dc=org"`
+
+2. Connect the openLDAP to the IdP to allow the authentication of the users:
    * `vim /opt/shibboleth-idp/conf/ldap.properties`
 
      (with **TLS** solutions we consider to have the LDAP certificate into `/opt/shibboleth-idp/credentials/ldap-server.crt`).
