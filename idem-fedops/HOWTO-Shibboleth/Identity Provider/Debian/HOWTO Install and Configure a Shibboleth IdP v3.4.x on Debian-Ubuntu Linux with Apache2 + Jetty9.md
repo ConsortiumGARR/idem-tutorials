@@ -1,4 +1,4 @@
-# HOWTO Install and Configure a Shibboleth IdP v3.4.x on Debian 9 Linux with Apache2 + Jetty9 
+# HOWTO Install and Configure a Shibboleth IdP v3.4.x on Debian-Ubuntu Linux with Apache2 + Jetty9 
 
 [comment]: # (<img width="120px" src="https://wiki.idem.garr.it/IDEM_Approved.png" />)
 
@@ -45,6 +45,7 @@
  * CPU: 2 Core
  * RAM: 4 GB
  * HDD: 20 GB
+ * OS: Debian 9 / Ubuntu 18.04
 
 ## Software that will be installed
 
@@ -1433,17 +1434,17 @@ Translate the IdP messages in your language:
 1. Become ROOT:
    * `sudo su -`
 
-2. Create a DUMP of `shibpid` table from the previous DB `userdb` on the OLD IdP:
+2. Create a DUMP of `shibpid` table from the previous DB `shibboleth` on the OLD IdP:
    * `cd /tmp`
-   * `mysqldump --complete-insert --no-create-db --no-create-info -u root -p userdb shibpid > /tmp/userdb_shibpid.sql`
+   * `mysqldump --complete-insert --no-create-db --no-create-info -u root -p shibboleth shibpid > /tmp/shibboleth_shibpid.sql`
 
-3. Move the `/tmp/userdb_shibpid.sql` of old IdP into `/tmp/userdb_shibpid.sql` on the new IdP.
+3. Move the `/tmp/shibboleth_shibpid.sql` of old IdP into `/tmp/shibboleth_shibpid.sql` on the new IdP.
  
-4. Import the content of `/tmp/userdb_shibpid.sql` into the DB of the new IDP:
-   * `cd /tmp ; mysql -u root -p shibboleth < /tmp/userdb_shibpid.sql`
+4. Import the content of `/tmp/shibboleth_shibpid.sql` into the DB of the new IDP:
+   * `cd /tmp ; mysql -u root -p shibboleth < /tmp/shibboleth_shibpid.sql`
 
-5. Delete `/tmp/userdb_shibpid.sql`:
-   * `rm /tmp/userdb_shibpid.sql`
+5. Delete `/tmp/shibboleth_shibpid.sql`:
+   * `rm /tmp/shibboleth_shibpid.sql`
    
 ### Appendix E: Useful logs to find problems
 
