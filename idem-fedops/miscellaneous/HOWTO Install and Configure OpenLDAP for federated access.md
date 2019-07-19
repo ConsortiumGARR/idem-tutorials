@@ -266,6 +266,12 @@
      eduPersonAffiliation: student
      eduPersonAffiliation: staff
      eduPersonAffiliation: member
+     eduPersonScopedAffiliation: member@example.org
+     eduPersonScopedAffiliation: staff@example.org
+     eduPersonScopedAffiliation: student@example.org
+     eduPersonPrincipalName: user1@example.org
+     eduPersonEntitlement: urn:mace:terena.org:tcs:escience-user
+     eduPersonEntitlement: urn:mace:terena.org:tcs:personal-user
      schacHomeOrganization: example.org
      schacHomeOrganizationType: urn:mace:terena.org:schac:homeOrganizationType:it:university
      ```
