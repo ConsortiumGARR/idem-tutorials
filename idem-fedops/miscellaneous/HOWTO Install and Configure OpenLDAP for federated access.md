@@ -185,30 +185,6 @@
 
    2. `sudo ldapadd -Q -Y EXTERNAL -H ldapi:/// -f /etc/ldap/scratch/add_memberof.ldif`
 
-   3. `sudo vim /etc/ldap/scratch/add_refint1.ldif`
-
-      ```bash
-      dn: cn=module{1},cn=config
-      add: olcmoduleload
-      olcmoduleload: refint   
-      ```
-
-   4. `sudo ldapmodify -Q -Y EXTERNAL -H ldapi:/// -f /etc/ldap/scratch/add_refint1.ldif`
-
-   5. `sudo vim /etc/ldap/scratch/add_refint2.ldif`
-
-      ```bash
-      dn: olcOverlay={1}refint,olcDatabase={1}mdb,cn=config
-      objectClass: olcConfig
-      objectClass: olcOverlayConfig
-      objectClass: olcRefintConfig
-      objectClass: top
-      olcOverlay: {1}refint
-      olcRefintAttribute: memberof member manager owner
-      ```
-
-   6. `sudo ldapadd -Q -Y EXTERNAL -H ldapi:/// -f /etc/ldap/scratch/add_refint2.ldif`
-
 8. Improve performance:
    * `sudo vim /etc/ldap/scratch/olcDbIndex.ldif`
 
@@ -224,8 +200,8 @@
      olcDbIndex: entryUUID eq
      olcDbIndex: sn pres,eq,sub
      olcDbIndex: mail pres,eq,sub
+     
      ```
-
    * `sudo ldapmodify -Y EXTERNAL -H ldapi:/// -f /etc/ldap/scratch/olcDbIndex.ldif`
 
 9. Configure Logging:
