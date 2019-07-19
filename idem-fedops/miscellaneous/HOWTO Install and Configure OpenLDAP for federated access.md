@@ -200,7 +200,7 @@
      olcDbIndex: entryUUID eq
      olcDbIndex: sn pres,eq,sub
      olcDbIndex: mail pres,eq,sub
-     
+     olcDbIndex: eduPersonPrincipalName eq
      ```
    * `sudo ldapmodify -Y EXTERNAL -H ldapi:/// -f /etc/ldap/scratch/olcDbIndex.ldif`
 
