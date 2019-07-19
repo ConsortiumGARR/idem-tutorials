@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  This file is an EXAMPLE policy file. It's behaviour is to release all
+  attributes referenced in attribute-resolver-sample.xml for SPs that are not
+  in eduGAIN.
+
+  It can easily be tuned to release only required attributes by changing
+  <AttributeRule attributeID="XXXXXX" permitAny="true" />
+  to
+  <AttributeRule attributeID="XXXXXX">
+      <PermitValueRule xsi:type="AttributeInMetadata" onlyIfRequired="true" />
+  </AttributeRule>
+
+  for each attribute
+ -->
+<AttributeFilterPolicyGroup id="ShibbolethFilterPolicyAll"
+        xmlns="urn:mace:shibboleth:2.0:afp"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="urn:mace:shibboleth:2.0:afp http://shibboleth.net/schema/idp/shibboleth-afp.xsd">
+
+    <AttributeFilterPolicy id="releaseToAllCynetSPs">
+        <PolicyRequirementRule xsi:type="RegistrationAuthority" registrars="https://cif.cynet.ac.cy"/>
+
+        <AttributeRule attributeID="eduPersonTargetedID" permitAny="true" />
+        <AttributeRule attributeID="eduPersonPrincipalName" permitAny="true" />
+        <AttributeRule attributeID="displayName" permitAny="true" />
+        <AttributeRule attributeID="commonName" permitAny="true" />
+        <AttributeRule attributeID="email" permitAny="true" />
+        <AttributeRule attributeID="eduPersonAffiliation" permitAny="true" />
+        <AttributeRule attributeID="eduPersonScopedAffiliation" permitAny="true" />
+        <AttributeRule attributeID="schacHomeOrganization" permitAny="true" />
+        <AttributeRule attributeID="schacHomeOrganizationType" permitAny="true" />
+        <AttributeRule attributeID="surname" permitAny="true" />
+        <AttributeRule attributeID="uid" permitAny="true" />
+        <AttributeRule attributeID="eduPersonEntitlement" permitAny="true" />
+        <AttributeRule attributeID="eduPersonOrgUnitDN" permitAny="true" />
+        <AttributeRule attributeID="title" permitAny="true" />
+        <AttributeRule attributeID="preferredLanguage" permitAny="true" />
+        <AttributeRule attributeID="eduPersonOrcid" permitAny="true" />
+        <AttributeRule attributeID="eduPersonOrgDN" permitAny="true" />
+        <AttributeRule attributeID="telephoneNumber" permitAny="true" />
+        <AttributeRule attributeID="givenName" permitAny="true" />
+        <AttributeRule attributeID="mobile" permitAny="true" />
+        <AttributeRule attributeID="facsimileTelephoneNumber" permitAny="true" />
+
+    </AttributeFilterPolicy>
+
+</AttributeFilterPolicyGroup>

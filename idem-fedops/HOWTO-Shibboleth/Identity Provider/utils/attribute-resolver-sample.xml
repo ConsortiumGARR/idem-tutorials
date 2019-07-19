@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<AttributeResolver
+  xmlns="urn:mace:shibboleth:2.0:resolver"
+  xmlns:sec="urn:mace:shibboleth:2.0:security"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="urn:mace:shibboleth:2.0:resolver http://shibboleth.net/schema/idp/shibboleth-attribute-resolver.xsd
+                      urn:mace:shibboleth:2.0:security http://shibboleth.net/schema/idp/shibboleth-security.xsd">
+
+  <!-- ========================================== -->
+  <!-- Attribute Definitions -->
+  <!-- ========================================== -->
+
+  <!-- eduGAIN attribute definitions -->
+  <AttributeDefinition xsi:type="Simple" id="surname">
+    <InputDataConnector ref="myLDAP" attributeNames="sn"/>
+    <DisplayName xml:lang="en">Surname</DisplayName>
+    <DisplayName xml:lang="it">Cognome</DisplayName>
+    <DisplayDescription xml:lang="en">Surname of user</DisplayDescription>
+    <DisplayDescription xml:lang="it">Cognome utente</DisplayDescription>
+    <AttributeEncoder xsi:type="SAML2String" name="urn:oid:2.5.4.4" friendlyName="sn" encodeType="false"/>
+  </AttributeDefinition>
+
+  <AttributeDefinition xsi:type="Simple" id="uid">
+    <InputDataConnector ref="myLDAP" attributeNames="uid"/>
+    <DisplayName xml:lang="en">UserID</DisplayName>
+    <DisplayName xml:lang="it">UserID</DisplayName>
+    <DisplayDescription xml:lang="en">User Identifier</DisplayDescription>
+    <DisplayDescription xml:lang="it">Identificativo di questo utente</DisplayDescription>
+    <AttributeEncoder xsi:type="SAML2String" name="urn:oid:0.9.2342.19200300.100.1.1" friendlyName="uid" encodeType="false"/>
+  </AttributeDefinition>
+
+  <AttributeDefinition scope="%{idp.scope}" xsi:type="Scoped" id="eduPersonScopedAffiliation">
+    <InputAttributeDefinition ref="eduPersonAffiliation"/>
+    <DisplayName xml:lang="en">Scoped Affiliation</DisplayName>
+    <DisplayName xml:lang="it">Affiliazione con ambito</DisplayName>
+    <DisplayDescription xml:lang="en">Affiliation Scoped: Type of affiliation with Home Organization with scope</DisplayDescription>
+    <DisplayDescription xml:lang="it">Affiliazione con ambito: ruolo ricoperto con dominio dell'Organizzazione</DisplayDescription>
+    <AttributeEncoder xsi:type="SAML2ScopedString" name="urn:oid:1.3.6.1.4.1.5923.1.1.1.9" friendlyName="eduPersonScopedAffiliation" encodeType="false"/>
+  </AttributeDefinition>
+
+  <AttributeDefinition xsi:type="Simple" id="eduPersonAffiliation">
+    <InputDataConnector ref="myLDAP" attributeNames="eduPersonAffiliation"/>
+    <DisplayName xml:lang="en">Affiliation</DisplayName>
+    <DisplayName xml:lang="it">Affiliazione</DisplayName>
+    <DisplayDescription xml:lang="en">Affiliation: Type of affiliation with Home Organization</DisplayDescription>
+    <DisplayDescription xml:lang="it">Affiliazione: Tipo di relazione mantenuta con la propria organizzazione</DisplayDescription>
+    <AttributeEncoder xsi:type="SAML2String" name="urn:oid:1.3.6.1.4.1.5923.1.1.1.1" friendlyName="eduPersonAffiliation" encodeType="false"/>
+  </AttributeDefinition>
+
+  <AttributeDefinition scope="%{idp.scope}" xsi:type="Scoped" id="eduPersonPrincipalName">
+    <InputAttributeDefinition ref="uid"/>
+    <DisplayName xml:lang="en">eduPersonPrincipalName</DisplayName>
+    <DisplayName xml:lang="it">eduPersonPrincipalName</DisplayName>
+    <DisplayDescription xml:lang="en">Unique and persistent Identifier of a person</DisplayDescription>
+    <DisplayDescription xml:lang="it">Identificativo unico persistente di questo utente</DisplayDescription>
+    <AttributeEncoder xsi:type="SAML2ScopedString" name="urn:oid:1.3.6.1.4.1.5923.1.1.1.6" friendlyName="eduPersonPrincipalName" encodeType="false"/>
+  </AttributeDefinition>
+
+  <AttributeDefinition xsi:type="Simple" id="commonName">
+    <InputDataConnector ref="myLDAP" attributeNames="cn"/>
+    <DisplayName xml:lang="en">CommonName</DisplayName>
+    <DisplayName xml:lang="it">Nome e Cognome</DisplayName>
+    <DisplayDescription xml:lang="en">One or more names that should appear in white-pages-like applications of this person</DisplayDescription>
+    <DisplayDescription xml:lang="it">Nome e Cognome proprio di una persona</DisplayDescription>
+    <AttributeEncoder xsi:type="SAML2String" name="urn:oid:2.5.4.3" friendlyName="cn" encodeType="false"/>
+  </AttributeDefinition>
+
+  <AttributeDefinition xsi:type="SAML2NameID" nameIdFormat="urn:oasis:names:tc:SAML:2.0:nameid-format:persistent" id="eduPersonTargetedID">
+    <InputDataConnector ref="computed" attributeNames="computedId"/>
+    <DisplayName xml:lang="en">Opaque per-service identifier eduPersonTargetedID</DisplayName>
+    <DisplayName xml:lang="it">Identificatore opaco diverso per ogni servizio eduPersonTargetedID</DisplayName>
+    <DisplayDescription xml:lang="en">Opaque per-service identifier eduPersonTargetedID</DisplayDescription>
+    <DisplayDescription xml:lang="it">Identificatore opaco diverso per ogni servizio eduPersonTargetedID</DisplayDescription>
+    <AttributeEncoder xsi:type="SAML2XMLObject" name="urn:oid:1.3.6.1.4.1.5923.1.1.1.10" friendlyName="eduPersonTargetedID" encodeType="false"/>
+  </AttributeDefinition>
+
+  <AttributeDefinition xsi:type="Simple" id="email">
+    <InputDataConnector ref="myLDAP" attributeNames="mail"/>
+    <DisplayName xml:lang="en">E-mail</DisplayName>
+    <DisplayName xml:lang="it">E-mail</DisplayName>
+    <DisplayDescription xml:lang="en">E-mail: Preferred address for email to be sent to this person</DisplayDescription>
+    <DisplayDescription xml:lang="it">E-mail: Indirizzo e-mail preferito dall'utente</DisplayDescription>
+    <AttributeEncoder xsi:type="SAML2String" name="urn:oid:0.9.2342.19200300.100.1.3" friendlyName="mail" encodeType="false"/>
+  </AttributeDefinition>
+
+  <AttributeDefinition xsi:type="Simple" id="displayName">
+    <InputDataConnector ref="myLDAP" attributeNames="displayName"/>
+    <DisplayName xml:lang="en">Display name</DisplayName>
+    <DisplayName xml:lang="it">Nome visualizzato</DisplayName>
+    <DisplayDescription xml:lang="en">Preferred name of a person to be used when displaying entries</DisplayDescription>
+    <DisplayDescription xml:lang="it">Nome che una persona preferisce visualizzare</DisplayDescription>
+    <AttributeEncoder xsi:type="SAML2String" name="urn:oid:2.16.840.1.113730.3.1.241" friendlyName="displayName" encodeType="false"/>
+  </AttributeDefinition>
+
+  <!-- SCHAC Attributes -->
+  <AttributeDefinition xsi:type="Simple" id="schacHomeOrganization">
+    <InputDataConnector ref="staticAttributes" attributeNames="schacHomeOrganization"/>
+    <DisplayName xml:lang="en">Institution Domain</DisplayName>
+    <DisplayName xml:lang="it">Dominio Istituzione</DisplayName>
+    <DisplayDescription xml:lang="en">Domain of the institution</DisplayDescription>
+    <DisplayDescription xml:lang="it">Dominio dell'istituzione</DisplayDescription>
+    <AttributeEncoder xsi:type="SAML2String" name="urn:oid:1.3.6.1.4.1.25178.1.2.9" friendlyName="schacHomeOrganization" encodeType="false"/>
+  </AttributeDefinition>
+
+  <AttributeDefinition xsi:type="Simple" id="schacHomeOrganizationType">
+    <InputDataConnector ref="staticAttributes" attributeNames="schacHomeOrganizationType"/>
+    <DisplayName xml:lang="en">Home organization type (international)</DisplayName>
+    <DisplayName xml:lang="it">Tipo dell'organizzazione di appartenenza (internazionale)</DisplayName>
+    <DisplayDescription xml:lang="en">Home Organization Type: Type of a Home Organization</DisplayDescription>
+    <DisplayDescription xml:lang="it">Tipo dell'organizzazione di appartenenza</DisplayDescription>
+    <AttributeEncoder xsi:type="SAML2String" name="urn:oid:1.3.6.1.4.1.25178.1.2.10" friendlyName="schacHomeOrganizationType" encodeType="false"/>
+  </AttributeDefinition>
+  
+  <!-- Other useful attribute definitions -->
+  <AttributeDefinition xsi:type="Simple" id="eduPersonEntitlement">
+    <InputDataConnector ref="myLDAP" attributeNames="eduPersonEntitlement"/>
+    <DisplayName xml:lang="en">Entitlement</DisplayName>
+    <DisplayName xml:lang="it">Entitlement</DisplayName>
+    <DisplayDescription xml:lang="en">Entitlement: URI (either URL or URN) that indicates a set of rights to specific resources based on an agreement across the releavant community</DisplayDescription>
+    <DisplayDescription xml:lang="it">Entitlement: URI (sia URL o URN) che rappresenta diritti specifici d'accesso validi in tutta la community</DisplayDescription>
+    <AttributeEncoder xsi:type="SAML2String" name="urn:oid:1.3.6.1.4.1.5923.1.1.1.7" friendlyName="eduPersonEntitlement" encodeType="false"/>
+  </AttributeDefinition>
+
+  <AttributeDefinition xsi:type="Simple" id="eduPersonOrcid">
+    <InputDataConnector ref="myLDAP" attributeNames="eduPersonOrcid"/>
+    <DisplayName xml:lang="en">ORCID</DisplayName>
+    <DisplayName xml:lang="it">ORCID</DisplayName>
+    <DisplayDescription xml:lang="en">ORCID user identifier released and managed by orcid.org</DisplayDescription>
+    <DisplayDescription xml:lang="it">Identificativi ricercatore ORCID dell’utente assegnati e gestiti da orcid.org</DisplayDescription>
+    <AttributeEncoder xsi:type="SAML2String" name="urn:oid:1.3.6.1.4.1.5923.1.1.1.16" friendlyName="eduPersonOrcid" encodeType="false"/>
+  </AttributeDefinition>
+
+  <AttributeDefinition xsi:type="Simple" id="givenName">
+    <InputDataConnector ref="myLDAP" attributeNames="givenName"/>
+    <DisplayName xml:lang="en">Nome</DisplayName>
+    <DisplayName xml:lang="it">Nome</DisplayName>
+    <DisplayDescription xml:lang="en">Given name of a person</DisplayDescription>
+    <DisplayDescription xml:lang="it">Nome proprio di una persona</DisplayDescription>
+    <AttributeEncoder xsi:type="SAML2String" name="urn:oid:2.5.4.42" friendlyName="givenName" encodeType="false"/>
+  </AttributeDefinition>
+
+  <!-- ========================================== -->
+  <!-- Data Connectors -->
+  <!-- ========================================== -->
+
+  <!-- LDAP Connector -->
+  <!-- Remember to remove "trustFile" and "useStartTLS" if you use plain LDAP connection -->
+  <DataConnector
+    id="myLDAP"
+    xsi:type="LDAPDirectory"
+    ldapURL="%{idp.attribute.resolver.LDAP.ldapURL}"
+    baseDN="%{idp.attribute.resolver.LDAP.baseDN}"
+    principal="%{idp.attribute.resolver.LDAP.bindDN}"
+    principalCredential="%{idp.attribute.resolver.LDAP.bindDNCredential}"
+    trustFile="%{idp.attribute.resolver.LDAP.trustCertificates}"
+    useStartTLS="%{idp.attribute.resolver.LDAP.useStartTLS:true}">
+    <FilterTemplate>
+      <![CDATA[
+                %{idp.attribute.resolver.LDAP.searchFilter}
+            ]]>
+    </FilterTemplate>
+    <ConnectionPool
+        minPoolSize="%{idp.pool.LDAP.minSize:3}"
+        maxPoolSize="%{idp.pool.LDAP.maxSize:10}"
+        blockWaitTime="%{idp.pool.LDAP.blockWaitTime:PT3S}"
+        validatePeriodically="%{idp.pool.LDAP.validatePeriodically:true}"
+        validateTimerPeriod="%{idp.pool.LDAP.validatePeriod:PT5M}"
+        expirationTime="%{idp.pool.LDAP.idleTime:PT10M}"
+        failFastInitialize="%{idp.pool.LDAP.failFastInitialize:false}" />
+
+    <ReturnAttributes>*</ReturnAttributes>
+  </DataConnector>
+
+  <!-- DataConector for pairwise-id (example depends on saml-nameid.properties). -->
+  <DataConnector id="computed" xsi:type="ComputedId"
+    generatedAttributeID="computedId"
+    salt="%{idp.persistentId.salt}"
+    algorithm="%{idp.persistentId.algorithm:SHA}"
+    encoding="%{idp.persistentId.encoding:BASE32}">
+
+    <InputDataConnector ref="myLDAP" attributeNames="%{idp.persistentId.sourceAttribute}" />
+
+  </DataConnector>
+
+  <!-- Data Connector for eduPersonTargetedID -->
+  <!-- In Version 3.4.x a Warning about deprecation will be issued. This can be ignored (the attribute is required by the schema). However this attribute will be removed in V4.x and the source attribute supplied using <InputAttributeDefinition> and
+  <InputDataConnector> elements. -->
+  <!-- 
+  <DataConnector id="myStoredId" xsi:type="StoredId" generatedAttributeID="persistentID" salt="%{idp.persistentId.salt}" sourceAttributeID="%{idp.persistentId.sourceAttribute}" queryTimeout="0">
+    <InputAttributeDefinition ref="%{idp.persistentId.sourceAttribute}"/>
+    <BeanManagedConnection>MyDataSource</BeanManagedConnection>
+  </DataConnector>
+  -->
+
+  <!-- 
+      Static Data Connector for SCHAC attributes using Active Directory
+      SchacHomeOrgType usage: https://wiki.refeds.org/display/STAN/SchacHomeOrgType+usage
+  -->
+  <DataConnector id="staticAttributes" xsi:type="Static">
+    <Attribute id="schacHomeOrganization">
+      <Value>%{idp.scope}</Value>
+    </Attribute>
+    <Attribute id="schacHomeOrganizationType">
+      <Value>urn:schac:homeOrganizationType:int:university</Value>
+    </Attribute>
+  </DataConnector>
+
+</AttributeResolver>

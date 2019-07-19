@@ -116,15 +116,16 @@
    * ```vim /etc/hosts```
   
      ```bash
-     127.0.1.1 sp.example.org sp
+     192.168.XX.YY sp.example.org sp
      ```
    (*Replace ```sp.example.org``` with your SP Full Qualified Domain Name*)
+   (*Replace ```192.168.XX.YY``` with your SP's private IP*)
 
 2. Be sure that your firewall **doesn't block** the traffic on port **443** (or you can't access to your SP)
   
    (OPTIONAL) Create a Certificate and a Key self-signed for HTTPS if you don't have yet the official ones provided by the Certificate Authority(DigicertCA):
    * ```bash
-     openssl req -x509 -newkey rsa:4096 -keyout /etc/ssl/private/ssl-sp.key -out /etc/ssl/certs/ssl-sp.crt -nodes -days 1095
+     openssl req -x509 -newkey rsa:4096 -keyout /etc/pki/tls/private/ssl-sp.key -out /etc/pki/tls/certs/ssl-sp.crt -nodes -days 1095
      ```
 
 ### Configure SSL on Apache2
@@ -132,18 +133,19 @@
 1. Install "mod_ssl" to enable HTTPS configuration:
    * ```yum install mod_ssl -y```
 
-2. Modify the file ```/etc/apache2/sites-available/default-ssl.conf``` as follows:
+2. Modify the file ```/etc/httpd/conf.d/ssl.conf``` as follows:
 
    ```apache
+   ...
    SSLStaplingCache shmcb:/var/run/ocsp(128000)
    <VirtualHost _default_:443>
-   DocumentRoot "/var/www/html"
+   DocumentRoot /var/www/html
    ServerName sp.example.org:443
    ServerAdmin admin@example.org
    ...
    SSLEngine On
    ...
-   SSLProtocol All -SSLv2 -SSLv3 -TLSv1 -TLSv1.1
+   SSLProtocol all -SSLv2 -SSLv3 -TLSv1 -TLSv1.1
    ...
    SSLCipherSuite "EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH"
    SSLHonorCipherOrder on
@@ -153,7 +155,7 @@
    SSLCertificateKeyFile /etc/pki/tls/private/ssl-sp.key
    ...
    SSLCACertificateFile /etc/pki/tls/certs/ca-bundle.crt
-   
+   ...
    # Disable SSL Compression
    SSLCompression Off
         
@@ -164,33 +166,22 @@
         
    # Enable HTTP Strict Transport Security with a 2 year duration
    Header always set Strict-Transport-Security "max-age=63072000;includeSubDomains;preload"
-   ...
    </VirtualHost>
    ```
 
 2. Reload Apache2 web server:
-   * ```service httpd```
+   * ```systemctl restart httpd.service```
 
 3. Configure Apache2 to open port **80** only for localhost:
-   * ```vim /etc/apache2/ports.conf```
+   * ```vim /etc/httpd/conf/httpd.conf```
 
      ```apache
-     # If you just change the port or add more ports here, you will likely also
-     # have to change the VirtualHost statement in
-     # /etc/apache2/sites-enabled/000-default.conf
-
+     ...
+     # Listen 12.34.56.78:80
      Listen 127.0.0.1:80
- 
-     <IfModule ssl_module>
-       Listen 443
-     </IfModule>
-    
-     <IfModule mod_gnutls.c>
-       Listen 443
-     </IfModule>
      ```
 5. Configure Apache2 to redirect all on HTTPS:
-   * ```vim /etc/apache2/sites-enabled/000-default.conf```
+   * ```vim /etc/httpd/conf.d/000-default.conf```
    
      ```apache
      <VirtualHost *:80>
@@ -230,7 +221,7 @@
 
      ```bash
      ...
-     <ApplicationDefaults entityID="https://sp3.example.org/shibboleth"
+     <ApplicationDefaults entityID="https://sp.example.org/shibboleth"
           REMOTE_USER="eppn subject-id pairwise-id persistent-id"
           cipherSuites="DEFAULT:!EXP:!LOW:!aNULL:!eNULL:!DES:!IDEA:!SEED:!RC4:!3DES:!kRSA:!SSLv2:!SSLv3:!TLSv1:!TLSv1.1">
      ...
@@ -276,12 +267,12 @@
    (change ```sp.example.org``` to you SP full qualified domain name)
 
 6. Register you SP on IDEM Entity Registry (your entity have to be approved by an IDEM Federation Operator before become part of IDEM Test Federation):
-   * Go to ```https://registry.idem.garr.it/``` and follow "Insert a New Service Provider into the IDEM Test Federation"
+   * Go to ```https://registry.idem.garr.it``` and follow "Insert a New Service Provider into the IDEM Test Federation"
 
 
 ### Configure an example federated resource "secure"
 
-1. Check to have the Apache2 configuration for the "secure" application on:
+1. Check to have the Apache configuration for the "secure" application on:
    * ```vim /etc/httpd/conf.d/shib.conf```
   
      ```bash
@@ -460,9 +451,9 @@
      echo "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==" | base64 -d > /var/www/html/track.png
      ```
 
-   * Result into /var/log/apache2/access.log:
+   * Result into /var/log/httpd/access.log:
      ```bash
-     ./apache2/access.log:193.206.129.66 - - [20/Sep/2018:15:05:07 +0000] "GET /track.png?idp=https://garr-idp-test.irccs.garr.it/idp/shibboleth&miss=-SHIB_givenName-SHIB_cn-SHIB_sn-SHIB_eppn-SHIB_schacHomeOrganization-SHIB_schacHomeOrganizationType HTTP/1.1" 404 637 "https://sp.example.org/Shibboleth.sso/AttrChecker?return=https%3A%2F%2Fsp.example.org%2FShibboleth.sso%2FSAML2%2FPOST%3Fhook%3D1%26target%3Dss%253Amem%253A43af2031f33c3f4b1d61019471537e5bc3fde8431992247b3b6fd93a14e9802d&target=https%3A%2F%2Fsp.example.org%2Fsecure%2F"
+     ./httpd/access.log:193.206.129.66 - - [20/Sep/2018:15:05:07 +0000] "GET /track.png?idp=https://garr-idp-test.irccs.garr.it/idp/shibboleth&miss=-SHIB_givenName-SHIB_cn-SHIB_sn-SHIB_eppn-SHIB_schacHomeOrganization-SHIB_schacHomeOrganizationType HTTP/1.1" 404 637 "https://sp.example.org/Shibboleth.sso/AttrChecker?return=https%3A%2F%2Fsp.example.org%2FShibboleth.sso%2FSAML2%2FPOST%3Fhook%3D1%26target%3Dss%253Amem%253A43af2031f33c3f4b1d61019471537e5bc3fde8431992247b3b6fd93a14e9802d&target=https%3A%2F%2Fsp.example.org%2Fsecure%2F"
      ```
 
 ### SE Linux

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  This file is an EXAMPLE policy file. It's behaviour is to release all
+  attributes referenced at:
+  https://wiki.geant.org/display/eduGAIN/IDP+Attribute+Profile+and+Recommended+Attributes (in any case)
+
+  It can easily be tuned to release only required attributes by changing
+  <AttributeRule attributeID="XXXXXX" permitAny="true" />
+  to
+  <AttributeRule attributeID="XXXXXX">
+      <PermitValueRule xsi:type="AttributeInMetadata" onlyIfRequired="true" />
+  </AttributeRule>
+
+  for each attribute
+ -->
+<AttributeFilterPolicyGroup id="ShibbolethFilterPolicyEduGAIN"
+        xmlns="urn:mace:shibboleth:2.0:afp"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="urn:mace:shibboleth:2.0:afp http://shibboleth.net/schema/idp/shibboleth-afp.xsd">
+
+    <AttributeFilterPolicy id="releaseToAllEdugainSPs">
+        <PolicyRequirementRule xsi:type="NOT">
+          <Rule xsi:type="RegistrationAuthority" registrars="https://cif.cynet.ac.cy"/>
+        </PolicyRequirementRule>
+
+        <AttributeRule attributeID="eduPersonTargetedID" permitAny="true" />
+        <AttributeRule attributeID="eduPersonPrincipalName" permitAny="true" />
+        <AttributeRule attributeID="displayName" permitAny="true" />
+        <AttributeRule attributeID="commonName" permitAny="true" />
+        <AttributeRule attributeID="email" permitAny="true" />
+        <AttributeRule attributeID="eduPersonAffiliation" permitAny="true" />
+        <AttributeRule attributeID="eduPersonScopedAffiliation" permitAny="true" />
+        <AttributeRule attributeID="schacHomeOrganization" permitAny="true" />
+        <AttributeRule attributeID="schacHomeOrganizationType" permitAny="true" />
+
+    </AttributeFilterPolicy>
+
+</AttributeFilterPolicyGroup>

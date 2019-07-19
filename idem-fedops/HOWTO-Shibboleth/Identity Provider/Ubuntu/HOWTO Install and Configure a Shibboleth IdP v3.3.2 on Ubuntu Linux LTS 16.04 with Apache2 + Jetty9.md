@@ -49,8 +49,8 @@
 ## Other Requirements
 
  * Put HTTPS credentials in the right place:
-   * HTTPS Server Certificate (Public Key) inside ```/etc/ssl/certs``` 
-   * HTTPS Server Key (Private Key) inside ```/etc/ssl/private```
+   * HTTPS Server Certificate (Public Key) inside `/etc/ssl/certs` 
+   * HTTPS Server Key (Private Key) inside `/etc/ssl/private`
    * HTTPS Certification Authority Certificate is already provided by Ubuntu packages
 
 ## Installation Instructions
@@ -58,53 +58,51 @@
 ### Install software requirements
 
 1. Become ROOT:
-   * ```sudo su -```
+   * `sudo su -`
 
 2. Change the default mirror with the GARR ones:
-   * ```nano /etc/apt/sources.list```
+   * `nano /etc/apt/sources.list`
    * CTRL+W (search)
    * CTRL+R (replace)
-   * Text to search: '```archive.ubuntu.com```'
-   * Text to replace: '```mi.mirror.garr.it```'
+   * Text to search: '`archive.ubuntu.com`'
+   * Text to replace: '`ubuntu.mirror.garr.it`'
    * CTRL+X (save and exit)
-   * ```apt-get update && apt-get upgrade```
+   * `apt-get update && apt-get upgrade`
   
 3. Install the packages required: 
-   * ```apt-get install vim default-jdk ca-certificates openssl apache2 ntp expat --no-install-recommends```
+   * `apt-get install vim default-jdk ca-certificates openssl apache2 ntp expat --no-install-recommends`
 
 4. Check that Java is working:
-   * ```update-alternatives --config java```
+   * `update-alternatives --config java`
 
 ### Configure the environment
 
-1. Modify your ```/etc/hosts```:
-   * ```vim /etc/hosts```
+1. Modify your `/etc/hosts`:
+   * `vim /etc/hosts`
   
-     ```bash
-     127.0.1.1 idp.example.org idp
-     ```
-   (*Replace ```idp.example.org``` with your IdP Full Qualified Domain Name*)
+        `127.0.1.1 idp.example.org idp`
+
+   (*Replace `idp.example.org` with your IdP Full Qualified Domain Name*)
 
 2. Be sure that your firewall **doesn't block** the traffic on port **443** (or you can't access to your IdP)
 
-3. Define the costant ```JAVA_HOME``` inside ```/etc/environment```:
-   * ```vim /etc/environment```
+3. Define the costant `JAVA_HOME` inside `/etc/environment`:
+   * `vim /etc/environment`
 
-     ```bash
-     JAVA_HOME=/usr/lib/jvm/default-java/jre
-     ```
-   * ```source /etc/environment```
-   * ```export JAVA_HOME=/usr/lib/jvm/default-java/jre```
+        `JAVA_HOME=/usr/lib/jvm/default-java/jre`
 
-4. Move the Certificate and the Key file for HTTPS server from ```/tmp/``` to ```/root/certificates```:
-   * ```chmod 400 /etc/ssl/private/idp-key-server.key```
-   * ```chmod 644 /etc/ssl/certs/idp-cert-server.crt```
+   * `source /etc/environment`
+   * `export JAVA_HOME=/usr/lib/jvm/default-java/jre`
+
+4. Move the Certificate and the Key file for HTTPS server from `/tmp/` to `/root/certificates`:
+   * `chmod 400 /etc/ssl/private/idp-key-server.key`
+   * `chmod 644 /etc/ssl/certs/idp-cert-server.crt`
 
    (OPTIONAL) Create a Certificate and a Key self-signed for HTTPS if you don't have the official ones provided by DigiCert:
-   * ```openssl req -x509 -newkey rsa:4096 -keyout /etc/ssl/private/idp-key-server.key -out /etc/ssl/certs/idp-cert-server.crt -nodes -days 1095```
+   * `openssl req -x509 -newkey rsa:4096 -keyout /etc/ssl/private/idp-key-server.key -out /etc/ssl/certs/idp-cert-server.crt -nodes -days 1095`
 
 5. Configure **/etc/default/jetty**:
-   * ```vim /etc/default/jetty```
+   * `vim /etc/default/jetty`
   
      ```bash
      JETTY_HOME=/usr/local/src/jetty-src
@@ -122,23 +120,23 @@
 ### Install Jetty 9 Web Server
 
 1. Become ROOT: 
-   * ```sudo su -```
+   * `sudo su -`
 
 2. Download and Extract Jetty:
-   * ```cd /usr/local/src```
-   * ```wget http://central.maven.org/maven2/org/eclipse/jetty/jetty-distribution/9.4.9.v20180320/jetty-distribution-9.4.9.v20180320.tar.gz```
-   * ```tar xzvf jetty-distribution-9.4.9.v20180320.tar.gz```
+   * `cd /usr/local/src`
+   * `wget http://central.maven.org/maven2/org/eclipse/jetty/jetty-distribution/9.4.9.v20180320/jetty-distribution-9.4.9.v20180320.tar.gz`
+   * `tar xzvf jetty-distribution-9.4.9.v20180320.tar.gz`
 
 3. Create an useful-for-updates `jetty-src` folder:
-   * ```ln -s jetty-distribution-9.4.9.v20180320 jetty-src```
+   * `ln -s jetty-distribution-9.4.9.v20180320 jetty-src`
 
 4. Create the user `jetty` that can run the web server:
-   * ```useradd -r -m jetty```
+   * `useradd -r -m jetty`
 
 5. Create your custom Jetty configuration that override the default ones:
-   * ```mkdir /opt/jetty```
-   * ```cd /opt/jetty```
-   * ```vim /opt/jetty/start.ini```
+   * `mkdir /opt/jetty`
+   * `cd /opt/jetty`
+   * `vim /opt/jetty/start.ini`
 
      ```bash
      #===========================================================
@@ -264,52 +262,52 @@
      ```
 
 6. Create the TMPDIR directory used by Jetty:
-   * ```mkdir /opt/jetty/tmp ; chown jetty:jetty /opt/jetty/tmp```
-   * ```chown -R jetty:jetty /opt/jetty/ /usr/local/src/jetty-src```
+   * `mkdir /opt/jetty/tmp ; chown jetty:jetty /opt/jetty/tmp`
+   * `chown -R jetty:jetty /opt/jetty/ /usr/local/src/jetty-src`
 
 7. Create the service loadable from command line:
-   * ```cd /etc/init.d```
-   * ```ln -s /usr/local/src/jetty-src/bin/jetty.sh jetty```
-   * ```update-rc.d jetty defaults```
+   * `cd /etc/init.d`
+   * `ln -s /usr/local/src/jetty-src/bin/jetty.sh jetty`
+   * `update-rc.d jetty defaults`
 
 8. Create the Jetty Log's folder:
-   * ```mkdir /var/log/jetty```
-   * ```mkdir /opt/jetty/logs```
-   * ```chown jetty:jetty /var/log/jetty /opt/jetty/logs```
+   * `mkdir /var/log/jetty`
+   * `mkdir /opt/jetty/logs`
+   * `chown jetty:jetty /var/log/jetty /opt/jetty/logs`
 
 9. Check if all settings are OK:
-   * ```service jetty check```
-   * ```service jetty start```
+   * `service jetty check`
+   * `service jetty start`
   
    (If you receive an error likes "*Job for jetty.service failed because the control process exited with error code. See "systemctl status jetty.service" and "journalctl -xe" for details.*", try this: 
-     * ```rm /var/run/jetty.pid```
-     * ```service jetty start```
+     * `rm /var/run/jetty.pid`
+     * `service jetty start`
 
 ### Install Shibboleth Identity Provider v3.3.2
 
 1. Become ROOT:
-   * ```sudo su -```
+   * `sudo su -`
 
 2. Install needed libraries for Shibboleth:
-   * ```apt-get install libmysql-java libcommons-dbcp-java libcommons-pool-java --no-install-recommends```
+   * `apt-get install libmysql-java libcommons-dbcp-java libcommons-pool-java --no-install-recommends`
 
 3. Download the Shibboleth Identity Provider v3.3.2:
-   * ```cd /usr/local/src```
-   * ```wget http://shibboleth.net/downloads/identity-provider/3.3.2/shibboleth-identity-provider-3.3.2.tar.gz```
-   * ```tar -xzvf shibboleth-identity-provider-3.3.2.tar.gz```
+   * `cd /usr/local/src`
+   * `wget http://shibboleth.net/downloads/identity-provider/3.3.2/shibboleth-identity-provider-3.3.2.tar.gz`
+   * `tar -xzvf shibboleth-identity-provider-3.3.2.tar.gz`
 
 4. Link the needed libraries:
-   * ```cd shibboleth-identity-provider-3.3.2```
-   * ```ln -s /usr/share/java/mysql-connector-java.jar webapp/WEB-INF/lib```
-   * ```ln -s /usr/share/java/commons-dbcp.jar webapp/WEB-INF/lib```
-   * ```ln -s /usr/share/java/commons-pool.jar webapp/WEB-INF/lib```
+   * `cd shibboleth-identity-provider-3.3.2`
+   * `ln -s /usr/share/java/mysql-connector-java.jar webapp/WEB-INF/lib`
+   * `ln -s /usr/share/java/commons-dbcp.jar webapp/WEB-INF/lib`
+   * `ln -s /usr/share/java/commons-pool.jar webapp/WEB-INF/lib`
 
-5. Import the JST libraries to visualize the IdP ```status``` page:
-   * ```cd /usr/local/src/shibboleth-identity-provider-3.3.2/webapp/WEB-INF/lib```
-   * ```wget https://build.shibboleth.net/nexus/service/local/repositories/thirdparty/content/javax/servlet/jstl/1.2/jstl-1.2.jar```
+5. Import the JST libraries to visualize the IdP `status` page:
+   * `cd /usr/local/src/shibboleth-identity-provider-3.3.2/webapp/WEB-INF/lib`
+   * `wget https://build.shibboleth.net/nexus/service/local/repositories/thirdparty/content/javax/servlet/jstl/1.2/jstl-1.2.jar`
 
-6. Run the installer ```install.sh```:
-   * ```./bin/install.sh```
+6. Run the installer `install.sh`:
+   * `./bin/install.sh`
   
    ```bash
    root@idp:/usr/local/src/shibboleth-identity-provider-3.3.2# ./bin/install.sh
@@ -326,17 +324,17 @@
    Re-enter password:              ###PASSWORD-FOR-COOKIE-ENCRYPTION###
    ```
   
-   From this point the variable **idp.home** refers to the directory: ```/opt/shibboleth-idp```
+   From this point the variable **idp.home** refers to the directory: `/opt/shibboleth-idp`
 
 7. Change the owner to enable **jetty** user to access on the following directories:
-   * ```cd /opt/shibboleth-idp```
-   * ```chown -R jetty logs/ metadata/ credentials/ conf/ system/ war/```
+   * `cd /opt/shibboleth-idp`
+   * `chown -R jetty logs/ metadata/ credentials/ conf/ system/ war/`
 
 ## Configuration Instructions
 
 ### Configure SSL on Apache2 (Jetty front-end)
 
-1. Modify the file ```/etc/apache2/sites-available/default-ssl.conf``` as follows:
+1. Modify the file `/etc/apache2/sites-available/default-ssl.conf` as follows:
 
    ```apache
    <IfModule mod_ssl.c>
@@ -372,12 +370,12 @@
    ```
 
 2. Enable **proxy_http**, **SSL** and **headers** Apache2 modules:
-   * ```a2enmod proxy_http ssl headers alias include negotiation```
-   * ```a2ensite default-ssl.conf```
-   * ```service apache2 restart```
+   * `a2enmod proxy_http ssl headers alias include negotiation`
+   * `a2ensite default-ssl.conf`
+   * `service apache2 restart`
 
 3. Configure Apache2 to redirect all on HTTPS:
-   * ```vim /etc/apache2/sites-enabled/000-default.conf```
+   * `vim /etc/apache2/sites-enabled/000-default.conf`
    
    ```apache
    <VirtualHost *:80>
@@ -392,10 +390,10 @@
 ### Configure Jetty
 
 1. Become ROOT: 
-   * ```sudo su -```
+   * `sudo su -`
 
 2. Create the Apache2 configuration file for IdP:
-   * ```vim /etc/apache2/sites-available/idp.conf```
+   * `vim /etc/apache2/sites-available/idp.conf`
   
      ```apache
      <IfModule mod_proxy.c>
@@ -411,12 +409,12 @@
      ```
 
 3. Enable the new site:
-   * ```cd /etc/apache2/sites-available/ ; a2ensite idp.conf```
-   * ```service apache2 reload```
+   * `cd /etc/apache2/sites-available/ ; a2ensite idp.conf`
+   * `service apache2 reload`
 
 4. Configure IdP Context Descriptor
-   * ```mkdir /opt/jetty/webapps```
-   * ```vim /opt/jetty/webapps/idp.xml```
+   * `mkdir /opt/jetty/webapps`
+   * `vim /opt/jetty/webapps/idp.xml`
 
      ```bash
      <Configure class="org.eclipse.jetty.webapp.WebAppContext">
@@ -429,32 +427,32 @@
      ```
 
 5. Restart Jetty:
-   * ```service jetty restart```
+   * `service jetty restart`
 
 ### Configure Shibboleth Identity Provider v3.3.2 to release the persistent-id (Stored mode)
 
 1. Become ROOT of the machine: 
-   * ```sudo su -```
+   * `sudo su -`
   
 2. Test IdP by opening a terminal and running these commands:
-   * ```cd /opt/shibboleth-idp/bin```
-   * ```./status.sh``` (You should see some informations about the IdP installed)
+   * `cd /opt/shibboleth-idp/bin`
+   * `./status.sh` (You should see some informations about the IdP installed)
 
 3. Install **MySQL Database Server**:
-   * ```apt-get install mysql-server --no-install-recommends```
+   * `apt-get install mysql-server --no-install-recommends`
 
 4. Create and prepare the "**shibboleth**" MySQL DB to host the values of the several **persistent-id** and **StorageRecords** MySQL DB to host other useful information about user consent:
    * Modify the [shibboleth-db.sql](../utils/shibboleth-db.sql) by changing the *username* and *password* of the user that has write access to the "**shibboleth**" DB.
 
    * Import the SQL modified to your MySQL Server:
-    ```mysql -u root -p < shibboleth-db.sql```
+     `mysql -u root -p < shibboleth-db.sql`
 
    * Restart mysql service:
-    ```service mysql restart```
+     `service mysql restart`
 
-5. Enable the generation of the ```persistent-id``` (this replace the deprecated attribute *eduPersonTargetedID*)
-   * ```vim /opt/shibboleth-idp/conf/saml-nameid.properties```
-     (the *sourceAttribute* MUST BE an attribute, or a list of comma-separated attributes, that uniquely identify the subject of the generated ```persistent-id```. It MUST BE: **Stable**, **Permanent** and **Not-reassignable**)
+5. Enable the generation of the `persistent-id` (this replace the deprecated attribute *eduPersonTargetedID*)
+   * `vim /opt/shibboleth-idp/conf/saml-nameid.properties`
+     (the *sourceAttribute* MUST BE an attribute, or a list of comma-separated attributes, that uniquely identify the subject of the generated `persistent-id`. It MUST BE: **Stable**, **Permanent** and **Not-reassignable**)
 
      ```xml
      idp.persistentId.sourceAttribute = uid
@@ -469,18 +467,18 @@
      ```
 
    * Enable the **SAML2PersistentGenerator**:
-     * ```vim /opt/shibboleth-idp/conf/saml-nameid.xml```
+     * `vim /opt/shibboleth-idp/conf/saml-nameid.xml`
        * Remove the comment from the line containing:
 
          ```xml
          <ref bean="shibboleth.SAML2PersistentGenerator" />
          ```
 
-     * ```vim /opt/shibboleth-idp/conf/c14n/subject-c14n.xml```
+     * `vim /opt/shibboleth-idp/conf/c14n/subject-c14n.xml`
        * Remove the comment to the bean called "**c14n/SAML2Persistent**".
 
 6. Enable **JPAStorageService** for the **StorageService** of the user consent:
-   * ```vim /opt/shibboleth-idp/conf/global.xml``` and add this piece of code to the tail (before **`</beans>`** tag):
+   * `vim /opt/shibboleth-idp/conf/global.xml` and add this piece of code to the tail (before **`</beans>`** tag):
 
      ```xml
      <!-- A DataSource bean suitable for use in the idp.persistentId.dataSource property. -->
@@ -517,7 +515,7 @@
      (and modify the "**##USER_DB_NAME##**" and "**##PASSWORD##**" for your "**shibboleth**" DB)
 
    * Modify the IdP configuration file:
-     * ```vim /opt/shibboleth-idp/conf/idp.properties```
+     * `vim /opt/shibboleth-idp/conf/idp.properties`
 
        ```xml
        idp.consent.StorageService = shibboleth.JPAStorageService
@@ -528,9 +526,9 @@
        (This will indicate to IdP to store the data collected by User Consent into the "**StorageRecords**" table)
 
 7. Connect the openLDAP to the IdP to allow the authentication of the users:
-   * ```vim /opt/shibboleth-idp/conf/ldap.properties```
+   * `vim /opt/shibboleth-idp/conf/ldap.properties`
 
-     (with **TLS** solutions we consider to have the LDAP certificate into ```/opt/shibboleth-idp/credentials```).
+     (with **TLS** solutions we consider to have the LDAP certificate into `/opt/shibboleth-idp/credentials`).
 
      * Solution 1: LDAP + STARTTLS:
 
@@ -560,7 +558,7 @@
        idp.authn.LDAP.userFilter = (uid={user})
        idp.authn.LDAP.bindDN = cn=admin,dc=example,dc=org
        idp.authn.LDAP.bindDNCredential = ###LDAP_ADMIN_PASSWORD###
-       ```
+       `
 
      * Solution 3: plain LDAP
 
@@ -588,13 +586,13 @@
        ```
 
        **UTILITY FOR OPENLDAP ADMINISTRATOR:**
-         * ```ldapsearch -H ldap:// -x -b "dc=example,dc=it" -LLL dn```
-           * the baseDN ==> ```ou=people, dc=example,dc=org``` (branch containing the registered users)
-           * the bindDN ==> ```cn=admin,dc=example,dc=org``` (distinguished name for the user that can made queries on the LDAP)
+         * `ldapsearch -H ldap:// -x -b "dc=example,dc=it" -LLL dn`
+           * the baseDN ==> `ou=people, dc=example,dc=org` (branch containing the registered users)
+           * the bindDN ==> `cn=admin,dc=example,dc=org` (distinguished name for the user that can made queries on the LDAP)
 
 
 8. Enrich IDP logs with the authentication error occurred on LDAP:
-   * ```vim /opt/shibboleth-idp/conf/logback.xml```
+   * `vim /opt/shibboleth-idp/conf/logback.xml`
 
      ```xml
      <!-- Logs LDAP related messages -->
@@ -606,10 +604,10 @@
 
 9. Define which attributes your IdP can manage into your Attribute Resolver file. Here you can find the **attribute-resolver-v3_3-idem.xml** provided by IDEM GARR AAI as example:
     * Download the attribute resolver provided by IDEM GARR AAI:
-      ```wget http://www.garr.it/idem-conf/attribute-resolver-v3_3-idem.xml -O /opt/shibboleth-idp/conf/attribute-resolver-v3_3-idem.xml```
+      `wget http://www.garr.it/idem-conf/attribute-resolver-v3_3-idem.xml -O /opt/shibboleth-idp/conf/attribute-resolver-v3_3-idem.xml`
 
-    * Modify ```services.xml``` file:
-      ```vim /opt/shibboleth-idp/conf/services.xml```
+    * Modify `services.xml` file:
+      `vim /opt/shibboleth-idp/conf/services.xml`
 
       ```xml
       <value>%{idp.home}/conf/attribute-resolver.xml</value>
@@ -622,19 +620,19 @@
       <value>%{idp.home}/conf/attribute-resolver-v3_3-idem.xml</value>
       ```
 
-  * Configure the LDAP Data Connector to be compliant to the values put in ```ldap.properties```. (See above suggestions)
+  * Configure the LDAP Data Connector to be compliant to the values put in `ldap.properties`. (See above suggestions)
 
 10. Translate the IdP messages in your language:
     * Get the files translated in your language from [Shibboleth page](https://wiki.shibboleth.net/confluence/display/IDP30/MessagesTranslation) for:
       * **login page** (authn-messages_it.properties)
       * **user consent/terms of use page** (consent-messages_it.properties)
       * **error pages** (error-messages_it.properties)
-    * Put all downloaded files into ```/opt/shibboleth-idp/messages``` directory
+    * Put all downloaded files into `/opt/shibboleth-idp/messages` directory
     * Restart Jetty: 
-      ```service jetty restart```
+      `service jetty restart`
 
-11. Enable the SAML2 support by changing the ```idp-metadata.xml``` and disabling the SAML v1.x deprecated support:
-    * ```vim /opt/shibboleth-idp/metadata/idp-metadata.xml```
+11. Enable the SAML2 support by changing the `idp-metadata.xml` and disabling the SAML v1.x deprecated support:
+    * `vim /opt/shibboleth-idp/metadata/idp-metadata.xml`
       ```bash
       <IDPSSODescriptor> SECTION:
         – From the list of "protocolSupportEnumeration" remove:
@@ -673,14 +671,14 @@
       ```
 
 12. Obtain your IdP metadata here:
-    *  ```https://idp.example.org/idp/shibboleth```
+    *  `https://idp.example.org/idp/shibboleth`
 
 13. Register you IdP on IDEM Entity Registry (your entity have to be approved by an IDEM Federation Operator before become part of IDEM Test Federation):
-    * ```https://registry.idem.garr.it/```
+    * `https://registry.idem.garr.it/`
 
 14. Configure the IdP to retrieve the Federation Metadata:
-    * ```cd /opt/shibboleth-idp/conf```
-    * ```vim metadata-providers.xml```
+    * `cd /opt/shibboleth-idp/conf`
+    * `vim metadata-providers.xml`
 
       ```xml
       <MetadataProvider
@@ -709,20 +707,20 @@
       ```
 
     * Retrieve the Federation Certificate used to verify its signed metadata:
-      *  ```wget https://md.idem.garr.it/certs/idem-signer-20220121.pem -O /opt/shibboleth-idp/metadata/federation-cert.pem```
+      *  `wget https://md.idem.garr.it/certs/idem-signer-20220121.pem -O /opt/shibboleth-idp/metadata/federation-cert.pem`
 
     * Check the validity:
-      *  ```cd /opt/shibboleth-idp/metadata```
-      *  ```openssl x509 -in federation-cert.pem -fingerprint -sha1 -noout```
+      *  `cd /opt/shibboleth-idp/metadata`
+      *  `openssl x509 -in federation-cert.pem -fingerprint -sha1 -noout`
        
          (sha1: D1:68:6C:32:A4:E3:D4:FE:47:17:58:E7:15:FC:77:A8:44:D8:40:4D)
-      *  ```openssl x509 -in federation-cert.pem -fingerprint -md5 -noout```
+      *  `openssl x509 -in federation-cert.pem -fingerprint -md5 -noout`
 
          (md5: 48:3B:EE:27:0C:88:5D:A3:E7:0B:7C:74:9D:24:24:E0)
   
-15. Reload service with id ```shibboleth.MetadataResolverService``` to retrieve the Federation Metadata:
-    *  ```cd /opt/shibboleth-idp/bin```
-    *  ```./reload-service.sh -id shibboleth.MetadataResolverService```
+15. Reload service with id `shibboleth.MetadataResolverService` to retrieve the Federation Metadata:
+    *  `cd /opt/shibboleth-idp/bin`
+    *  `./reload-service.sh -id shibboleth.MetadataResolverService`
 
 16. The day after the IDEM Federation Operators approval your entity on IDEM Entity Registry, check if you can login with your IdP on the following services:
     * https://sp-test.garr.it/secure   (Service Provider provided for testing the IDEM Test Federation)
@@ -731,11 +729,11 @@
 
 ### Configure Attribute Filters to release the mandatory attributes to the IDEM Default Resources:
 
-1. Make sure that you have the "```tmp/httpClientCache```" used by "```shibboleth.FileCachingHttpClient```":
-   * ```mkdir -p /opt/shibboleth-idp/tmp/httpClientCache ; chown jetty /opt/shibboleth-idp/tmp/httpClientCache```
+1. Make sure that you have the "`tmp/httpClientCache`" used by "`shibboleth.FileCachingHttpClient`":
+   * `mkdir -p /opt/shibboleth-idp/tmp/httpClientCache ; chown jetty /opt/shibboleth-idp/tmp/httpClientCache`
 
-2. Modify your ```services.xml```:
-   * ```vim /opt/shibboleth-idp/conf/services.xml```
+2. Modify your `services.xml`:
+   * `vim /opt/shibboleth-idp/conf/services.xml`
 
      ```xml
      <bean id="IDEM-Default-Filter" class="net.shibboleth.ext.spring.resource.FileBackedHTTPResource"
@@ -749,17 +747,17 @@
      </util:list>
      ```
 
-3. Reload service with id ```shibboleth.AttributeFilterService``` to refresh the Attribute Filter followed by the IdP:
-   *  ```cd /opt/shibboleth-idp/bin```
-   *  ```./reload-service.sh -id shibboleth.AttributeFilterService```
+3. Reload service with id `shibboleth.AttributeFilterService` to refresh the Attribute Filter followed by the IdP:
+   *  `cd /opt/shibboleth-idp/bin`
+   *  `./reload-service.sh -id shibboleth.AttributeFilterService`
 
 ### Configure Attribute Filters to release the mandatory attributes to the IDEM Production Resources:
 
-1. Make sure that you have the "```tmp/httpClientCache```" used by "```shibboleth.FileCachingHttpClient```":
-   * ```mkdir -p /opt/shibboleth-idp/tmp/httpClientCache ; chown jetty /opt/shibboleth-idp/tmp/httpClientCache```
+1. Make sure that you have the "`tmp/httpClientCache`" used by "`shibboleth.FileCachingHttpClient`":
+   * `mkdir -p /opt/shibboleth-idp/tmp/httpClientCache ; chown jetty /opt/shibboleth-idp/tmp/httpClientCache`
 
-2. Modify your ```services.xml```:
-   * ```vim /opt/shibboleth-idp/conf/services.xml```
+2. Modify your `services.xml`:
+   * `vim /opt/shibboleth-idp/conf/services.xml`
 
      ```xml
      <bean id="IDEM-Production-Filter" class="net.shibboleth.ext.spring.resource.FileBackedHTTPResource"
@@ -774,17 +772,17 @@
      </util:list>
      ```
 
-3. Reload service with id ```shibboleth.AttributeFilterService``` to refresh the Attribute Filter followed by the IdP:
-   *  ```cd /opt/shibboleth-idp/bin```
-   *  ```./reload-service.sh -id shibboleth.AttributeFilterService```
+3. Reload service with id `shibboleth.AttributeFilterService` to refresh the Attribute Filter followed by the IdP:
+   *  `cd /opt/shibboleth-idp/bin`
+   *  `./reload-service.sh -id shibboleth.AttributeFilterService`
 
 ### Configure Attribute Filters for Research and Scholarship and Data Protection Code of Conduct Entity Category
 
-1. Make sure that you have the "```tmp/httpClientCache```" used by "```shibboleth.FileCachingHttpClient```":
-   * ```mkdir -p /opt/shibboleth-idp/tmp/httpClientCache ; chown jetty /opt/shibboleth-idp/tmp/httpClientCache```
+1. Make sure that you have the "`tmp/httpClientCache`" used by "`shibboleth.FileCachingHttpClient`":
+   * `mkdir -p /opt/shibboleth-idp/tmp/httpClientCache ; chown jetty /opt/shibboleth-idp/tmp/httpClientCache`
 
-2. Modify your ```services.xml```:
-   * ```vim /opt/shibboleth-idp/conf/services.xml```
+2. Modify your `services.xml`:
+   * `vim /opt/shibboleth-idp/conf/services.xml`
 
      ```xml
      <bean id="ResearchAndScholarship" class="net.shibboleth.ext.spring.resource.FileBackedHTTPResource"
@@ -806,34 +804,34 @@
       </util:list>
       ```
 
-3. Reload service with id ```shibboleth.AttributeFilterService``` to refresh the Attribute Filter followed by the IdP:
-   *  ```cd /opt/shibboleth-idp/bin```
-   *  ```./reload-service.sh -id shibboleth.AttributeFilterService```
+3. Reload service with id `shibboleth.AttributeFilterService` to refresh the Attribute Filter followed by the IdP:
+   *  `cd /opt/shibboleth-idp/bin`
+   *  `./reload-service.sh -id shibboleth.AttributeFilterService`
 
 ### Appendix A: Import metadata from previous IDP v2.x ###
 
 1. Store into /tmp directory the following files:
-   * ```idp-metadata.xml```
-   * ```idp.crt```
-   * ```idp.key```
+   * `idp-metadata.xml`
+   * `idp.crt`
+   * `idp.key`
 
 2. Follow the steps on your IdP v3.x:
-   * ```sudo su -```
-   * ```mv /tmp/idp-metadata.xml /opt/shibboleth-idp/metadata```
-   * ```mv /tmp/idp.crt /tmp/idp.key /opt/shibboleth-idp/credentials```
-   * ```cd /opt/shibboleth-idp/credentials/```
-   * ```rm idp-encryption.crt idp-backchannel.crt idp-encryption.key idp-signing.crt idp-signing.key```
-   * ```ln -s idp.crt idp-encryption.crt```
-   * ```ln -s idp.key idp-encryption.key```
-   * ```ln -s idp.key idp-signing.key```
-   * ```ln -s idp.crt idp-signing.crt```
-   * ```ln -s idp.crt idp-backchannel.crt```
-   * ```openssl pkcs12 -export -in idp-encryption.crt -inkey idp-encryption.key -out idp-backchannel.p12 -password pass:#YOUR.BACKCHANNEL.CERT.PASSWORD#```
+   * `sudo su -`
+   * `mv /tmp/idp-metadata.xml /opt/shibboleth-idp/metadata`
+   * `mv /tmp/idp.crt /tmp/idp.key /opt/shibboleth-idp/credentials`
+   * `cd /opt/shibboleth-idp/credentials/`
+   * `rm idp-encryption.crt idp-backchannel.crt idp-encryption.key idp-signing.crt idp-signing.key`
+   * `ln -s idp.crt idp-encryption.crt`
+   * `ln -s idp.key idp-encryption.key`
+   * `ln -s idp.key idp-signing.key`
+   * `ln -s idp.crt idp-signing.crt`
+   * `ln -s idp.crt idp-backchannel.crt`
+   * `openssl pkcs12 -export -in idp-encryption.crt -inkey idp-encryption.key -out idp-backchannel.p12 -password pass:#YOUR.BACKCHANNEL.CERT.PASSWORD#`
 
 3. Check if the *idp.entityID* property value is equal to the entityID value inside the *idp-metadata.xml* on the file `/opt/shibboleth-idp/conf/idp.properties`.
 
-4. Enable the SAML2 support by changing the ```idp-metadata.xml``` and disabling the SAML v1.x deprecated support:
-   * ```vim /opt/shibboleth-idp/metadata/idp-metadata.xml```
+4. Enable the SAML2 support by changing the `idp-metadata.xml` and disabling the SAML v1.x deprecated support:
+   * `vim /opt/shibboleth-idp/metadata/idp-metadata.xml`
  
      ```bash
      <IDPSSODescriptor> SECTION:
@@ -873,7 +871,7 @@
      ```
 
 5. Restart Jetty:
-   * ```service jetty restart```
+   * `service jetty restart`
   
 6. Don't forget to update your IdP Metadata on [IDEM Entity Registry](https://registry.idem.garr.it/rr3) to apply changes on the federation IDEM! For any help write to idem-help@garr.it
 
@@ -881,29 +879,29 @@
 ### Appendix B: Import persistent-id from a previous database ###
 
 1. Create a DUMP of `shibpid` table from the previous DB `userdb` on the OLD IdP:
-   * ```cd /tmp```
-   * ```mysqldump --complete-insert --no-create-db --no-create-info -u root -p userdb shibpid > /tmp/userdb_shibpid.sql```
+   * `cd /tmp`
+   * `mysqldump --complete-insert --no-create-db --no-create-info -u root -p userdb shibpid > /tmp/userdb_shibpid.sql`
 
-2. Move the ```/tmp/userdb_shibpid.sql``` of old IdP into ```/tmp/userdb_shibpid.sql``` on the new IdP.
+2. Move the `/tmp/userdb_shibpid.sql` of old IdP into `/tmp/userdb_shibpid.sql` on the new IdP.
  
-3. Import the content of ```/tmp/userdb_shibpid.sql``` into the DB of the new IDP:
-   * ```cd /tmp ; mysql -u root -p shibboleth < /tmp/userdb_shibpid.sql```
+3. Import the content of `/tmp/userdb_shibpid.sql` into the DB of the new IDP:
+   * `cd /tmp ; mysql -u root -p shibboleth < /tmp/userdb_shibpid.sql`
 
-4. Delete ```/tmp/userdb_shibpid.sql```:
-   * ```rm /tmp/userdb_shibpid.sql```
+4. Delete `/tmp/userdb_shibpid.sql`:
+   * `rm /tmp/userdb_shibpid.sql`
 
 ### Appendix C: Useful logs to find problems
 
 1. Jetty Logs:
-   * ```cd /opt/jetty/logs```
-   * ```ls -l *.stderrout.log```
+   * `cd /opt/jetty/logs`
+   * `ls -l *.stderrout.log`
 
 2. Shibboleth IdP Logs:
-   * ```cd /opt/shibboleth-idp/logs```
-   * **Audit Log:** ```vim idp-audit.log```
-   * **Consent Log:** ```vim idp-consent-audit.log```
-   * **Warn Log:** ```vim idp-warn.log```
-   * **Process Log:** ```vim idp-process.log```
+   * `cd /opt/shibboleth-idp/logs`
+   * **Audit Log:** `vim idp-audit.log`
+   * **Consent Log:** `vim idp-consent-audit.log`
+   * **Warn Log:** `vim idp-warn.log`
+   * **Process Log:** `vim idp-process.log`
 
 ### Authors
 

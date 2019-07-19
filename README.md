@@ -8,10 +8,11 @@ These GitHub Repository contains step-by-step tutorials on Identity and Service 
 
 #### HOWTO Install and Configure an Identity Provider
 
-1. [HOWTO Install and Configure a Shibboleth IdP v3.4.2 on Debian Linux 9 with Apache2 + Jetty9](https://github.com/ConsortiumGARR/idem-tutorials/blob/master/idem-fedops/HOWTO-Shibboleth/Identity%20Provider/Debian/%23%20HOWTO%20Install%20and%20Configure%20a%20Shibboleth%20IdP%20v3.4.2%20on%20Debian%20Linux%209%20(Stretch)%20with%20Apache2%20%2B%20Jetty9.md#howto-install-and-configure-a-shibboleth-idp-v342-on-debian-linux-9-stretch-with-apache2--jetty9)
+1. [HOWTO Install and Configure a Shibboleth IdP v3.4.3 on Ubuntu Linux LTS 18.04 with Apache2 + Jetty9](https://github.com/ConsortiumGARR/idem-tutorials/blob/master/idem-fedops/HOWTO-Shibboleth/Identity%20Provider/Ubuntu/HOWTO%20Install%20and%20Configure%20a%20Shibboleth%20IdP%20v3.4.3%20on%20Ubuntu%20Linux%20LTS%2018.04%20with%20Apache2%20%2B%20Jetty9.md#howto-install-and-configure-a-shibboleth-idp-v343-on-ubuntu-linux-lts-1804-with-apache2--jetty9)
 2. [HOWTO Install and Configure a Shibboleth IdP v3.3.2 on Ubuntu Linux LTS 16.04 with Apache2 + Jetty9](https://github.com/ConsortiumGARR/idem-tutorials/blob/master/idem-fedops/HOWTO-Shibboleth/Identity%20Provider/Ubuntu/HOWTO%20Install%20and%20Configure%20a%20Shibboleth%20IdP%20v3.3.2%20on%20Ubuntu%20Linux%20LTS%2016.04%20with%20Apache2%20%2B%20Jetty9.md)
 3. [HOWTO Install and Configure a Shibboleth IdP v3.2.1 on Ubuntu Linux LTS 16.04 with Apache2 + Jetty9](https://github.com/ConsortiumGARR/idem-tutorials/blob/master/idem-fedops/HOWTO-Shibboleth/Identity%20Provider/Ubuntu/HOWTO%20Install%20and%20Configure%20a%20Shibboleth%20IdP%20v3.2.1%20on%20Ubuntu%20Linux%20LTS%2016.04%20with%20Apache2%20%2B%20Jetty9.md)
 4. [HOWTO Install and Configure a Shibboleth IdP v3.2.1 on Ubuntu Linux LTS 16.04 with Apache2 + Tomcat8](https://github.com/ConsortiumGARR/idem-tutorials/blob/master/idem-fedops/HOWTO-Shibboleth/Identity%20Provider/Ubuntu/HOWTO%20Install%20and%20Configure%20a%20Shibboleth%20IdP%20v3.2.1%20on%20Ubuntu%20Linux%20LTS%2016.04%20with%20Apache2%20%2B%20Tomcat8.md)
+5. [HOWTO Install and Configure a SimpleSAMLphp IDP v1.x on Debian Linux 9 (Stretch)](https://github.com/ConsortiumGARR/idem-tutorials/blob/master/idem-fedops/HOWTO-SimpleSAMLphp/Identity%20Provider/HOWTO%20Install%20and%20Configure%20a%20SimpleSAMLphp%20IdP%20v1.x%20on%20Debian%20Linux%209%20(Stretch).md#howto-install-and-configure-a-simplesamlphp-idp-v1x-on-debian-linux-9-stretch)
 
 #### HOWTO Install and Configure a Service Provider
 
@@ -39,6 +40,11 @@ These GitHub Repository contains step-by-step tutorials on Identity and Service 
 #### Shibboleth Statistics from Audit Logs
 
 * [HOWTO Obtain useful data for statistic purposes from Shibboleth IDP Audit Logs](https://github.com/ConsortiumGARR/idem-tutorials/blob/master/idem-fedops/HOWTO-Statistics/HOWTO%20Obtain%20useful%20data%20for%20statistic%20purposes%20from%20Shibboleth%20IDP%20Audit%20Logs.md)
+
+#### OpenLDAP
+
+* [HOWTO Install and Configure OpenLDAP for federated access](https://github.com/ConsortiumGARR/idem-tutorials/blob/master/idem-fedops/miscellaneous/HOWTO%20Install%20and%20Configure%20OpenLDAP%20for%20federated%20access.md#howto-install-and-configure-openldap-for-federated-access)
+* [HOWTO Install and Configure OpenLDAP for federated access on CentOS](https://github.com/ConsortiumGARR/idem-tutorials/blob/master/idem-fedops/miscellaneous/HOWTO%20Install%20and%20Configure%20OpenLDAP%20for%20federated%20access-CentOS.md)
 
 ## IDEM Community Users HOWTOs
 
