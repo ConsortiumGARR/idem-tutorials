@@ -305,7 +305,7 @@ olcUniqueAttribute: eduPersonPrincipalName
 EOF
 ````
 
-15. Disable Anonimous bind
+15. Disable Anonymous bind
 
 ````
 dn: cn=config
