@@ -305,6 +305,20 @@ olcUniqueAttribute: eduPersonPrincipalName
 EOF
 ````
 
+15. Disable Anonimous bind
+
+````
+dn: cn=config
+changetype: modify
+add: olcDisallows
+olcDisallows: bind_anon
+-
+dn: olcDatabase={-1}frontend,cn=config
+changetype: modify
+add: olcRequires
+olcRequires: authc
+````
+
 # PhpLdapAdmin (PLA) - optional
 
 ## PLA Installation
