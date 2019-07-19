@@ -90,7 +90,7 @@
       ```
    * `sudo ldapmodify -Y EXTERNAL -H ldapi:/// -f /etc/ldap/olcTLS.ldif`
 
-2. Create the 3 main branches, 'main', 'groups' and 'system', with:
+2. Create the 3 main _Organizational Unit_ (OU), 'people', 'groups' and 'system', with:
    * `sudo mkdir /etc/ldap/scratch`
    * `sudo vim /etc/ldap/scratch/add_ou.ldif`
 
@@ -185,30 +185,6 @@
 
    2. `sudo ldapadd -Q -Y EXTERNAL -H ldapi:/// -f /etc/ldap/scratch/add_memberof.ldif`
 
-   3. `sudo vim /etc/ldap/scratch/add_refint1.ldif`
-
-      ```bash
-      dn: cn=module{1},cn=config
-      add: olcmoduleload
-      olcmoduleload: refint   
-      ```
-
-   4. `sudo ldapmodify -Q -Y EXTERNAL -H ldapi:/// -f /etc/ldap/scratch/add_refint1.ldif`
-
-   5. `sudo vim /etc/ldap/scratch/add_refint2.ldif`
-
-      ```bash
-      dn: olcOverlay={1}refint,olcDatabase={1}mdb,cn=config
-      objectClass: olcConfig
-      objectClass: olcOverlayConfig
-      objectClass: olcRefintConfig
-      objectClass: top
-      olcOverlay: {1}refint
-      olcRefintAttribute: memberof member manager owner
-      ```
-
-   6. `sudo ldapadd -Q -Y EXTERNAL -H ldapi:/// -f /etc/ldap/scratch/add_refint2.ldif`
-
 8. Improve performance:
    * `sudo vim /etc/ldap/scratch/olcDbIndex.ldif`
 
@@ -224,8 +200,8 @@
      olcDbIndex: entryUUID eq
      olcDbIndex: sn pres,eq,sub
      olcDbIndex: mail pres,eq,sub
+     olcDbIndex: eduPersonPrincipalName eq
      ```
-
    * `sudo ldapmodify -Y EXTERNAL -H ldapi:/// -f /etc/ldap/scratch/olcDbIndex.ldif`
 
 9. Configure Logging:
@@ -290,6 +266,12 @@
      eduPersonAffiliation: student
      eduPersonAffiliation: staff
      eduPersonAffiliation: member
+     eduPersonScopedAffiliation: member@example.org
+     eduPersonScopedAffiliation: staff@example.org
+     eduPersonScopedAffiliation: student@example.org
+     eduPersonPrincipalName: user1@example.org
+     eduPersonEntitlement: urn:mace:terena.org:tcs:escience-user
+     eduPersonEntitlement: urn:mace:terena.org:tcs:personal-user
      schacHomeOrganization: example.org
      schacHomeOrganizationType: urn:mace:terena.org:schac:homeOrganizationType:it:university
      ```
@@ -301,6 +283,41 @@
 
 13. Check that LDAP has TLS ('anonymous' MUST BE returned):
     * `sudo ldapwhoami -H ldap:// -x -ZZ`
+
+14. Make mail, eduPersonPrincipalName and schacPersonalUniqueID as unique
+
+````
+ldapmodify -Y EXTERNAL -H ldapi:/// <<EOF
+dn: cn=module,cn=config
+cn: module
+objectclass: olcModuleList
+objectclass: top
+olcmoduleload: unique
+olcmodulepath: /usr/lib/ldap
+
+dn: olcOverlay=unique,olcDatabase={1}{{ ldap_backend }},cn=config
+objectClass: olcOverlayConfig
+objectClass: olcUniqueConfig
+olcOverlay: unique
+olcUniqueAttribute: mail
+olcUniqueAttribute: schacPersonalUniqueID
+olcUniqueAttribute: eduPersonPrincipalName
+EOF
+````
+
+15. Disable Anonymous bind
+
+````
+dn: cn=config
+changetype: modify
+add: olcDisallows
+olcDisallows: bind_anon
+-
+dn: olcDatabase={-1}frontend,cn=config
+changetype: modify
+add: olcRequires
+olcRequires: authc
+````
 
 # PhpLdapAdmin (PLA) - optional
 
