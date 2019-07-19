@@ -90,7 +90,7 @@
       ```
    * `sudo ldapmodify -Y EXTERNAL -H ldapi:/// -f /etc/ldap/olcTLS.ldif`
 
-2. Create the 3 main branches, 'main', 'groups' and 'system', with:
+2. Create the 3 main _Organizational Unit_ (OU), 'people', 'groups' and 'system', with:
    * `sudo mkdir /etc/ldap/scratch`
    * `sudo vim /etc/ldap/scratch/add_ou.ldif`
 
@@ -277,6 +277,27 @@
 
 13. Check that LDAP has TLS ('anonymous' MUST BE returned):
     * `sudo ldapwhoami -H ldap:// -x -ZZ`
+
+14. Make mail, eduPersonPrincipalName and schacPersonalUniqueID as unique
+
+````
+ldapmodify -Y EXTERNAL -H ldapi:/// <<EOF
+dn: cn=module,cn=config
+cn: module
+objectclass: olcModuleList
+objectclass: top
+olcmoduleload: unique
+olcmodulepath: /usr/lib/ldap
+
+dn: olcOverlay=unique,olcDatabase={1}{{ ldap_backend }},cn=config
+objectClass: olcOverlayConfig
+objectClass: olcUniqueConfig
+olcOverlay: unique
+olcUniqueAttribute: mail
+olcUniqueAttribute: schacPersonalUniqueID
+olcUniqueAttribute: eduPersonPrincipalName
+EOF
+````
 
 # PhpLdapAdmin (PLA) - optional
 
