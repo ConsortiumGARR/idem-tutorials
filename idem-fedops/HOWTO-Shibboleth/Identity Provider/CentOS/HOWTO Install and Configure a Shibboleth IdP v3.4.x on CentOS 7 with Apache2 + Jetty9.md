@@ -1,6 +1,6 @@
 # HOWTO Install and Configure a Shibboleth IdP v3.4.x on CentOS 7 with Apache2 + Jetty9
 
-[comment]: # (<img width="120px" src="https://wiki.idem.garr.it/IDEM_Approved.png" />)
+<img width="120px" src="https://wiki.idem.garr.it/IDEM_Approved.png" />
 
 ## Table of Contents
 
