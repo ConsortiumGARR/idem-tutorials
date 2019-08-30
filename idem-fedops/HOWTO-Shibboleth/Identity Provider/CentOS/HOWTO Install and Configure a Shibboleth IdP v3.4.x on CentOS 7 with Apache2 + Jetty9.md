@@ -869,7 +869,7 @@ By default, a transient NameID will always be released to the Service Provider i
          idp.authn.LDAP.trustCertificates = %{idp.home}/credentials/ldap-server.crt
          idp.authn.LDAP.returnAttributes = ###List space-separated of attributes to retrieve from OpenLDAP ###
          idp.authn.LDAP.baseDN = ou=people,dc=example,dc=org
-         idp.authn.LDAP.userFilter = (uid={user})
+         idp.authn.LDAP.userFilter = (&(uid={user})(objectClass=inetOrgPerson))
          idp.authn.LDAP.bindDN = cn=idpuser,ou=system,dc=example,dc=org
          idp.authn.LDAP.bindDNCredential = ###LDAP_IDPUSER_PASSWORD###
          idp.authn.LDAP.searchFilter = (uid=$resolutionContext.principal)
@@ -899,7 +899,7 @@ By default, a transient NameID will always be released to the Service Provider i
          idp.authn.LDAP.trustCertificates = %{idp.home}/credentials/ldap-server.crt
          idp.authn.LDAP.returnAttributes = ###List space-separated of attributes to retrieve from OpenLDAP ###
          idp.authn.LDAP.baseDN = ou=people,dc=example,dc=org
-         idp.authn.LDAP.userFilter = (uid={user})
+         idp.authn.LDAP.userFilter = (&(uid={user})(objectClass=inetOrgPerson))
          idp.authn.LDAP.bindDN = cn=idpuser,ou=system,dc=example,dc=org
          idp.authn.LDAP.bindDNCredential = ###LDAP_IDPUSER_PASSWORD###
          idp.authn.LDAP.searchFilter = (uid=$resolutionContext.principal)
@@ -927,7 +927,7 @@ By default, a transient NameID will always be released to the Service Provider i
          idp.authn.LDAP.useSSL = false
          idp.authn.LDAP.returnAttributes = ###List space-separated of attributes to retrieve from OpenLDAP###
          idp.authn.LDAP.baseDN = ou=people,dc=example,dc=org
-         idp.authn.LDAP.userFilter = (uid={user})
+         idp.authn.LDAP.userFilter = (&(uid={user})(objectClass=inetOrgPerson))
          idp.authn.LDAP.bindDN = cn=idpuser,ou=system,dc=example,dc=org
          idp.authn.LDAP.bindDNCredential = ###LDAP_IDPUSER_PASSWORD###
          idp.authn.LDAP.searchFilter = (uid=$resolutionContext.principal)
