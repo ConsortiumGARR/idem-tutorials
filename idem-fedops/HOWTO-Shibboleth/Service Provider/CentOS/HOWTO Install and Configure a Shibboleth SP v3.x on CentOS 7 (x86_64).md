@@ -1,6 +1,6 @@
 # HOWTO Install and Configure a Shibboleth SP v3.x on CentOS 7 (x86_64)
 
-<img width="120px" src="https://wiki.idem.garrservices.it/IDEM_Approved.png" />
+<img width="120px" src="https://wiki.idem.garr.it/IDEM_Approved.png" />
 
 ## Table of Contents
 
