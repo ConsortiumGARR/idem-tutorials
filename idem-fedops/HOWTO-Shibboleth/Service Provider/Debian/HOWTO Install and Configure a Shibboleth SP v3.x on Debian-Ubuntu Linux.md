@@ -1,4 +1,4 @@
-# HOWTO Install and Configure a Shibboleth SP v3.x on Debian 10 (Buster) 
+# HOWTO Install and Configure a Shibboleth SP v3.x on Debian-Ubuntu Linux
 
 <img width="120px" src="https://wiki.idem.garr.it/IDEM_Approved.png" />
 
@@ -27,13 +27,14 @@
  * CPU: 2 Core
  * RAM: 4 GB
  * HDD: 20 GB
+ * OS: Debian 10
 
 ## Software that will be installed
 
  * ca-certificates
  * ntp
  * vim
- * libapache2-mod-php, libapache2-mod-shib2, apache2 (>= 2.4)
+ * libapache2-mod-php, php, libapache2-mod-shib2, apache2 (>= 2.4)
  * openssl
 
 ## Other Requirements
