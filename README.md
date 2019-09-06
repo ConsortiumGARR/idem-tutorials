@@ -17,10 +17,11 @@ These GitHub Repository contains step-by-step tutorials on Identity and Service 
 
 #### HOWTO Install and Configure a Service Provider
 
-1. [HOWTO Install and Configure a Shibboleth SP v3.x on CentOS 7 (x86_64)](https://github.com/ConsortiumGARR/idem-tutorials/blob/master/idem-fedops/HOWTO-Shibboleth/Service%20Provider/CentOS/HOWTO%20Install%20and%20Configure%20a%20Shibboleth%20SP%20v3.x%20on%20CentOS%207%20(x86_64).md)
-1. [HOWTO Install and Configure a Shibboleth SP v2.x on Debian Linux 9 (Stretch)](https://github.com/ConsortiumGARR/idem-tutorials/blob/master/idem-fedops/HOWTO-Shibboleth/Service%20Provider/Debian/HOWTO%20Install%20and%20Configure%20a%20Shibboleth%20SP%20v2.x%20on%20Debian%20Linux%209%20(Stretch).md)
-2. [HOWTO Install and Configure a Shibboleth SP v2.6.1(from source) on Debian Linux 9 (Stretch)](https://github.com/ConsortiumGARR/idem-tutorials/blob/master/idem-fedops/HOWTO-Shibboleth/Service%20Provider/Debian/HOWTO%20Install%20and%20Configure%20a%20Shibboleth%20SP%20v2.6.1(from%20source)%20on%20Debian%20Linux%209%20(Stretch).md)
-3. [HOWTO Install and Configure a SimpleSAMLphp SP v1.x on Debian Linux 9 (Stretch)](https://github.com/ConsortiumGARR/idem-tutorials/blob/master/idem-fedops/HOWTO-SimpleSAMLphp/Service%20Provider/HOWTO%20Install%20and%20Configure%20a%20SimpleSAMLphp%20SP%20v1.x%20on%20Debian%20Linux%209%20(Stretch).md)
+1. [HOWTO Install and Configure a Shibboleth SP v3.x on Debian-Ubuntu Linux](https://github.com/ConsortiumGARR/idem-tutorials/blob/master/idem-fedops/HOWTO-Shibboleth/Service%20Provider/Debian/HOWTO%20Install%20and%20Configure%20a%20Shibboleth%20SP%20v3.x%20on%20Debian-Ubuntu%20Linux.md#howto-install-and-configure-a-shibboleth-sp-v3x-on-debian-ubuntu-linux)
+2. [HOWTO Install and Configure a Shibboleth SP v3.x on CentOS 7 (x86_64)](https://github.com/ConsortiumGARR/idem-tutorials/blob/master/idem-fedops/HOWTO-Shibboleth/Service%20Provider/CentOS/HOWTO%20Install%20and%20Configure%20a%20Shibboleth%20SP%20v3.x%20on%20CentOS%207%20(x86_64).md)
+3. [HOWTO Install and Configure a Shibboleth SP v2.x on Debian Linux 9 (Stretch)](https://github.com/ConsortiumGARR/idem-tutorials/blob/master/idem-fedops/HOWTO-Shibboleth/Service%20Provider/Debian/HOWTO%20Install%20and%20Configure%20a%20Shibboleth%20SP%20v2.x%20on%20Debian%20Linux%209%20(Stretch).md)
+4. [HOWTO Install and Configure a Shibboleth SP v2.6.1(from source) on Debian Linux 9 (Stretch)](https://github.com/ConsortiumGARR/idem-tutorials/blob/master/idem-fedops/HOWTO-Shibboleth/Service%20Provider/Debian/HOWTO%20Install%20and%20Configure%20a%20Shibboleth%20SP%20v2.6.1(from%20source)%20on%20Debian%20Linux%209%20(Stretch).md)
+5. [HOWTO Install and Configure a SimpleSAMLphp SP v1.x on Debian Linux 9 (Stretch)](https://github.com/ConsortiumGARR/idem-tutorials/blob/master/idem-fedops/HOWTO-SimpleSAMLphp/Service%20Provider/HOWTO%20Install%20and%20Configure%20a%20SimpleSAMLphp%20SP%20v1.x%20on%20Debian%20Linux%209%20(Stretch).md)
 
 ### Linux RedHat Distributions
 
