@@ -381,7 +381,7 @@
       </Handler>
       ```
 
-3. Add the ```<AttributeExtractor>``` element of the ```type="Metadata"``` next to the already existing ```type="XML"```: (```<AttributeExtractor type="XML" validate="true" path="attribute-map.xml"/>```)
+3. Add the following `<AttributeExtractor>' element under `<AttributeExtractor type="XML" validate="true" reloadChanges="false" path="attribute-map.xml"/>`
    * ```vim /etc/shibboleth/shibboleth2.xml```
 
      ```bash
@@ -398,22 +398,14 @@
    * ```systemctl restart shibd.service```
    
 5. Customize Attribute Checker template:
-   ```bash
-   cd /etc/shibboleth
-   
-   cp attrChecker.html attrChecker.html.orig
-   
-   curl https://raw.githubusercontent.com/CSCfi/shibboleth-attrchecker/master/attrChecker.html -o attrChecker.html
-   
-   sed -i 's/SHIB_//g' /etc/shibboleth/attrChecker.html
-   
-   sed -i 's/eduPersonPrincipalName/eppn/g' /etc/shibboleth/attrChecker.html
-   
-   sed -i 's/Meta-Support-Contact/Meta-Technical-Contact/g' /etc/shibboleth/attrChecker.html
-   
-   sed -i 's/supportContact/technicalContact/g' /etc/shibboleth/attrChecker.html
-   sed -i 's/support/technical/g' /etc/shibboleth/attrChecker.html
-   ```
+   * `cd /etc/shibboleth`
+   * `cp attrChecker.html attrChecker.html.orig`
+   * `curl https://raw.githubusercontent.com/CSCfi/shibboleth-attrchecker/master/attrChecker.html -o attrChecker.html`
+   * `sed -i 's/SHIB_//g' /etc/shibboleth/attrChecker.html`
+   * `sed -i 's/eduPersonPrincipalName/eppn/g' /etc/shibboleth/attrChecker.html`
+   * `sed -i 's/Meta-Support-Contact/Meta-Technical-Contact/g' /etc/shibboleth/attrChecker.html`
+   * `sed -i 's/supportContact/technicalContact/g' /etc/shibboleth/attrChecker.html`
+   * `sed -i 's/support/technical/g' /etc/shibboleth/attrChecker.html`
 
    There are three locations needing modifications to do on `attrChecker.html`:
 
@@ -447,11 +439,12 @@
 
 6. Enable Logging:
    * Create your ```track.png``` with into your DocumentRoot:
+   
      ```bash
      echo "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==" | base64 -d > /var/www/html/track.png
      ```
 
-   * Result into /var/log/httpd/access.log:
+   * Result into `/var/log/httpd/access.log`:
      ```bash
      ./httpd/access.log:193.206.129.66 - - [20/Sep/2018:15:05:07 +0000] "GET /track.png?idp=https://garr-idp-test.irccs.garr.it/idp/shibboleth&miss=-SHIB_givenName-SHIB_cn-SHIB_sn-SHIB_eppn-SHIB_schacHomeOrganization-SHIB_schacHomeOrganizationType HTTP/1.1" 404 637 "https://sp.example.org/Shibboleth.sso/AttrChecker?return=https%3A%2F%2Fsp.example.org%2FShibboleth.sso%2FSAML2%2FPOST%3Fhook%3D1%26target%3Dss%253Amem%253A43af2031f33c3f4b1d61019471537e5bc3fde8431992247b3b6fd93a14e9802d&target=https%3A%2F%2Fsp.example.org%2Fsecure%2F"
      ```
