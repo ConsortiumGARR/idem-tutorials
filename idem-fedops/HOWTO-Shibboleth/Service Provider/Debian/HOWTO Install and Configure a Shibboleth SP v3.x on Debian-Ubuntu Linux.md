@@ -367,32 +367,11 @@
       There arent yet any tag for SP entityID so you can replace this target URL manually.
 
 6. Enable Logging:
-   * Generate your `track.png` with Python:
-     * `apt install python3-png`
-     * `vim /opt/genTrack.py`
-     
-       ```Python
-       #!/bin/env python3
-
-       import png
-       import socket
-
-       fqdn = socket.gethostbyaddr(socket.gethostname())[0]
-       width = 1
-       height = 1
-       dest = "/var/www/html/%s/track.png" % (fqdn)
-       
-       img = []
-       for y in range(height):
-          row = ()
-          for x in range(width):
-              row = row + (x, max(0, 255 - x - y), y)
-          img.append(row)
-       with open(dest, 'wb') as f:
-          w = png.Writer(width, height)
-          w.write(f, img)
-       ```
-     * `python3 /opt/genTrack.py`
+   * Create your `track.png` with into your DocumentRoot:
+   
+     ```bash
+     echo "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==" | base64 -d > /var/www/html/$(hostname -f)/track.png
+     ```
 
    * Results into `/var/log/apache2/other_vhosts_access.log`:
    
