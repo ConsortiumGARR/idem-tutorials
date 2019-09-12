@@ -281,8 +281,8 @@
 
      ```bash
      <ApplicationDefaults entityID="https://<HOST>/shibboleth"
-                          REMOTE_USER="eppn persistent-id targeted-id"
-                          cipherSuites="ECDHE+AESGCM:ECDHE:!aNULL:!eNULL:!LOW:!EXPORT:!RC4:!SHA:!SSLv2"
+                          REMOTE_USER="eppn subject-id pairwise-id persistent-id"
+                          cipherSuites="DEFAULT:!EXP:!LOW:!aNULL:!eNULL:!DES:!IDEA:!SEED:!RC4:!3DES:!kRSA:!SSLv2:!SSLv3:!TLSv1:!TLSv1.1"
                           sessionHook="/Shibboleth.sso/AttrChecker"
                           metadataAttributePrefix="Meta-" >
      ```
@@ -291,8 +291,10 @@
    * `vim /etc/shibboleth/shibboleth2.xml`
 
      ```bash
-     <!-- Attribute Checker -->
+        ...
+        <!-- Attribute Checker -->
         <Handler type="AttributeChecker" Location="/AttrChecker" template="attrChecker.html" attributes="displayName givenName mail cn sn eppn schacHomeOrganization schacHomeOrganizationType" flushSession="true"/>
+     </Sessions>
      ```
      
      If you want to describe more complex scenarios with required attributes, operators such as "AND" and "OR" are available.
@@ -308,7 +310,7 @@
       </Handler>
       ```
 
-3. Add the <AttributeExtractor> element of the type="Metadata" next to the already existing type="XML": (```<AttributeExtractor type="XML" validate="true" path="attribute-map.xml"/>```)
+3. Add the following `<AttributeExtractor>' element under `<AttributeExtractor type="XML" validate="true" reloadChanges="false" path="attribute-map.xml"/>`
    * `vim /etc/shibboleth/shibboleth2.xml`
 
      ```bash
@@ -322,7 +324,7 @@
      ```
 
 4. Save and restart "shibd" service:
-   * `systemctl restart shibd.restart`
+   * `systemctl restart shibd.service`
    
 5. Customize Attribute Checker template:
    * `cd /etc/shibboleth`
@@ -365,12 +367,37 @@
       There arent yet any tag for SP entityID so you can replace this target URL manually.
 
 6. Enable Logging:
-   * Download an image 1x1 px from 'http://png-pixel.com/' and put it under `/var/www/html/sp.example.org/track.png` (your DocumentRoot)
+   * Generate your `track.png` with Python:
+     * `apt install python3-png`
+     * `vim /opt/genTrack.py`
+     
+       ```Python
+       #!/bin/env python3
 
-   * Result into `/var/log/apache2/access.log`:
+       import png
+       import socket
+
+       fqdn = socket.gethostbyaddr(socket.gethostname())[0]
+       width = 1
+       height = 1
+       dest = "/var/www/html/%s/track.png" % (fqdn)
+       
+       img = []
+       for y in range(height):
+          row = ()
+          for x in range(width):
+              row = row + (x, max(0, 255 - x - y), y)
+          img.append(row)
+       with open(dest, 'wb') as f:
+          w = png.Writer(width, height)
+          w.write(f, img)
+       ```
+     * `python3 /opt/genTrack.py`
+
+   * Results into `/var/log/apache2/other_vhosts_access.log`:
    
    ```bash
-   ./apache2/access.log:193.206.129.66 - - [20/Sep/2018:15:05:07 +0000] "GET /track.png?idp=https://garr-idp-test.irccs.garr.it/idp/shibboleth&miss=-SHIB_givenName-SHIB_cn-SHIB_sn-SHIB_eppn-SHIB_schacHomeOrganization-SHIB_schacHomeOrganizationType HTTP/1.1" 404 637 "https://sp.example.org/Shibboleth.sso/AttrChecker?return=https%3A%2F%2Fsp.example.org%2FShibboleth.sso%2FSAML2%2FPOST%3Fhook%3D1%26target%3Dss%253Amem%253A43af2031f33c3f4b1d61019471537e5bc3fde8431992247b3b6fd93a14e9802d&target=https%3A%2F%2Fsp.example.org%2Fsecure%2F"
+   ./apache2/other_vhosts_access.log:193.206.129.66 - - [20/Sep/2018:15:05:07 +0000] "GET /track.png?idp=https://garr-idp-test.irccs.garr.it/idp/shibboleth&miss=-SHIB_givenName-SHIB_cn-SHIB_sn-SHIB_eppn-SHIB_schacHomeOrganization-SHIB_schacHomeOrganizationType HTTP/1.1" 404 637 "https://sp.example.org/Shibboleth.sso/AttrChecker?return=https%3A%2F%2Fsp.example.org%2FShibboleth.sso%2FSAML2%2FPOST%3Fhook%3D1%26target%3Dss%253Amem%253A43af2031f33c3f4b1d61019471537e5bc3fde8431992247b3b6fd93a14e9802d&target=https%3A%2F%2Fsp.example.org%2Fsecure%2F"
    ```
 
 ### OPTIONAL - Maintain '```shibd```' working
