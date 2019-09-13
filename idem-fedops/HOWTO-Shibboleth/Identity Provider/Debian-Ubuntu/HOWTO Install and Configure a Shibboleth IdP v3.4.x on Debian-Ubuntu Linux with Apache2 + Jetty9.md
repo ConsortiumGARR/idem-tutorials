@@ -23,7 +23,7 @@
       1. [Computed mode - Default & Recommended](#computed-mode---default--recommended)
       2. [Stored Mode - using a database](#stored-mode---using-a-database)
    5. [Configure Logout](#configure-logout)
-   6. [Configure the directory (openLDAP) connection](#configure-the-directory-openldap-connection)
+   6. [Configure the directory (openLDAP or AD) connection](#configure-the-directory-openldap-connection)
    7. [Configure the attribute resolver (sample)](#configure-the-attribute-resolver-sample)
    8. [Configure IdP Logging](#configure-idp-logging)
    9. [Translate IdP messages into preferred language](#translate-idp-messages-into-preferred-language)
@@ -822,7 +822,7 @@ By default, a transient NameID will always be released to the Service Provider i
    * `cd /opt/shibboleth-idp/bin`
    * `./status.sh`
 
-### Configure the Directory (openLDAP) Connection
+### Configure the Directory (openLDAP or AD) Connection
 
 1. Check that you can reach the Directory from your IDP server:
    * For Active Directory: `ldapsearch -x -h <LDAP-SERVER-FQDN-OR-IP> -D 'CN=idpuser,CN=Users,DC=ad,DC=example,DC=org' -w '<IDPUSER-PASSWORD>' -b "CN=Users,DC=ad,DC=example,DC=org"`
