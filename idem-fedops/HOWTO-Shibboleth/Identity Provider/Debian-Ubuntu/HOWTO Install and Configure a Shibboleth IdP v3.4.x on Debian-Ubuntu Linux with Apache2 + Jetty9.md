@@ -23,7 +23,7 @@
       1. [Computed mode - Default & Recommended](#computed-mode---default--recommended)
       2. [Stored Mode - using a database](#stored-mode---using-a-database)
    5. [Configure Logout](#configure-logout)
-   6. [Configure the directory (openLDAP or AD) connection](#configure-the-directory-openldap-connection)
+   6. [Configure the directory (openLDAP or AD) connection](#configure-the-directory-openldap-or-ad-connection)
    7. [Configure the attribute resolver (sample)](#configure-the-attribute-resolver-sample)
    8. [Configure IdP Logging](#configure-idp-logging)
    9. [Translate IdP messages into preferred language](#translate-idp-messages-into-preferred-language)
