@@ -933,7 +933,7 @@ By default, a transient NameID will always be released to the Service Provider i
          idp.authn.LDAP.returnAttributes = ###List space-separated of attributes to retrieve from AD###
          idp.authn.LDAP.baseDN = CN=Users,DC=ad,DC=example,DC=org
          idp.authn.LDAP.userFilter = (sAMAccountName={user})
-         idp.authn.LDAP.bindDN = CN=idpuser,DC=ad,DC=example,DC=org
+         idp.authn.LDAP.bindDN = CN=idpuser,CN=Users,DC=ad,DC=example,DC=org
          idp.authn.LDAP.bindDNCredential = ###LDAP_IDPUSER_PASSWORD###
 
          idp.authn.LDAP.searchFilter = (sAMAccountName=$resolutionContext.principal)
@@ -964,7 +964,7 @@ By default, a transient NameID will always be released to the Service Provider i
          idp.authn.LDAP.returnAttributes = ###List space-separated of attributes to retrieve from AD###
          idp.authn.LDAP.baseDN = CN=Users,DC=ad,DC=example,DC=org
          idp.authn.LDAP.userFilter = (sAMAccountName={user})
-         idp.authn.LDAP.bindDN = CN=idpuser,DC=ad,DC=example,DC=org
+         idp.authn.LDAP.bindDN = CN=idpuser,CN=Users,DC=ad,DC=example,DC=org
          idp.authn.LDAP.bindDNCredential = ###LDAP_IDPUSER_PASSWORD###
          idp.authn.LDAP.searchFilter = (sAMAccountName=$resolutionContext.principal)
 
@@ -992,7 +992,7 @@ By default, a transient NameID will always be released to the Service Provider i
          idp.authn.LDAP.returnAttributes = ###List space-separated of attributes to retrieve from AD###
          idp.authn.LDAP.baseDN = CN=Users,DC=ad,DC=example,DC=org
          idp.authn.LDAP.userFilter = (sAMAccountName={user})
-         idp.authn.LDAP.bindDN = CN=idpuser,DC=ad,DC=example,DC=org
+         idp.authn.LDAP.bindDN = CN=idpuser,CN=Users,DC=ad,DC=example,DC=org
          idp.authn.LDAP.bindDNCredential = ###LDAP_IDPUSER_PASSWORD###
          idp.authn.LDAP.searchFilter = (sAMAccountName=$resolutionContext.principal)
 
