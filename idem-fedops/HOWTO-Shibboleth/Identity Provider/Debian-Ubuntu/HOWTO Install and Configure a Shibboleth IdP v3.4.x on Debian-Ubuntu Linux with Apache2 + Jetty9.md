@@ -825,7 +825,7 @@ By default, a transient NameID will always be released to the Service Provider i
 ### Configure the Directory (openLDAP) Connection
 
 1. Check that you can reach the Directory from your IDP server:
-   * For Active Directory: `ldapsearch -x -h <LDAP-SERVER-FQDN-OR-IP> -D 'CN=idpuser,CN=Users,DC=ad,DC=aai-test,DC=garr,DC=it' -w '<IDPUSER-PASSWORD>' -b "CN=Users,DC=ad,DC=aai-test,DC=garr,DC=it"`
+   * For Active Directory: `ldapsearch -x -h <LDAP-SERVER-FQDN-OR-IP> -D 'CN=idpuser,CN=Users,DC=ad,DC=example,DC=org' -w '<IDPUSER-PASSWORD>' -b "CN=Users,DC=ad,DC=example,DC=org"`
    * For OpenLDAP: `ldapsearch -x -h <LDAP-SERVER-FQDN-OR-IP> -D 'cn=idpuser,ou=system,dc=example,dc=org' -w '<IDPUSER-PASSWORD>' -b "ou=people,dc=example,dc=org"`
 
 2. Connect the openLDAP to the IdP to allow the authentication of the users:
