@@ -693,7 +693,7 @@
     *  ```./reload-service.sh -id shibboleth.MetadataResolverService```
 
 17. The day after the IDEM Federation Operators approval your entity on IDEM Entity Registry, check if you can login with your IdP on the following services:
-    * https://sp-test.garr.it/secure   (Service Provider provided for testing the IDEM Test Federation)
+    * https://sp-demo.aai-test.garr.it/secure   (Service Provider provided for testing the IDEM Test Federation)
     * https://sp24-test.garr.it/secure (Service Provider provided for testing the IDEM Test Federation and IDEM Production Federation)
 
 

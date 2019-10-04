@@ -1,6 +1,6 @@
 # HOWTO Install and Configure a Shibboleth IdP v3.4.x on Debian-Ubuntu Linux with Apache2 + Jetty9 
 
-[comment]: # (<img width="120px" src="https://wiki.idem.garr.it/IDEM_Approved.png" />)
+<img width="120px" src="https://wiki.idem.garr.it/IDEM_Approved.png" />
 
 ## Table of Contents
 
@@ -23,7 +23,7 @@
       1. [Computed mode - Default & Recommended](#computed-mode---default--recommended)
       2. [Stored Mode - using a database](#stored-mode---using-a-database)
    5. [Configure Logout](#configure-logout)
-   6. [Configure the directory (openLDAP) connection](#configure-the-directory-openldap-connection)
+   6. [Configure the directory (openLDAP or AD) connection](#configure-the-directory-openldap-or-ad-connection)
    7. [Configure the attribute resolver (sample)](#configure-the-attribute-resolver-sample)
    8. [Configure IdP Logging](#configure-idp-logging)
    9. [Translate IdP messages into preferred language](#translate-idp-messages-into-preferred-language)
@@ -822,10 +822,10 @@ By default, a transient NameID will always be released to the Service Provider i
    * `cd /opt/shibboleth-idp/bin`
    * `./status.sh`
 
-### Configure the Directory (openLDAP) Connection
+### Configure the Directory (openLDAP or AD) Connection
 
 1. Check that you can reach the Directory from your IDP server:
-   * For Active Directory: `ldapsearch -x -h <LDAP-SERVER-FQDN-OR-IP> -D 'CN=idpuser,CN=Users,DC=ad,DC=aai-test,DC=garr,DC=it' -w '<IDPUSER-PASSWORD>' -b "CN=Users,DC=ad,DC=aai-test,DC=garr,DC=it"`
+   * For Active Directory: `ldapsearch -x -h <LDAP-SERVER-FQDN-OR-IP> -D 'CN=idpuser,CN=Users,DC=ad,DC=example,DC=org' -w '<IDPUSER-PASSWORD>' -b "CN=Users,DC=ad,DC=example,DC=org"`
    * For OpenLDAP: `ldapsearch -x -h <LDAP-SERVER-FQDN-OR-IP> -D 'cn=idpuser,ou=system,dc=example,dc=org' -w '<IDPUSER-PASSWORD>' -b "ou=people,dc=example,dc=org"`
 
 2. Connect the openLDAP to the IdP to allow the authentication of the users:
@@ -845,7 +845,7 @@ By default, a transient NameID will always be released to the Service Provider i
          idp.authn.LDAP.trustCertificates = %{idp.home}/credentials/ldap-server.crt
          idp.authn.LDAP.returnAttributes = ###List space-separated of attributes to retrieve from OpenLDAP ###
          idp.authn.LDAP.baseDN = ou=people,dc=example,dc=org
-         idp.authn.LDAP.userFilter = (uid={user})
+         idp.authn.LDAP.userFilter = (&(uid={user})(objectClass=inetOrgPerson))
          idp.authn.LDAP.bindDN = cn=idpuser,ou=system,dc=example,dc=org
          idp.authn.LDAP.bindDNCredential = ###LDAP_IDPUSER_PASSWORD###
          idp.authn.LDAP.searchFilter = (uid=$resolutionContext.principal)
@@ -875,7 +875,7 @@ By default, a transient NameID will always be released to the Service Provider i
          idp.authn.LDAP.trustCertificates = %{idp.home}/credentials/ldap-server.crt
          idp.authn.LDAP.returnAttributes = ###List space-separated of attributes to retrieve from OpenLDAP ###
          idp.authn.LDAP.baseDN = ou=people,dc=example,dc=org
-         idp.authn.LDAP.userFilter = (uid={user})
+         idp.authn.LDAP.userFilter = (&(uid={user})(objectClass=inetOrgPerson))
          idp.authn.LDAP.bindDN = cn=idpuser,ou=system,dc=example,dc=org
          idp.authn.LDAP.bindDNCredential = ###LDAP_IDPUSER_PASSWORD###
          idp.authn.LDAP.searchFilter = (uid=$resolutionContext.principal)
@@ -903,7 +903,7 @@ By default, a transient NameID will always be released to the Service Provider i
          idp.authn.LDAP.useSSL = false
          idp.authn.LDAP.returnAttributes = ###List space-separated of attributes to retrieve from OpenLDAP###
          idp.authn.LDAP.baseDN = ou=people,dc=example,dc=org
-         idp.authn.LDAP.userFilter = (uid={user})
+         idp.authn.LDAP.userFilter = (&(uid={user})(objectClass=inetOrgPerson))
          idp.authn.LDAP.bindDN = cn=idpuser,ou=system,dc=example,dc=org
          idp.authn.LDAP.bindDNCredential = ###LDAP_IDPUSER_PASSWORD###
          idp.authn.LDAP.searchFilter = (uid=$resolutionContext.principal)
@@ -933,7 +933,7 @@ By default, a transient NameID will always be released to the Service Provider i
          idp.authn.LDAP.returnAttributes = ###List space-separated of attributes to retrieve from AD###
          idp.authn.LDAP.baseDN = CN=Users,DC=ad,DC=example,DC=org
          idp.authn.LDAP.userFilter = (sAMAccountName={user})
-         idp.authn.LDAP.bindDN = CN=idpuser,DC=ad,DC=example,DC=org
+         idp.authn.LDAP.bindDN = CN=idpuser,CN=Users,DC=ad,DC=example,DC=org
          idp.authn.LDAP.bindDNCredential = ###LDAP_IDPUSER_PASSWORD###
 
          idp.authn.LDAP.searchFilter = (sAMAccountName=$resolutionContext.principal)
@@ -964,7 +964,7 @@ By default, a transient NameID will always be released to the Service Provider i
          idp.authn.LDAP.returnAttributes = ###List space-separated of attributes to retrieve from AD###
          idp.authn.LDAP.baseDN = CN=Users,DC=ad,DC=example,DC=org
          idp.authn.LDAP.userFilter = (sAMAccountName={user})
-         idp.authn.LDAP.bindDN = CN=idpuser,DC=ad,DC=example,DC=org
+         idp.authn.LDAP.bindDN = CN=idpuser,CN=Users,DC=ad,DC=example,DC=org
          idp.authn.LDAP.bindDNCredential = ###LDAP_IDPUSER_PASSWORD###
          idp.authn.LDAP.searchFilter = (sAMAccountName=$resolutionContext.principal)
 
@@ -992,7 +992,7 @@ By default, a transient NameID will always be released to the Service Provider i
          idp.authn.LDAP.returnAttributes = ###List space-separated of attributes to retrieve from AD###
          idp.authn.LDAP.baseDN = CN=Users,DC=ad,DC=example,DC=org
          idp.authn.LDAP.userFilter = (sAMAccountName={user})
-         idp.authn.LDAP.bindDN = CN=idpuser,DC=ad,DC=example,DC=org
+         idp.authn.LDAP.bindDN = CN=idpuser,CN=Users,DC=ad,DC=example,DC=org
          idp.authn.LDAP.bindDNCredential = ###LDAP_IDPUSER_PASSWORD###
          idp.authn.LDAP.searchFilter = (sAMAccountName=$resolutionContext.principal)
 
@@ -1184,7 +1184,7 @@ Translate the IdP messages in your language:
     *  `./reload-service.sh -id shibboleth.MetadataResolverService`
 
 4. One hour after the IDEM Federation Operators approval your entity on IDEM Entity Registry, check if you can login with your IdP on the following services:
-    * https://sp-test.garr.it/secure   (Service Provider provided for testing the IDEM Test Federation)
+    * https://sp-demo.aai-test.garr.it/secure   (Service Provider provided for testing the IDEM Test Federation)
     * https://sp24-test.garr.it/secure (Service Provider provided for testing the IDEM Test Federation and IDEM Production Federation)
 
     or check which attributes are released to one the above SP with AACLI:

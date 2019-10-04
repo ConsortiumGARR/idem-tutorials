@@ -637,7 +637,7 @@ The software installation provided by this guide is intended to run by ROOT user
 
    (change ```ssp-idp.example.org``` to you SP full qualified domain name)
 
-8. Register you SP on IDEM Entity Registry (your entity have to be approved by an IDEM Federation Operator before become part of IDEM Test Federation):
+8. Register you IDP on IDEM Entity Registry (your entity has to be approved by an IDEM Federation Operator before become part of IDEM Test Federation):
    * Go to `https://registry.idem.garr.it/` and follow "**Insert a New Identity Provider into the IDEM Test Federation**"
 
 ### Appendix A - How to release attributes to specific SP only

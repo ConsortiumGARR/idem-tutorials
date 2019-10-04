@@ -1,4 +1,4 @@
-# HOWTO Install and Configure a Shibboleth SP v2.x on Debian Linux 9 (Stretch) 
+# HOWTO Install and Configure a Shibboleth SP v3.x on Debian-Ubuntu Linux
 
 <img width="120px" src="https://wiki.idem.garr.it/IDEM_Approved.png" />
 
@@ -27,216 +27,187 @@
  * CPU: 2 Core
  * RAM: 4 GB
  * HDD: 20 GB
+ * OS: Debian 10
 
 ## Software that will be installed
 
  * ca-certificates
  * ntp
  * vim
- * libapache2-mod-php, libapache2-mod-shib2, apache2 (>= 2.4)
+ * libapache2-mod-php, php, libapache2-mod-shib2, apache2 (>= 2.4)
  * openssl
 
 ## Other Requirements
 
  * Place the SSL Credentials into the right place:
-   1. SSL Certificate: "```/etc/ssl/certs/ssl-sp.crt```"
-   2. SSL Key: "```/etc/ssl/private/ssl-sp.key```"
-   3. SSL CA: "```/usr/local/share/ca-certificates/ssl-ca.crt```"
-   4. Run the command: "```update-ca-certificates```"
+   1. SSL Certificate: "`/etc/ssl/certs/sp.example.org.crt`"
+   2. SSL Key: "`/etc/ssl/private/sp.example.org.key`"
+   3. SSL CA: "`/usr/local/share/ca-certificates/TERENA_SSL_CA_3.crt`"
+   4. Run the command: "`update-ca-certificates`"
+   
+ (OPTIONAL) Create a Certificate and a Key self-signed for HTTPS if you don't have yet the official ones provided by the Certificate Authority (DigicertCA):
+ * `openssl req -x509 -newkey rsa:4096 -keyout /etc/ssl/private/ssl-sp.key -out /etc/ssl/certs/ssl-sp.crt -nodes -days 1095`
 
 ## Installation Instructions
 
 ### Install software requirements
 
 1. Become ROOT:
-   * ```sudo su -```
+   * `sudo su -`
 
 2. Change the default mirror with the GARR ones:
-   * ```sed -i 's/deb.debian.org/mi.mirror.garr.it\/mirrors/g' /etc/apt/sources.list```
-   * ```apt update && apt upgrade```
+   * `sed -i 's/deb.debian.org/debian.mirror.garr.it\/mirrors/g' /etc/apt/sources.list`
+   * `apt update && apt upgrade`
   
 3. Install the packages required: 
-   * ```apt install ca-certificates vim openssl```
+   * `apt install ca-certificates vim openssl`
 
 ### Configure the environment
 
-1. Modify your ```/etc/hosts```:
-   * ```vim /etc/hosts```
+1. Modify your `/etc/hosts`:
+   * `vim /etc/hosts`
   
      ```bash
      127.0.1.1 sp.example.org sp
      ```
-   (*Replace ```sp.example.org``` with your SP Full Qualified Domain Name*)
+   (*Replace `sp.example.org` with your SP Full Qualified Domain Name*)
 
 2. Be sure that your firewall **doesn't block** the traffic on port **443** (or you can't access to your SP)
-
-3. ***Define the costant ```APACHE_LOG```, ```SHIB_SP``` and ```SHIBD_LOG``` inside ```/etc/environment```:
-   * ```vim /etc/environment```
-
-     ```bash
-     APACHE_LOG=/var/log/apache2
-     SHIB_SP=/etc/shibboleth
-     SHIBD_LOG=/var/log/shibboleth
-     ```
-
-   * ```source /etc/environment```
-  
-   (OPTIONAL) Create a Certificate and a Key self-signed for HTTPS if you don't have yet the official ones provided by the Certificate Authority(DigicertCA):
-   * ```openssl req -x509 -newkey rsa:4096 -keyout /etc/ssl/private/ssl-sp.key -out /etc/ssl/certs/ssl-sp.crt -nodes -days 1095```
 
 ### Install Shibboleth Service Provider
 
 1. Become ROOT: 
-   * ```sudo su -```
+   * `sudo su -`
 
 2. Install Shibboleth SP:
    * ```bash
-     apt install apache2 libapache2-mod-shib2 libapache2-mod-php ntp --no-install-recommends
+     apt install apache2 libapache2-mod-shib ntp --no-install-recommends
      ```
 
-   From this point the location of the SP directory is: ```/etc/shibboleth```
+   From this point the location of the SP directory is: `/etc/shibboleth`
 
 ## Configuration Instructions
 
 ### Configure SSL on Apache2
 
-1. Modify the file ```/etc/apache2/sites-available/default-ssl.conf``` as follows:
+1. Modify the file `/etc/apache2/sites-available/sp.example.org.conf` as follows:
 
    ```apache
+   <VirtualHost *:80>
+      ServerName "sp.example.org"
+      Redirect permanent "/" "https://sp.example.org/"
+   </VirtualHost>
+   
    <IfModule mod_ssl.c>
-      SSLStaplingCache        shmcb:/var/run/ocsp(128000)
+      SSLStaplingCache shmcb:/var/run/ocsp(128000)
       <VirtualHost _default_:443>
         ServerName sp.example.org:443
         ServerAdmin admin@example.org
-        DocumentRoot /var/www/html
-        ...
+        DocumentRoot /var/www/html/sp.example.org
+     
         SSLEngine On
-        ...
-        SSLCertificateFile /etc/ssl/certs/ssl-sp.crt
-        SSLCertificateKeyFile /etc/ssl/private/ssl-sp.key
-        ...
-        SSLCertificateChainFile /root/certificates/ssl-ca.pem
-        ...
+     
         SSLProtocol All -SSLv2 -SSLv3 -TLSv1 -TLSv1.1
-        SSLCipherSuite "EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH"
+        SSLCipherSuite "EECDH+ECDSA+AESGCM EECDH+aRSA+AESGCM EECDH+ECDSA+SHA384 EECDH+ECDSA+SHA256 EECDH+aRSA+SHA384 EECDH+aRSA+SHA256 EECDH+aRSA+RC4 EECDH EDH+aRSA RC4 !aNULL !eNULL !LOW !3DES !MD5 !EXP !PSK !SRP !DSS !RC4"
 
         SSLHonorCipherOrder on
 
         # Disable SSL Compression
         SSLCompression Off
-        
+     
         # OCSP Stapling, only in httpd/apache >= 2.3.3
-        SSLUseStapling          on
+        SSLUseStapling on
         SSLStaplingResponderTimeout 5
         SSLStaplingReturnResponderErrors off
-        
+     
         # Enable HTTP Strict Transport Security with a 2 year duration
         Header always set Strict-Transport-Security "max-age=63072000;includeSubDomains;preload"
+     
+        SSLCertificateFile /etc/ssl/certs/sp.example.org.crt
+        SSLCertificateKeyFile /etc/ssl/private/sp.example.org.key
+        SSLCACertificateFile /etc/ssl/certs/TERENA_SSL_CA_3.pem
       </VirtualHost>
    </IfModule>
    ```
 
 2. Enable **proxy_http**, **SSL** and **headers** Apache2 modules:
-   * ```a2enmod proxy_http ssl headers alias include negotiation```
-   * ```a2ensite default-ssl.conf```
-   * ```systemctl restart apache2.service```
-
-3. Configure Apache2 to open port **80** only for localhost:
-   * ```vim /etc/apache2/ports.conf```
-
-     ```apache
-     # If you just change the port or add more ports here, you will likely also
-     # have to change the VirtualHost statement in
-     # /etc/apache2/sites-enabled/000-default.conf
-
-     Listen 127.0.0.1:80
- 
-     <IfModule ssl_module>
-       Listen 443
-     </IfModule>
-    
-     <IfModule mod_gnutls.c>
-       Listen 443
-     </IfModule>
-     ```
-5. Configure Apache2 to redirect all on HTTPS:
-   * ```vim /etc/apache2/sites-enabled/000-default.conf```
-   
-     ```apache
-     <VirtualHost *:80>
-        ServerName "sp.example.org"
-        Redirect permanent "/" "https://sp.example.org/"
-        RedirectMatch permanent ^/(.*)$ https://sp.example.org/$1
-     </VirtualHost>
-     ```
-
-   * ```systemctl reload apache2.service```
+   * `a2enmod ssl headers alias include negotiation`
+   * `a2dissite 000-default.conf`
+   * `a2ensite sp.example.org.conf`
+   * `systemctl restart apache2.service`
   
-6. Verify the strength of your SP's machine on:
+3. Verify the strength of your SP's machine on:
    * [**https://www.ssllabs.com/ssltest/analyze.html**](https://www.ssllabs.com/ssltest/analyze.html)
 
 ### Configure Shibboleth SP
 
 1. Become ROOT: 
-   * ```sudo su -```
+   * `sudo su -`
 
 2. Download Federation Metadata Signing Certificate:
-   * ```cd /etc/shibboleth/```
-   * ```wget https://md.idem.garr.it/certs/idem-signer-20220121.pem -O federation-cert.pem```
+   * `cd /etc/shibboleth/`
+   * `wget https://md.idem.garr.it/certs/idem-signer-20220121.pem -O federation-cert.pem`
 
     * Check the validity:
-      *  ```cd /etc/shibboleth```
-      *  ```openssl x509 -in federation-cert.pem -fingerprint -sha1 -noout```
+      *  `cd /etc/shibboleth`
+      *  `openssl x509 -in federation-cert.pem -fingerprint -sha1 -noout`
        
          (sha1: D1:68:6C:32:A4:E3:D4:FE:47:17:58:E7:15:FC:77:A8:44:D8:40:4D)
-      *  ```openssl x509 -in federation-cert.pem -fingerprint -md5 -noout```
+      *  `openssl x509 -in federation-cert.pem -fingerprint -md5 -noout`
 
          (md5: 48:3B:EE:27:0C:88:5D:A3:E7:0B:7C:74:9D:24:24:E0)
 
-3. Edit ```shibboleth2.xml``` opportunely:
-   * ```vim /etc/shibboleth/shibboleth2.xml```
+3. Edit `shibboleth2.xml` opportunely:
+   * `vim /etc/shibboleth/shibboleth2.xml`
 
      ```bash
      ...
      <ApplicationDefaults entityID="https://sp.example.org/shibboleth"
-          REMOTE_USER="eppn persistent-id targeted-id"
-          cipherSuites="ECDHE+AESGCM:ECDHE:!aNULL:!eNULL:!LOW:!EXPORT:!RC4:!SHA:!SSLv2">
+          REMOTE_USER="eppn subject-id pairwise-id persistent-id"
+          cipherSuites="DEFAULT:!EXP:!LOW:!aNULL:!eNULL:!DES:!IDEA:!SEED:!RC4:!3DES:!kRSA:!SSLv2:!SSLv3:!TLSv1:!TLSv1.1">
      ...
-     <Sessions lifetime="28800" timeout="3600" checkAddress="false" handlerSSL="true" cookieProps="https">
+     <Sessions lifetime="28800" timeout="3600" relayState="ss:mem" checkAddress="false" handlerSSL="true" cookieProps="https">
      ...
      <!-- To install and Configure the Shibboleth Embedded Discovery Service follow: http://tiny.cc/howto-idem-shib-eds -->
      <SSO discoveryProtocol="SAMLDS" discoveryURL="https://wayf.idem-test.garr.it/WAYF">
         SAML2
      </SSO>
      ...
-     <MetadataProvider type="XML" uri="http://md.idem.garr.it/metadata/idem-test-metadata-sha256.xml" legacyOrgName="true" backingFilePath="idem-test-metadata-sha256.xml" reloadInterval="600">
-           <MetadataFilter type="Signature" certificate="federation-cert.pem"/>
-           <MetadataFilter type="RequireValidUntil" maxValidityInterval="864000" />
+     <MetadataProvider type="XML" uri="http://md.idem.garr.it/metadata/idem-test-metadata-sha256.xml" legacyOrgName="true" backingFilePath="idem-test-metadata-sha256.xml" maxRefreshDelay="7200">
+        <MetadataFilter type="Signature" certificate="federation-cert.pem" verifyBackup="false"/>
+        <MetadataFilter type="RequireValidUntil" maxValidityInterval="864000" />
      </MetadataProvider>
+     ...
+     <!-- Simple file-based resolvers for separate signing/encryption keys. -->
+     <CredentialResolver type="File" use="signing"
+         key="sp-signing-key.pem" certificate="sp-signing-cert.pem"/>
+     <CredentialResolver type="File" use="encryption"
+         key="sp-encrypt-key.pem" certificate="sp-encrypt-cert.pem"/>
      ```
 4. Create SP metadata credentials:
-   * ```/usr/sbin/shib-keygen```
-   * ```shibd -t /etc/shibboleth/shibboleth2.xml``` (Check Shibboleth configuration)
-   * ```systemctl restart shibd.service```
+   * `/usr/sbin/shib-keygen -n sp-signing -e https://sp3-deb.aai-test.garr.it/shibboleth`
+   * `/usr/sbin/shib-keygen -n sp-encrypt -e https://sp3-deb.aai-test.garr.it/shibboleth`
+   * `shibd -t /etc/shibboleth/shibboleth2.xml` (Check Shibboleth configuration)
+   * `systemctl restart shibd.service`
 
 5. Enable Shibboleth Apache2 configuration:
-   * ```a2enmod shib2```
-   * ```systemctl reload apache2.service```
+   * `a2enmod shib`
+   * `systemctl reload apache2.service`
 
 5. Now you are able to reach your Shibboleth SP Metadata on:
-   * ```https://sp.example.org/Shibboleth.sso/Metadata```
-   (change ```sp.example.org``` to you SP full qualified domain name)
+   * `https://sp.example.org/Shibboleth.sso/Metadata`
+   (change `sp.example.org` to you SP full qualified domain name)
 
 7. Register you SP on IDEM Entity Registry (your entity have to be approved by an IDEM Federation Operator before become part of IDEM Test Federation):
-   * Go to ```https://registry.idem.garr.it/``` and follow "Insert a New Service Provider into the IDEM Test Federation"
+   * Go to `https://registry.idem.garr.it/` and follow "Insert a New Service Provider into the IDEM Test Federation"
 
 
 ### Configure an example federated resource "secure"
 
 1. Create the Apache2 configuration for the application: 
-   * ```sudo su -```
+   * `sudo su -`
 
-   * ```vim /etc/apache2/conf-available/secure.conf```
+   * `vim /etc/apache2/conf-available/secure.conf`
   
      ```bash
      RedirectMatch    ^/$  /secure
@@ -247,12 +218,12 @@
        require valid-user
      </Location>
      ```
-   * ```a2enconf secure```
+   * `a2enconf secure`
 
-2. Create the "```secure```" application into the DocumentRoot:
-   * ```mkdir /var/www/html/secure```
+2. Create the "`secure`" application into the DocumentRoot:
+   * `mkdir /var/www/html/sp.example.org/secure`
 
-   * ```vim /var/www/html/secure/index.php```
+   * `vim /var/www/html/sp.example.org/secure/index.php`
 
      ```php
      <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -297,31 +268,33 @@
      ```
 
 3. Install needed packages:
-   * ```apt install libapache2-mod-php```
-
-   * ```systemctl restart apache2.service```
+   * `apt install libapache2-mod-php php`
+   * `systemctl restart apache2.service`
 
 ### Enable Attribute Support on Shibboleth SP
-1. Enable attribute support by removing comment from the related content into "```/etc/shibboleth/attribute-map.xml```"
-2. Disable First deprecated/incorrect version of ```persistent-id``` from ```attribute-map.xml```
+1. Enable attribute support by removing comment from the related content into "`/etc/shibboleth/attribute-map.xml`"
+2. Restart Shibd to apply `systemctl restart shibd.service`
 
 ### Enable Attribute Checker Support on Shibboleth SP
 1. Add a sessionHook for attribute checker: `sessionHook="/Shibboleth.sso/AttrChecker"` and the `metadataAttributePrefix="Meta-"` to `ApplicationDefaults`:
-   * ```vim /etc/shibboleth/shibboleth2.xml```
+   * `vim /etc/shibboleth/shibboleth2.xml`
 
      ```bash
      <ApplicationDefaults entityID="https://<HOST>/shibboleth"
-                          REMOTE_USER="eppn persistent-id targeted-id"
-                          cipherSuites="ECDHE+AESGCM:ECDHE:!aNULL:!eNULL:!LOW:!EXPORT:!RC4:!SHA:!SSLv2"
+                          REMOTE_USER="eppn subject-id pairwise-id persistent-id"
+                          cipherSuites="DEFAULT:!EXP:!LOW:!aNULL:!eNULL:!DES:!IDEA:!SEED:!RC4:!3DES:!kRSA:!SSLv2:!SSLv3:!TLSv1:!TLSv1.1"
                           sessionHook="/Shibboleth.sso/AttrChecker"
                           metadataAttributePrefix="Meta-" >
      ```
+
 2. Add the attribute checker handler with the list of required attributes to Sessions (in the example below: `displayName`, `givenName`, `mail`, `cn`, `sn`, `eppn`, `schacHomeOrganization`, `schacHomeOrganizationType`). The attributes' names HAVE TO MATCH with those are defined on `attribute-map.xml`:
-   * ```vim /etc/shibboleth/shibboleth2.xml```
+   * `vim /etc/shibboleth/shibboleth2.xml`
 
      ```bash
-     <!-- Attribute Checker -->
+        ...
+        <!-- Attribute Checker -->
         <Handler type="AttributeChecker" Location="/AttrChecker" template="attrChecker.html" attributes="displayName givenName mail cn sn eppn schacHomeOrganization schacHomeOrganizationType" flushSession="true"/>
+     </Sessions>
      ```
      
      If you want to describe more complex scenarios with required attributes, operators such as "AND" and "OR" are available.
@@ -337,8 +310,8 @@
       </Handler>
       ```
 
-3. Add the <AttributeExtractor> element of the type="Metadata" next to the already existing type="XML": (```<AttributeExtractor type="XML" validate="true" path="attribute-map.xml"/>```)
-   * ```vim /etc/shibboleth/shibboleth2.xml```
+3. Add the following `<AttributeExtractor>' element under `<AttributeExtractor type="XML" validate="true" reloadChanges="false" path="attribute-map.xml"/>`
+   * `vim /etc/shibboleth/shibboleth2.xml`
 
      ```bash
      <!-- Extracts support information for IdP from its metadata. -->
@@ -351,17 +324,17 @@
      ```
 
 4. Save and restart "shibd" service:
-   * ```systemctl restart shibd.restart```
+   * `systemctl restart shibd.service`
    
 5. Customize Attribute Checker template:
-   * ```cd /etc/shibboleth```
-   * ```cp attrChecker.html attrChecker.html.orig```
-   * ```wget https://raw.githubusercontent.com/CSCfi/shibboleth-attrchecker/master/attrChecker.html -O attrChecker.html```
-   * ```sed -i 's/SHIB_//g' /etc/shibboleth/attrChecker.html```
-   * ```sed -i 's/eduPersonPrincipalName/eppn/g' /etc/shibboleth/attrChecker.html```
-   * ```sed -i 's/Meta-Support-Contact/Meta-Technical-Contact/g' /etc/shibboleth/attrChecker.html```
-   * ```sed -i 's/supportContact/technicalContact/g' /etc/shibboleth/attrChecker.html```
-   * ```sed -i 's/support/technical/g' /etc/shibboleth/attrChecker.html```
+   * `cd /etc/shibboleth`
+   * `cp attrChecker.html attrChecker.html.orig`
+   * `wget https://raw.githubusercontent.com/CSCfi/shibboleth-attrchecker/master/attrChecker.html -O attrChecker.html`
+   * `sed -i 's/SHIB_//g' /etc/shibboleth/attrChecker.html`
+   * `sed -i 's/eduPersonPrincipalName/eppn/g' /etc/shibboleth/attrChecker.html`
+   * `sed -i 's/Meta-Support-Contact/Meta-Technical-Contact/g' /etc/shibboleth/attrChecker.html`
+   * `sed -i 's/supportContact/technicalContact/g' /etc/shibboleth/attrChecker.html`
+   * `sed -i 's/support/technical/g' /etc/shibboleth/attrChecker.html`
 
    There are three locations needing modifications to do on `attrChecker.html`:
 
@@ -394,18 +367,22 @@
       There arent yet any tag for SP entityID so you can replace this target URL manually.
 
 6. Enable Logging:
-   * Download an image 1x1 px from 'http://png-pixel.com/' and put it under /var/www/html/track.png (your DocumentRoot)
+   * Create your `track.png` with into your DocumentRoot:
+   
+     ```bash
+     echo "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==" | base64 -d > /var/www/html/$(hostname -f)/track.png
+     ```
 
-   * Result into /var/log/apache2/access.log:
+   * Results into `/var/log/apache2/other_vhosts_access.log`:
    
    ```bash
-   ./apache2/access.log:193.206.129.66 - - [20/Sep/2018:15:05:07 +0000] "GET /track.png?idp=https://garr-idp-test.irccs.garr.it/idp/shibboleth&miss=-SHIB_givenName-SHIB_cn-SHIB_sn-SHIB_eppn-SHIB_schacHomeOrganization-SHIB_schacHomeOrganizationType HTTP/1.1" 404 637 "https://sp.example.org/Shibboleth.sso/AttrChecker?return=https%3A%2F%2Fsp.example.org%2FShibboleth.sso%2FSAML2%2FPOST%3Fhook%3D1%26target%3Dss%253Amem%253A43af2031f33c3f4b1d61019471537e5bc3fde8431992247b3b6fd93a14e9802d&target=https%3A%2F%2Fsp.example.org%2Fsecure%2F"
+   ./apache2/other_vhosts_access.log:193.206.129.66 - - [20/Sep/2018:15:05:07 +0000] "GET /track.png?idp=https://garr-idp-test.irccs.garr.it/idp/shibboleth&miss=-SHIB_givenName-SHIB_cn-SHIB_sn-SHIB_eppn-SHIB_schacHomeOrganization-SHIB_schacHomeOrganizationType HTTP/1.1" 404 637 "https://sp.example.org/Shibboleth.sso/AttrChecker?return=https%3A%2F%2Fsp.example.org%2FShibboleth.sso%2FSAML2%2FPOST%3Fhook%3D1%26target%3Dss%253Amem%253A43af2031f33c3f4b1d61019471537e5bc3fde8431992247b3b6fd93a14e9802d&target=https%3A%2F%2Fsp.example.org%2Fsecure%2F"
    ```
 
 ### OPTIONAL - Maintain '```shibd```' working
 
-1. Edit '```shibd```' init script:
-   * ```vim /etc/init.d/shibd```
+1. Edit '`shibd`' init script:
+   * `vim /etc/init.d/shibd`
 
      ```bash
      #...other lines...
@@ -428,8 +405,8 @@
      esac
      exit 0
      ```
-2. Create a new watchdog for '```shibd```':
-   * ```vim /etc/cron.hourly/watch-shibd.sh```
+2. Create a new watchdog for '`shibd`':
+   * `vim /etc/cron.hourly/watch-shibd.sh`
 
      ```bash
      #! /bin/bash
@@ -445,7 +422,7 @@
      ```
 
 3. Reload daemon:
-   * ```systemctl daemon-reload```
+   * `systemctl daemon-reload`
 
 ### Authors
 

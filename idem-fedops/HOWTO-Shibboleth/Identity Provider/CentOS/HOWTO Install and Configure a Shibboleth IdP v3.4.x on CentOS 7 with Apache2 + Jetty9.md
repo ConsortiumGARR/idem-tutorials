@@ -1,6 +1,6 @@
 # HOWTO Install and Configure a Shibboleth IdP v3.4.x on CentOS 7 with Apache2 + Jetty9
 
-[comment]: # (<img width="120px" src="https://wiki.idem.garr.it/IDEM_Approved.png" />)
+<img width="120px" src="https://wiki.idem.garr.it/IDEM_Approved.png" />
 
 ## Table of Contents
 
@@ -869,7 +869,7 @@ By default, a transient NameID will always be released to the Service Provider i
          idp.authn.LDAP.trustCertificates = %{idp.home}/credentials/ldap-server.crt
          idp.authn.LDAP.returnAttributes = ###List space-separated of attributes to retrieve from OpenLDAP ###
          idp.authn.LDAP.baseDN = ou=people,dc=example,dc=org
-         idp.authn.LDAP.userFilter = (uid={user})
+         idp.authn.LDAP.userFilter = (&(uid={user})(objectClass=inetOrgPerson))
          idp.authn.LDAP.bindDN = cn=idpuser,ou=system,dc=example,dc=org
          idp.authn.LDAP.bindDNCredential = ###LDAP_IDPUSER_PASSWORD###
          idp.authn.LDAP.searchFilter = (uid=$resolutionContext.principal)
@@ -899,7 +899,7 @@ By default, a transient NameID will always be released to the Service Provider i
          idp.authn.LDAP.trustCertificates = %{idp.home}/credentials/ldap-server.crt
          idp.authn.LDAP.returnAttributes = ###List space-separated of attributes to retrieve from OpenLDAP ###
          idp.authn.LDAP.baseDN = ou=people,dc=example,dc=org
-         idp.authn.LDAP.userFilter = (uid={user})
+         idp.authn.LDAP.userFilter = (&(uid={user})(objectClass=inetOrgPerson))
          idp.authn.LDAP.bindDN = cn=idpuser,ou=system,dc=example,dc=org
          idp.authn.LDAP.bindDNCredential = ###LDAP_IDPUSER_PASSWORD###
          idp.authn.LDAP.searchFilter = (uid=$resolutionContext.principal)
@@ -927,7 +927,7 @@ By default, a transient NameID will always be released to the Service Provider i
          idp.authn.LDAP.useSSL = false
          idp.authn.LDAP.returnAttributes = ###List space-separated of attributes to retrieve from OpenLDAP###
          idp.authn.LDAP.baseDN = ou=people,dc=example,dc=org
-         idp.authn.LDAP.userFilter = (uid={user})
+         idp.authn.LDAP.userFilter = (&(uid={user})(objectClass=inetOrgPerson))
          idp.authn.LDAP.bindDN = cn=idpuser,ou=system,dc=example,dc=org
          idp.authn.LDAP.bindDNCredential = ###LDAP_IDPUSER_PASSWORD###
          idp.authn.LDAP.searchFilter = (uid=$resolutionContext.principal)
@@ -1207,7 +1207,7 @@ Translate the IdP messages in your language:
     *  `./reload-service.sh -id shibboleth.MetadataResolverService`
 
 13. The day after the IDEM Federation Operators approval your entity on IDEM Entity Registry, check if you can login with your IdP on the following services:
-    * https://sp-test.garr.it/secure   (Service Provider provided for testing the IDEM Test Federation)
+    * https://sp-demo.aai-test.garr.it/secure   (Service Provider provided for testing the IDEM Test Federation)
     * https://sp24-test.garr.it/secure (Service Provider provided for testing the IDEM Test Federation and IDEM Production Federation)
 
     or check which attributes are released to them with AACLI:
