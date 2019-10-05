@@ -60,7 +60,7 @@ The followings should be done only if you want or have to deal with the same pro
 
 ## Test
 
-Once ``attribute-filter.xml`` and ``metadata-providers.xml`` have been migrated, put the production fqdn in `/etc/hosts` pointing to your local ip. This would be `127.0.0.1` if your test IdP is running on localhost.
+Once ``attribute-filter.xml`` and ``metadata-providers.xml`` have been migrated, put the production IdP's fqdn in `/etc/hosts` pointing to your local ip. This would be `127.0.0.1` if your test IdP is running on localhost.
 
 Now connect to any of the federation Service Providers to test the new asset.
 
