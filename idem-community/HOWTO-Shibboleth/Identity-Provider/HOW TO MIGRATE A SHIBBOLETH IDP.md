@@ -63,6 +63,11 @@ Once ``attribute-filter.xml`` and ``metadata-providers.xml`` have been migrated,
 
 Now connect to any of the federation Service Providers to test the new asset.
 
+## Additional tasks
+
+Customize the Shibboleth IdP template:
+- https://github.com/UniversitaDellaCalabria/design-unical-shibboleth-idp-theme
+
 ## AUTHORS
 
  * Giuseppe De Marco - Università della Calabria (giuseppe.demarco@unical.it)
