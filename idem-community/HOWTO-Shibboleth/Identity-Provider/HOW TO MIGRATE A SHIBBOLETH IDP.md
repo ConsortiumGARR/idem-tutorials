@@ -1,13 +1,14 @@
 # HOW TO MIGRATE A SHIBBOLETH IDP
 
-1. [INTRODUCTION](#introduction)
-2. [INSTALLATION OF THE NECESSARY SOFTWARE](#installation-of-the-necessary-software)
-3. [HOT WO MIGRATE](#how-to-migrate)
-4. [AUTHORS](#authors)
-5. [CREDITS](#credits)
+1. [Introduction](#introduction)
+2. [Installation of the necessary software](#installation-of-the-necessary-software)
+3. [Migration of the production IdP configuration](#migration-of-the-production-idp-configuration)
+4. [Test](#test)
+5. [Additional tasks](#additional-tasks)
+6. [AUTHORS](#authors)
+7. [CREDITS](#credits)
 
-
-## INTRODUCTION
+## Introduction
 
 This guide helps us with:
 
@@ -23,7 +24,7 @@ Why should we migrate an Identity Provider? Here the most common use cases:
 - upgrade Shibboleth IdP to another version and test it before going in production;
 - customize the template, changing the general configuration, anything else in safe stage.
 
-## INSTALLATION OF THE NECESSARY SOFTWARE
+## Installation of the necessary software
 
 You should have a production ShibIdP and a newer installation of another one where to migrate the production configuration.
 You can install a new Shibboleth IdP with the help of the following resources:
@@ -32,7 +33,7 @@ You can install a new Shibboleth IdP with the help of the following resources:
     - [IDEM playbook](https://github.com/ConsortiumGARR/ansible-shibboleth)
     - [Unical playbook](https://github.com/peppelinux/Ansible-Shibboleth-IDP-SP-Debian)
 
-## HOW TO MIGRATE
+## Migration of the production IdP configuration
 
 Remember to use a diff tool to do an appropriate file comparison between local and production configuration files, this should be always done to deal with configuration changements that can be made between different versions. It would be better to have a graphical directory tree diff tool, like [meld](http://meldmerge.org/).
 
@@ -57,7 +58,7 @@ The followings should be done only if you want or have to deal with the same pro
     
 4. copy ``{idp_home}/dist/conf/services.xml`` and ``{idp_home}/messages`` from production folders to reuse your production messages.
 
-## TEST
+## Test
 
 Once ``attribute-filter.xml`` and ``metadata-providers.xml`` have been migrated, put the production fqdn in `/etc/hosts` pointing to your local ip. This would be `127.0.0.1` if your test IdP is running on localhost.
 
