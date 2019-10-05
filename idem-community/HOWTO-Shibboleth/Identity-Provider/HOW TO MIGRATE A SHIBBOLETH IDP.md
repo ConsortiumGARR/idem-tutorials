@@ -1,9 +1,5 @@
 # HOW TO MIGRATE A SHIBBOLETH IDP
 
-#### Authors: Giuseppe De Marco / Francesco Filicetti - Università della Calabria
-
-## TABLE OF CONTENTS
-
 1. [INTRODUCTION](#introduction)
 2. [INSTALLATION OF THE NECESSARY SOFTWARE](#installation-of-the-necessary-software)
 3. [HOT WO MIGRATE](#how-to-migrate)
@@ -13,25 +9,28 @@
 
 ## INTRODUCTION
 
-This guide helps us to migrate a Shibboleth IdP and test it as it would come from a production environment, through the federation's Service Providers.  
-This means that tests can be made only with HTTP-REDIRECT and HTTP-POST, managing your local ``/etcs/hosts`` file.
+This guide helps us with:
+
+- Installation of a new Shibboleth IdP (local instance) on a GNU/Linux host;
+- Migration of an existing Shibboleth IdP's configuration to the local one;
+- Testing of the local IdP as it would be the production one, using the federation's Service Providers. 
+
+This asset could be tested only with HTTP-REDIRECT and HTTP-POST Saml bindinds, this can be made fixing the fqdn's ip address of your local IdP as it would be the production one, with the help of ``/etc/hosts`` file.
 
 Why should we migrate an Identity Provider? Here the most common use cases:
 
 - duplicate it in a local environment for test purposes;
 - upgrade Shibboleth IdP to another version and test it before going in production;
-- customize the template or the general configuration to find out potential problems with SP.
+- customize the template, changing the general configuration, anything else in safe stage.
 
 ## INSTALLATION OF THE NECESSARY SOFTWARE
 
-On your local machine you can bootstrap a full working environment to run a Shibboleth IdP.
-
-Use one of these **Ansible playbooks** to setup it:
-
-- IDEM playbook (thans to Marco Malavolti)
-- https://github.com/peppelinux/Ansible-Shibboleth-IDP-SP-Debian (thanks to Giuseppe De Marco)
-
-Follow instructions to make all software work.
+You should have a production ShibIdP and a newer installation of another one where to migrate the production configuration.
+You can install a new Shibboleth IdP with the help of the following resources:
+- [GARR Idem tutorials](https://github.com/ConsortiumGARR/idem-tutorials)
+- **Ansible playbooks**:
+    - IDEM playbook (thans to Marco Malavolti)
+    - https://github.com/peppelinux/Ansible-Shibboleth-IDP-SP-Debian
 
 ## HOW TO MIGRATE
 
