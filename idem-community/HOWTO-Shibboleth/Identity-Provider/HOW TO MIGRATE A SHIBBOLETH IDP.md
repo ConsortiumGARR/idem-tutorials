@@ -29,8 +29,8 @@ You should have a production ShibIdP and a newer installation of another one whe
 You can install a new Shibboleth IdP with the help of the following resources:
 - [GARR Idem tutorials](https://github.com/ConsortiumGARR/idem-tutorials)
 - **Ansible playbooks**:
-    - IDEM playbook (thans to Marco Malavolti)
-    - https://github.com/peppelinux/Ansible-Shibboleth-IDP-SP-Debian
+    - [IDEM playbook](https://github.com/ConsortiumGARR/ansible-shibboleth)
+    - [Unical playbook](https://github.com/peppelinux/Ansible-Shibboleth-IDP-SP-Debian)
 
 ## HOW TO MIGRATE
 
