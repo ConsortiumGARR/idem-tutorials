@@ -16,7 +16,7 @@ This guide helps us with:
 - Migration of an existing Shibboleth IdP's configuration to the local one;
 - Testing of the local IdP as it would be the production one, using the federation's Service Providers. 
 
-This asset could be tested only with HTTP-REDIRECT and HTTP-POST Saml bindinds, this can be made fixing the fqdn's ip address of your local IdP as if it were the production one, with the help of ``/etc/hosts`` file.
+This asset could be tested only with **HTTP-REDIRECT and HTTP-POST Saml bindinds**, this can be made fixing the fqdn's ip address of your local IdP as if it were the production one, with the help of ``/etc/hosts`` file.
 
 Why should we migrate an Identity Provider? Here the most common use cases:
 
@@ -39,7 +39,7 @@ Remember to use a diff tool to do an appropriate file comparison between local a
 
 1. copy all certificates in ``{idp_home}/credentials`` from production folder;
 
-2. in ``{idp_home}/conf``:
+2. ``{idp_home}/conf``:
     - ``attribute-filter.xml``: include your Service Provider's ``AttributeFilterPolicy``;
     - compare and integrate ``attribute-resolver.xml`` from production folder;
     - ``metadata-providers.xml``: include your Service Provider's ``MetadataProvider``;
@@ -52,7 +52,7 @@ The followings should be done only if you want or have to deal with the same pro
     - copy ``global.xml`` from production folder (datasource configuration);
     - copy ``ldap.properties`` from production folder (check TLS Authority Certificates to avoid connection errors);
 
-3. in ``{idp_home}/metadata``:
+3. ``{idp_home}/metadata``:
     - copy ``idp-medatada.xml`` from production folder;
     - copy ``{sp_name_metadata}.xml`` for each SP from production folder;
     
