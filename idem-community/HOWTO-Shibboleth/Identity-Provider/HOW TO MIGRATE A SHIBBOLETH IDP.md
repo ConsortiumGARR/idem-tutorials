@@ -5,8 +5,8 @@
 3. [Migration of the production IdP configuration](#migration-of-the-production-idp-configuration)
 4. [Test](#test)
 5. [Additional tasks](#additional-tasks)
-6. [AUTHORS](#authors)
-7. [CREDITS](#credits)
+6. [Authors](#authors)
+7. [Credits](#credits)
 
 ## Introduction
 
@@ -69,11 +69,11 @@ Now connect to any of the federation Service Providers to test the new asset.
 Customize the Shibboleth IdP template:
 - https://github.com/UniversitaDellaCalabria/design-unical-shibboleth-idp-theme
 
-## AUTHORS
+## Authors
 
  * Giuseppe De Marco - Università della Calabria (giuseppe.demarco@unical.it)
  * Francesco Filicetti - Università della Calabria (francesco.filicetti@unical.it)
 
-## CREDITS
+## Credits
 
 * https://shibboleth.net/
