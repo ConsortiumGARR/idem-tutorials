@@ -15,7 +15,7 @@ This guide helps us with:
 - Migration of an existing Shibboleth IdP's configuration to the local one;
 - Testing of the local IdP as it would be the production one, using the federation's Service Providers. 
 
-This asset could be tested only with HTTP-REDIRECT and HTTP-POST Saml bindinds, this can be made fixing the fqdn's ip address of your local IdP as it would be the production one, with the help of ``/etc/hosts`` file.
+This asset could be tested only with HTTP-REDIRECT and HTTP-POST Saml bindinds, this can be made fixing the fqdn's ip address of your local IdP as if it were the production one, with the help of ``/etc/hosts`` file.
 
 Why should we migrate an Identity Provider? Here the most common use cases:
 
@@ -34,11 +34,7 @@ You can install a new Shibboleth IdP with the help of the following resources:
 
 ## HOW TO MIGRATE
 
-Our purpose is to make a working replica of our Shibboleth IdP.
-
-After running the playbook, we have a clean instance running.
-
-Follow these steps:
+Remember to use a diff tool to do an appropriate file comparison between local and production configuration files, this should be always done to deal with configuration changements that can be made between different versions. It would be better to have a graphical directory tree diff tool, like [meld](http://meldmerge.org/).
 
 1. copy all certificates in ``{idp_home}/credentials`` from production folder;
 
@@ -46,11 +42,14 @@ Follow these steps:
     - ``attribute-filter.xml``: include your Service Provider's ``AttributeFilterPolicy``;
     - compare and integrate ``attribute-resolver.xml`` from production folder;
     - ``metadata-providers.xml``: include your Service Provider's ``MetadataProvider``;
-    - copy ``global.xml`` from production folder (datasource configuration);
+    - check ``relying-party.xml`` for any further declarations about SP entities;
     - compare ``idp.properties`` and integrate from production folder;
-    - copy ``ldap.properties`` from production folder;
     - copy ``saml-nameid.properties`` from production folder;
     - change all files permissions: ``{idp_home}/conf -type f -exec chmod 644 {} +``
+
+The followings should be done only if you want or have to deal with the same production datasources, otherwise you can even use a test instance of LDAP or MySQL. Remeber that if you have a persisten nameId storage, you should also migrate the MySQL (or the configured engine for that) into your MySQL test server:
+    - copy ``global.xml`` from production folder (datasource configuration);
+    - copy ``ldap.properties`` from production folder (check TLS Authority Certificates to avoid connection errors);
 
 3. in ``{idp_home}/metadata``:
     - copy ``idp-medatada.xml`` from production folder;
@@ -58,7 +57,11 @@ Follow these steps:
     
 4. copy ``{idp_home}/dist/conf/services.xml`` and ``{idp_home}/messages`` from production folders to reuse your production messages.
 
-Important note: we have to set LDAP configuration files (certificates and auth informations).
+## TEST
+
+Once ``attribute-filter.xml`` and ``metadata-providers.xml`` have been migrated, put the production fqdn in `/etc/hosts` pointing to your local ip. This would be `127.0.0.1` if your test IdP is running on localhost.
+
+Now connect to any of the federation Service Providers to test the new asset.
 
 ## AUTHORS
 
