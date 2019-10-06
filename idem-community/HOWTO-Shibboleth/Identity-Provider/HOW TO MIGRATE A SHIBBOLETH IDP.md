@@ -16,7 +16,7 @@ This guide helps us with:
 - Migration of an existing Shibboleth IdP's configuration to the local one;
 - Testing of the local IdP as it would be the production one, using the federation's Service Providers. 
 
-This asset could be tested only with **HTTP-REDIRECT and HTTP-POST Saml bindinds**, this can be made fixing the fqdn's ip address of your local IdP as if it were the production one, with the help of ``/etc/hosts`` file.
+This asset could be tested only with **HTTP-REDIRECT** and **HTTP-POST** Saml bindinds, this can be made fixing the fqdn's ip address of your local IdP as if it were the production one in ``/etc/hosts`` file.
 
 Why should we migrate an Identity Provider? Here the most common use cases:
 
