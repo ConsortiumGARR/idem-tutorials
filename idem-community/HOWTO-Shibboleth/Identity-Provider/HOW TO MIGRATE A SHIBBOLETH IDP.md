@@ -33,6 +33,8 @@ You can install a brand new Shibboleth IdP with the help of the following resour
     - [IDEM playbook](https://github.com/ConsortiumGARR/ansible-shibboleth)
     - [Unical playbook](https://github.com/peppelinux/Ansible-Shibboleth-IDP-SP-Debian)
 
+Remember also to use the same production entityID, fully qualified domain name and the same httpd tls certificates, to your brand new ShibIdP. 
+
 ## Migration of the production IdP configuration
 
 Remember to use a diff tool to do an appropriate file comparison between local and production configuration files, this should be always done to deal with configuration changements that can be necessary between different ShibIdP versions. It would be better to have a graphical directory tree diff tool, like [meld](http://meldmerge.org/).
