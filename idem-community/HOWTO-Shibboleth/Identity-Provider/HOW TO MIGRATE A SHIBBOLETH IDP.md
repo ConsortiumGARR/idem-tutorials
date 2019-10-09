@@ -30,7 +30,6 @@ You should have a production ShibIdP and a newer installation of another one whe
 You can install a brand new Shibboleth IdP with the help of the following resources:
 - [GARR Idem tutorials](https://github.com/ConsortiumGARR/idem-tutorials)
 - **Ansible playbooks**:
-    - [IDEM playbook](https://github.com/ConsortiumGARR/ansible-shibboleth)
     - [Unical playbook](https://github.com/peppelinux/Ansible-Shibboleth-IDP-SP-Debian)
 
 Remember also to use the same production entityID, fully qualified domain name and the same httpd tls certificates, to your brand new ShibIdP. 
