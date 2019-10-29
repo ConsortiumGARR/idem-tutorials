@@ -60,6 +60,7 @@ The followings should be made only if you want or have to deal with the same pro
     - copy ``global.xml`` from production folder (datasource configuration);
     - copy ``ldap.properties`` from production folder (check TLS Authority Certificates to avoid connection errors).
 
+5. Set rwx permission for jetty/tomcat user to `{idp_home}/logs` and `{idp_home}/metadata`
 
 ## Test
 
