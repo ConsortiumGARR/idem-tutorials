@@ -16,7 +16,7 @@ This guide helps us with:
 - Migration of an existing Shibboleth IdP's configuration to the local one;
 - Testing of the local IdP as it would be the production one, using the federation's Service Providers. 
 
-This asset could be tested only with **HTTP-REDIRECT** and **HTTP-POST** Saml bindinds, this can be made fixing the fqdn's ip address of your local IdP as if it were the production one in ``/etc/hosts`` file.
+This asset could be tested only with **HTTP-REDIRECT** and **HTTP-POST** Saml bindinds, this can be made fixing the fqdn's ip address of your local IdP in ``/etc/hosts`` file, working as if it were the production one.
 
 Why should we migrate an Identity Provider? Here the most common use cases:
 
@@ -44,6 +44,7 @@ Remember to use a diff tool to do an appropriate file comparison between local a
     - ``attribute-filter.xml``: include Service Providers ``AttributeFilterPolicy``;
     - compare and migrate ``attribute-resolver.xml`` from production folder;
     - ``metadata-providers.xml``: include your Service Providers ``MetadataProvider``;
+    - check if there's some other attribute-filter, metadata-providers or attribute-resolver files in `services.xml`, probably you'll have to load them as well;
     - check ``relying-party.xml`` for any further declarations about SP entities;
     - compare ``idp.properties`` and integrate from production folder;
     - copy ``saml-nameid.properties`` from production folder;
@@ -60,11 +61,11 @@ The followings should be made only if you want or have to deal with the same pro
     - copy ``global.xml`` from production folder (datasource configuration);
     - copy ``ldap.properties`` from production folder (check TLS Authority Certificates to avoid connection errors).
 
-5. Set rwx permission for jetty/tomcat user to `{idp_home}/logs` and `{idp_home}/metadata`
+5. Set rwx permission for jetty/tomcat user to `{idp_home}/logs`, `{idp_home}/metadata` and `{idp_home}/credentials`
 
 ## Test
 
-Once ``attribute-filter.xml`` and ``metadata-providers.xml`` have been migrated, you can configure the production IdP's FQDN (fully qualified domain name, public hostname) in `/etc/hosts`, pointing to your ShibIdP test ip address. This would be `127.0.0.1` if your test IdP is running on localhost.
+Once ``services.xml`` have been migrated, you can configure the production IdP's FQDN (fully qualified domain name, public hostname) in `/etc/hosts`, pointing to your ShibIdP test ip address. This would be `127.0.0.1` if your test IdP is running on localhost.
 
 Now you can connect to any of the federation Service Providers to test the new asset.
 
