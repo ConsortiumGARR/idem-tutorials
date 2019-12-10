@@ -374,8 +374,8 @@
                                 //'types' => array(),
                               ),
                            ),
-              'expireAfter'           => 60*60*24*10, // Maximum 10 days cache time
-              'outputDir'     => 'metadata/idem-federation/',
+              'expireAfter' => 60*60*24*10, // Maximum 10 days cache time
+              'outputDir'   => 'metadata/idem-federation/',
 
               /*
                * Which output format the metadata should be saved as.
@@ -519,7 +519,7 @@
                 'urn:oid:0.9.2342.19200300.100.1.3',
              ),
 	     
-	     'attributes.NameFormat' => 'urn:oasis:names:tc:SAML:2.0:attrname-format:uri',
+             'attributes.NameFormat' => 'urn:oasis:names:tc:SAML:2.0:attrname-format:uri',
 
              'description' => array(
                 'en' => 'Service Description',
