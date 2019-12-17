@@ -326,7 +326,7 @@ Jetty is a Web server and a Java Servlet container. It will be used to run the I
       * `systemctl start jetty.service`
 
 11. Check if the Apache Welcome page is available:
-    * https://idp.example.org
+    * http://idp.example.org
 
 ### Install Shibboleth Identity Provider v3.4.x
 
@@ -376,11 +376,14 @@ It is a Java Web Application that can be deployed with its WAR file.
 
 The Apache HTTP Server will be configured as a reverse proxy and it will be used for SSL offloading.
 
-1. Create the DocumentRoot:
+1. Become ROOT:
+   * `sudo su -`
+
+2. Create the DocumentRoot:
    * `mkdir /var/www/html/idp.example.org`
    * `sudo chown -R www-data: /var/www/html/idp.example.org`
 
-2. Create the Virtualhost file `/etc/apache2/sites-available/idp.example.org.conf` and set the content as follows:
+3. Create the Virtualhost file `/etc/apache2/sites-available/idp.example.org.conf` and set the content as follows:
 
    ```apache
    <VirtualHost *:80>
@@ -440,13 +443,13 @@ The Apache HTTP Server will be configured as a reverse proxy and it will be used
    </VirtualHost>
    ```
 
-3. Enable the required Apache2 modules and the virtual hosts:
+4. Enable the required Apache2 modules and the virtual hosts:
    * `a2enmod proxy_http ssl headers alias include negotiation`
    * `a2ensite idp.example.org.conf`
    * `a2dissite 000-default.conf`
    * `systemctl restart apache2.service`
 
-4. Verify the quality and the strength of the SSL configuration:
+5. Verify the quality and the strength of the SSL configuration:
    * [**https://www.ssllabs.com/ssltest/analyze.html**](https://www.ssllabs.com/ssltest/analyze.html)
 
 ### Configure Jetty
