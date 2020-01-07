@@ -1363,6 +1363,7 @@ Translate the IdP messages in your language:
           
      <util:list id ="shibboleth.AttributeFilterResources">
          <value>%{idp.home}/conf/attribute-filter.xml</value>
+	 <value>%{idp.home}/conf/attribute-filter-v3-RS-CoCo.xml</value>
          <ref bean="IDEM-Default-Filter"/>
      </util:list>
      ```
@@ -1386,6 +1387,7 @@ Translate the IdP messages in your language:
      ...
      <util:list id ="shibboleth.AttributeFilterResources">
          <value>%{idp.home}/conf/attribute-filter.xml</value>
+	 <value>%{idp.home}/conf/attribute-filter-v3-RS-CoCo.xml</value>
          <ref bean="IDEM-Default-Filter"/>
          <ref bean="IDEM-Production-Filter"/>
      </util:list>
