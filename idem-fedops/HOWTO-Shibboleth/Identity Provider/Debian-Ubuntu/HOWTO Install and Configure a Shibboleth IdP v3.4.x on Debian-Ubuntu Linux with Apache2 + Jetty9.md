@@ -45,14 +45,14 @@
  * CPU: 2 Core
  * RAM: 4 GB
  * HDD: 20 GB
- * OS: Debian 9 / Ubuntu 18.04
+ * OS: Debian 9 / Debian 10 / Ubuntu 18.04 
 
 ## Software that will be installed
 
  * ca-certificates
  * ntp
  * vim
- * default-jdk (openjdk 1.8.0)
+ * Amazon Corretto 8 JDK (recommended) or OpenJDK (latest)
  * jetty 9.4.x
  * apache2 (>= 2.4)
  * expat
@@ -85,34 +85,59 @@
    * `apt update && apt-get upgrade -y --no-install-recommends`
   
 4. Install the required packages: 
-   * `apt install vim wget default-jdk ca-certificates openssl apache2 ntp expat --no-install-recommends`
+   * OpenJDK: 
+     * `apt install vim wget default-jdk ca-certificates openssl apache2 ntp --no-install-recommends`
+   * Amazon Corretto OpenJDK: 
+     * `apt install vim wget ca-certificates openssl apache2 ntp --no-install-recommends`
+     * `wget -O- https://apt.corretto.aws/corretto.key | sudo apt-key add -`
+     * `apt-get install software-properties-common`
+     * `add-apt-repository 'deb https://apt.corretto.aws stable main'`
+     * `apt-get update; sudo apt-get install -y java-1.8.0-amazon-corretto-jdk`
+     * `java -version`
 
 5. Check that Java is working:
-   * `update-alternatives --config java`
+   * `update-alternatives --config java` 
+   
+   (It will returns "There is only one alternative in link group java (providing /usr/bin/java):" )
 
 ### Configure the environment
 
-1. Be sure that your firewall **is not blocking** the traffic on port **443** and **80**.
+1. Become ROOT:
+   * `sudo su -`
+   
+2. Be sure that your firewall **is not blocking** the traffic on port **443** and **80** for the IdP server.
 
-2. Set the IdP hostname:
+3. Set the IdP hostname:
    * `vim /etc/hosts`
 
      ```bash
-     <YOUR SERVER IP ADDRESS> idp.example.org idp
+     <YOUR SERVER PUBLIC IP ADDRESS> idp.example.org idp
      ```
      (*Replace `idp.example.org` with your IdP Full Qualified Domain Name*)
 
-3. Set the variable `JAVA_HOME` in `/etc/environment`:
-   * `vim /etc/environment`
+4. Set the variable `JAVA_HOME` in `/etc/environment`:
+   * Set JAVA_HOME:
+     * OpenJDK:
+       * `vim /etc/environment`
 
-     `JAVA_HOME=/usr/lib/jvm/default-java`
+         ```bash
+         JAVA_HOME=/usr/lib/jvm/default-java
+         ```
+         
+        * `source /etc/environment`
+        * `export JAVA_HOME=/usr/lib/jvm/default-java`
 
-   * `source /etc/environment`
-   * `export JAVA_HOME=/usr/lib/jvm/default-java`
+     * Amanzon Corretto OpenJDK:
+       * `vim /etc/environment`
 
-4. Install the SSL Certificate and Key for HTTP and set the right privileges:
-   * `cp /path/to/certificate/idp.example.org.crt /etc/ssl/certs/idp.example.org.crt`
-   * `cp /path/to/key/idp.example.org.key /etc/ssl/private/idp.example.org.key`
+         ```bash
+         JAVA_HOME=/usr/lib/jvm/java-1.8.0-amazon-corretto
+         ```
+
+       * `source /etc/environment`
+       * `export JAVA_HOME=/usr/lib/jvm/java-1.8.0-amazon-corretto`
+
+5. Configure the right privileges for the SSL Certificate and Key used by HTTPS:
    * `chmod 400 /etc/ssl/private/idp.example.org.key`
    * `chmod 644 /etc/ssl/certs/idp.example.org.crt`
 
@@ -128,11 +153,11 @@ Jetty is a Web server and a Java Servlet container. It will be used to run the I
 
 2. Download and Extract Jetty:
    * `cd /usr/local/src`
-   * `wget http://central.maven.org/maven2/org/eclipse/jetty/jetty-distribution/9.4.19.v20190610/jetty-distribution-9.4.19.v20190610.tar.gz`
-   * `tar xzvf jetty-distribution-9.4.19.v20190610.tar.gz`
+   * `wget https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-distribution/9.4.24.v20191120/jetty-distribution-9.4.24.v20191120.tar.gz`
+   * `tar xzvf jetty-distribution-9.4.24.v20191120.tar.gz`
 
 3. Create the `jetty-src` folder as a symbolic link. It will be useful for future Jetty updates:
-   * `ln -s jetty-distribution-9.4.19.v20190610 jetty-src`
+   * `ln -s jetty-distribution-9.4.24.v20191120 jetty-src`
 
 4. Create the user `jetty` that can run the web server:
    * `useradd -r -m jetty`
@@ -479,7 +504,8 @@ The Apache HTTP Server will be configured as a reverse proxy and it will be used
    * https://idp.example.org/idp/shibboleth
 
 5. Check IdP Status:
-   * `export JAVA_HOME=/usr/lib/jvm/default-java`
+   * If OpenJDK is chosen: `export JAVA_HOME=/usr/lib/jvm/default-java`
+   * If Amazon Corretto JDK is chosen: `export JAVA_HOME=/usr/lib/jvm/java-1.8.0-amazon-corretto`   
    * `cd /opt/shibboleth-idp/bin`
    * `./status.sh`
 
@@ -488,7 +514,7 @@ The Apache HTTP Server will be configured as a reverse proxy and it will be used
 jar:file:///usr/local/src/jetty-distribution-9.4.19.v20190610/lib/apache-jstl/org.apache.taglibs.taglibs-standard-impl-1.2.5.jar!/org/apache/taglibs/standard/tei/DeclareTEI.class, 
 jar:file:///opt/jetty/tmp/jetty-localhost-8080-idp.war-_idp-any-4002882914382542777.dir/webinf/WEB-INF/lib/jstl-1.2.jar!/org/apache/taglibs/standard/tei/DeclareTEI.class`
 
-This is a warning produced during the bytecode scanning for annotations of a webapp startup. In this case, we have 2 versions of the same class, version 1.2.5 and 1.2 as seen by the JAR filenames.
+This is a warning produced during the bytecode scanning for annotations of a webapp startup. In this case, we have 2 versions of the same class, version 1.2.5 and 1.2 as showed by the JAR filenames.
 *These warnings don't prevent the IdP working and can be ignored.*
 
 ### Configure Shibboleth Identity Provider StorageRecords (User Consent)
@@ -522,8 +548,9 @@ If you don't change anything, the IdP stores data in a long-lived browser cookie
 4. Check that the metadata is available on:
    * https://idp.example.org/idp/shibboleth
 
-5. Check the IdP Status:
-   * `export JAVA_HOME=/usr/lib/jvm/default-java`
+5. Check IdP Status:
+   * If OpenJDK is chosen: `export JAVA_HOME=/usr/lib/jvm/default-java`
+   * If Amazon Corretto JDK is chosen: `export JAVA_HOME=/usr/lib/jvm/java-1.8.0-amazon-corretto`   
    * `cd /opt/shibboleth-idp/bin`
    * `./status.sh`
 
@@ -636,8 +663,9 @@ This Storage service will memorize User Consent data on persistent database SQL.
 7. Check that the metadata is available on:
    * https://idp.example.org/idp/shibboleth
 
-8. Check the IdP Status:
-   * `export JAVA_HOME=/usr/lib/jvm/default-java`
+8. Check IdP Status:
+   * If OpenJDK is chosen: `export JAVA_HOME=/usr/lib/jvm/default-java`
+   * If Amazon Corretto JDK is chosen: `export JAVA_HOME=/usr/lib/jvm/java-1.8.0-amazon-corretto`   
    * `cd /opt/shibboleth-idp/bin`
    * `./status.sh`
 
@@ -672,17 +700,15 @@ By default, a transient NameID will always be released to the Service Provider i
        <ref bean="shibboleth.SAML2PersistentGenerator" />
        ```
 
-   * `vim /opt/shibboleth-idp/conf/c14n/subject-c14n.xml`
-     * Remove the comment to the bean called "**c14n/SAML2Persistent**".
-
 3. Restart Jetty:
    * `systemctl restart jetty.service`
 
 4. Check that the metadata is available on:
    * https://idp.example.org/idp/shibboleth
 
-5. Check the IdP Status:
-   * `export JAVA_HOME=/usr/lib/jvm/default-java`
+5. Check IdP Status:
+   * If OpenJDK is chosen: `export JAVA_HOME=/usr/lib/jvm/default-java`
+   * If Amazon Corretto JDK is chosen: `export JAVA_HOME=/usr/lib/jvm/java-1.8.0-amazon-corretto`   
    * `cd /opt/shibboleth-idp/bin`
    * `./status.sh`
 
@@ -796,8 +822,9 @@ By default, a transient NameID will always be released to the Service Provider i
 7. Check that the metadata is available on:
    * https://idp.example.org/idp/shibboleth
 
-8. Check the IdP Status:
-   * `export JAVA_HOME=/usr/lib/jvm/default-java`
+8. Check IdP Status:
+   * If OpenJDK is chosen: `export JAVA_HOME=/usr/lib/jvm/default-java`
+   * If Amazon Corretto JDK is chosen: `export JAVA_HOME=/usr/lib/jvm/java-1.8.0-amazon-corretto`   
    * `cd /opt/shibboleth-idp/bin`
    * `./status.sh`
 
@@ -820,8 +847,9 @@ By default, a transient NameID will always be released to the Service Provider i
 4. Check that the metadata is available on:
    * https://idp.example.org/idp/shibboleth
 
-5. Check the IdP Status:
-   * `export JAVA_HOME=/usr/lib/jvm/default-java`
+5. Check IdP Status:
+   * If OpenJDK is chosen: `export JAVA_HOME=/usr/lib/jvm/default-java`
+   * If Amazon Corretto JDK is chosen: `export JAVA_HOME=/usr/lib/jvm/java-1.8.0-amazon-corretto`   
    * `cd /opt/shibboleth-idp/bin`
    * `./status.sh`
 
@@ -846,11 +874,11 @@ By default, a transient NameID will always be released to the Service Provider i
          idp.authn.LDAP.useSSL = false
          idp.authn.LDAP.sslConfig = certificateTrust
          idp.authn.LDAP.trustCertificates = %{idp.home}/credentials/ldap-server.crt
-         idp.authn.LDAP.returnAttributes = ###List space-separated of attributes to retrieve from OpenLDAP ###
+         idp.authn.LDAP.returnAttributes = ### List comma-separated of attributes to retrieve from OpenLDAP ###
          idp.authn.LDAP.baseDN = ou=people,dc=example,dc=org
          idp.authn.LDAP.userFilter = (&(uid={user})(objectClass=inetOrgPerson))
          idp.authn.LDAP.bindDN = cn=idpuser,ou=system,dc=example,dc=org
-         idp.authn.LDAP.bindDNCredential = ###LDAP_IDPUSER_PASSWORD###
+         idp.authn.LDAP.bindDNCredential = ###IDPUSER_PASSWORD###
          idp.authn.LDAP.searchFilter = (uid=$resolutionContext.principal)
 
          # LDAP attribute configuration, see attribute-resolver.xml
@@ -876,11 +904,11 @@ By default, a transient NameID will always be released to the Service Provider i
          idp.authn.LDAP.useSSL = true
          idp.authn.LDAP.sslConfig = certificateTrust
          idp.authn.LDAP.trustCertificates = %{idp.home}/credentials/ldap-server.crt
-         idp.authn.LDAP.returnAttributes = ###List space-separated of attributes to retrieve from OpenLDAP ###
+         idp.authn.LDAP.returnAttributes = ### List comma-separated of attributes to retrieve from OpenLDAP ###
          idp.authn.LDAP.baseDN = ou=people,dc=example,dc=org
          idp.authn.LDAP.userFilter = (&(uid={user})(objectClass=inetOrgPerson))
          idp.authn.LDAP.bindDN = cn=idpuser,ou=system,dc=example,dc=org
-         idp.authn.LDAP.bindDNCredential = ###LDAP_IDPUSER_PASSWORD###
+         idp.authn.LDAP.bindDNCredential = ###IDPUSER_PASSWORD###
          idp.authn.LDAP.searchFilter = (uid=$resolutionContext.principal)
 
          # LDAP attribute configuration, see attribute-resolver.xml
@@ -904,11 +932,11 @@ By default, a transient NameID will always be released to the Service Provider i
          idp.authn.LDAP.ldapURL = ldap://ldap.example.org:389
          idp.authn.LDAP.useStartTLS = false
          idp.authn.LDAP.useSSL = false
-         idp.authn.LDAP.returnAttributes = ###List space-separated of attributes to retrieve from OpenLDAP###
+         idp.authn.LDAP.returnAttributes = ### List comma-separated of attributes to retrieve from OpenLDAP ###
          idp.authn.LDAP.baseDN = ou=people,dc=example,dc=org
          idp.authn.LDAP.userFilter = (&(uid={user})(objectClass=inetOrgPerson))
          idp.authn.LDAP.bindDN = cn=idpuser,ou=system,dc=example,dc=org
-         idp.authn.LDAP.bindDNCredential = ###LDAP_IDPUSER_PASSWORD###
+         idp.authn.LDAP.bindDNCredential = ###IDPUSER_PASSWORD###
          idp.authn.LDAP.searchFilter = (uid=$resolutionContext.principal)
 
          # LDAP attribute configuration, see attribute-resolver.xml
@@ -924,7 +952,7 @@ By default, a transient NameID will always be released to the Service Provider i
          ```
 
      * For Active Directory:
-       * Solution 1: LDAP + STARTTLS:
+       * Solution 1: AD + STARTTLS:
 
          ```properties
          idp.authn.LDAP.authenticator = bindSearchAuthenticator
@@ -933,11 +961,11 @@ By default, a transient NameID will always be released to the Service Provider i
          idp.authn.LDAP.useSSL = false
          idp.authn.LDAP.sslConfig = certificateTrust
          idp.authn.LDAP.trustCertificates = %{idp.home}/credentials/ldap-server.crt
-         idp.authn.LDAP.returnAttributes = ###List space-separated of attributes to retrieve from AD###
+         idp.authn.LDAP.returnAttributes = ### List comma-separated of attributes to retrieve from AD ###
          idp.authn.LDAP.baseDN = CN=Users,DC=ad,DC=example,DC=org
          idp.authn.LDAP.userFilter = (sAMAccountName={user})
          idp.authn.LDAP.bindDN = CN=idpuser,CN=Users,DC=ad,DC=example,DC=org
-         idp.authn.LDAP.bindDNCredential = ###LDAP_IDPUSER_PASSWORD###
+         idp.authn.LDAP.bindDNCredential = ###IDPUSER_PASSWORD###
 
          idp.authn.LDAP.searchFilter = (sAMAccountName=$resolutionContext.principal)
 
@@ -955,7 +983,7 @@ By default, a transient NameID will always be released to the Service Provider i
          idp.attribute.resolver.LDAP.returnAttributes    = %{idp.authn.LDAP.returnAttributes:undefined}
          ```
 
-       * Solution 2: LDAP + TLS:
+       * Solution 2: AD + TLS:
 
          ```properties
          idp.authn.LDAP.authenticator = bindSearchAuthenticator
@@ -964,11 +992,11 @@ By default, a transient NameID will always be released to the Service Provider i
          idp.authn.LDAP.useSSL = true
          idp.authn.LDAP.sslConfig = certificateTrust
          idp.authn.LDAP.trustCertificates = %{idp.home}/credentials/ldap-server.crt
-         idp.authn.LDAP.returnAttributes = ###List space-separated of attributes to retrieve from AD###
+         idp.authn.LDAP.returnAttributes = ### List comma-separated of attributes to retrieve from AD ###
          idp.authn.LDAP.baseDN = CN=Users,DC=ad,DC=example,DC=org
          idp.authn.LDAP.userFilter = (sAMAccountName={user})
          idp.authn.LDAP.bindDN = CN=idpuser,CN=Users,DC=ad,DC=example,DC=org
-         idp.authn.LDAP.bindDNCredential = ###LDAP_IDPUSER_PASSWORD###
+         idp.authn.LDAP.bindDNCredential = ###IDPUSER_PASSWORD###
          idp.authn.LDAP.searchFilter = (sAMAccountName=$resolutionContext.principal)
 
          # LDAP attribute configuration, see attribute-resolver.xml
@@ -985,18 +1013,18 @@ By default, a transient NameID will always be released to the Service Provider i
          idp.attribute.resolver.LDAP.returnAttributes    = %{idp.authn.LDAP.returnAttributes:undefined}
          ```
 
-       * Solution 3: plain LDAP
+       * Solution 3: plain AD
 
          ```properties
          idp.authn.LDAP.authenticator = bindSearchAuthenticator
          idp.authn.LDAP.ldapURL = ldap://ldap.example.org:389
          idp.authn.LDAP.useStartTLS = false
          idp.authn.LDAP.useSSL = false
-         idp.authn.LDAP.returnAttributes = ###List space-separated of attributes to retrieve from AD###
+         idp.authn.LDAP.returnAttributes = ### List comma-separated of attributes to retrieve from AD ###
          idp.authn.LDAP.baseDN = CN=Users,DC=ad,DC=example,DC=org
          idp.authn.LDAP.userFilter = (sAMAccountName={user})
          idp.authn.LDAP.bindDN = CN=idpuser,CN=Users,DC=ad,DC=example,DC=org
-         idp.authn.LDAP.bindDNCredential = ###LDAP_IDPUSER_PASSWORD###
+         idp.authn.LDAP.bindDNCredential = ###IDPUSER_PASSWORD###
          idp.authn.LDAP.searchFilter = (sAMAccountName=$resolutionContext.principal)
 
          # LDAP attribute configuration, see attribute-resolver.xml
@@ -1046,12 +1074,13 @@ By default, a transient NameID will always be released to the Service Provider i
       ```xml
       <!-- <value>%{idp.home}/conf/attribute-resolver.xml</value> -->
       <value>%{idp.home}/conf/attribute-resolver-sample.xml</value>
-
+      ```
    
-    (ONLY FOR IDEM Federation MEMBERS) The following sample is provided by IDEM GARR AAI:
-      * http://www.garr.it/idem-conf/attribute-resolver-v3_4-idem.xml
+      (ONLY FOR IDEM Federation MEMBERS) The following sample is provided by IDEM GARR AAI:
+      * OpenLDAP: https://github.com/ConsortiumGARR/idem-tutorials/raw/master/idem-fedops/HOWTO-Shibboleth/Identity%20Provider/utils/attribute-resolver-idem-ldap-sample.xml
+      * Active Directory: https://github.com/ConsortiumGARR/idem-tutorials/raw/master/idem-fedops/HOWTO-Shibboleth/Identity%20Provider/utils/attribute-resolver-idem-ad-sample.xml
 
-        **Pay attention on `<DataConnector id="myStoredId"`. You have to put the right bean ID into `<BeanManagedConnection>` or IdP will not work. You have to put there the ID of the `BasicDataSource` bean**
+        **Pay attention on `<DataConnector id="myStoredId"` when you use the Stored Mode (database) to manage your persistentIDs. You have to put the right bean ID into `<BeanManagedConnection>` or IdP will not work. You have to put there the ID of the `BasicDataSource` bean**
 
 2. Restart Jetty to apply changes:
    * `systemctl restart jetty.service`
@@ -1062,7 +1091,8 @@ By default, a transient NameID will always be released to the Service Provider i
    * `./aacli.sh -n <USERNAME> -r https://sp.example.org/shibboleth --saml2`
 
 4. Check IdP Status:
-   * `export JAVA_HOME=/usr/lib/jvm/default-java`
+   * If OpenJDK is chosen: `export JAVA_HOME=/usr/lib/jvm/default-java`
+   * If Amazon Corretto JDK is chosen: `export JAVA_HOME=/usr/lib/jvm/java-1.8.0-amazon-corretto`   
    * `cd /opt/shibboleth-idp/bin`
    * `./status.sh`
 
