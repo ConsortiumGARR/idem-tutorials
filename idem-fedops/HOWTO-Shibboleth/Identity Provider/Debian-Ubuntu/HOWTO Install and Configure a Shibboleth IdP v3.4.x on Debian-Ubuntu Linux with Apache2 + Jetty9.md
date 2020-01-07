@@ -542,8 +542,8 @@ If you don't change anything, the IdP stores data in a long-lived browser cookie
      idp.storage.htmlLocalStorage = true
      idp.cookie.secure = true
      ```
-3. Restart Jetty to apply the changes:
-   * `systemctl restart jetty.service`
+3. Restart IdP to apply the changes:
+   * `touch /opt/jetty/webapps/idp.xml`
 
 4. Check that the metadata is available on:
    * https://idp.example.org/idp/shibboleth
@@ -657,8 +657,8 @@ This Storage service will memorize User Consent data on persistent database SQL.
      idp.consent.StorageService = storageservice.JPAStorageService
      ```
 	 
-6. Restart Jetty to apply the changes:
-   * `systemctl restart jetty.service`
+6. Restart IdP to apply the changes:
+   * `touch /opt/jetty/webapps/idp.xml`
 
 7. Check that the metadata is available on:
    * https://idp.example.org/idp/shibboleth
@@ -700,8 +700,8 @@ By default, a transient NameID will always be released to the Service Provider i
        <ref bean="shibboleth.SAML2PersistentGenerator" />
        ```
 
-3. Restart Jetty:
-   * `systemctl restart jetty.service`
+3. Restart IdP to apply the changes:
+   * `touch /opt/jetty/webapps/idp.xml`
 
 4. Check that the metadata is available on:
    * https://idp.example.org/idp/shibboleth
@@ -816,8 +816,8 @@ By default, a transient NameID will always be released to the Service Provider i
      * `vim /opt/shibboleth-idp/conf/c14n/subject-c14n.xml`
        * Remove the comment to the bean called "**c14n/SAML2Persistent**".
 
-6. Restart Jetty to apply the  changes:
-   * `systemctl restart jetty.service`
+6. Restart IdP to apply the changes:
+   * `touch /opt/jetty/webapps/idp.xml`
 
 7. Check that the metadata is available on:
    * https://idp.example.org/idp/shibboleth
@@ -841,8 +841,8 @@ By default, a transient NameID will always be released to the Service Provider i
      idp.session.secondaryServiceIndex = true
      ```
 
-3. Restart Jetty to apply the changes:
-   * `systemctl restart jetty.service`
+3. Restart IdP to apply the changes:
+   * `touch /opt/jetty/webapps/idp.xml`
 
 4. Check that the metadata is available on:
    * https://idp.example.org/idp/shibboleth
@@ -1082,8 +1082,8 @@ By default, a transient NameID will always be released to the Service Provider i
 
         **Pay attention on `<DataConnector id="myStoredId"` when you use the Stored Mode (database) to manage your persistentIDs. You have to put the right bean ID into `<BeanManagedConnection>` or IdP will not work. You have to put there the ID of the `BasicDataSource` bean**
 
-2. Restart Jetty to apply changes:
-   * `systemctl restart jetty.service`
+2. Restart IdP to apply the changes:
+   * `touch /opt/jetty/webapps/idp.xml`
 
 3. Check to be able to retrieve transient NameID for an user:
    * `export JAVA_HOME=/usr/lib/jvm/default-java`
@@ -1156,8 +1156,8 @@ Translate the IdP messages in your language:
         - Remove all ":8443" from the existing URL (such port is not used anymore)
       ```
 
-2. Restart Jetty to apply the changes: 
-   * `systemctl restart jetty.service`
+2. Restart IdP to apply the changes:
+   * `touch /opt/jetty/webapps/idp.xml`
 
 3. Verify your IdP metadata on:
    *  `https://idp.example.org/idp/shibboleth`
@@ -1240,8 +1240,8 @@ Translate the IdP messages in your language:
       </util:list>
       ```
 
-3. Restart Jetty
-   *  `systemctl restart jetty.service`
+3. Restart IdP to apply the changes:
+   * `touch /opt/jetty/webapps/idp.xml`
 
 ### (ONLY FOR IDP TRAINING AT CYNET) Register the IdP on the Training Test Federation
 
@@ -1317,8 +1317,8 @@ Translate the IdP messages in your language:
      </util:list>
      ```
 
-3. Restart Jetty:
-   *  `systemctl restart jetty.service`
+3. Restart IdP to apply the changes:
+   * `touch /opt/jetty/webapps/idp.xml`
 
 ### (ONLY FOR IDP TRAINING AT CYNET) Configure Attribute Filters to release recommended attributes for eduGAIN
 
@@ -1337,8 +1337,8 @@ Translate the IdP messages in your language:
       </util:list>
       ```
 
-3. Restart Jetty:
-   *  `systemctl restart jetty.service`
+3. Restart IdP to apply the changes:
+   * `touch /opt/jetty/webapps/idp.xml`
 
 ### Appendix A: (ONLY FOR IDEM Federation members) Configure Attribute Filters to release the mandatory attributes to the IDEM Default Resources
 
@@ -1363,8 +1363,8 @@ Translate the IdP messages in your language:
      </util:list>
      ```
 
-4. Restart Jetty to apply changes:
-   *  `systemctl restart jetty.service`
+4. Restart IdP to apply the changes:
+   * `touch /opt/jetty/webapps/idp.xml`
 
 ### Appendix B: (ONLY FOR IDEM Federation members) Configure Attribute Filters to release the mandatory attributes to the IDEM Production Resources
 
@@ -1387,9 +1387,8 @@ Translate the IdP messages in your language:
      </util:list>
      ```
 
-3. Restart Jetty to apply changes:
-   *  `systemctl restart jetty.service`
-
+3. Restart IdP to apply the changes:
+   * `touch /opt/jetty/webapps/idp.xml`
 
 ### Appendix C: Import metadata from previous IDP v2.x ###
 
@@ -1457,8 +1456,8 @@ Translate the IdP messages in your language:
         - Remove all ":8443" from the existing URL (such port is not used anymore)
       ```
 
-5. Restart Jetty:
-   * `systemctl restart jetty.service`
+5. Restart IdP to apply the changes:
+   * `touch /opt/jetty/webapps/idp.xml`
   
 6. Don't forget to update your IdP Metadata on [IDEM Entity Registry](https://registry.idem.garr.it/rr3) to apply changes on the federation IDEM! For any help write to idem-help@garr.it
 
