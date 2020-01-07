@@ -1112,8 +1112,7 @@ Enrich IDP logs with the authentication error occurred on LDAP:
 Translate the IdP messages in your language:
    * Get the files translated in your language from [Shibboleth page](https://wiki.shibboleth.net/confluence/display/IDP30/MessagesTranslation)
    * Put 'messages_XX.properties' downloaded file into `/opt/shibboleth-idp/messages` directory
-   * Restart Jetty to apply changes: 
-      `systemctl restart jetty.service`
+   * Restart IdP to apply the changes: `touch /opt/jetty/webapps/idp.xml`
 
 ### Disable SAML1 Deprecated Protocol
 
