@@ -55,7 +55,6 @@
  * Amazon Corretto 8 JDK (recommended) or OpenJDK (latest)
  * jetty 9.4.x
  * apache2 (>= 2.4)
- * expat
  * openssl
  * mysql-server (if JPAStorageService is used)
  * libmysql-java (if JPAStorageService is used)
@@ -84,9 +83,7 @@
 3. Update packages:
    * `apt update && apt-get upgrade -y --no-install-recommends`
   
-4. Install the required packages: 
-   * OpenJDK: 
-     * `apt install vim wget default-jdk ca-certificates openssl apache2 ntp --no-install-recommends`
+4. Install the required packages:
    * Amazon Corretto OpenJDK: 
      * `apt install vim wget ca-certificates openssl apache2 ntp --no-install-recommends`
      * `wget -O- https://apt.corretto.aws/corretto.key | sudo apt-key add -`
@@ -94,6 +91,9 @@
      * `add-apt-repository 'deb https://apt.corretto.aws stable main'`
      * `apt-get update; sudo apt-get install -y java-1.8.0-amazon-corretto-jdk`
      * `java -version`
+
+   * OpenJDK: 
+     * `apt install vim wget default-jdk ca-certificates openssl apache2 ntp --no-install-recommends`
 
 5. Check that Java is working:
    * `update-alternatives --config java` 
