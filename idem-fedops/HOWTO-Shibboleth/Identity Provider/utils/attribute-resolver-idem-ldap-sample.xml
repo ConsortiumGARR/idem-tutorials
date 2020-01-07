@@ -222,15 +222,6 @@
         <AttributeEncoder xsi:type="SAML2String" name="urn:oid:1.3.6.1.4.1.25178.1.2.8" friendlyName="schacPersonalTitle" encodeType="false" />
     </AttributeDefinition>
 
-    <AttributeDefinition xsi:type="Simple" id="schacHomeOrganizationType">
-        <InputDataConnector ref="myLDAP" attributeNames="schacHomeOrganizationType" />
-        <DisplayName xml:lang="en">Home organization type (international)</DisplayName>
-        <DisplayName xml:lang="it">Tipo dell'organizzazione di appartenenza (internazionale)</DisplayName>
-        <DisplayDescription xml:lang="en">Home Organization Type: Type of a Home Organization</DisplayDescription>
-        <DisplayDescription xml:lang="it">Tipo dell'organizzazione di appartenenza</DisplayDescription>
-        <AttributeEncoder xsi:type="SAML2String" name="urn:oid:1.3.6.1.4.1.25178.1.2.10" friendlyName="schacHomeOrganizationType" encodeType="false" />
-    </AttributeDefinition>
-
     <AttributeDefinition xsi:type="Simple" id="schacUserPresenceID">
         <InputDataConnector ref="myLDAP" attributeNames="schacUserPresenceID" />
         <DisplayName xml:lang="en">User Network IDs</DisplayName>
