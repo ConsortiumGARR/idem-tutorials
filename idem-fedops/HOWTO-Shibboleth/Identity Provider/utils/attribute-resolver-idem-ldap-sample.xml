@@ -30,7 +30,7 @@
     </AttributeDefinition>
 
     <AttributeDefinition xsi:type="Simple" id="uid">
-   <InputDataConnector ref="myLDAP" attributeNames="uid"/>
+        <InputDataConnector ref="myLDAP" attributeNames="uid"/>
         <DisplayName xml:lang="en">UserID</DisplayName>
         <DisplayName xml:lang="it">UserID</DisplayName>
         <DisplayDescription xml:lang="en">User Identifier</DisplayDescription>
@@ -39,7 +39,7 @@
     </AttributeDefinition>
 
     <AttributeDefinition scope="%{idp.scope}" xsi:type="Scoped" id="eduPersonScopedAffiliation">
-   <InputAttributeDefinition ref="eduPersonAffiliation" />
+        <InputAttributeDefinition ref="eduPersonAffiliation" />
         <DisplayName xml:lang="en">Scoped Affiliation</DisplayName>
         <DisplayName xml:lang="it">Affiliazione con ambito</DisplayName>
         <DisplayDescription xml:lang="en">Affiliation Scoped: Type of affiliation with Home Organization with scope</DisplayDescription>
