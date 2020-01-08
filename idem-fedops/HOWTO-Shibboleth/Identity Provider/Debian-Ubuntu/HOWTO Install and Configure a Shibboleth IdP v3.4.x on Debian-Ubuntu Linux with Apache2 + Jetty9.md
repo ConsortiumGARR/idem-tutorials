@@ -56,7 +56,7 @@
  * jetty 9.4.x
  * apache2 (>= 2.4)
  * openssl
- * mysql-server (if JPAStorageService is used)
+ * default-mysql-server (if JPAStorageService is used)
  * libmysql-java (if JPAStorageService is used)
  * libcommons-dbcp-java (if JPAStorageService is used)
  * libcommons-pool-java (if JPAStorageService is used)
@@ -562,7 +562,7 @@ This Storage service will memorize User Consent data on persistent database SQL.
    * `sudo su -`
 
 2. Rebuild the IdP with the needed libraries:
-   * `apt install mysql-server libmysql-java libcommons-dbcp-java libcommons-pool-java --no-install-recommends`
+   * `apt install default-mysql-server libmysql-java libcommons-dbcp-java libcommons-pool-java --no-install-recommends`
    * `cd /opt/shibboleth-idp`
    * `ln -s /usr/share/java/mysql-connector-java.jar edit-webapp/WEB-INF/lib`
    * `ln -s /usr/share/java/commons-dbcp.jar edit-webapp/WEB-INF/lib`
