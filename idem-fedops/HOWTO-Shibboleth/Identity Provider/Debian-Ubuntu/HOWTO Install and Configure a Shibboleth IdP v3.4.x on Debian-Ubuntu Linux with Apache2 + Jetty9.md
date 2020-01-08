@@ -56,8 +56,9 @@
  * jetty 9.4.x
  * apache2 (>= 2.4)
  * openssl
+ * libservlet3.1-java
  * default-mysql-server (if JPAStorageService is used)
- * libmysql-java (if JPAStorageService is used)
+ * libmariadb-java (if JPAStorageService is used)
  * libcommons-dbcp-java (if JPAStorageService is used)
  * libcommons-pool-java (if JPAStorageService is used)
 
@@ -85,7 +86,7 @@
   
 4. Install the required packages:
    * Amazon Corretto OpenJDK: 
-     * `apt install vim wget ca-certificates openssl apache2 ntp --no-install-recommends`
+     * `apt install vim wget ca-certificates openssl apache2 ntp libservlet3.1-java --no-install-recommends`
      * `wget -O- https://apt.corretto.aws/corretto.key | sudo apt-key add -`
      * `apt-get install software-properties-common`
      * `add-apt-repository 'deb https://apt.corretto.aws stable main'`
@@ -93,7 +94,7 @@
      * `java -version`
 
    * OpenJDK: 
-     * `apt install vim wget default-jdk ca-certificates openssl apache2 ntp --no-install-recommends`
+     * `apt install vim wget default-jdk ca-certificates openssl apache2 ntp libservlet3.1-java --no-install-recommends`
 
 5. Check that Java is working:
    * `update-alternatives --config java` 
@@ -562,7 +563,7 @@ This Storage service will memorize User Consent data on persistent database SQL.
    * `sudo su -`
 
 2. Rebuild the IdP with the needed libraries:
-   * `apt install default-mysql-server libmysql-java libcommons-dbcp-java libcommons-pool-java --no-install-recommends`
+   * `apt install default-mysql-server libmariadb-java libcommons-dbcp-java libcommons-pool-java --no-install-recommends`
    * `cd /opt/shibboleth-idp`
    * `ln -s /usr/share/java/mysql-connector-java.jar edit-webapp/WEB-INF/lib`
    * `ln -s /usr/share/java/commons-dbcp.jar edit-webapp/WEB-INF/lib`
@@ -718,7 +719,7 @@ By default, a transient NameID will always be released to the Service Provider i
    * `sudo su -`
 
 2. Rebuild the IdP with the required libraries:
-   * `apt install mysql-server libmysql-java libcommons-dbcp-java libcommons-pool-java --no-install-recommends`
+   * `apt install default-mysql-server libmariadb-java libcommons-dbcp-java libcommons-pool-java --no-install-recommends`
    * `cd /opt/shibboleth-idp`
    * `ln -s /usr/share/java/mysql-connector-java.jar edit-webapp/WEB-INF/lib`
    * `ln -s /usr/share/java/commons-dbcp.jar edit-webapp/WEB-INF/lib`
