@@ -565,7 +565,7 @@ This Storage service will memorize User Consent data on persistent database SQL.
 2. Rebuild the IdP with the needed libraries:
    * `apt install default-mysql-server libmariadb-java libcommons-dbcp-java libcommons-pool-java --no-install-recommends`
    * `cd /opt/shibboleth-idp`
-   * `ln -s /usr/share/java/mysql-connector-java.jar edit-webapp/WEB-INF/lib`
+   * `ln -s /usr/share/java/mariadb-java-client.jar edit-webapp/WEB-INF/lib`
    * `ln -s /usr/share/java/commons-dbcp.jar edit-webapp/WEB-INF/lib`
    * `ln -s /usr/share/java/commons-pool.jar edit-webapp/WEB-INF/lib`
    * `bin/build.sh`
@@ -721,7 +721,7 @@ By default, a transient NameID will always be released to the Service Provider i
 2. Rebuild the IdP with the required libraries:
    * `apt install default-mysql-server libmariadb-java libcommons-dbcp-java libcommons-pool-java --no-install-recommends`
    * `cd /opt/shibboleth-idp`
-   * `ln -s /usr/share/java/mysql-connector-java.jar edit-webapp/WEB-INF/lib`
+   * `ln -s /usr/share/java/mariadb-java-client.jar edit-webapp/WEB-INF/lib`
    * `ln -s /usr/share/java/commons-dbcp.jar edit-webapp/WEB-INF/lib`
    * `ln -s /usr/share/java/commons-pool.jar edit-webapp/WEB-INF/lib`
    * `bin/build.sh`
