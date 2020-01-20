@@ -191,7 +191,7 @@
    * `systemctl restart shibd.service`
 
 5. Enable Shibboleth Apache2 configuration:
-   * `a2enmod shib`
+   * `a2enmod shib2`
    * `systemctl reload apache2.service`
 
 5. Now you are able to reach your Shibboleth SP Metadata on:
