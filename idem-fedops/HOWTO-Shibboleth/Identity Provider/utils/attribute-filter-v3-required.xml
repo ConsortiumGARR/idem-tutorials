@@ -23,16 +23,10 @@
         <AttributeRule attributeID="preferredLanguage">
             <PermitValueRule xsi:type="AttributeInMetadata" onlyIfRequired="true" />
         </AttributeRule>
-        <AttributeRule attributeID="schacMotherTongue">
-            <PermitValueRule xsi:type="AttributeInMetadata" onlyIfRequired="true" />
-        </AttributeRule>
         <AttributeRule attributeID="title">
             <PermitValueRule xsi:type="AttributeInMetadata" onlyIfRequired="true" />
         </AttributeRule>
-        <AttributeRule attributeID="schacPersonalTitle">
-            <PermitValueRule xsi:type="AttributeInMetadata" onlyIfRequired="true" />
-        </AttributeRule>
-        <AttributeRule attributeID="schacPersonalPosition">
+        <AttributeRule attributeID="eduPersonTargetedID">
             <PermitValueRule xsi:type="AttributeInMetadata" onlyIfRequired="true" />
         </AttributeRule>
         <AttributeRule attributeID="email">
@@ -41,19 +35,34 @@
         <AttributeRule attributeID="telephoneNumber">
             <PermitValueRule xsi:type="AttributeInMetadata" onlyIfRequired="true" />
         </AttributeRule>
-       <AttributeRule attributeID="facsimileTelephoneNumber">
+        <AttributeRule attributeID="mobile">
             <PermitValueRule xsi:type="AttributeInMetadata" onlyIfRequired="true" />
         </AttributeRule>
-         <AttributeRule attributeID="mobile">
+        <AttributeRule attributeID="schacMotherTongue">
+            <PermitValueRule xsi:type="AttributeInMetadata" onlyIfRequired="true" />
+        </AttributeRule>
+        <AttributeRule attributeID="schacPersonalTitle">
             <PermitValueRule xsi:type="AttributeInMetadata" onlyIfRequired="true" />
         </AttributeRule>
         <AttributeRule attributeID="schacUserPresenceID">
+            <PermitValueRule xsi:type="AttributeInMetadata" onlyIfRequired="true" />
+        </AttributeRule>
+        <AttributeRule attributeID="schacPersonalUniqueID">
+            <PermitValueRule xsi:type="AttributeInMetadata" onlyIfRequired="true" />
+        </AttributeRule>
+        <AttributeRule attributeID="schacHomeOrganization">
+            <PermitValueRule xsi:type="AttributeInMetadata" onlyIfRequired="true" />
+        </AttributeRule>
+        <AttributeRule attributeID="schacHomeOrganizationType">
             <PermitValueRule xsi:type="AttributeInMetadata" onlyIfRequired="true" />
         </AttributeRule>
         <AttributeRule attributeID="eduPersonOrgDN">
             <PermitValueRule xsi:type="AttributeInMetadata" onlyIfRequired="true" />
         </AttributeRule>
         <AttributeRule attributeID="eduPersonOrgUnitDN">
+            <PermitValueRule xsi:type="AttributeInMetadata" onlyIfRequired="true" />
+        </AttributeRule>
+        <AttributeRule attributeID="eduPersonOrcid">
             <PermitValueRule xsi:type="AttributeInMetadata" onlyIfRequired="true" />
         </AttributeRule>
         <AttributeRule attributeID="eduPersonScopedAffiliation">
