@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- ESEMPIO di Policy per il rilascio degli attributi predefiniti di IDEM. -->
+
+<AttributeFilterPolicyGroup id="ShibbolethFilterPolicyIDEM"
+        xmlns="urn:mace:shibboleth:2.0:afp"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="urn:mace:shibboleth:2.0:afp http://shibboleth.net/schema/idp/shibboleth-afp.xsd">
+
+    <!-- Rilascia ePTId e ePSA a chiunque in IDEM -->
+    <AttributeFilterPolicy id="attributesToAnyone">
+        <PolicyRequirementRule xsi:type="RegistrationAuthority" registrars="http://www.idem.garr.it/"/>
+        <AttributeRule attributeID="eduPersonTargetedID">
+            <PermitValueRule xsi:type="ANY"/>
+        </AttributeRule>
+        <AttributeRule attributeID="eduPersonScopedAffiliation">
+            <PermitValueRule xsi:type="ANY"/>
+        </AttributeRule>
+    </AttributeFilterPolicy>
+
+    <!-- IDEM SP24 di Test - CoCo Compliant -->
+    <AttributeFilterPolicy id="sp24-test.garr.it">
+        <PolicyRequirementRule xsi:type="Requester" value="https://sp24-test.garr.it/shibboleth" />
+
+        <AttributeRule attributeID="commonName">
+            <PermitValueRule xsi:type="ANY" />
+        </AttributeRule>
+        <AttributeRule attributeID="uid">
+            <PermitValueRule xsi:type="ANY" />
+        </AttributeRule>
+        <AttributeRule attributeID="email">
+            <PermitValueRule xsi:type="ANY" />
+        </AttributeRule>
+        <AttributeRule attributeID="surname">
+            <PermitValueRule xsi:type="ANY" />
+        </AttributeRule>
+        <AttributeRule attributeID="organizationName">
+            <PermitValueRule xsi:type="ANY" />
+        </AttributeRule>
+        <AttributeRule attributeID="organizationalUnit">
+            <PermitValueRule xsi:type="ANY" />
+        </AttributeRule>
+        <AttributeRule attributeID="givenName">
+            <PermitValueRule xsi:type="ANY" />
+        </AttributeRule>
+        <AttributeRule attributeID="preferredLanguage">
+            <PermitValueRule xsi:type="ANY" />
+        </AttributeRule>
+        <AttributeRule attributeID="eduPersonAffiliation">
+            <PermitValueRule xsi:type="ANY" />
+        </AttributeRule>
+        <AttributeRule attributeID="eduPersonEntitlement">
+            <PermitValueRule xsi:type="ANY" />
+        </AttributeRule>
+        <AttributeRule attributeID="eduPersonOrgUnitDN">
+            <PermitValueRule xsi:type="ANY" />
+        </AttributeRule>
+        <AttributeRule attributeID="eduPersonPrimaryAffiliation">
+            <PermitValueRule xsi:type="ANY" />
+        </AttributeRule>
+        <AttributeRule attributeID="eduPersonPrincipalName">
+            <PermitValueRule xsi:type="ANY" />
+        </AttributeRule>
+    </AttributeFilterPolicy>
+
+    <!-- IDEM SP di Test -->
+    <AttributeFilterPolicy id="sp-test.garr.it">
+        <PolicyRequirementRule xsi:type="Requester" value="https://sp-test.garr.it/shibboleth" />
+
+        <AttributeRule attributeID="commonName">
+            <PermitValueRule xsi:type="ANY" />
+        </AttributeRule>
+        <AttributeRule attributeID="uid">
+            <PermitValueRule xsi:type="ANY" />
+        </AttributeRule>
+        <AttributeRule attributeID="email">
+            <PermitValueRule xsi:type="ANY" />
+        </AttributeRule>
+        <AttributeRule attributeID="surname">
+            <PermitValueRule xsi:type="ANY" />
+        </AttributeRule>
+        <AttributeRule attributeID="organizationName">
+            <PermitValueRule xsi:type="ANY" />
+        </AttributeRule>
+        <AttributeRule attributeID="organizationalUnit">
+            <PermitValueRule xsi:type="ANY" />
+        </AttributeRule>
+        <AttributeRule attributeID="givenName">
+            <PermitValueRule xsi:type="ANY" />
+        </AttributeRule>
+        <AttributeRule attributeID="preferredLanguage">
+            <PermitValueRule xsi:type="ANY" />
+        </AttributeRule>
+        <AttributeRule attributeID="eduPersonAffiliation">
+            <PermitValueRule xsi:type="ANY" />
+        </AttributeRule>
+        <AttributeRule attributeID="eduPersonEntitlement">
+            <PermitValueRule xsi:type="ANY" />
+        </AttributeRule>
+        <AttributeRule attributeID="eduPersonOrgUnitDN">
+            <PermitValueRule xsi:type="ANY" />
+        </AttributeRule>
+        <AttributeRule attributeID="eduPersonPrimaryAffiliation">
+            <PermitValueRule xsi:type="ANY" />
+        </AttributeRule>
+        <AttributeRule attributeID="eduPersonPrincipalName">
+            <PermitValueRule xsi:type="ANY" />
+        </AttributeRule>
+    </AttributeFilterPolicy>
+
+    <!-- IDEM SP2 di Test -->
+    <AttributeFilterPolicy id="sp2-test.garr.it">
+        <PolicyRequirementRule xsi:type="Requester" value="https://sp2-test.garr.it/shibboleth" />
+
+        <AttributeRule attributeID="commonName">
+            <PermitValueRule xsi:type="ANY" />
+        </AttributeRule>
+        <AttributeRule attributeID="uid">
+            <PermitValueRule xsi:type="ANY" />
+        </AttributeRule>
+        <AttributeRule attributeID="email">
+            <PermitValueRule xsi:type="ANY" />
+        </AttributeRule>
+        <AttributeRule attributeID="surname">
+            <PermitValueRule xsi:type="ANY" />
+        </AttributeRule>
+        <AttributeRule attributeID="organizationName">
+            <PermitValueRule xsi:type="ANY" />
+        </AttributeRule>
+        <AttributeRule attributeID="organizationalUnit">
+            <PermitValueRule xsi:type="ANY" />
+        </AttributeRule>
+        <AttributeRule attributeID="givenName">
+            <PermitValueRule xsi:type="ANY" />
+        </AttributeRule>
+        <AttributeRule attributeID="preferredLanguage">
+            <PermitValueRule xsi:type="ANY" />
+        </AttributeRule>
+        <AttributeRule attributeID="eduPersonAffiliation">
+            <PermitValueRule xsi:type="ANY" />
+        </AttributeRule>
+        <AttributeRule attributeID="eduPersonEntitlement">
+            <PermitValueRule xsi:type="ANY" />
+        </AttributeRule>
+        <AttributeRule attributeID="eduPersonOrgUnitDN">
+            <PermitValueRule xsi:type="ANY" />
+        </AttributeRule>
+        <AttributeRule attributeID="eduPersonPrimaryAffiliation">
+            <PermitValueRule xsi:type="ANY" />
+        </AttributeRule>
+        <AttributeRule attributeID="eduPersonPrincipalName">
+            <PermitValueRule xsi:type="ANY" />
+        </AttributeRule>
+    </AttributeFilterPolicy>
+
+    <!-- IDEM Entity Registry -->
+    <AttributeFilterPolicy id="IDEMRegistry">
+        <PolicyRequirementRule xsi:type="Requester" value="https://registry.idem.garr.it/shibboleth" />
+        
+        <AttributeRule attributeID="eduPersonPrincipalName">
+            <PermitValueRule xsi:type="ANY" />
+        </AttributeRule>
+        <AttributeRule attributeID="email">
+            <PermitValueRule xsi:type="ANY" />
+        </AttributeRule>
+        <AttributeRule attributeID="givenName">
+            <PermitValueRule xsi:type="ANY" />
+        </AttributeRule>
+        <AttributeRule attributeID="surname">
+            <PermitValueRule xsi:type="ANY" />
+        </AttributeRule>
+    </AttributeFilterPolicy>
+
+    <!-- IDEM SP DEMO di Test - CoCo Compliant -->
+    <AttributeFilterPolicy id="sp-demo.aai-test.garr.it">
+        <PolicyRequirementRule xsi:type="Requester" value="https://sp-demo.aai-test.garr.it/shibboleth" />
+
+        <AttributeRule attributeID="commonName">
+            <PermitValueRule xsi:type="ANY" />
+        </AttributeRule>
+        <AttributeRule attributeID="uid">
+            <PermitValueRule xsi:type="ANY" />
+        </AttributeRule>
+        <AttributeRule attributeID="email">
+            <PermitValueRule xsi:type="ANY" />
+        </AttributeRule>
+        <AttributeRule attributeID="surname">
+            <PermitValueRule xsi:type="ANY" />
+        </AttributeRule>
+        <AttributeRule attributeID="organizationName">
+            <PermitValueRule xsi:type="ANY" />
+        </AttributeRule>
+        <AttributeRule attributeID="organizationalUnit">
+            <PermitValueRule xsi:type="ANY" />
+        </AttributeRule>
+        <AttributeRule attributeID="givenName">
+            <PermitValueRule xsi:type="ANY" />
+        </AttributeRule>
+        <AttributeRule attributeID="preferredLanguage">
+            <PermitValueRule xsi:type="ANY" />
+        </AttributeRule>
+        <AttributeRule attributeID="eduPersonAffiliation">
+            <PermitValueRule xsi:type="ANY" />
+        </AttributeRule>
+        <AttributeRule attributeID="eduPersonEntitlement">
+            <PermitValueRule xsi:type="ANY" />
+        </AttributeRule>
+        <AttributeRule attributeID="eduPersonOrgUnitDN">
+            <PermitValueRule xsi:type="ANY" />
+        </AttributeRule>
+        <AttributeRule attributeID="eduPersonPrimaryAffiliation">
+            <PermitValueRule xsi:type="ANY" />
+        </AttributeRule>
+        <AttributeRule attributeID="eduPersonPrincipalName">
+            <PermitValueRule xsi:type="ANY" />
+        </AttributeRule>
+    </AttributeFilterPolicy>
+
+</AttributeFilterPolicyGroup>
