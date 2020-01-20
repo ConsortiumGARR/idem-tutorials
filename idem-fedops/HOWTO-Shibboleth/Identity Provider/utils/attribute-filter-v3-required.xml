@@ -67,7 +67,7 @@
         <AttributeRule attributeID="eduPersonOrcid">
             <PermitValueRule xsi:type="AttributeInMetadata" onlyIfRequired="true" />
         </AttributeRule>
-        <AttributeRule attributeID="eduPersonAffiliation">
+        <AttributeRule attributeID="eduPersonScopedAffiliation">
             <PermitValueRule xsi:type="AND">
                 <Rule xsi:type="AttributeInMetadata" onlyIfRequired="true" />
                 <Rule xsi:type="OR">
