@@ -81,7 +81,7 @@
 
 2. Install Shibboleth SP:
    * ```bash
-     apt install apache2 libapache2-mod-shib ntp --no-install-recommends
+     apt install apache2 libapache2-mod-shib2 ntp --no-install-recommends
      ```
 
    From this point the location of the SP directory is: `/etc/shibboleth`
