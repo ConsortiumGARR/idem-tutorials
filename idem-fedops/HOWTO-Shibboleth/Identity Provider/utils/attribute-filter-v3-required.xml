@@ -20,6 +20,9 @@
         <AttributeRule attributeID="commonName">
             <PermitValueRule xsi:type="AttributeInMetadata" onlyIfRequired="true" />
         </AttributeRule>
+        <AttributeRule attributeID="displayName">
+            <PermitValueRule xsi:type="AttributeInMetadata" onlyIfRequired="true" />
+        </AttributeRule>
         <AttributeRule attributeID="preferredLanguage">
             <PermitValueRule xsi:type="AttributeInMetadata" onlyIfRequired="true" />
         </AttributeRule>
