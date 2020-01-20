@@ -7,8 +7,7 @@
 
     <!-- Rule for IDEM SPs -->
     <AttributeFilterPolicy id="releaseToIDEM">
-        <PolicyRequirementRule xsi:type="RegistrationAuthority"
-                registrars="http://www.idem.garr.it/"/>
+        <PolicyRequirementRule xsi:type="RegistrationAuthority" registrars="http://www.idem.garr.it/"/>
 
         <!-- Attributes defined by "Specifiche Tecniche per la Compilazione e l'uso degli Attributi" version 2012 -->
         <AttributeRule attributeID="surname">
@@ -68,7 +67,7 @@
         <AttributeRule attributeID="eduPersonOrcid">
             <PermitValueRule xsi:type="AttributeInMetadata" onlyIfRequired="true" />
         </AttributeRule>
-        <AttributeRule attributeID="eduPersonScopedAffiliation">
+        <AttributeRule attributeID="eduPersonAffiliation">
             <PermitValueRule xsi:type="AND">
                 <Rule xsi:type="AttributeInMetadata" onlyIfRequired="true" />
                 <Rule xsi:type="OR">
@@ -92,7 +91,5 @@
         <AttributeRule attributeID="eduPersonEntitlement">
             <PermitValueRule xsi:type="AttributeInMetadata" onlyIfRequired="true" />
         </AttributeRule>
-   
     </AttributeFilterPolicy>
-
 </AttributeFilterPolicyGroup>
