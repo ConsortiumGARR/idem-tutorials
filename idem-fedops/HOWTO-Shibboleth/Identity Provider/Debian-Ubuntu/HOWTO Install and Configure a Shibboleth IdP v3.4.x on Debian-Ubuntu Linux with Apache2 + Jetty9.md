@@ -1383,7 +1383,7 @@ Translate the IdP messages in your language:
      ```xml
      <bean id="IDEM-Production-Filter" class="net.shibboleth.ext.spring.resource.FileBackedHTTPResource"
            c:client-ref="shibboleth.FileCachingHttpClient"
-           c:url="http://www.garr.it/idem-conf/attribute-filter-v3-required.xml"
+           c:url="https://raw.githubusercontent.com/ConsortiumGARR/idem-tutorials/bfb2ec64f6a1aa3533a2dbe5d0d1bb5071950ab9/idem-fedops/HOWTO-Shibboleth/Identity%20Provider/utils/attribute-filter-v3-required.xml"
            c:backingFile="%{idp.home}/conf/attribute-filter-v3-required.xml"/>
      ...
      <util:list id ="shibboleth.AttributeFilterResources">
