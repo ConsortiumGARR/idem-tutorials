@@ -147,8 +147,8 @@ Jetty is a Web server and a Java Servlet container. It will be used to run the I
 
 2. Download and Extract Jetty:
    * `cd /usr/local/src`
-   * `wget http://central.maven.org/maven2/org/eclipse/jetty/jetty-distribution/9.4.19.v20190610/jetty-distribution-9.4.19.v20190610.tar.gz`
-   * `tar xzvf jetty-distribution-9.4.19.v20190610.tar.gz`
+   * `wget https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-distribution/9.4.26.v20200117/jetty-distribution-9.4.26.v20200117.tar.gz`
+   * `tar xzvf jetty-distribution-9.4.26.v20200117.tar.gz`
 
 3. Create the `jetty-src` folder as symbolic link. It will be useful on Jetty updates:
    * `ln -s jetty-distribution-9.4.19.v20190610 jetty-src`
