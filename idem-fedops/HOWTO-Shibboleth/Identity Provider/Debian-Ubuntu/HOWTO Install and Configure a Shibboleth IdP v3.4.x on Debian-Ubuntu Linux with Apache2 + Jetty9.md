@@ -351,9 +351,6 @@ Jetty is a Web server and a Java Servlet container. It will be used to run the I
       * `rm /var/run/jetty.pid`
       * `systemctl start jetty.service`
 
-11. Check if the Apache Welcome page is available:
-    * http://idp.example.org
-
 ### Install Shibboleth Identity Provider v3.4.x
 
 The Identity Provider (IdP) is responsible for user authentication and providing user information to the Service Provider (SP). It is located at the home organization, which is the organization which maintains the user's account.
@@ -475,7 +472,10 @@ The Apache HTTP Server will be configured as a reverse proxy and it will be used
    * `a2dissite 000-default.conf`
    * `systemctl restart apache2.service`
 
-5. Verify the quality and the strength of the SSL configuration:
+5. Check if the Apache Welcome page is available:
+    * http://idp.example.org
+
+6. Verify the quality and the strength of the SSL configuration:
    * [**https://www.ssllabs.com/ssltest/analyze.html**](https://www.ssllabs.com/ssltest/analyze.html)
 
 ### Configure Jetty
