@@ -1166,27 +1166,27 @@ Translate the IdP messages in your language:
 
       <!-- IDEM Test Federation -->
       <MetadataProvider
-	 id="URLMD-IDEM-Federation"
-	 xsi:type="FileBackedHTTPMetadataProvider"
-	 backingFile="%{idp.home}/metadata/idem-test-metadata-sha256.xml"
-	 metadataURL="http://md.idem.garr.it/metadata/idem-test-metadata-sha256.xml">
+         id="URLMD-IDEM-Federation"
+         xsi:type="FileBackedHTTPMetadataProvider"
+         backingFile="%{idp.home}/metadata/idem-test-metadata-sha256.xml"
+         metadataURL="http://md.idem.garr.it/metadata/idem-test-metadata-sha256.xml">
 
-	 <!--
+         <!--
             Verify the signature on the root element of the metadata aggregate
             using a trusted metadata signing certificate.
-	 -->
-	 <MetadataFilter xsi:type="SignatureValidation" requireSignedRoot="true" certificateFile="${idp.home}/metadata/federation-cert.pem"/>
+         -->
+         <MetadataFilter xsi:type="SignatureValidation" requireSignedRoot="true" certificateFile="${idp.home}/metadata/federation-cert.pem"/>
 
-	 <!--
-	   Require a validUntil XML attribute on the root element and
-	   make sure its value is no more than 10 days into the future.
-	 -->
-	 <MetadataFilter xsi:type="RequiredValidUntil" maxValidityInterval="P10D"/>
+         <!--
+           Require a validUntil XML attribute on the root element and
+           make sure its value is no more than 10 days into the future.
+         -->
+         <MetadataFilter xsi:type="RequiredValidUntil" maxValidityInterval="P10D"/>
 
-	 <!-- Consume all SP metadata in the aggregate -->
-	 <MetadataFilter xsi:type="EntityRoleWhiteList">
-	   <RetainedRole>md:SPSSODescriptor</RetainedRole>
-	 </MetadataFilter>
+         <!-- Consume all SP metadata in the aggregate -->
+         <MetadataFilter xsi:type="EntityRoleWhiteList">
+           <RetainedRole>md:SPSSODescriptor</RetainedRole>
+         </MetadataFilter>
       </MetadataProvider>
       ```
 
