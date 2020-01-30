@@ -151,7 +151,7 @@ Jetty is a Web server and a Java Servlet container. It will be used to run the I
    * `tar xzvf jetty-distribution-9.4.26.v20200117.tar.gz`
 
 3. Create the `jetty-src` folder as symbolic link. It will be useful on Jetty updates:
-   * `ln -s jetty-distribution-9.4.19.v20190610 jetty-src`
+   * `ln -s jetty-distribution-9.4.26.v20200117 jetty-src`
 
 4. Create the user/group `jetty` that can run the web server:
    * `useradd --system --no-create-home --user-group jetty`
