@@ -681,6 +681,9 @@ By default, a transient NameID will always be released to the Service Provider i
      idp.persistentId.sourceAttribute = uid
      ...
      idp.persistentId.salt = ### result of 'openssl rand -base64 36'###
+     ...
+     # BASE64 will match Shibboleth V2 values, we recommend BASE32 encoding for new installs.
+     idp.persistentId.encoding = BASE32
      ```
 
    * `vim /opt/shibboleth-idp/conf/saml-nameid.xml`
@@ -798,6 +801,9 @@ By default, a transient NameID will always be released to the Service Provider i
      idp.persistentId.generator = shibboleth.StoredPersistentIdGenerator
      ...
      idp.persistentId.dataSource = shibboleth.JPAStorageService.DataSource
+     ...
+     # BASE64 will match Shibboleth V2 values, we recommend BASE32 encoding for new installs.
+     idp.persistentId.encoding = BASE32
      ```
 
    * Enable the **SAML2PersistentGenerator**:
