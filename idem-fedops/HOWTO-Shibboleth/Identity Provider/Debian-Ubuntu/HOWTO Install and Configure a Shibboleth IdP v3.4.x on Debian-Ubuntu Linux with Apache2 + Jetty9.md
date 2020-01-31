@@ -85,7 +85,7 @@
    * `apt update && apt-get upgrade -y --no-install-recommends`
   
 4. Install the required packages:
-   * Amazon Corretto OpenJDK: 
+   * Amazon Corretto OpenJDK (Recommended): 
      * `apt install vim wget ca-certificates openssl apache2 ntp libservlet3.1-java --no-install-recommends`
      * `wget -O- https://apt.corretto.aws/corretto.key | sudo apt-key add -`
      * `apt-get install software-properties-common`
