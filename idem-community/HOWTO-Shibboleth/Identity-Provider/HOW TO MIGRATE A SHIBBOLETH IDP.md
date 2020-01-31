@@ -38,7 +38,7 @@ Remember also to use the same production entityID, fully qualified domain name a
 
 Remember to use a diff tool to do an appropriate file comparison between local and production configuration files, this should be always done to deal with configuration changements that can be necessary between different ShibIdP versions. It would be better to have a graphical directory tree diff tool, like [meld](http://meldmerge.org/).
 
-1. copy all certificates in ``{idp_home}/credentials`` from production folder;
+1. copy all certificates & keys in ``{idp_home}/credentials`` from production folder;
 
 2. ``{idp_home}/conf``:
     - ``attribute-filter.xml``: include Service Providers ``AttributeFilterPolicy``;
