@@ -63,4 +63,4 @@ These GitHub Repository contains step-by-step tutorials on Identity and Service 
 #### Ansible Playbook
 
 * [Ansible Shibboleth IdP SP Debian](https://github.com/peppelinux/Ansible-Shibboleth-IDP-SP-Debian) di Giuseppe De Marco
-* [Ansible slapd](https://github.com/peppelinux/ansible-slapd-eduperson2016)
+* [Ansible slapd](https://github.com/peppelinux/ansible-slapd-eduperson2016) di Giuseppe De Marco
