@@ -74,6 +74,7 @@ These GitHub Repository contains step-by-step tutorials on Identity and Service 
 * [HOWTO Setup a Shibboleth SP with NGINX](https://github.com/ConsortiumGARR/idem-tutorials/blob/master/idem-community/HOWTO-Shibboleth/Service-Provider/Debian/HOW%20TO%20SETUP%20A%20SHIBBOLETH%20SP%20WITH%20NGINX.md) di Marco Cappellacci (Università degli studi di Urbino Carlo Bo)
 * [HOWTO Relase properly eduPersonEntitlement](https://github.com/speedj/IdemDay18-Daniele/tree/master/eduPersonEntitlement#edupersonentitlement-valori-strettamente-necessari-agli-sp) di Daniele Albrizio (Università degli Studi di Trieste)
 * [HOWTO Make Shibboleth IdP Highly Available with local containers](https://github.com/ConsortiumGARR/idem-tutorials/blob/master/idem-community/HOWTO-Shibboleth/Identity-Provider/HOWTO%20Make%20Shibboleth%20IdP%20Highly%20Available%20with%20local%20containers.md#howto-make-shibboleth-idp-highly-available-with-local-containers) di Giuseppe De Marco (Università della Calabria)
+* [HOWTO Setup a MDX Server and configure it in Shibboleth IdP](https://github.com/ConsortiumGARR/idem-tutorials/blob/master/idem-community/HOWTO-Shibboleth/Identity-Provider/HOWTO%20Setup%20a%20MDX%20Server%20and%20configure%20it%20in%20Shibboleth%20IdP.md) di Giuseppe De Marco (Università della Calabria)
 
 #### Ansible Playbook
 
