@@ -4,11 +4,12 @@ HOWTO Setup a MDX Server and configure it in Shibboleth IdP
 1. [Introduction](#introduction)
 2. [Installation of the necessary software](#installation-of-the-necessary-software)
 3. [Configure pyFF](#configure-pyff)
-3. [Run pyFF](#run-pyff)
+4. [Run pyFF](#run-pyff)
 5. [Configure Shibboleth IdP](#configure-shibboleth-idp)
-4. [Test](#test)
-6. [Authors](#authors)
-7. [Credits](#credits)
+6. [Alternative Configuration](#alternative-configuration)
+7. [Test](#test)
+8. [Authors](#authors)
+9. [Credits](#credits)
 
 Introduction
 ------------
@@ -209,11 +210,26 @@ export JAVA_HOME=/usr/lib/jvm/java-1.8.0-amazon-corretto/jre
 touch /opt/jetty/webapps/idp.xml
 ````
 
+Alternative Configuration
+-------------------------
+
+Let's suppose that we need a simple as possibile SAML2 MDQ server that:
+
+1) Runs locally as a private service for multiple containers or VM
+2) Should be decoupled from pyFF
+3) Should be much more performat than pyFF
+
+See [Django MDQ](https://github.com/UniversitaDellaCalabria/Django-MDQ)
+
+
 Test
 ----
 
 Use a federation entity SP to test the MDQ presence
 ````
+/opt/shibboleth-idp/bin/mdquery.sh -e https://coco.release-check.edugain.org/shibboleth -u http://localhost:8080/idp
+
+# or with an attr policy
 /opt/shibboleth-idp/bin/aacli.sh -n luigi -r https://coco.release-check.edugain.org/shibboleth  -u http://localhost:8080/idp
 ````
 
