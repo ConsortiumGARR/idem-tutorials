@@ -19,7 +19,7 @@ In this example we also purpose a strategy based on containers, with the help of
 The same concept could be also developed with Docker as container/microservice solution and HAproxy as TCP Loadbalancer.
 
 This HowTo works as-is with the idem-tutorials, probably the most demanding users will certainly want to manage shared session storage among the containers.
-This asset allows for example to block the communication on port 8080 of a container (iptables or comment it out in nginx configuration) modify the configuration of a ShibIdP, test this adequately. Then reintroduce the updated instance into the HA cluster. Then wait for further analysis, then propagate this update also to the backup copy (rsync via hypervisor roots). Everything without any downtime.
+This asset allows for example to block the communication on port 8080 of a container (iptables or comment it out in nginx configuration) modify the configuration of a ShibIdP, test this adequately. Then reintroduce the updated instance into the HA cluster. Then wait for further analysis, propagate this update also to the backup copy (rsync via hypervisor roots). Everything without any downtime.
 
 
 :warning: WARNING: Mind That if the Shibboleth servers/containers doesn't have any JSESSIONID shared storage (Memcached) the users must login again on each HA takeover.
@@ -48,6 +48,7 @@ lxc-create  -t download -n $CONTAINER_NAME -- -d debian -r buster -a amd64
 
 # give optionally a static ip to the container or set a static lease into your dnsmasq local instance
 echo "lxc.network.ipv4 = 10.0.3.201/24 10.0.3.255" >> /var/lib/lxc/$CONTAINER_NAME/config
+echo "lxc.network.ipv4.gateway = 10.0.3.1" >> /var/lib/lxc/$CONTAINER_NAME/config
 
 # configure the container with an "unconfined" profile, otherwise ntp processes can't start.
 # see `man lxc.container.conf` to have a better acknowledge
@@ -64,9 +65,8 @@ If you want to setup the IdP manually or need to migrate an existing one, enter 
 lxc-attach $CONTAINER_NAME
 ````
 
-If you want instead to run the ansible-playbook remember to run only the desidered tasks, as showned in this example.
-Copy and modify the playbook `playbook.yml` and `make_CA.3.sh` as showned in the example, then copy the playbook folder into the container rootfs tree
-``. Using these tags only Jetty and Shibboleth IdP will be installed.
+If you want instead to run the ansible-playbook remember to run only the desidered tasks, as showed in this example.
+Copy and modify the playbook `playbook.yml` and `make_CA.3.sh` as showed in the example, then copy the playbook folder into the container rootfs tree. Using these tags only Jetty and Shibboleth IdP will be installed.
 ````
 # cp your modified playbook
 cp -R Ansible-Shibboleth-IDP-SP-Debian /var/lib/lxc/$CONTAINER_NAME/rootfs/root/
@@ -94,14 +94,16 @@ apt autoremove
 - Test an attribute policy: `aacli -n $username -r $sp_entityID --saml2 -u http://localhost:8080/idp`
 - Exit the container `exit` or `Ctrl+D`
 - See container status with `lxc-ls -f`
-- Clone the container `lxc-copy -n shib1 -N shib2`, change/set (dns or static) `shib2`'s ip before starting it `lxc-start shib2`
+- Clone the container (stop it first), or snapshot if they are on top of an LVM volume, `lxc-copy -n shib1 -N shib2`, change/set (dns or static) `shib2`'s ip before starting it `lxc-start shib2`
+- Configure the containers for autorun at boottime `lxc.start.auto = 0` in `/var/lib/lxc/$CONTAINER_NAME/config
+- Start the containers
 
 
 NginX
 -----
 
 This is an example of a passive health check with NginX.
-The commented health checks options can be enabled with NginX Plyus edition or installing by hands (need compilation) the community plugin.
+The commented health checks options can be enabled with NginX Plus edition or installing by hands (need compilation) the community plugin.
 
 ````
 upstream shib_balancer {
@@ -191,4 +193,4 @@ Giuseppe De Marco <giuseppe.demarco@unical.it>
 
 Credits
 -------
-The Community
+The Community.
