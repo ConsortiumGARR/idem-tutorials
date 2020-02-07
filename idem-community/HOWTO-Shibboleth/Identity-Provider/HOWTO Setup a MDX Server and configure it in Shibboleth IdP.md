@@ -165,8 +165,8 @@ Configure Shibboleth IdP
 ------------------------
 
 1. Get the MDQ certificate and store it in `/opt/shibboleth-idp/credentials/mdq-cert.pem`
-2. Add in /opt/shibboleth-idp/conf/services.xml`, in the MetadataProviders resources, called `<util:list id="shibboleth.MetadataResolverResources">` the child element `<value>%{idp.home}/conf/metadata-providers-mdq.xml</value>`
-3. Create `/opt/shibboleth-idp/conf/metadata-providers-mdq.xml following this example, remeber to change the MDQ server url to your working one
+2. Add in `/opt/shibboleth-idp/conf/services.xml`, in the MetadataProviders resources, called `<util:list id="shibboleth.MetadataResolverResources">` the child element `<value>%{idp.home}/conf/metadata-providers-mdq.xml</value>`
+3. Create `/opt/shibboleth-idp/conf/metadata-providers-mdq.xml` following this example, remember to change the MDQ server url to your working one
 
 ````
 <?xml version="1.0" encoding="UTF-8"?>
