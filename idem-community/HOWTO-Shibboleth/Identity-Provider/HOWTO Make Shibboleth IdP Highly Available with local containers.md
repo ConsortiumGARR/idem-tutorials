@@ -18,14 +18,15 @@ In this example we also purpose a strategy based on containers, with the help of
 
 The same concept could be also developed with Docker as container/microservice solution and HAproxy as TCP Loadbalancer.
 
-This HowTo works as-is with the idem-tutorials, probably the most demanding users will certainly want to manage shared session storage among the containers.
+This HowTo works as-is with the idem-tutorials, probably the most demanding users will certainly want to manage shared session storage among the containers. If the session storage has been configured as showed in the `idem-tutorials` there's no need to deploy a centralized storage service.
 This asset allows for example to block the communication on port 8080 of a container (iptables or comment it out in nginx configuration) modify the configuration of a ShibIdP, test this adequately. Then reintroduce the updated instance into the HA cluster. Then wait for further analysis, propagate this update also to the backup copy (rsync via hypervisor roots). Everything without any downtime.
 
-
-:warning: WARNING: Mind That if the Shibboleth servers/containers doesn't have any JSESSIONID shared storage (Memcached) the users must login again on each HA takeover.
+:warning: WARNING: Mind That if the Shibboleth servers/containers doesn't have any JSESSIONID shared storage (Memcached) or user-agent localStorage (idem-tutorials) the users must login again on each HA takeover.
 For avoiding this it's suggested to enable a [MemcachedStorageService](https://wiki.shibboleth.net/confluence/display/IDP30/StorageConfiguration) or another kind of storage (RDBMS).
 
 :warning: WARNING: The community edition of NginX only offer to us a passive health check (TCP Layer 4) and not a fully compliant Layer 7 check. Please use Nginx plus or compile Nginx from source, enable a community health check plugin, or use HAproxy instead.
+
+:warning: WARNING: Without a MDQ MetadataProvider each ShibIdP container will consume RAM to handle indipendently the EduGAIN Metadata. It's suggested to use a federation MDQ server or a [local setup of this]().
 
 Installation of the necessary software
 --------------------------------------
