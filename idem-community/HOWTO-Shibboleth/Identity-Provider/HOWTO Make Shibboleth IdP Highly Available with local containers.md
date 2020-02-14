@@ -161,7 +161,10 @@ server {
         # HSTS
         add_header Strict-Transport-Security "max-age=63072000; includeSubdomains; ";
         add_header X-Frame-Options "DENY";
-
+        
+        # disable samesite cookies
+        proxy_cookie_path ~(/*) "$1; SameSite=None";
+        
         proxy_set_header X-Forwarded-Server $host;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_pass http://shib_balancer;
