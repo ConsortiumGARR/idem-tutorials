@@ -16,7 +16,7 @@ Introduction
 
 A MDQ Server is a Metadata Query resource, as described in [Metadata Query Protocol](https://tools.ietf.org/html/draft-young-md-query-12).
 Using this kind of resource we don't need to handle Federation Metadata for each IdP, SP or AA anymore, we can adopt a distribuited service, like a MDX server.
-With a MDX server configured in a setup, out IdP would run metadata query on each SAML2 AuthnRequest to get the request entity Metadata.
+With a MDX server configured in a setup, our IdP would run metadata query on each SAML2 AuthnRequest to get the request entity Metadata.
 
 
 Installation of the necessary software
