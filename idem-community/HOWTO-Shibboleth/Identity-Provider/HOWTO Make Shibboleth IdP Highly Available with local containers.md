@@ -23,11 +23,11 @@ This HowTo works as-is with the idem-tutorials, probably the most demanding user
 This asset allows for example to block the communication on port 8080 of a container (iptables or comment it out in nginx configuration) modify the configuration of a ShibIdP, test this adequately, then reintroduce the updated instance into the HA cluster. Then wait for further analysis, propagate this update also to the backup LXC container (rsync via hypervisor roots). Everything without any downtime.
 
 :warning: WARNING: Mind That if the Shibboleth servers/containers doesn't have any JSESSIONID shared storage (Memcached) or user-agent localStorage (idem-tutorials) the users must login again on each HA takeover.
-For avoiding this it's suggested to enable a [MemcachedStorageService](https://wiki.shibboleth.net/confluence/display/IDP30/StorageConfiguration) or another kind of storage (RDBMS).
+For avoiding this it's suggested to use the idem-tutorials approach or enable a [MemcachedStorageService](https://wiki.shibboleth.net/confluence/display/IDP30/StorageConfiguration) or another kind of storage (RDBMS).
 
 :warning: WARNING: The community edition of NginX only offer to us a passive health check (TCP Layer 4) and not a fully compliant Layer 7 check. Please use Nginx plus or compile Nginx from source, enable a community health check plugin, or use HAproxy instead.
 
-:warning: WARNING: Without a MDQ MetadataProvider each ShibIdP container will consume RAM to handle indipendently the EduGAIN Metadata. It's suggested to use a federation MDQ server or a [local setup of this]().
+:warning: WARNING: Without a MDQ MetadataProvider each ShibIdP container will consume RAM to handle indipendently the EduGAIN Metadata. It's suggested to use a federation MDQ server or a [local setup of this](https://github.com/ConsortiumGARR/idem-tutorials/blob/master/idem-community/HOWTO-Shibboleth/Identity-Provider/HOWTO%20Setup%20a%20MDX%20Server%20and%20configure%20it%20in%20Shibboleth%20IdP.md).
 
 Installation of the necessary software
 --------------------------------------
@@ -161,6 +161,9 @@ server {
         # HSTS
         add_header Strict-Transport-Security "max-age=63072000; includeSubdomains; ";
         add_header X-Frame-Options "DENY";
+
+        # Disable SameSite cookies - probably not needed in future
+        proxy_cookie_path ~(/*) "$1; SameSite=None; Secure";
 
         proxy_set_header X-Forwarded-Server $host;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
