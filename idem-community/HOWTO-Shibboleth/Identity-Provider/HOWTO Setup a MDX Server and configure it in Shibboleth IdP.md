@@ -16,7 +16,7 @@ Introduction
 
 A MDQ Server is a Metadata Query resource, as described in [Metadata Query Protocol](https://tools.ietf.org/html/draft-young-md-query-12).
 Using this kind of resource we don't need to handle Federation Metadata for each IdP, SP or AA anymore, we can adopt a distribuited service, like a MDX server.
-With a MDX server configured in a setup, out IdP would run metadata query on each SAML2 AuthnRequest to get the request entity Metadata.
+With a MDX server configured in a setup, our IdP would run metadata query on each SAML2 AuthnRequest to get the request entity Metadata.
 
 
 Installation of the necessary software
@@ -56,15 +56,16 @@ mkdir pipelines
 Create a pipelines to fetch and handle all the Idem + eduGAIN metadata, this would be similar to this
 ````
 # Metadata download and validation
-- load xrd garr-loaded.xrd:
-  - ./pipelines/garr.xrd
-# select can even filter entity by IDPSSO or SPSSO Description and things ...
-- select
-- store:
-     directory: ./garr
-- publish:
-     output: ./garr/garr-loaded.xml
-- stats
+- when update:
+    - load xrd garr-loaded.xrd:
+      - pipelines/garr.xrd
+    # select can even filter entity by IDPSSO or SPSSO Description and things ...
+    - select
+    - store:
+         directory: garr
+    - publish:
+         output: garr/garr-loaded.xml
+    - stats
 
 # MDX server
 - when request:
@@ -159,6 +160,9 @@ PYFF_STORE_CLASS=pyff.store:RedisWhooshStore pyffd -p pyff.pid -f -a --dir=`pwd`
 
 Using gunicorn
 ````
+# run Redis Server first or omit "-e PYFF_STORE_CLASS=pyff.store:RedisWhooshStore"
+service redis start
+
 gunicorn --reload --reload-extra-file pipelines/garr.fd --preload --bind 0.0.0.0:8001 -t 600 -e PYFF_PIPELINE=pipelines/garr.fd -e PYFF_STORE_CLASS=pyff.store:RedisWhooshStore -e PYFF_UPDATE_FREQUENCY=600 -e PYFF_PORT=8001 --threads 4 --worker-tmp-dir=/dev/shm --worker-class=gthread pyff.wsgi:app
 ````
 
@@ -215,12 +219,9 @@ Alternative Configuration
 
 Let's suppose that we need a simple as possibile SAML2 MDQ server that:
 
-1) Runs locally as a private service for multiple containers or VM
-2) Should be decoupled from pyFF
-3) Should be much more performat than pyFF
+It should be decoupled from pyFF, this latter will be used only for metadata download and validation.
 
 See [Django MDQ](https://github.com/UniversitaDellaCalabria/Django-MDQ)
-
 
 Test
 ----
