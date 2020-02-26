@@ -185,8 +185,8 @@
          key="sp-encrypt-key.pem" certificate="sp-encrypt-cert.pem"/>
      ```
 4. Create SP metadata credentials:
-   * `/usr/sbin/shib-keygen -n sp-signing -e https://sp3-deb.aai-test.garr.it/shibboleth`
-   * `/usr/sbin/shib-keygen -n sp-encrypt -e https://sp3-deb.aai-test.garr.it/shibboleth`
+   * `/usr/sbin/shib-keygen -n sp-signing -e https://sp.example.org/shibboleth`
+   * `/usr/sbin/shib-keygen -n sp-encrypt -e https://sp.example.org/shibboleth`
    * `shibd -t /etc/shibboleth/shibboleth2.xml` (Check Shibboleth configuration)
    * `systemctl restart shibd.service`
 
