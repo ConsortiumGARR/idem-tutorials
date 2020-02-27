@@ -48,10 +48,6 @@
           default-destroy-method="destroy"
           default-lazy-init="true">
    
-       <!-- NEW Aggregate Authenticator 
-         idp.authn.LDAP.authenticator = aggregateAuthenticator
-         idp.authn.LDAP.returnAttributes = 1.1
-       -->
        <bean id="aggregateAuthenticator" class="org.ldaptive.auth.Authenticator"
          c:resolver-ref="aggregateDnResolver"
          c:handler-ref="aggregateAuthHandler" />
@@ -65,10 +61,10 @@
           <entry key="ldap2" value-ref="bindSearchDnResolver2" />
        </util:map>
    
-       <alias name="%{idp.authn.LDAP.authenticator.1:anonSearchAuthenticator}" alias="shibboleth.authn.LDAP.authenticator" />
+       <alias name="aggregateAuthenticator" alias="shibboleth.authn.LDAP.authenticator" />
    
        <bean id="shibboleth.authn.LDAP.returnAttributes" parent="shibboleth.CommaDelimStringArray">
-           <constructor-arg type="java.lang.String" value="%{idp.authn.LDAP.returnAttributes.1:1.1}" />
+           <constructor-arg type="java.lang.String" value="1.1" />
        </bean>
    
        <alias name="ValidateUsernamePasswordAgainstLDAP" alias="ValidateUsernamePassword" />
