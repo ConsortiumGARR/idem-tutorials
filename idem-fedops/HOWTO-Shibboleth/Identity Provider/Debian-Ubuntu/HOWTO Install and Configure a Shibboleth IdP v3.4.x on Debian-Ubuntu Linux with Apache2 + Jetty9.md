@@ -1153,9 +1153,9 @@ Translate the IdP messages in your language:
         - Remove all ":8443" from the existing URL (such port is not used anymore)
 
       <AttributeAuthorityDescriptor> Section:
-        - From the list "protocolSupportEnumeration" replace the value of:
+        - From the list "protocolSupportEnumeration" remove the value:
           - urn:oasis:names:tc:SAML:1.1:protocol
-          with
+          and leave:
           - urn:oasis:names:tc:SAML:2.0:protocol
 
         - Remove the endpoint: 
@@ -1455,9 +1455,9 @@ Translate the IdP messages in your language:
         - Remove comment from each <SingleLogoutService> endpoint
 
       <AttributeAuthorityDescriptor> Section:
-        - From the list "protocolSupportEnumeration" replace the value of:
+        - From the list "protocolSupportEnumeration" remove the value:
           - urn:oasis:names:tc:SAML:1.1:protocol
-          with
+          and leave
           - urn:oasis:names:tc:SAML:2.0:protocol
 
         - Remove the endpoint: 
