@@ -756,7 +756,7 @@ By default, a transient NameID will always be released to the Service Provider i
      peerProvidedId VARCHAR(255) NULL,
      creationDate TIMESTAMP NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
      deactivationDate TIMESTAMP NULL default NULL,
-     PRIMARY KEY (localEntity(255), peerEntity(255), persistentId(50))
+     PRIMARY KEY (localEntity, peerEntity, persistentId)
      );
 
      quit
