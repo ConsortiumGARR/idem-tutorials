@@ -817,6 +817,9 @@ By default, a transient NameID will always be released to the Service Provider i
      * `vim /opt/shibboleth-idp/conf/c14n/subject-c14n.xml`
        * Remove the comment to the bean called "**c14n/SAML2Persistent**".
 
+     * `vim /opt/shibboleth-idp/conf/c14n/simple-subject-c14n-config.xml` (OPTIONAL)
+       * Transform each letter of username, before storing in into the database, to Lowercase or Uppercase by setting the proper constant.
+
 6. Restart Jetty to apply changes:
    * `systemctl restart jetty.service`
 
