@@ -635,7 +635,7 @@ This Storage service will memorize User Consent data on persistent database SQL.
 
      <bean id="storageservice.JPAStorageService.DataSource"
            class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close" lazy-init="true"
-           p:driverClassName="com.mysql.jdbc.Driver"
+           p:driverClassName="org.mariadb.jdbc.Driver"
            p:url="jdbc:mysql://localhost:3306/storageservice?autoReconnect=true"
            p:username="##USERNAME-CHANGEME##"
            p:password="##USER-PASSWORD-CHANGEME##"
@@ -783,7 +783,7 @@ By default, a transient NameID will always be released to the Service Provider i
 
      <bean id="shibboleth.JPAStorageService.DataSource"
            class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close" lazy-init="true"
-           p:driverClassName="com.mysql.jdbc.Driver"
+           p:driverClassName="org.mariadb.jdbc.Driver"
            p:url="jdbc:mysql://localhost:3306/shibboleth?autoReconnect=true"
            p:username="##USERNAME-CHANGEME##"
            p:password="##USER-PASSWORD-CHANGEME##"
