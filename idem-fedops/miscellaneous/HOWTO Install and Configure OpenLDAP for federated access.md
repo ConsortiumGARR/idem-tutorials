@@ -308,15 +308,17 @@ EOF
 15. Disable Anonymous bind
 
 ````
+ldapmodify -Y EXTERNAL -H ldapi:/// <<EOF
 dn: cn=config
 changetype: modify
 add: olcDisallows
 olcDisallows: bind_anon
--
+
 dn: olcDatabase={-1}frontend,cn=config
 changetype: modify
 add: olcRequires
 olcRequires: authc
+EOF
 ````
 
 # PhpLdapAdmin (PLA) - optional
