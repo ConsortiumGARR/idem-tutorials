@@ -268,7 +268,7 @@
      eduPersonEntitlement: urn:mace:terena.org:tcs:personal-user
      ```
 
-   * `sudo ldapadd -D cn=admin,dc=example,dc=org -w <LDAP-ROOT-PW_CHANGEME> -f /etc/ldap/scratch/user1.ldif`
+   * `sudo ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/ldap/scratch/user1.ldif`
 
 12. Check that 'idpuser' can find user1:
     * `sudo ldapsearch -x -D 'cn=idpuser,ou=system,dc=example,dc=org' -W -b "uid=user1,ou=people,dc=example,dc=org"`
