@@ -253,8 +253,6 @@
      changetype: add
      objectClass: inetOrgPerson
      objectClass: eduPerson
-     objectClass: schacPersonalCharacteristics
-     objectClass: schacContactLocation
      uid: user1
      sn: User1
      givenName: Test
@@ -266,14 +264,8 @@
      eduPersonAffiliation: student
      eduPersonAffiliation: staff
      eduPersonAffiliation: member
-     eduPersonScopedAffiliation: member@example.org
-     eduPersonScopedAffiliation: staff@example.org
-     eduPersonScopedAffiliation: student@example.org
-     eduPersonPrincipalName: user1@example.org
      eduPersonEntitlement: urn:mace:terena.org:tcs:escience-user
      eduPersonEntitlement: urn:mace:terena.org:tcs:personal-user
-     schacHomeOrganization: example.org
-     schacHomeOrganizationType: urn:mace:terena.org:schac:homeOrganizationType:it:university
      ```
 
    * `sudo ldapadd -D cn=admin,dc=example,dc=org -w <LDAP-ROOT-PW_CHANGEME> -f /etc/ldap/scratch/user1.ldif`
