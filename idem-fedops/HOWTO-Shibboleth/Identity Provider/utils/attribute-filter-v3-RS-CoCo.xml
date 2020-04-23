@@ -18,6 +18,21 @@
          <AttributeRule attributeID="eduPersonTargetedID">
              <PermitValueRule xsi:type="ANY" />
          </AttributeRule>
+         <AttributeRule attributeID="eduPersonScopedAffiliation">
+             <PermitValueRule xsi:type="AND">
+                <Rule xsi:type="AttributeInMetadata" onlyIfRequired="false"/>
+                <Rule xsi:type="OR">
+                    <Rule xsi:type="Value" value="faculty" ignoreCase="true"/>
+                    <Rule xsi:type="Value" value="student" ignoreCase="true"/>
+                    <Rule xsi:type="Value" value="staff" ignoreCase="true"/>
+                    <Rule xsi:type="Value" value="alum" ignoreCase="true"/>
+                    <Rule xsi:type="Value" value="member" ignoreCase="true"/>
+                    <Rule xsi:type="Value" value="affiliate" ignoreCase="true"/>
+                    <Rule xsi:type="Value" value="employee" ignoreCase="true"/>
+                    <Rule xsi:type="Value" value="library-walk-in" ignoreCase="true"/>
+                </Rule>
+             </PermitValueRule>
+         </AttributeRule>
          <AttributeRule attributeID="email">
              <PermitValueRule xsi:type="ANY"/>
          </AttributeRule>
