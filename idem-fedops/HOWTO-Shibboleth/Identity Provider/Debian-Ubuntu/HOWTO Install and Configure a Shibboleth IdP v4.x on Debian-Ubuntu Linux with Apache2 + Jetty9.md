@@ -20,18 +20,19 @@
       1. [Computed mode - Default & Recommended](#computed-mode---default--recommended)
       2. [Stored mode - using a database](#stored-mode---using-a-database)
    5. [Configure the Directory (openLDAP or AD) Connection](#configure-the-directory-openldap-or-ad-connection)
-   6. [Configure the attribute resolver with Attribute Registry](#configure-the-attribute-resolver-with-attribute-registry)
+   6. [Configure the attribute resolution with Attribute Registry](#configure-the-attribute-resolution-with-attribute-registry)
    7. [Configure Shibboleth IdP Logging](#configure-shibboleth-idp-logging)
-   8. [Translate IdP messages into the preferred language](#translate-idp-messages-into-the-preferred-language)
+   8. [Translate IdP messages into the preferred language](#translate-idp-messages-into-preferred-language)
    9. [Disable SAML1 Deprecated Protocol](#disable-saml1-deprecated-protocol)
    10. [Configure Attribute Filters to release the mandatory attributes to the IDEM Default Resources](#configure-attribute-filters-to-release-the-mandatory-attributes-to-the-idem-default-resources)
    11. [Register the IdP on the IDEM Test Federation](#register-the-idp-on-the-idem-test-federation)
-6. [Appendix A: Configure Attribute Filters to release the mandatory attributes to the IDEM Production Resources](#appendix-a--configure-attribute-filters-to-release-the-mandatory-attributes-to-the-idem-production-resources)
-7. [Appendix B: Configure attribute filter policies for the REFEDS Research and Scholarship and the GEANT Data Protection Code of Conduct Entity Categories](#appendix-b--configure-attribute-filter-policies-for-the-refeds-research-and-scholarship-and-the-geant-data-protection-code-of-conduct-entity-categories)
+6. [Appendix A: Configure Attribute Filters to release the mandatory attributes to the IDEM Production Resources](#appendix-a-configure-attribute-filters-to-release-the-mandatory-attributes-to-the-idem-production-resources)
+7. [Appendix B: Configure attribute filter policies for the REFEDS Research and Scholarship and the GEANT Data Protection Code of Conduct Entity Categories](#appendix-b-configure-attribute-filter-policies-for-the-refeds-research-and-scholarship-and-the-geant-data-protection-code-of-conduct-entity-categories)
 8. [Appendix C: Import persistent-id from a previous database](#appendix-c-import-persistent-id-from-a-previous-database)
 9. [Appendix D: Useful logs to find problems](#appendix-d-useful-logs-to-find-problems)
-10. [Useful Documentation](#useful-documentation)
-11. [Authors](#authors)
+10. [Utilities](#utilities)
+11. [Useful Documentation](#useful-documentation)
+12. [Authors](#authors)
     * [Original Author](#original-author)
 
 ## Hardware Requirements
@@ -869,7 +870,7 @@ File(s): conf/attribute-registry.xml, conf/attributes/default-rules.xml, conf/at
    * `export JAVA_HOME=/usr/lib/jvm/java-11-amazon-corretto`
    * `bash /opt/shibboleth-idp/bin/status.sh`
 
-### Configure IdP Logging
+### Configure Shibboleth IdP Logging
 
 Enrich IDP logs with the authentication error occurred on LDAP:
    * ```bash
