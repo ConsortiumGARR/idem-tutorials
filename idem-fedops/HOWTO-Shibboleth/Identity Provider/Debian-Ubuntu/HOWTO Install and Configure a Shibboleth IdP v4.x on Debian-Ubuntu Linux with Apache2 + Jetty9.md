@@ -81,15 +81,16 @@
    * `apt update && apt-get upgrade -y --no-install-recommends`
   
 4. Install the required packages:
-   * Amazon Corretto OpenJDK: 
-     * `apt install vim wget ca-certificates openssl apache2 ntp libservlet3.1-java liblogback-java --no-install-recommends`
-     * `wget -O- https://apt.corretto.aws/corretto.key | sudo apt-key add -`
-     * `apt-get install software-properties-common`
-     * `add-apt-repository 'deb https://apt.corretto.aws stable main'`
-     * `apt-get update; sudo apt-get install -y java-11-amazon-corretto-jdk`
-     * `java -version`
+   * `apt install vim wget ca-certificates openssl apache2 ntp libservlet3.1-java liblogback-java --no-install-recommends`
 
-5. Check that Java is working:
+5. Install Amazon Corretto JDK:
+   * `wget -O- https://apt.corretto.aws/corretto.key | sudo apt-key add -`
+   * `apt-get install software-properties-common`
+   * `add-apt-repository 'deb https://apt.corretto.aws stable main'`
+   * `apt-get update; sudo apt-get install -y java-11-amazon-corretto-jdk`
+   * `java -version`
+
+6. Check that Java is working:
    * `update-alternatives --config java` 
    
    (It will return something like this "`There is only one alternative in link group java (providing /usr/bin/java):`" )
