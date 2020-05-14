@@ -156,7 +156,7 @@ Jetty is a Web server and a Java Servlet container. It will be used to run the I
 
 6. Create the TMPDIR directory used by Jetty:
    * `mkdir /opt/jetty/tmp ; chown jetty:jetty /opt/jetty/tmp`
-   * `chown -R jetty:jetty /opt/jetty/ /usr/local/src/jetty-src`
+   * `chown -R jetty:jetty /opt/jetty /usr/local/src/jetty-src`
 
 7. Create the service loadable from command line:
    * `cd /etc/init.d`
