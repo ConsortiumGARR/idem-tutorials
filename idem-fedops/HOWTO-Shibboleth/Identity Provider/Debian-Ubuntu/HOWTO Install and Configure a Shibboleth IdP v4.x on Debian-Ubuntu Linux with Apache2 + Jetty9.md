@@ -596,8 +596,7 @@ This Storage service will memorize User Consent data on persistent database SQL.
             idp.authn.LDAP.useSSL = false
             idp.authn.LDAP.sslConfig = certificateTrust
             idp.authn.LDAP.trustCertificates = %{idp.home}/credentials/ldap-server.crt
-            idp.authn.LDAP.returnAttributes = ### List space-separated of attributes to retrieve from OpenLDAP directly ###
-            idp.authn.LDAP.exportAttributes = ### List space-separated of LDAP attributes resolved directly into IdPAttributes ###
+            idp.authn.LDAP.returnAttributes = ### List space-separated of attributes to retrieve from OpenLDAP directly or '*' for all attributes ###
             idp.authn.LDAP.baseDN = ou=people,dc=example,dc=org
             idp.authn.LDAP.subtreeSearch = false
             idp.authn.LDAP.userFilter = (&(uid={user})(objectClass=inetOrgPerson))
@@ -615,7 +614,6 @@ This Storage service will memorize User Consent data on persistent database SQL.
             idp.attribute.resolver.LDAP.trustCertificates   = %{idp.authn.LDAP.trustCertificates:undefined}
             idp.attribute.resolver.LDAP.searchFilter        = %{idp.authn.LDAP.searchFilter:undefined}
             idp.attribute.resolver.LDAP.returnAttributes    = %{idp.authn.LDAP.returnAttributes:undefined}
-            idp.attribute.resolver.LDAP.exportAttributes    = %{idp.authn.LDAP.exportAttributes:undefined}
             ```
 
        * Solution 2: LDAP + TLS:
@@ -636,8 +634,7 @@ This Storage service will memorize User Consent data on persistent database SQL.
             idp.authn.LDAP.useSSL = true
             idp.authn.LDAP.sslConfig = certificateTrust
             idp.authn.LDAP.trustCertificates = %{idp.home}/credentials/ldap-server.crt
-            idp.authn.LDAP.returnAttributes = ### List space-separated of attributes to retrieve from OpenLDAP directly ###
-            idp.authn.LDAP.exportAttributes = ### List space-separated of LDAP attributes resolved directly into IdPAttributes ###
+            idp.authn.LDAP.returnAttributes = ### List space-separated of attributes to retrieve from OpenLDAP directly or '*' for all attributes ###
             idp.authn.LDAP.baseDN = ou=people,dc=example,dc=org
             idp.authn.LDAP.subtreeSearch = false
             idp.authn.LDAP.userFilter = (&(uid={user})(objectClass=inetOrgPerson))
@@ -655,7 +652,6 @@ This Storage service will memorize User Consent data on persistent database SQL.
             idp.attribute.resolver.LDAP.trustCertificates   = %{idp.authn.LDAP.trustCertificates:undefined}
             idp.attribute.resolver.LDAP.searchFilter        = %{idp.authn.LDAP.searchFilter:undefined}
             idp.attribute.resolver.LDAP.returnAttributes    = %{idp.authn.LDAP.returnAttributes:undefined}
-            idp.attribute.resolver.LDAP.exportAttributes    = %{idp.authn.LDAP.exportAttributes:undefined}
             ```
 
        * Solution 3: plain LDAP
@@ -674,8 +670,7 @@ This Storage service will memorize User Consent data on persistent database SQL.
             idp.authn.LDAP.ldapURL = ldap://ldap.example.org:389
             idp.authn.LDAP.useStartTLS = false
             idp.authn.LDAP.useSSL = false
-            idp.authn.LDAP.returnAttributes = ### List space-separated of attributes to retrieve from OpenLDAP directly ###
-            idp.authn.LDAP.exportAttributes = ### List space-separated of LDAP attributes resolved directly into IdPAttributes ###
+            idp.authn.LDAP.returnAttributes = ### List space-separated of attributes to retrieve from OpenLDAP directly or '*' for all attributes ###
             idp.authn.LDAP.baseDN = ou=people,dc=example,dc=org
             idp.authn.LDAP.subtreeSearch = false
             idp.authn.LDAP.userFilter = (&(uid={user})(objectClass=inetOrgPerson))
@@ -691,7 +686,6 @@ This Storage service will memorize User Consent data on persistent database SQL.
             idp.attribute.resolver.LDAP.bindDN              = %{idp.authn.LDAP.bindDN:undefined}
             idp.attribute.resolver.LDAP.searchFilter        = %{idp.authn.LDAP.searchFilter:undefined}
             idp.attribute.resolver.LDAP.returnAttributes    = %{idp.authn.LDAP.returnAttributes:undefined}
-            idp.attribute.resolver.LDAP.exportAttributes    = %{idp.authn.LDAP.exportAttributes:undefined}
             ```
 
      * For Active Directory:
@@ -713,8 +707,7 @@ This Storage service will memorize User Consent data on persistent database SQL.
             idp.authn.LDAP.useSSL = false
             idp.authn.LDAP.sslConfig = certificateTrust
             idp.authn.LDAP.trustCertificates = %{idp.home}/credentials/ldap-server.crt
-            idp.authn.LDAP.returnAttributes = ### List space-separated of attributes to retrieve from AD directly ###
-            idp.authn.LDAP.exportAttributes = ### List space-separated of AD attributes resolved directly into IdPAttributes ###
+            idp.authn.LDAP.returnAttributes = ### List space-separated of attributes to retrieve from AD directly or '*' for all attributes ###
             idp.authn.LDAP.baseDN = CN=Users,DC=ad,DC=example,DC=org
             idp.authn.LDAP.subtreeSearch = false
             idp.authn.LDAP.userFilter = (sAMAccountName={user})
@@ -733,7 +726,6 @@ This Storage service will memorize User Consent data on persistent database SQL.
             idp.attribute.resolver.LDAP.trustCertificates   = %{idp.authn.LDAP.trustCertificates:undefined}
             idp.attribute.resolver.LDAP.searchFilter        = %{idp.authn.LDAP.searchFilter:undefined}
             idp.attribute.resolver.LDAP.returnAttributes    = %{idp.authn.LDAP.returnAttributes:undefined}
-            idp.attribute.resolver.LDAP.exportAttributes    = %{idp.authn.LDAP.exportAttributes:undefined}
             ```
 
        * Solution 2: AD + TLS:
@@ -754,8 +746,7 @@ This Storage service will memorize User Consent data on persistent database SQL.
             idp.authn.LDAP.useSSL = true
             idp.authn.LDAP.sslConfig = certificateTrust
             idp.authn.LDAP.trustCertificates = %{idp.home}/credentials/ldap-server.crt
-            idp.authn.LDAP.returnAttributes = ### List space-separated of attributes to retrieve from AD directly ###
-            idp.authn.LDAP.exportAttributes = ### List space-separated of AD attributes resolved directly into IdPAttributes ###
+            idp.authn.LDAP.returnAttributes = ### List space-separated of attributes to retrieve from AD directly or '*' for all attributes ###
             idp.authn.LDAP.baseDN = CN=Users,DC=ad,DC=example,DC=org
             idp.authn.LDAP.subtreeSearch = false         
             idp.authn.LDAP.userFilter = (sAMAccountName={user})
@@ -773,7 +764,6 @@ This Storage service will memorize User Consent data on persistent database SQL.
             idp.attribute.resolver.LDAP.trustCertificates   = %{idp.authn.LDAP.trustCertificates:undefined}
             idp.attribute.resolver.LDAP.searchFilter        = %{idp.authn.LDAP.searchFilter:undefined}
             idp.attribute.resolver.LDAP.returnAttributes    = %{idp.authn.LDAP.returnAttributes:undefined}
-            idp.attribute.resolver.LDAP.exportAttributes    = %{idp.authn.LDAP.exportAttributes:undefined}
             ```
 
        * Solution 3: plain AD
@@ -792,8 +782,7 @@ This Storage service will memorize User Consent data on persistent database SQL.
             idp.authn.LDAP.ldapURL = ldap://ldap.example.org:389
             idp.authn.LDAP.useStartTLS = false
             idp.authn.LDAP.useSSL = false
-            idp.authn.LDAP.returnAttributes = ### List space-separated of attributes to retrieve from AD directly ###
-            idp.authn.LDAP.exportAttributes = ### List space-separated of AD attributes resolved directly into IdPAttributes ###
+            idp.authn.LDAP.returnAttributes = ### List space-separated of attributes to retrieve from AD directly or '*' for all attributes###
             idp.authn.LDAP.baseDN = CN=Users,DC=ad,DC=example,DC=org
             idp.authn.LDAP.subtreeSearch = false
             idp.authn.LDAP.userFilter = (sAMAccountName={user})
@@ -810,7 +799,6 @@ This Storage service will memorize User Consent data on persistent database SQL.
             idp.attribute.resolver.LDAP.useStartTLS         = %{idp.authn.LDAP.useStartTLS:true}
             idp.attribute.resolver.LDAP.searchFilter        = %{idp.authn.LDAP.searchFilter:undefined}
             idp.attribute.resolver.LDAP.returnAttributes    = %{idp.authn.LDAP.returnAttributes:undefined}
-            idp.attribute.resolver.LDAP.exportAttributes    = %{idp.authn.LDAP.exportAttributes:undefined}
             ```
 
        If you decide to use the Solution 3, remove or comment the following directives from your Attribute Resolver file:
