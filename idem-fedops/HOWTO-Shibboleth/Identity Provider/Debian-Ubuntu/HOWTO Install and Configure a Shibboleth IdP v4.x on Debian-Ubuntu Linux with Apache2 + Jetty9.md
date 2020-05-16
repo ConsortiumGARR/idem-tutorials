@@ -1053,8 +1053,8 @@ Translate the IdP messages in your language:
      
      <bean id="IDEM-Resources" class="net.shibboleth.ext.spring.resource.FileBackedHTTPResource"
            c:client-ref="MyHTTPClient"
-           c:url="https://registry.idem.garr.it/idem-conf/shibboleth/attribute-filter-v4-idem-resources.xml"
-           c:backingFile="%{idp.home}/conf/attribute-filter-v4-idem-resources.xml"/>     
+           c:url="https://registry.idem.garr.it/idem-conf/shibboleth/attribute-filter-v4-resources.xml"
+           c:backingFile="%{idp.home}/conf/attribute-filter-v4-resources.xml"/>     
      
      <util:list id ="shibboleth.AttributeFilterResources">
          <value>%{idp.home}/conf/attribute-filter.xml</value>
