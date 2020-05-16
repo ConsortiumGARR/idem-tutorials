@@ -30,12 +30,16 @@
 
         <!-- Release the 'eduPersonEntitlement' attribute with a specific value to Elsevier ScienceDirect SP(identified by its entityID) -->
         <AttributeFilterPolicy id="Elsevier_ScienceDirect">
-            <PolicyRequirementRule xsi:type="Requester" value="https://sdauth.sciencedirect.com/" />
+          <PolicyRequirementRule xsi:type="AND">
+             <Rule xsi:type="RegistrationAuthority" registrars="http://www.idem.garr.it/" />
+             <Rule xsi:type="Requester" value="https://sdauth.sciencedirect.com/" />
+          </PolicyRequirementRule>
 
-            <AttributeRule attributeID="eduPersonEntitlement">
-                <PermitValueRule xsi:type="Value" value="urn:mace:dir:entitlement:common-lib-terms" ignoreCase="true" />
-            </AttributeRule>
-        </AttributeFilterPolicy>
+          <AttributeRule attributeID="eduPersonEntitlement">
+             <DenyValueRule xsi:type="NOT">
+                <Rule xsi:type="Value" value="urn:mace:dir:entitlement:common-lib-terms" />
+             </DenyValueRule>
+          </AttributeRule>
 
    </AttributeFilterPolicyGroup>
    ```
