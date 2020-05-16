@@ -23,7 +23,7 @@
    <!--
     This file is an EXAMPLE policy file only.
    -->
-   <AttributeFilterPolicyGroup id="ShibbolethFilterPolicy"
+   <AttributeFilterPolicyGroup id="ShibbolethFilterPolicyElsevier"
         xmlns="urn:mace:shibboleth:2.0:afp"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="urn:mace:shibboleth:2.0:afp http://shibboleth.net/schema/idp/shibboleth-afp.xsd">
