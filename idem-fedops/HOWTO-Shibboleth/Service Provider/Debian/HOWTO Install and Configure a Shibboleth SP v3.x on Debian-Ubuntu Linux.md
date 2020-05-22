@@ -34,7 +34,7 @@
  * ca-certificates
  * ntp
  * vim
- * libapache2-mod-php, php, libapache2-mod-shib2, apache2 (>= 2.4)
+ * libapache2-mod-php, php, libapache2-mod-shib, apache2 (>= 2.4)
  * openssl
 
 ## Other Requirements
@@ -81,7 +81,7 @@
 
 2. Install Shibboleth SP:
    * ```bash
-     apt install apache2 libapache2-mod-shib2 ntp --no-install-recommends
+     apt install apache2 libapache2-mod-shib ntp --no-install-recommends
      ```
 
    From this point the location of the SP directory is: `/etc/shibboleth`
