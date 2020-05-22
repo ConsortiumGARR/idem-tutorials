@@ -152,7 +152,7 @@ Jetty is a Web server and a Java Servlet container. It will be used to run the I
 5. Create your custom Jetty configuration that overrides the default one and will survive upgrades:
    * `mkdir /opt/jetty`
    * `cd /opt/jetty`
-   * `wget https://registry.idem.garr.it/idem-conf/shibboleth/jetty/start.ini -O /opt/jetty/start.ini`
+   * `wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/jetty/start.ini -O /opt/jetty/start.ini`
 
 6. Create the TMPDIR directory used by Jetty:
    * `mkdir /opt/jetty/tmp ; chown jetty:jetty /opt/jetty/tmp`
@@ -240,7 +240,7 @@ The Apache HTTP Server will be configured as a reverse proxy and it will be used
    * `sudo chown -R www-data: /var/www/html/idp.example.org`
 
 3. Create the Virtualhost file (pay attention to replace 'idp.example.org' and other info with yours):
-   * `wget https://registry.idem.garr.it/idem-conf/shibboleth/apache2/idp.example.org.conf -O /etc/apache2/sites-available/idp.example.org.conf`
+   * `wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/apache2/idp.example.org.conf -O /etc/apache2/sites-available/idp.example.org.conf`
 
 4. Enable the required Apache2 modules and the virtual hosts:
    * `a2enmod proxy_http ssl headers alias include negotiation`
@@ -320,7 +320,7 @@ This Storage service will memorize User Consent data on persistent database SQL.
    * `bin/build.sh`
 
 3. Create the `StorageRegords` table on the `storageservice` database:
-   * `wget https://registry.idem.garr.it/idem-conf/shibboleth/db/shib-ss-db.sql -O /root/shib-ss-db.sql`:
+   * `wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/db/shib-ss-db.sql -O /root/shib-ss-db.sql`:
      
    * (OPTIONAL) MySQL DB Access without password:
       * `vim /root/.my.cnf`
@@ -472,7 +472,7 @@ This Storage service will memorize User Consent data on persistent database SQL.
    * `bin/build.sh`
 
 3. Create `shibpid` table on `shibboleth` database.
-   * `wget https://registry.idem.garr.it/idem-conf/shibboleth/db/shib-pid-db.sql -O /root/shib-pid-db.sql`:
+   * `wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/db/shib-pid-db.sql -O /root/shib-pid-db.sql`:
 
    * (OPTIONAL) MySQL DB Access without password:
      * `vim /root/.my.cnf`
@@ -818,7 +818,7 @@ This Storage service will memorize User Consent data on persistent database SQL.
 File(s): conf/attribute-registry.xml, conf/attributes/default-rules.xml, conf/attribute-resolver.xml, conf/attributes/custom/
 
 1. Download `schac.xml` (provided by IDEM) into the right location:
-   * `wget https://registry.idem.garr.it/idem-conf/shibboleth/attributes/schac.xml -O /opt/shibboleth-idp/conf/attributes/schac.xml`
+   * `wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/attributes/schac.xml -O /opt/shibboleth-idp/conf/attributes/schac.xml`
 
 2. Change the `default-rules.xml` to include the new `schac.xml` file:
    * `vim /opt/shibboleth-idp/conf/attributes/default-rules.xml`
@@ -835,13 +835,13 @@ File(s): conf/attribute-registry.xml, conf/attributes/default-rules.xml, conf/at
      ```
 
 3. Create the custom `eduPersonTargetedID.properties` file:
-   * `wget https://registry.idem.garr.it/idem-conf/shibboleth/attributes/custom/eduPersonTargetedID.properties -O /opt/shibboleth-idp/conf/attributes/custom/eduPersonTargetedID.properties`
+   * `wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/attributes/custom/eduPersonTargetedID.properties -O /opt/shibboleth-idp/conf/attributes/custom/eduPersonTargetedID.properties`
 
 #### Configure the attribute resolver (sample)
 
 1. Define which attributes your IdP can manage into your Attribute Resolver file. Here you can find a sample **attribute-resolver-sample.xml** as example:
     * Download the sample attribute resolver provided by IDEM GARR AAI Federation Operators (OpenLDAP / Active Directory compliant):
-      * `wget https://registry.idem.garr.it/idem-conf/shibboleth/attribute-resolver-v4-idem-sample.xml -O /opt/shibboleth-idp/conf/attribute-resolver.xml`
+      * `wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/attribute-resolver-v4-idem-sample.xml -O /opt/shibboleth-idp/conf/attribute-resolver.xml`
     
     * Configure the right owner:
       * `chown jetty /opt/shibboleth-idp/conf/attribute-resolver.xml`
@@ -936,7 +936,7 @@ Translate the IdP messages in your language:
    * `sudo su -`
 
 2. Download the attribute filter file:
-   * `wget https://registry.idem.garr.it/idem-conf/shibboleth/attribute-filter-v4-idem.xml -O /opt/shibboleth-idp/conf/attribute-filter-v4-idem.xml`
+   * `wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/attribute-filter-v4-idem.xml -O /opt/shibboleth-idp/conf/attribute-filter-v4-idem.xml`
 
 3. Modify your `services.xml`:
    * `vim /opt/shibboleth-idp/conf/services.xml`
@@ -1033,7 +1033,7 @@ Translate the IdP messages in your language:
    * `sudo su -`
    
 2. Download the attribute filter file:
-   * `wget https://registry.idem.garr.it/idem-conf/shibboleth/attribute-filter-v4-required.xml -O /opt/shibboleth-idp/conf/attribute-filter-v4-required.xml`
+   * `wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/attribute-filter-v4-required.xml -O /opt/shibboleth-idp/conf/attribute-filter-v4-required.xml`
    
 3. Create the directory "`tmp/httpClientCache`" used by "`shibboleth.FileCachingHttpClient`":
    * `mkdir -p /opt/shibboleth-idp/tmp/httpClientCache ; chown jetty /opt/shibboleth-idp/tmp/httpClientCache`
@@ -1053,7 +1053,7 @@ Translate the IdP messages in your language:
      
      <bean id="IDEM-Resources" class="net.shibboleth.ext.spring.resource.FileBackedHTTPResource"
            c:client-ref="MyHTTPClient"
-           c:url="https://registry.idem.garr.it/idem-conf/shibboleth/attribute-filter-v4-resources.xml"
+           c:url="https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/attribute-filter-v4-resources.xml"
            c:backingFile="%{idp.home}/conf/attribute-filter-v4-resources.xml"/>     
      
      <util:list id ="shibboleth.AttributeFilterResources">
@@ -1086,7 +1086,7 @@ Translate the IdP messages in your language:
 ### Appendix B: Configure attribute filter policies for the REFEDS Research and Scholarship and the GEANT Data Protection Code of Conduct Entity Categories
 
 1. Download the attribute filter file:
-   * `wget https://registry.idem.garr.it/idem-conf/shibboleth/attribute-filter-v4-rs-coco.xml -O /opt/shibboleth-idp/conf/attribute-filter-v4-rs-coco.xml`
+   * `wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/attribute-filter-v4-rs-coco.xml -O /opt/shibboleth-idp/conf/attribute-filter-v4-rs-coco.xml`
 
 2. Modify your `services.xml`:
    * `vim /opt/shibboleth-idp/conf/services.xml`
