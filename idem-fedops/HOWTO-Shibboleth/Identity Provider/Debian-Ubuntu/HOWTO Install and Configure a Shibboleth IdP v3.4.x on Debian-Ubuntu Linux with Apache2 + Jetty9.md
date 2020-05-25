@@ -364,11 +364,7 @@ It is a Java Web Application that can be deployed with its WAR file.
    * `wget http://shibboleth.net/downloads/identity-provider/3.4.x/shibboleth-identity-provider-3.4.x.tar.gz`
    * `tar -xzvf shibboleth-identity-provider-3.4.x.tar.gz`
 
-3. Import the JST libraries (required for the IdP `status` page):
-   * `cd /usr/local/src/shibboleth-identity-provider-3.4.x/webapp/WEB-INF/lib`
-   * `wget https://build.shibboleth.net/nexus/service/local/repositories/thirdparty/content/javax/servlet/jstl/1.2/jstl-1.2.jar`
-
-4. Run the installer `install.sh`:
+3. Run the installer `install.sh`:
    * `cd /usr/local/src/shibboleth-identity-provider-3.4.x`
    * `./bin/install.sh`
   
@@ -389,7 +385,7 @@ It is a Java Web Application that can be deployed with its WAR file.
 
      From this point on the variable **idp.home** refers to the directory: `/opt/shibboleth-idp`
 
-5. Make the **jetty** user able to access the IdP main directories:
+4. Make the **jetty** user able to access the IdP main directories:
    * `cd /opt/shibboleth-idp`
    * `chown -R jetty logs/ metadata/ credentials/ conf/ system/ war/`
 
@@ -509,14 +505,6 @@ The Apache HTTP Server will be configured as a reverse proxy and it will be used
    * If Amazon Corretto JDK is chosen: `export JAVA_HOME=/usr/lib/jvm/java-1.8.0-amazon-corretto`   
    * `cd /opt/shibboleth-idp/bin`
    * `./status.sh`
-
-**Note:** Jetty will show some WARN messages like this on its `/var/log/jetty/*.jetty.log`:
-`2019-07-03 10:01:10.306:WARN:oeja.AnnotationParser:qtp399573350-19: org.apache.taglibs.standard.tei.DeclareTEI scanned from multiple locations: 
-jar:file:///usr/local/src/jetty-distribution-9.4.19.v20190610/lib/apache-jstl/org.apache.taglibs.taglibs-standard-impl-1.2.5.jar!/org/apache/taglibs/standard/tei/DeclareTEI.class, 
-jar:file:///opt/jetty/tmp/jetty-localhost-8080-idp.war-_idp-any-4002882914382542777.dir/webinf/WEB-INF/lib/jstl-1.2.jar!/org/apache/taglibs/standard/tei/DeclareTEI.class`
-
-This is a warning produced during the bytecode scanning for annotations of a webapp startup. In this case, we have 2 versions of the same class, version 1.2.5 and 1.2 as showed by the JAR filenames.
-*These warnings don't prevent the IdP working and can be ignored.*
 
 ### Configure Shibboleth Identity Provider StorageRecords (User Consent)
 
