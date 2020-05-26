@@ -570,8 +570,14 @@ This Storage service will memorize User Consent data on persistent database SQL.
 ### Configure the Directory (openLDAP or AD) Connection
 
 1. Check that you can reach the Directory from your IDP server:
-   * For Active Directory: `ldapsearch -x -h <LDAP-SERVER-FQDN-OR-IP> -D 'CN=idpuser,CN=Users,DC=ad,DC=example,DC=org' -w '<IDPUSER-PASSWORD>' -b "CN=Users,DC=ad,DC=example,DC=org"`
-   * For OpenLDAP: `ldapsearch -x -h <LDAP-SERVER-FQDN-OR-IP> -D 'cn=idpuser,ou=system,dc=example,dc=org' -w '<IDPUSER-PASSWORD>' -b "ou=people,dc=example,dc=org"`
+   * For Active Directory: 
+     ```bash
+     ldapsearch -x -h <AD-SERVER-FQDN-OR-IP> -D 'CN=idpuser,CN=Users,DC=ad,DC=example,DC=org' -w '<IDPUSER-PASSWORD>' -b 'CN=Users,DC=ad,DC=example,DC=org'
+     ```
+   * For OpenLDAP: 
+     ```bash
+     ldapsearch -x -h <LDAP-SERVER-FQDN-OR-IP> -D 'cn=idpuser,ou=system,dc=example,dc=org' -w '<IDPUSER-PASSWORD>' -b 'ou=people,dc=example,dc=org'
+     ```
 
 2. Connect the openLDAP to the IdP to allow the authentication of the users:
    
