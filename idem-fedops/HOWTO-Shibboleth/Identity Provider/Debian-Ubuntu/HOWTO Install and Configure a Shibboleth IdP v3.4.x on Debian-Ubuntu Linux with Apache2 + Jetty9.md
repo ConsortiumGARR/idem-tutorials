@@ -1352,19 +1352,43 @@ Translate the IdP messages in your language:
 
 3. Modify your `services.xml`:
    * `vim /opt/shibboleth-idp/conf/services.xml`
-
-     ```xml
-     <bean id="IDEM-Default-Filter" class="net.shibboleth.ext.spring.resource.FileBackedHTTPResource"
-           c:client-ref="shibboleth.FileCachingHttpClient"
-           c:url="http://www.garr.it/idem-conf/attribute-filter-v3-idem.xml"
-           c:backingFile="%{idp.home}/conf/attribute-filter-v3-idem.xml"/>
+     * Without a Proxy Server:
+       ```xml
+       <bean id="IDEM-Default-Filter" class="net.shibboleth.ext.spring.resource.FileBackedHTTPResource"
+             c:client-ref="shibboleth.FileCachingHttpClient"
+             c:url="https://registry.idem.garr.it/idem-conf/shibboleth/IDP3/attribute-filter-v3-idem.xml"
+             c:backingFile="%{idp.home}/conf/attribute-filter-v3-idem.xml"/>
           
-     <util:list id ="shibboleth.AttributeFilterResources">
-         <value>%{idp.home}/conf/attribute-filter.xml</value>
-         <value>%{idp.home}/conf/attribute-filter-v3-RS-CoCo.xml</value>
-         <ref bean="IDEM-Default-Filter"/>
-     </util:list>
-     ```
+       <util:list id ="shibboleth.AttributeFilterResources">
+           <value>%{idp.home}/conf/attribute-filter.xml</value>
+           <value>%{idp.home}/conf/attribute-filter-v3-RS-CoCo.xml</value>
+           <ref bean="IDEM-Default-Filter"/>
+       </util:list>
+       ```
+
+     * With a Proxy Server:
+       ```xml
+       <bean id="MyHTTPClient" parent="shibboleth.FileCachingHttpClient"
+             p:connectionTimeout="PT30S"
+             p:connectionRequestTimeout="PT30S"
+             p:socketTimeout="PT30S"
+             p:cacheDirectory="%{idp.home}/configcache"
+             p:connectionProxyHost="<PROXY.FQDN>"
+             p:connectionProxyUsername="<USERNAME>"
+             p:connectionProxyPassword="<PASSWORD>"
+             p:connectionProxyPort="<NUM_PORTA>" />
+
+       <bean id="IDEM-Default-Filter" class="net.shibboleth.ext.spring.resource.FileBackedHTTPResource"
+             c:client-ref="MyHTTPClient"
+             c:url="https://registry.idem.garr.it/idem-conf/shibboleth/IDP3/attribute-filter-v3-idem.xml"
+             c:backingFile="/opt/shibboleth-idp/conf/attribute-filter-v3-idem.xml"/>
+	     
+       <util:list id ="shibboleth.AttributeFilterResources">
+           <value>%{idp.home}/conf/attribute-filter.xml</value>
+           <value>%{idp.home}/conf/attribute-filter-v3-RS-CoCo.xml</value>
+           <ref bean="IDEM-Default-Filter"/>
+       </util:list>
+       ```
 
 4. Restart IdP to apply the changes:
    * `touch /opt/jetty/webapps/idp.xml`
@@ -1376,20 +1400,45 @@ Translate the IdP messages in your language:
 
 2. Modify your `services.xml`:
    * `vim /opt/shibboleth-idp/conf/services.xml`
+     * Without a Proxy Server:
+       ```xml
+       <bean id="IDEM-Production-Filter" class="net.shibboleth.ext.spring.resource.FileBackedHTTPResource"
+             c:client-ref="shibboleth.FileCachingHttpClient"
+             c:url="https://registry.idem.garr.it/idem-conf/shibboleth/IDP3/attribute-filter-v3-required.xml"
+             c:backingFile="%{idp.home}/conf/attribute-filter-v3-required.xml"/>
+       
+       <util:list id ="shibboleth.AttributeFilterResources">
+           <value>%{idp.home}/conf/attribute-filter.xml</value>
+           <value>%{idp.home}/conf/attribute-filter-v3-RS-CoCo.xml</value>
+           <ref bean="IDEM-Default-Filter"/>
+           <ref bean="IDEM-Production-Filter"/>
+       </util:list>
+       ```
+      
+     * With a Proxy Server:
+       ```xml
+       <bean id="MyHTTPClient" parent="shibboleth.FileCachingHttpClient"
+             p:connectionTimeout="PT30S"
+             p:connectionRequestTimeout="PT30S"
+             p:socketTimeout="PT30S"
+             p:cacheDirectory="%{idp.home}/configcache"
+             p:connectionProxyHost="<PROXY.FQDN>"
+             p:connectionProxyUsername="<USERNAME>"
+             p:connectionProxyPassword="<PASSWORD>"
+             p:connectionProxyPort="<NUM_PORTA>" />
 
-     ```xml
-     <bean id="IDEM-Production-Filter" class="net.shibboleth.ext.spring.resource.FileBackedHTTPResource"
-           c:client-ref="shibboleth.FileCachingHttpClient"
-           c:url="http://www.garr.it/idem-conf/attribute-filter-v3-required.xml"
-           c:backingFile="%{idp.home}/conf/attribute-filter-v3-required.xml"/>
-     ...
-     <util:list id ="shibboleth.AttributeFilterResources">
-         <value>%{idp.home}/conf/attribute-filter.xml</value>
-         <value>%{idp.home}/conf/attribute-filter-v3-RS-CoCo.xml</value>
-         <ref bean="IDEM-Default-Filter"/>
-         <ref bean="IDEM-Production-Filter"/>
-     </util:list>
-     ```
+       <bean id="IDEM-Production-Filter" class="net.shibboleth.ext.spring.resource.FileBackedHTTPResource"
+             c:client-ref="MyHTTPClient"
+             c:url="https://registry.idem.garr.it/idem-conf/shibboleth/IDP3/attribute-filter-v3-required.xml"
+             c:backingFile="%{idp.home}/conf/attribute-filter-v3-required.xml"/>
+       
+       <util:list id ="shibboleth.AttributeFilterResources">
+           <value>%{idp.home}/conf/attribute-filter.xml</value>
+           <value>%{idp.home}/conf/attribute-filter-v3-RS-CoCo.xml</value>
+           <ref bean="IDEM-Default-Filter"/>
+           <ref bean="IDEM-Production-Filter"/>
+       </util:list>
+       ```
 
 3. Restart IdP to apply the changes:
    * `touch /opt/jetty/webapps/idp.xml`
