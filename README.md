@@ -24,7 +24,7 @@ These GitHub Repository contains step-by-step tutorials on Identity and Service 
 #### HOWTO Install and Configure an Identity Provider
 
 1. [HOWTO Install and Configure a Shibboleth IdP v3.4.x on Debian-Ubuntu Linux with Apache2 + Jetty9](https://github.com/ConsortiumGARR/idem-tutorials/blob/master/idem-fedops/HOWTO-Shibboleth/Identity%20Provider/Debian-Ubuntu/HOWTO%20Install%20and%20Configure%20a%20Shibboleth%20IdP%20v3.4.x%20on%20Debian-Ubuntu%20Linux%20with%20Apache2%20+%20Jetty9.md)
-2. [HOWTO Install and Configure a SimpleSAMLphp IDP v1.x on Debian Linux 9 (Stretch)](https://github.com/ConsortiumGARR/idem-tutorials/blob/master/idem-fedops/HOWTO-SimpleSAMLphp/Identity%20Provider/HOWTO%20Install%20and%20Configure%20a%20SimpleSAMLphp%20IdP%20v1.x%20on%20Debian%20Linux%209%20(Stretch).md#howto-install-and-configure-a-simplesamlphp-idp-v1x-on-debian-linux-9-stretch)
+2. [HOWTO Install and Configure a SimpleSAMLphp IDP v1.x on Debian Linux 10 (Buster)](https://github.com/ConsortiumGARR/idem-tutorials/blob/master/idem-fedops/HOWTO-SimpleSAMLphp/Identity%20Provider/HOWTO%20Install%20and%20Configure%20a%20SimpleSAMLphp%20IdP%20v1.x%20on%20Debian%20Linux%2010%20(Buster).md#howto-install-and-configure-a-simplesamlphp-idp-v1x-on-debian-linux-10-buster)
 
 #### HOWTO Install and Configure a Service Provider
 
