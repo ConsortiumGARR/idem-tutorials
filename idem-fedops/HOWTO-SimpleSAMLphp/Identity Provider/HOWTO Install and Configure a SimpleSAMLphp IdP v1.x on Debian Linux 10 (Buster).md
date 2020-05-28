@@ -1,4 +1,4 @@
-# HOWTO Install and Configure a SimpleSAMLphp IdP v1.x on Debian Linux 9 (Stretch) 
+# HOWTO Install and Configure a SimpleSAMLphp IdP v1.x on Debian Linux 10 (Buster) 
 
 [comment]: # (<img width="120px" src="https://wiki.idem.garr.it/IDEM_Approved.png" />)
 
@@ -28,7 +28,9 @@
  * ca-certificates
  * ntp
  * vim
- * libapache2-mod-php, php, php-mcrypt, php-dom, php-curl, php-mbstring, php-ldap apache2 (>= 2.4)
+ * apache2 (>= 2.4)
+ * php php-curl php-dom php-mbstring php-dev libmcrypt-dev php-pear build-essential
+ * memcached php-memcached
  * openssl
  * cron
  * curl
@@ -65,16 +67,27 @@ The software installation provided by this guide is intended to run by ROOT user
    
 ### Install SimpleSAMLphp
 
+1. Become ROOT:
+   * `sudo su`
+
 1. Prepare the environment:
    * ```bash
-     apt install apache2 ntp php php-curl php-dom php-mcrypt php-mbstring curl cron --no-install-recommends
+     apt install apache2 ntp php php-curl php-dom php-mbstring php-dev libmcrypt-dev php-pear curl cron build-essential --no-install-recommends --no-install-recommends
      ```
+   * `pecl channel-update pecl.php.net`
+     
+   * `pecl install channel://pecl.php.net/mcrypt-1.0.2`
 
-2. Install:
+   * `php -m | grep mcrypt` (must return "`mcrypt`")
+
+
+2. Install SimpleSAMLphp:
    * `cd /var/`
-   * `wget https://github.com/simplesamlphp/simplesamlphp/releases/download/v1.17.2/simplesamlphp-1.17.2.tar.gz`
-   * `tar xzf simplesamlphp-1.17.2.tar.gz`
-   * `mv simplesamlphp-1.17.2 simplesamlphp`
+   * ```bash
+     wget https://github.com/simplesamlphp/simplesamlphp/releases/download/v1.18.7/simplesamlphp-1.18.7.tar.gz
+     ```
+   * `tar xzf simplesamlphp-1.18.7.tar.gz`
+   * `mv simplesamlphp-1.18.7 simplesamlphp`
 
 ## Configuration
 
@@ -88,6 +101,12 @@ The software installation provided by this guide is intended to run by ROOT user
    * `vim /etc/apache2/sites-available/ssp-idp.example.org-ssl.conf`
 
    ```apache
+   # Configure Apache2 to redirect all HTTP traffic to HTTPS
+   <VirtualHost *:80>
+        ServerName "ssp-idp.example.org"
+        Redirect permanent "/" "https://ssp-idp.example.org/"
+   </VirtualHost>
+   
    <IfModule mod_ssl.c>
       SSLStaplingCache shmcb:/var/run/ocsp(128000)
       <VirtualHost _default_:443>
@@ -138,25 +157,13 @@ The software installation provided by this guide is intended to run by ROOT user
    </IfModule>
    ```
 
-3. Configure Apache2 to redirect all HTTP traffic to HTTPS:
-   * `vim /etc/apache2/sites-available/ssp-idp.example.org.conf`
-   
-   ```apache
-   <VirtualHost *:80>
-        ServerName "ssp-idp.example.org"
-        Redirect permanent "/" "https://ssp-idp.example.org/"
-   </VirtualHost>
-   ```
-
-4. Enable **proxy_http**, **SSL** and **headers** Apache2 modules:
-   * `a2enmod proxy_http` - To redirect datas provided by Jetty to Apache through proxypass
+4. Enable the following Apache2 modules:
    * `a2enmod ssl` - To support SSL protocol
    * `a2enmod headers` - To control of HTTP request and response headers.
    * `a2enmod alias` - To manipulation and control of URLs as requests arrive at the server.
    * `a2enmod include` - To process files before they are sent to the client.
    * `a2enmod negotiation` - Essential Apache module
    * `a2ensite ssp-idp.example.org-ssl.conf`
-   * `a2ensite ssp-idp.example.org.conf`
    * `a2dissite 000-default.conf`
    * `systemctl restart apache2.service`
 
@@ -189,9 +196,9 @@ The software installation provided by this guide is intended to run by ROOT user
          </html>
          ```
 
-      * `touch /var/www/html/ssp-idp.example.org/logo80x60.png`
+      * `touch /var/www/html/ssp-idp.example.org/logo.png` (80x60 px or bigger with the same aspect-ratio)
 
-      * `touch /var/www/html/ssp-idp.example.org/favicon16x16.png`
+      * `touch /var/www/html/ssp-idp.example.org/favicon.png` (16x16 px or bigger with the same aspect-ratio)
 
    2. Replace them with the correct content.
 
@@ -202,33 +209,32 @@ The software installation provided by this guide is intended to run by ROOT user
 
 2. Generate some useful opaque strings:
    * User Admin Password (```auth.adminpassword```):
-     `php /var/simplesamlphp/bin/pwgen.php`
+     * `php /var/simplesamlphp/bin/pwgen.php`
         
    * Secret Salt (```secretsalt```):
-     `tr -c -d '0123456789abcdefghijklmnopqrstuvwxyz' </dev/urandom | dd bs=32 count=1 2>/dev/null ; echo`
+     * `tr -c -d '0123456789abcdefghijklmnopqrstuvwxyz' </dev/urandom | dd bs=32 count=1 2>/dev/null ; echo`
         
-   * Cron Key (```key```):
-     `tr -c -d '0123456789abcdefghijklmnopqrstuvwxyz' </dev/urandom | dd bs=32 count=1 2>/dev/null ; echo`
+
 
 3. Change SimpleSAMLphp configuration:
    * `vim /var/simplesamlphp/config/config.php`
    
-      ```bash
-      'baseurlpath' => 'https://ssp-idp.example.org/simplesaml/',
-      ...
+      ```php
+      'baseurlpath' => 'simplesaml/',
+      /* ...other things... */
       'technicalcontact_name' => 'Technical Contact',
       'technicalcontact_email' => 'service.support@example.com',
-      ...
+      /* ...other things... */
       'secretsalt' => '#_YOUR_SECRET_SALT_HERE_#',
-      ...
+      /* ...other things... */
       'auth.adminpassword' => '#_YOUR_USER_ADMIN_PASSWORD_#',
-      ...
+      /* ...other things... */
       'admin.protectindexpage' => true,
-      ...
+      /* ...other things... */
       'logging.handler' => 'file',
-      ...
+      /* ...other things... */
       'enable.saml20-idp' => true,
-      ...
+      /* ...other things... */
       'store.type' => 'phpsession',
       ```
 
@@ -241,16 +247,16 @@ The software installation provided by this guide is intended to run by ROOT user
    * `vim /etc/postfix/main.cf`
 
      ```bash
-     ...
+     /* ...other things... */
      inet_interfaces = localhost
-     ...
+     /* ...other things... */
      ```
      
    * `systemctl restart postfix.service`
 
 6. Set PHP 'memory_limit' to '512M' or more to allow the download of huge metadata files (like eduGAIN):
 
-   * `vim /etc/php/7.0/apache2/php.ini`
+   * `vim /etc/php/7.3/apache2/php.ini`
 
      ```bash
      memory_limit = 512M
@@ -260,60 +266,235 @@ The software installation provided by this guide is intended to run by ROOT user
 
 ### Configure the Identity Provider
 
-1. Generate SAML Credentials, needed to sign/encrypt assertion between entities, by following [Appendix A: Sample SAML2 Metadata embedded certificate](https://www.switch.ch/aai/support/certificates/embeddedcerts-requirements-appendix-a/) with the IdP entityID found into:
-   * `/var/simplesamlphp/cert/ssp-idp.crt`
-   * `/var/simplesamlphp/cert/ssp-idp.key`
+1. Configure `saml20-idp-hosted.php`:
+   * `vim /var/simplesamlphp/metadata/saml20-idp-hosted.php`
 
-2. Load certificate and key for the IdP and assign the ownership to Apache user:
-     * `vim /var/simplesamlphp/config/authsources.php`
+     ```php
+     $metadata['__DYNAMIC:1__'] = [
+        'host' => '__DEFAULT__',
+        'privatekey' => 'ssp-idp.key',
+        'certificate' => 'ssp-idp.crt',
+        
+        'scope' => ['<INSERT-HERE-IDP-SCOPE>'],   // Usually the scope is the domain name
 
-       ```bash
-       ...
-       'privatekey' => '/var/simplesamlphp/cert/ssp-idp.key',
-       'certificate' => '/var/simplesamlphp/cert/ssp-idp.crt',
-       ...
-       ```
+        'UIInfo' => [
+           'DisplayName' => [
+              'en' => '<INSERT-HERE-THE-ENGLISH-IDP-DISPLAY-NAME>',
+              'it' => '<INSERT-HERE-THE-ITALIAN-IDP-DISPLAY-NAME>',
+           ],
+           'Description' => [
+              'en' => '<INSERT-HERE-THE-ENGLISH-IDP-DESCRIPTION>',
+              'it' => '<INSERT-HERE-THE-ITALIAN-IDP-DESCRIPTION>',
+           ],
+           'InformationURL' => [
+              'en' => '<INSERT-HERE-THE-ENGLISH-INFORMATION-PAGE-URL>',
+              'it' => '<INSERT-HERE-THE-ITALIAN-INFORMATION-PAGE-URL>',
+           ],
+           'PrivacyStatementURL' => [
+              'en' => '<INSERT-HERE-THE-ENGLISH-PRIVACY-POLICY-PAGE-URL>',
+              'it' => '<INSERT-HERE-THE-ITALIAN-PRIVACY-POLICY-PAGE-URL>',
+           ],
+           'Logo' => [
+              [
+               'url' => '<INSERT-HERE-THE-80X60-LOGO-URL>',
+               'height' => 60,
+               'width' => 80,
+              ],
+              [
+               'url' => '<INSERT-HERE-THE-16X16-LOGO-URL>',
+               'height' => 16,
+               'width' => 16,
+              ],
+           ],
+        ],
 
+        'OrganizationName' => [
+           'en' => '<INSERT-HERE-THE-ENGLISH-ORGANIZATION-NAME>',
+           'it' => '<INSERT-HERE-THE-ITALIAN-ORGANIZATION-NAME>',
+        ],
+        'OrganizationDisplayName' => [
+           'en' => '<INSERT-HERE-THE-ENGLISH-ORGANIZATION-DISPLAY-NAME>',
+           'it' => '<INSERT-HERE-THE-ITALIAN-ORGANIZATION-DISPLAY-NAME>',
+        ],
+        'OrganizationURL' => [
+           'en' => '<INSERT-HERE-THE-ENGLISH-ORGANIZATION-PAGE-URL>',
+           'it' => '<INSERT-HERE-THE-ENGLISH-ORGANIZATION-PAGE-URL>',
+        ],
+
+        /*Uncomment the following to use the uri NameFormat on attributes.*/
+        'attributes.NameFormat' => 'urn:oasis:names:tc:SAML:2.0:attrname-format:uri',
+        
+        /* eduPersonTargetedID with oid NameFormat is a raw XML value */
+        'attributeencodings' => ['urn:oid:1.3.6.1.4.1.5923.1.1.1.10' => 'raw'],
+
+        'NameIDFormat' => [
+           'urn:oasis:names:tc:SAML:2.0:nameid-format:transient',
+           'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
+        ],
+
+        'authproc' => [
+           // Add schacHomeOrganization for domain of entity
+           10 => [
+                  'class' => 'core:AttributeAdd',
+                  'schacHomeOrganization' => '<INSERT-HERE-YOUR-DOMAIN-NAME>',
+                  'schacHomeOrganizationType' => 'urn:schac:homeOrganizationType:eu:higherEducationalInstitution',
+                 ],
+
+           // Add eduPersonPrincipalName
+           11 => [
+                  'class' => 'core:ScopeAttribute',
+                  'scopeAttribute' => 'schacHomeOrganization',
+                  'sourceAttribute' => 'uid',
+                  'targetAttribute' => 'eduPersonPrincipalName',
+                 ],
+
+           // Add eduPersonScopedAffiliation
+           12 => [
+                  'class' => 'core:ScopeAttribute',
+                  'scopeAttribute' => 'eduPersonPrincipalName',
+                  'sourceAttribute' => 'eduPersonAffiliation',
+                  'targetAttribute' => 'eduPersonScopedAffiliation',
+                 ],
+
+           // Adopts language from attribute to use in UI
+           30 => 'core:LanguageAdaptor',
+
+           // Consent module is enabled(with no permanent storage, using cookies)
+
+           97 => [
+                  'class' => 'consent:Consent',
+                  'store' => 'consent:Cookie',
+                  'focus' => 'yes',
+                  'checked' => FALSE
+                 ],
+
+           // Enable this authproc filter to automatically generated eduPersonTargetedID
+           98 => [
+                  'class' => 'core:TargetedID',
+                  'attributename' => 'uid',
+                  'nameId' => TRUE,
+                 ],
+    
+           // If language is set in Consent module it will be added as an attribute
+           99 => 'core:LanguageAdaptor',
+           
+           100 => ['class' => 'core:AttributeMap', 'name2oid'],
+        ],
+     ];
+     ```
+
+2. Generate SAML Credentials needed to sign/encrypt assertion sent by the IdP:
+   * `vim /var/simplesamlphp/cert/ssp-idp-credentials.cnf`:
+   
+     ```cnf
+     [req]
+     default_bits=4096
+     default_md=sha256
+     encrypt_key=no
+     distinguished_name=dn
+     # PrintableStrings only
+     string_mask=MASK:0002
+     prompt=no
+     x509_extensions=ext
+
+     # customize the "default_keyfile,", "CN" and "subjectAltName" lines below
+     default_keyfile=ssp-idp.key
+
+     [dn]
+     CN=ssp-idp.example.org
+
+     [ext]
+     subjectAltName = DNS:ssp-idp.example.org, \
+                      URI:https://ssp-idp.example.org/idp/simplesaml
+     subjectKeyIdentifier=hash
+     ```
+
+   * Generate Metadata Credentials:
+     * `cd /var/simplesamlphp/cert`
+     * `openssl req -new -x509 -config ssp-idp-credentials.cnf -text -out ssp-idp.crt -days 3650`
      * `chown -R www-data: /var/simplesamlphp/cert`
+     * `chmod 400 /var/simplesamlphp/cert/ssp-idp.key`
 
-3. Configure automatic download of Federation Metadata:
+3. Configure ldap:LDAP authentication source:
+   1. Enable LDAP PHP module:
+      * `apt install php-ldap`
+      * `systemctl restart apache2.service`
+
+   2. Enable LDAP Authentication Source:
+      * `vim /var/simplesamlphp/config/authsources.php`
+      
+        ```php
+        <?php
+
+        $config = [
+
+             // This is a authentication source which handles admin authentication.
+             'admin' => [
+                 'core:AdminPassword',
+             ],
+
+             // LDAP authentication source.
+             'ldap' => [
+                 'ldap:LDAP',
+                 'hostname' => 'ldap.example.org',
+                 'enable_tls' => true,
+                 'debug' => false,
+                 'timeout' => 0,
+                 'port' => 389,
+                 'referrals' => true,
+                 'attributes' => null,
+                 'dnpattern' => 'uid=%username%,ou=people,dc=example,dc=org',
+                 'search.base' => 'ou=people,dc=example,dc=org',
+                 'search.attributes' => ['uid'],
+                 'search.username' => '<LDAP_USER_DN_USED_FOR_QUERIES>',
+                 'search.password' => '<LDAP_USER_PASSWORD>',
+             ],
+        ];
+        ```
+
+   3. Connect LDAP to the IdP:
+      * `vim /var/simplesamlphp/metadata/saml20-idp-hosted.php`
+
+        ```php
+           /* ...other things before end of file...*/
+           'auth' => 'ldap',
+        ];
+        ```
+
+   4. Try the LDAP Authentication Source on: https://<IDP-FQDN>/simplesaml/module.php/core/authenticate.php
+
+4. Configure automatic download of Federation Metadata:
 
    * Load CRON module:
-
-     ```bash
-     cd /var/simplesamlphp/
-
-     cp modules/cron/config-templates/module_cron.php config/
-     ```
+     * `cd /var/simplesamlphp`
+     * `cp modules/cron/config-templates/module_cron.php config/`
 
    * Load METAREFRESH module:
-   
-     ```bash
-     cd /var/simplesamlphp/
-
-     cp modules/metarefresh/config-templates/config-metarefresh.php config/
-     ```
+     * `cd /var/simplesamlphp`
+     * `cp modules/metarefresh/config-templates/config-metarefresh.php config/`
 
    * Enable CRON & METAREFRESH modules:
      * `vim /var/simplesamlphp/config/config.php`
 
-       ```bash
-       ...
+       ```php
+       /* ...other things... */
        'module.enable' => [
           'cron' => true,
           'metarefresh' => true,
           'consent' => true,
        ],
-       ...
+       /* ...other things... */
        ```
 
    * Test it:
      * `cd /var/simplesamlphp/modules/metarefresh/bin`
      * `./metarefresh.php -s http://md.idem.garr.it/metadata/idem-test-metadata-sha256.xml > metarefresh-test.txt`
 
-   * Change the CRON configuration file:
+   * Generate the CRON `<SECRET>`:
+     * `tr -c -d '0123456789abcdefghijklmnopqrstuvwxyz' </dev/urandom | dd bs=32 count=1 2>/dev/null ; echo`
 
-     `vim /var/simplesamlphp/config/module_cron.php`
+   * Change the CRON configuration file:
+     * `vim /var/simplesamlphp/config/module_cron.php`
 
      ```bash
      <?php
@@ -321,12 +502,12 @@ The software installation provided by this guide is intended to run by ROOT user
       * Configuration for the Cron module.
       */
 
-     $config = array (
-             'key' => '#_YOUR_CRON_KEY_#',
-             'allowed_tags' => array('daily', 'hourly', 'frequent'),
-             'debug_message' => TRUE,
-             'sendemail' => TRUE,
-     );
+     $config = [
+        'key' => '<SECRET>',
+        'allowed_tags' => ['daily', 'hourly', 'frequent'],
+        'debug_message' => TRUE,
+        'sendemail' => TRUE,
+     ];
      ```
 
    * Go to `https://ssp-idp.example.org/simplesaml/module.php/cron/croninfo.php` and copy the content of the crontab file:
@@ -347,7 +528,7 @@ The software installation provided by this guide is intended to run by ROOT user
    * Configure METAREFRESH:
      * `vim /var/simplesamlphp/config/config-metarefresh.php`
 
-       ```bash
+       ```php
        <?php
 
        $config = [
@@ -374,7 +555,7 @@ The software installation provided by this guide is intended to run by ROOT user
                               [
                                'src' => 'http://md.idem.garr.it/metadata/idem-test-metadata-sha256.xml',
                                'certificates' => [
-                                  '/var/simplesamlphp/cert/idem-cert.pem',
+                                  '/var/simplesamlphp/cert/federation-cert.pem',
                                ],
                                'template' => [
                                   'tags'  => ['idem'],
@@ -396,8 +577,8 @@ The software installation provided by this guide is intended to run by ROOT user
                                 'types' => ['saml20-sp-remote'],   // Load only SAML v2.0 SP from metadata
                               ],
                              ],
-                'expireAfter'=> 864000, // Maximum 10 days cache time (3600*24*10)
-                'outputDir'     => 'metadata/idem/',
+                'expireAfter' => 864000, // Maximum 10 days cache time (3600*24*10)
+                'outputDir'   => 'metadata/',
 
                 /*
                  * Which output format the metadata should be saved as.
@@ -409,217 +590,68 @@ The software installation provided by this guide is intended to run by ROOT user
        ];
        ```
 
-   * Create metadata dir:
-     * `mkdir /var/simplesamlphp/metadata/idem ; chown www-data /var/simplesamlphp/metadata/idem`
-
    * Change SimpleSAMLphp configuration to load the new metadata provider:
+     * `vim /var/simplesamlphp/config/config.php`
 
-     ```vim /var/simplesamlphp/config/config.php```
-
-     ```bash
-     ...
-     'metadata.sources' => [
-        ['type' => 'flatfile'],
-        [
-           'type' => 'flatfile', 
-           'directory' => 'metadata/idem'
+       ```php
+       'metadata.sources' => [
+           ['type' => 'flatfile'],
         ],
-     ),
-     ```
+        ```
 
-   * Remove/Rename not needed files from:
-   
-     ```cd /var/simplesamlphp/metadata```
-
-     ```
-     rm adfs-idp-hosted.php adfs-sp-remote.php saml20-sp-remote.php shib13-idp-hosted.php shib13-idp-remote.php shib13-sp-hosted.php shib13-sp-remote.php wsfed-idp-remote.php wsfed-sp-hosted.php
-     ```
+   * Remove not needed files from:
+     * `cd /var/simplesamlphp/metadata ; rm !(saml20-idp-hosted.php)`
 
    * Download the Federation signing certificate: 
-   
-     ```wget https://md.idem.garr.it/certs/idem-signer-20220121.pem -O /var/simplesamlphp/cert/idem-cert.pem```
+     * ```bash
+       wget https://md.idem.garr.it/certs/idem-signer-20220121.pem -O /var/simplesamlphp/cert/federation-cert.pem
+       ```
 
    * Check the validity of the signing certificate:
-     * ```cd /var/simplesamlphp/cert/```
-     * ```openssl x509 -in federation-cert.pem -fingerprint -sha1 -noout```
+     * `cd /var/simplesamlphp/cert`
+     * `openssl x509 -in federation-cert.pem -fingerprint -sha1 -noout`
        
        (sha1: D1:68:6C:32:A4:E3:D4:FE:47:17:58:E7:15:FC:77:A8:44:D8:40:4D)
-     * ```openssl x509 -in federation-cert.pem -fingerprint -md5 -noout```
+     * `openssl x509 -in federation-cert.pem -fingerprint -md5 -noout`
 
        (md5: 48:3B:EE:27:0C:88:5D:A3:E7:0B:7C:74:9D:24:24:E0)
 
-   * Go to 'https://ssp-idp.example.org/simplesaml/module.php/core/frontpage_federation.php' and forcing download of the Federation metadata by pressing on ```Metarefresh: fetch metadata``` or wait 1 day
+   * Go to 'https://ssp-idp.example.org/simplesaml/module.php/core/frontpage_federation.php' and forcing download of the Federation metadata by pressing on `Metarefresh: fetch metadata` or wait 1 day
 
-4. Connect a directory service (openLDAP) to the IdP:
-   1. Enable LDAP PHP module:
-      * `apt install php-ldap`
-
-      * `systemctl restart apache2.service`
-
-   2. Enable LDAP Authentication Source:
-      * `vim /var/simplesamlphp/config/authsources.php`
-        * Enable "LDAP Authentication source" by removing comment for it
-        * Rename "example-ldap" as you prefer
-        * Configure LDAP connection by following comments
-
-   3. Connect LDAP to the IdP:
-      * `vim /var/simplesamlphp/metadata/saml20-idp-hosted.php`
-
-        ```bash
-        ...
-        'auth' => 'example-ldap',
-        ...
-        ```
-
-5. Configure IdP Authentication Process(authproc) and enrich IdP metadata:
-   * `vim /var/simplesamlphp/metadata/saml20-idp-hosted.php`
-   
-     ```bash
-     'auth' => 'example-ldap',
-     'scope' => ['example.org'],
-
-     'UIInfo' => [
-        'DisplayName' => [
-           'en' => 'English IDP Display Name',
-           'it' => 'IDP Display Name in Italiano',
-        ],
-        'Description' => [
-           'en' => 'Identity Provider for the users of University X',
-           'it' => 'Identity Provider per gli utenti dell\' Università X',
-        ],
-        'InformationURL' => [
-           'en' => 'https://www.your.organization.it/en/info',
-           'it' => 'https://www.your.organization.it/it/info',
-        ],
-        'PrivacyStatementURL' => [
-           'en' => 'https://www.your.organization.it/en/privacy',
-           'it' => 'https://www.your.organization.it/it/privacy',
-        ],
-        'Logo' => [
-           [
-            'url' => 'https://www.your.organization.it/logo80x60.png',
-            'height' => 60,
-            'width' => 80,
-           ],
-           [
-            'url' => 'https://www.your.organization.it/logo16x16.png',
-            'height' => 16,
-            'width' => 16,
-           ],
-        ],
-     ],
-
-     'OrganizationName' => [
-        'en' => 'Your Organization Name',
-        'it' => 'Il nome della tua organizzazione',
-     ],
-     'OrganizationDisplayName' => [
-        'en' => 'Your Organization Display Name',
-        'it' => 'Il Display Name della tua Organizzazione',
-     ],
-     'OrganizationURL' => [
-        'en' => 'https://www.your.organization.it/en',
-        'it' => 'https://www.your.organization.it/it',
-     ],
-
-     /*Uncomment the following to use the uri NameFormato on attributes.*/
-     'attributes.NameFormat' => 'urn:oasis:names:tc:SAML:2.0:attrname-format:uri',
-     
-     /* eduPersonTargetedID with oid NameFormat is a raw XML value */
-     'attributeencodings' => ['urn:oid:1.3.6.1.4.1.5923.1.1.1.10' => 'raw'],
-
-     'authproc' => [
-        // Add schacHomeOrganization for domain of entity
-        10 => [
-               'class' => 'core:AttributeAdd',
-               'schacHomeOrganization' => 'example.org',
-               'schacHomeOrganizationType' => 'urn:schac:homeOrganizationType:int:university',
-              ],
-
-        // Add eduPersonPrincipalName
-        11 => [
-               'class' => 'core:ScopeAttribute',
-               'scopeAttribute' => 'schacHomeOrganization',
-               'sourceAttribute' => 'uid',
-               'targetAttribute' => 'eduPersonPrincipalName',
-              ],
-
-        // Add eduPersonScopedAffiliation
-        12 => [
-               'class' => 'core:ScopeAttribute',
-               'scopeAttribute' => 'eduPersonPrincipalName',
-               'sourceAttribute' => 'eduPersonAffiliation',
-               'targetAttribute' => 'eduPersonScopedAffiliation',
-              ],
-
-        // Adopts language from attribute to use in UI
-        30 => 'core:LanguageAdaptor',
-
-        // Consent module is enabled(with no permanent storage, using cookies)
-
-        97 => [
-               'class' => 'consent:Consent',
-               'store' => 'consent:Cookie',
-               'focus' => 'yes',
-               'checked' => FALSE
-              ],
-
-        // Enable this authproc filter to automatically generated eduPersonTargetedID
-        98 => [
-               'class' => 'core:TargetedID',
-               'attributename' => 'uid',
-               'nameId' => TRUE,
-              ],
- 
-        // If language is set in Consent module it will be added as an attribute
-        99 => 'core:LanguageAdaptor',
-     ],
-     ...
-     ```
-
-6. Add the new `schacHomeOrganizationType` attribute to the SSP attribute map to be able to support it:
-   * `vim /var/simplesamlphp/attributemap/name2oid.php`
-
-     ```bash
-     ...
-     'schacHomeOrganizationType' => '1.3.6.1.4.1.25178.1.2.10',
-     ...
-     ```
-
-     (Pay attention also to "commas"!)
-
-7. Add translations of the new `schacHomeOrganizationType` attribute:
+5. Add translations of the new `schacHomeOrganizationType` attribute:
    * `vim /var/simplesamlphp/dictionaries/attributes.definition.json`
 
-     ```bash
-     ...
+     ```json
+     /* ...other things... */
+     "attribute_schachomeorganization":{
+        "en": "Home organization domain name"
+     },
      "attribute_schachomeorganizationtype":{
-        "en": "Home Organization Type"
-     }
-     ...
+        "en": "Home organization type"
+     },
+     /* ...other things... */
      ```
 
      (Pay attention also to "commas"!)
 
    * `vim /var/simplesamlphp/dictionaries/attributes.translation.json`
 
-     ```bash
-     ...
-     "attribute_schachomeorganizationtype":{
-        "it": "Tipo di Organizzazione"
+     ```json
+        /* ...other things before the end of file... */
+        "attribute_schachomeorganizationtype":{
+           "it": "Tipo di Organizzazione"
+        }
      }
-     ...
      ```
 
      (Pay attention also to "commas"!)
 
-
-8. Enable UTF-8 on IdP metadata (to avoid encoding problems with accents):
+6. Enable UTF-8 on IdP metadata (to avoid encoding problems with accents):
 
    * `vim /var/simplesamlphp/vendor/simplesamlphp/saml2/src/SAML2/DOMDocumentFactory.php`
 
      ```bash
-     ...
+     /* ...other things... */
         public static function create()
         {
           return new \DOMDocument('1.0','utf-8');
@@ -627,23 +659,21 @@ The software installation provided by this guide is intended to run by ROOT user
      }
      ```
 
-6. Test your IDP with the LDAP Authentication Source enabled:
-   
-   * https://ssp-idp.example.org/simplesaml/module.php/core/authenticate.php
-
-7. Now you are able to reach your Shibboleth SP Metadata on:
+7. Now you are able to reach your Shibboleth IDP Metadata on:
 
    * `https://ssp-idp.example.org/simplesaml/saml2/idp/metadata.php`
 
-   (change ```ssp-idp.example.org``` to you SP full qualified domain name)
+   (change ```ssp-idp.example.org``` to you IDP full qualified domain name)
 
 8. Register you IDP on IDEM Entity Registry (your entity has to be approved by an IDEM Federation Operator before become part of IDEM Test Federation):
-   * Go to `https://registry.idem.garr.it/` and follow "**Insert a New Identity Provider into the IDEM Test Federation**"
+   * Go to `https://registry.idem.garr.it` and follow "**Insert a New Identity Provider into the IDEM Test Federation**"
 
 ### Appendix A - How to release attributes to specific SP only
 
 1. Download and extract `attributepolicy` module:
-   * `wget https://github.com/RikV/simplesaml-attributepolicy/archive/1.1.tar.gz -O /usr/local/src/ssp-attributepolicy.tar.gz`
+   * ```bash
+     wget https://github.com/RikV/simplesaml-attributepolicy/archive/1.1.tar.gz -O /usr/local/src/ssp-attributepolicy.tar.gz
+     ```
    * `cd /usr/local/src`
    * `tar xzf ssp-attributepolicy.tar.gz`
    * `rm -R ssp-attributepolicy.tar.gz`
@@ -654,23 +684,45 @@ The software installation provided by this guide is intended to run by ROOT user
 3. Activate module:
    * `vim /var/simplesamlphp/config/config.php`
 
-     ```bash
-     ...
+     ```php
+     /* ...other things... */
      'module.enable' => [
         'cron' => true,
         'metarefresh' => true,
         'consent' => true,
         'attributepolicy' => true,
      ],
-     ...
+     /* ...other things... */
      ```
 
 4. Create the Attribute Release Policy for IDEM Test Federation:
    * Copy the content of [module_attributepolicy_test.php](utils/module_attributepolicy_test.php) and paste it into `/var/simplesamlphp/config/module_attributepolicy.php`
    
-   (the default template is into `/var/simplesamlphp/modules/attributepolicy/config-templates/module_attributepolicy.php`)
+   (the default template is into 
+    ```bash 
+    /var/simplesamlphp/modules/attributepolicy/config-templates/module_attributepolicy.php
+    ```
+    )
 
 ### Appendix B - How to manage sessions with Memcached
+
+1. Install needed packages:
+   * `sudo apt install memcached php-memcached`
+
+2. Enable PHP memcached module:
+   * `sudo phpenmod memcached`
+
+3. Restart Apache:
+   * `sudo systemctl restart apache2.service`
+
+4. Enable memcache on simplesamlphp:
+   * `vim /var/simplesamlphp/config/config.php`
+   
+     ```php
+     /* ...other things... */
+     'store.type' => 'memcache',
+     /* ...other things... */
+     ```
 
 ### Authors
 
