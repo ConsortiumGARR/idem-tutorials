@@ -64,7 +64,7 @@
    * HTTPS Server Certificate (Public Key) inside `/etc/ssl/certs` 
    * HTTPS Server Key (Private Key) inside `/etc/ssl/private`
    * Download TCS CA Cert into `/etc/ssl/certs`
-     - `wget -O /etc/ssl/certs/TERENA_SSL_CA_3.pem https://www.terena.org/activities/tcs/repository-g3/TERENA_SSL_CA_3.pem`
+     - `wget -O /etc/ssl/certs/GEANT_OV_RSA_CA_4.pem https://crt.sh/?d=2475254782`
 
 ## Install Instructions
 
@@ -140,11 +140,11 @@ Jetty is a Web server and a Java Servlet container. It will be used to run the I
 
 2. Download and Extract Jetty:
    * `cd /usr/local/src`
-   * `wget https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-distribution/9.4.28.v20200408/jetty-distribution-9.4.28.v20200408.tar.gz`
-   * `tar xzvf jetty-distribution-9.4.28.v20200408.tar.gz`
+   * `wget https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-distribution/9.4.29.v20200521/jetty-distribution-9.4.29.v20200521.tar.gz`
+   * `tar xzvf jetty-distribution-9.4.29.v20200521.tar.gz`
 
 3. Create the `jetty-src` folder as a symbolic link. It will be useful for future Jetty updates:
-   * `ln -s jetty-distribution-9.4.28.v20200408 jetty-src`
+   * `ln -s jetty-distribution-9.4.29.v20200521 jetty-src`
 
 4. Create the user `jetty` that can run the web server:
    * `useradd -r -m jetty`
