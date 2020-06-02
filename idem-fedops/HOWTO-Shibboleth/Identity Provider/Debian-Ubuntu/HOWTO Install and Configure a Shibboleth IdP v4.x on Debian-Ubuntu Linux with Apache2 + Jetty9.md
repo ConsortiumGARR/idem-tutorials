@@ -144,7 +144,7 @@ Jetty is a Web server and a Java Servlet container. It will be used to run the I
    * `tar xzvf jetty-distribution-9.4.29.v20200521.tar.gz`
 
 3. Create the `jetty-src` folder as a symbolic link. It will be useful for future Jetty updates:
-   * `ln -s jetty-distribution-9.4.29.v20200521 jetty-src`
+   * `ln -nsf jetty-distribution-9.4.29.v20200521 jetty-src`
 
 4. Create the user `jetty` that can run the web server:
    * `useradd -r -m jetty`
@@ -158,17 +158,12 @@ Jetty is a Web server and a Java Servlet container. It will be used to run the I
    * `mkdir /opt/jetty/tmp ; chown jetty:jetty /opt/jetty/tmp`
    * `chown -R jetty:jetty /opt/jetty /usr/local/src/jetty-src`
 
-7. Create the service loadable from command line:
-   * `cd /etc/init.d`
-   * `ln -s /usr/local/src/jetty-src/bin/jetty.sh jetty`
-   * `update-rc.d jetty defaults`
-
-8. Create the Jetty Log's folder:
+7. Create the Jetty Log's folder:
    * `mkdir /var/log/jetty`
    * `mkdir /opt/jetty/logs`
    * `chown jetty:jetty /var/log/jetty /opt/jetty/logs`
 
-9. Configure **/etc/default/jetty**:
+8. Configure **/etc/default/jetty**:
    * `vim /etc/default/jetty`
   
      ```bash
@@ -178,6 +173,11 @@ Jetty is a Web server and a Java Servlet container. It will be used to run the I
      JETTY_START_LOG=/var/log/jetty/start.log
      TMPDIR=/opt/jetty/tmp
      ```
+
+9. Create the service loadable from command line:
+   * `cd /etc/init.d`
+   * `ln -s /usr/local/src/jetty-src/bin/jetty.sh jetty`
+   * `update-rc.d jetty defaults`
 
 10. Check if all settings are OK:
     * `service jetty check`   (Jetty NOT running)
@@ -202,22 +202,20 @@ It is a Java Web Application that can be deployed with its WAR file.
    * `tar -xzvf shibboleth-identity-provider-4.x.y.tar.gz`
 
 3. Run the installer `install.sh`:
-   * `cd /usr/local/src/shibboleth-identity-provider-4.x.y`
-   * `./bin/install.sh`
+   * `bash /usr/local/src/shibboleth-identity-provider-4.x.y/bin/install.sh -Didp.host.name=idp.example.org`
   
-     ```sh
-     root@idp:/usr/local/src/shibboleth-identity-provider-4.x.y# ./bin/install.sh
-     Source (Distribution) Directory: [/usr/local/src/shibboleth-identity-provider-4.x.y]
-     Installation Directory: [/opt/shibboleth-idp]
-     Hostname: [localhost.localdomain]
-     idp.example.org
-     SAML EntityID: [https://idp.example.org/idp/shibboleth]
-     Attribute Scope: [localdomain]
-     example.org
+     ```bash
+     Buildfile: /usr/local/src/shibboleth-identity-provider-4.x.y/bin/build.xml
+
+     install:
+     Source (Distribution) Directory (press <enter> to accept default): [/usr/local/src/shibboleth-identity-provider-4.x.y] ?
+     Installation Directory: [/opt/shibboleth-idp] ?
      Backchannel PKCS12 Password: ###PASSWORD-FOR-BACKCHANNEL###
      Re-enter password:           ###PASSWORD-FOR-BACKCHANNEL###
      Cookie Encryption Key Password: ###PASSWORD-FOR-COOKIE-ENCRYPTION###
      Re-enter password:              ###PASSWORD-FOR-COOKIE-ENCRYPTION###
+     SAML EntityID: [https://idp.example.org/idp/shibboleth] ?
+     Attribute Scope: [example.org] ?
      ```
 
      By starting from this point, the variable **idp.home** refers to the directory: `/opt/shibboleth-idp`
