@@ -279,7 +279,6 @@ The Apache HTTP Server will be configured as a reverse proxy and it will be used
    * https://idp.example.org/idp/shibboleth
 
 5. Check IdP Status:
-   * `export JAVA_HOME=/usr/lib/jvm/java-11-amazon-corretto`
    * `bash /opt/shibboleth-idp/bin/status.sh`
 
 ### Configure Shibboleth Identity Provider StorageRecords (User Consent)
@@ -299,7 +298,6 @@ If you don't change anything, the IdP stores data locally within the user's brow
 See the configuration files and the Shibboleth documentation for details.
 
 Check IdP Status:
-   * `export JAVA_HOME=/usr/lib/jvm/java-11-amazon-corretto`   
    * `bash /opt/shibboleth-idp/bin/status.sh`
 
 #### JPA Storage Service - using a database
@@ -317,7 +315,10 @@ This Storage service will memorize User Consent data on persistent database SQL.
    * `ln -s /usr/share/java/commons-pool.jar edit-webapp/WEB-INF/lib`
    * `bin/build.sh`
 
-3. Create the `StorageRegords` table on the `storageservice` database:
+3. Address several security concerns in a default MariaDB installation:
+   * `mysql_secure_installation`
+
+4. Create the `StorageRegords` table on the `storageservice` database:
    * `wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/db/shib-ss-db.sql -O /root/shib-ss-db.sql`:
      
    * (OPTIONAL) MySQL DB Access without password:
@@ -333,7 +334,7 @@ This Storage service will memorize User Consent data on persistent database SQL.
    * `mysql -u root < shib-ss-db.sql`
    * `systemctl restart mariadb.service`
 
-4. Enable JPA Storage Service:
+5. Enable JPA Storage Service:
    * `vim /opt/shibboleth-idp/conf/global.xml` 
      
      and add the following directives to the tail, just before the last **`</beans>`** tag:
@@ -381,21 +382,20 @@ This Storage service will memorize User Consent data on persistent database SQL.
      
      remember to change "**##USERNAME-CHANGEME##**" and "**##USER-PASSWORD-CHANGEME##**" with your DB user and password data
 
-5. Set the consent storage service to the JPA storage service:
+6. Set the consent storage service to the JPA storage service:
    * `vim /opt/shibboleth-idp/conf/idp.properties`
 
      ```properties
      idp.consent.StorageService = storageservice.JPAStorageService
      ```
 	 
-6. Restart IdP to apply the changes:
+7. Restart IdP to apply the changes:
    * `touch /opt/jetty/webapps/idp.xml`
 
-7. Check that the metadata is available on:
+8. Check that the metadata is available on:
    * https://idp.example.org/idp/shibboleth
 
-8. Check IdP Status:
-   * `export JAVA_HOME=/usr/lib/jvm/java-11-amazon-corretto`   
+9. Check IdP Status:  
    * `bash /opt/shibboleth-idp/bin/status.sh`
 
 ### Configure Shibboleth Identity Provider to release the persistent-id
@@ -452,8 +452,7 @@ This Storage service will memorize User Consent data on persistent database SQL.
 4. Check that the metadata is available on:
    * https://idp.example.org/idp/shibboleth
 
-5. Check IdP Status:
-   * `export JAVA_HOME=/usr/lib/jvm/java-11-amazon-corretto`   
+5. Check IdP Status:  
    * `bash /opt/shibboleth-idp/bin/status.sh`
 
 #### Stored mode - using a database
@@ -469,7 +468,10 @@ This Storage service will memorize User Consent data on persistent database SQL.
    * `ln -s /usr/share/java/commons-pool.jar edit-webapp/WEB-INF/lib`
    * `bin/build.sh`
 
-3. Create `shibpid` table on `shibboleth` database.
+3. Address several security concerns in a default MariaDB installation (if it is not already done):
+   * `mysql_secure_installation`
+
+4. Create `shibpid` table on `shibboleth` database.
    * `wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/db/shib-pid-db.sql -O /root/shib-pid-db.sql`:
 
    * (OPTIONAL) MySQL DB Access without password:
@@ -485,7 +487,7 @@ This Storage service will memorize User Consent data on persistent database SQL.
    * `mysql -u root < shib-pid-db.sql`
    * `systemctl restart mariadb.service`
 
-4. Enable Persistent Identifier's store:
+5. Enable Persistent Identifier's store:
    * `vim /opt/shibboleth-idp/conf/global.xml` 
      
      and add the following directives to the tail, just before the last **`</beans>`** tag:
@@ -511,7 +513,7 @@ This Storage service will memorize User Consent data on persistent database SQL.
      
      remember to change "**##USERNAME-CHANGEME##**" and "**##USER-PASSWORD-CHANGEME##**" with your DB user and password data
 
-5. Enable the generation of the `persistent-id`:
+6. Enable the generation of the `persistent-id`:
    * `vim /opt/shibboleth-idp/conf/saml-nameid.properties`
 
       The *sourceAttribute* MUST be an attribute, or a list of comma-separated attributes, that uniquely identify the subject of the generated `persistent-id`.
@@ -555,14 +557,13 @@ This Storage service will memorize User Consent data on persistent database SQL.
        * Transform each letter of username, before storing in into the database, to Lowercase or Uppercase by setting the proper constant.
        `<util:constant id="shibboleth.c14n.simple.Lowercase" static-field="java.lang.Boolean.TRUE"/>`
 
-6. Restart IdP to apply the changes:
+7. Restart IdP to apply the changes:
    * `touch /opt/jetty/webapps/idp.xml`
 
-7. Check that the metadata is available on:
+8. Check that the metadata is available on:
    * https://idp.example.org/idp/shibboleth
 
-8. Check IdP Status:
-   * `export JAVA_HOME=/usr/lib/jvm/java-11-amazon-corretto`   
+9. Check IdP Status:  
    * `bash /opt/shibboleth-idp/bin/status.sh`
 
 ### Configure the Directory (openLDAP or AD) Connection
@@ -854,7 +855,6 @@ File(s): conf/attribute-registry.xml, conf/attributes/default-rules.xml, conf/at
    * `touch /opt/jetty/webapps/idp.xml`
 
 3. Check IdP Status:
-   * `export JAVA_HOME=/usr/lib/jvm/java-11-amazon-corretto`
    * `bash /opt/shibboleth-idp/bin/status.sh`
 
 ### Configure Shibboleth IdP Logging
@@ -963,7 +963,6 @@ Translate the IdP messages in your language:
    *  `https://idp.example.org/idp/shibboleth`
 
 6. Check IdP Status:
-   * `export JAVA_HOME=/usr/lib/jvm/java-11-amazon-corretto`
    * `bash /opt/shibboleth-idp/bin/status.sh`
    
 ### Register the IdP on the IDEM Test Federation
@@ -1077,13 +1076,11 @@ Translate the IdP messages in your language:
    *  `https://idp.example.org/idp/shibboleth`
    
 7. Check to be able to retrieve `eduPersonScopedAffiliation` and `eduPersonTargetedID` / persistent NameID for an user:
-   * `export JAVA_HOME=/usr/lib/jvm/java-11-amazon-corretto`
    * `bash /opt/shibboleth-idp/bin/aacli.sh -n <USERNAME> -r https://filesender.garr.it/shibboleth --saml2`
    
    It has to release persistent NameID into the Subject of the assertion or eduPersonTargetedID and the email attribute only.
 
 8. Check IdP Status:
-   * `export JAVA_HOME=/usr/lib/jvm/java-11-amazon-corretto`
    * `bash /opt/shibboleth-idp/bin/status.sh`
 
 
@@ -1112,7 +1109,6 @@ Translate the IdP messages in your language:
    *  `https://idp.example.org/idp/shibboleth`
 
 5. Check IdP Status:
-   * `export JAVA_HOME=/usr/lib/jvm/java-11-amazon-corretto`
    * `bash /opt/shibboleth-idp/bin/status.sh`
 
 ### Appendix C: Import persistent-id from a previous database
