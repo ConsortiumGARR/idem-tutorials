@@ -319,7 +319,7 @@ This Storage service will memorize User Consent data on persistent database SQL.
    * `mysql_secure_installation`
 
 4. Create the `StorageRegords` table on the `storageservice` database:
-   * `wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/db/shib-ss-db.sql -O /root/shib-ss-db.sql`:
+   * `wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/db/shib-ss-db.sql -O /root/shib-ss-db.sql`
      
    * (OPTIONAL) MySQL DB Access without password:
       * `vim /root/.my.cnf`
@@ -472,7 +472,7 @@ This Storage service will memorize User Consent data on persistent database SQL.
    * `mysql_secure_installation`
 
 4. Create `shibpid` table on `shibboleth` database.
-   * `wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/db/shib-pid-db.sql -O /root/shib-pid-db.sql`:
+   * `wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/db/shib-pid-db.sql -O /root/shib-pid-db.sql`
 
    * (OPTIONAL) MySQL DB Access without password:
      * `vim /root/.my.cnf`
