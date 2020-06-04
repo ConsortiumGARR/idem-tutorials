@@ -380,7 +380,7 @@ This Storage service will memorize User Consent data on persistent database SQL.
 
      :warning: **IMPORTANT**:
      
-     remember to change "**###_SS-USERNAME-CHANGEME_###**" and "**###_SS-DB-USER-PASSWORD-CHANGEME_###**" with your DB user and password data
+     remember to change "**`###_SS-USERNAME-CHANGEME_###`**" and "**`###_SS-DB-USER-PASSWORD-CHANGEME_###`**" with your DB user and password data
 
 6. Set the consent storage service to the JPA storage service:
    * `vim /opt/shibboleth-idp/conf/idp.properties`
@@ -511,7 +511,7 @@ This Storage service will memorize User Consent data on persistent database SQL.
 
      :warning: **IMPORTANT**:
      
-     remember to change "**###_SHIB-USERNAME-CHANGEME_###**" and "**###_SHIB-DB-USER-PASSWORD-CHANGEME_###**" with your DB user and password data
+     remember to change "**`###_SHIB-USERNAME-CHANGEME_###`**" and "**`###_SHIB-DB-USER-PASSWORD-CHANGEME_###`**" with your DB user and password data
 
 6. Enable the generation of the `persistent-id`:
    * `vim /opt/shibboleth-idp/conf/saml-nameid.properties`
