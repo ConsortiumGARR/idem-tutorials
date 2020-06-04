@@ -368,8 +368,8 @@ This Storage service will memorize User Consent data on persistent database SQL.
            class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close" lazy-init="true"
            p:driverClassName="org.mariadb.jdbc.Driver"
            p:url="jdbc:mysql://localhost:3306/storageservice?autoReconnect=true"
-           p:username="##USERNAME-CHANGEME##"
-           p:password="##USER-PASSWORD-CHANGEME##"
+           p:username="##_SS-USERNAME-CHANGEME_##"
+           p:password="##_SS-DB-USER-PASSWORD-CHANGEME_##"
            p:maxActive="10"
            p:maxIdle="5"
            p:maxWait="15000"
@@ -380,7 +380,7 @@ This Storage service will memorize User Consent data on persistent database SQL.
 
      :warning: **IMPORTANT**:
      
-     remember to change "**##USERNAME-CHANGEME##**" and "**##USER-PASSWORD-CHANGEME##**" with your DB user and password data
+     remember to change "**##_SS-USERNAME-CHANGEME_##**" and "**##_SS-DB-USER-PASSWORD-CHANGEME_##**" with your DB user and password data
 
 6. Set the consent storage service to the JPA storage service:
    * `vim /opt/shibboleth-idp/conf/idp.properties`
@@ -499,8 +499,8 @@ This Storage service will memorize User Consent data on persistent database SQL.
            class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close" lazy-init="true"
            p:driverClassName="org.mariadb.jdbc.Driver"
            p:url="jdbc:mysql://localhost:3306/shibboleth?autoReconnect=true"
-           p:username="##USERNAME-CHANGEME##"
-           p:password="##USER-PASSWORD-CHANGEME##"
+           p:username="##_SHIB-USERNAME-CHANGEME_##"
+           p:password="##_SHIB-DB-USER-PASSWORD-CHANGEME_##"
            p:maxActive="10"
            p:maxIdle="5"
            p:maxWait="15000"
@@ -511,7 +511,7 @@ This Storage service will memorize User Consent data on persistent database SQL.
 
      :warning: **IMPORTANT**:
      
-     remember to change "**##USERNAME-CHANGEME##**" and "**##USER-PASSWORD-CHANGEME##**" with your DB user and password data
+     remember to change "**##_SHIB-USERNAME-CHANGEME_##**" and "**##_SHIB-DB-USER-PASSWORD-CHANGEME_##**" with your DB user and password data
 
 6. Enable the generation of the `persistent-id`:
    * `vim /opt/shibboleth-idp/conf/saml-nameid.properties`
