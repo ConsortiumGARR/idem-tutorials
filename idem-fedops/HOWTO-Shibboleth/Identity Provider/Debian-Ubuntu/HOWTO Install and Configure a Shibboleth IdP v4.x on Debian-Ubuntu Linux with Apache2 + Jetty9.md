@@ -613,10 +613,10 @@ This Storage service will memorize User Consent data on persistent database SQL.
             idp.authn.LDAP.returnAttributes = ### List space-separated of attributes to retrieve from OpenLDAP directly or '*' for all attributes ###
             idp.authn.LDAP.baseDN = ou=people,dc=example,dc=org
             idp.authn.LDAP.subtreeSearch = false
-	    idp.authn.LDAP.bindDN = cn=idpuser,ou=system,dc=example,dc=org
-	    # The userFilter is used to locate a directory entry to bind against for LDAP authentication.
+	        idp.authn.LDAP.bindDN = cn=idpuser,ou=system,dc=example,dc=org
+            # The userFilter is used to locate a directory entry to bind against for LDAP authentication.
             idp.authn.LDAP.userFilter = (&(uid={user})(objectClass=inetOrgPerson))
-	    # The searchFilter is is used to find user attributes from an LDAP source.
+            # The searchFilter is is used to find user attributes from an LDAP source.
             idp.authn.LDAP.searchFilter = (uid=$resolutionContext.principal)
 
             # LDAP attribute configuration, see attribute-resolver.xml
@@ -646,16 +646,16 @@ This Storage service will memorize User Consent data on persistent database SQL.
             ```properties
             idp.authn.LDAP.authenticator = bindSearchAuthenticator
             idp.authn.LDAP.ldapURL = ldaps://ldap.example.org:636
-	    idp.authn.LDAP.useStartTLS = false
+	        idp.authn.LDAP.useStartTLS = false
             idp.authn.LDAP.sslConfig = certificateTrust
             idp.authn.LDAP.trustCertificates = %{idp.home}/credentials/ldap-server.crt
             idp.authn.LDAP.returnAttributes = ### List space-separated of attributes to retrieve from OpenLDAP directly or '*' for all attributes ###
             idp.authn.LDAP.baseDN = ou=people,dc=example,dc=org
             idp.authn.LDAP.subtreeSearch = false
             idp.authn.LDAP.bindDN = cn=idpuser,ou=system,dc=example,dc=org
-	    # The userFilter is used to locate a directory entry to bind against for LDAP authentication.
+            # The userFilter is used to locate a directory entry to bind against for LDAP authentication.
             idp.authn.LDAP.userFilter = (&(uid={user})(objectClass=inetOrgPerson))
-	    # The searchFilter is is used to find user attributes from an LDAP source.
+            # The searchFilter is is used to find user attributes from an LDAP source.
             idp.authn.LDAP.searchFilter = (uid=$resolutionContext.principal)
 
             # LDAP attribute configuration, see attribute-resolver.xml
@@ -690,9 +690,9 @@ This Storage service will memorize User Consent data on persistent database SQL.
             idp.authn.LDAP.baseDN = ou=people,dc=example,dc=org
             idp.authn.LDAP.subtreeSearch = false
             idp.authn.LDAP.bindDN = cn=idpuser,ou=system,dc=example,dc=org
-	    # The userFilter is used to locate a directory entry to bind against for LDAP authentication.
+            # The userFilter is used to locate a directory entry to bind against for LDAP authentication.
             idp.authn.LDAP.userFilter = (&(uid={user})(objectClass=inetOrgPerson))
-	    # The searchFilter is is used to find user attributes from an LDAP source.
+            # The searchFilter is is used to find user attributes from an LDAP source.
             idp.authn.LDAP.searchFilter = (uid=$resolutionContext.principal)
 
             # LDAP attribute configuration, see attribute-resolver.xml
@@ -727,8 +727,8 @@ This Storage service will memorize User Consent data on persistent database SQL.
             idp.authn.LDAP.returnAttributes = ### List space-separated of attributes to retrieve from AD directly or '*' for all attributes ###
             idp.authn.LDAP.baseDN = CN=Users,DC=ad,DC=example,DC=org
             idp.authn.LDAP.subtreeSearch = false
-	    idp.authn.LDAP.bindDN = CN=idpuser,CN=Users,DC=ad,DC=example,DC=org
-	    # The userFilter is used to locate a directory entry to bind against for LDAP authentication.
+            idp.authn.LDAP.bindDN = CN=idpuser,CN=Users,DC=ad,DC=example,DC=org
+            # The userFilter is used to locate a directory entry to bind against for LDAP authentication.
             idp.authn.LDAP.userFilter = (sAMAccountName={user})
             # The searchFilter is is used to find user attributes from an LDAP source.
             idp.authn.LDAP.searchFilter = (sAMAccountName=$resolutionContext.principal)
@@ -760,14 +760,14 @@ This Storage service will memorize User Consent data on persistent database SQL.
             ```properties
             idp.authn.LDAP.authenticator = bindSearchAuthenticator
             idp.authn.LDAP.ldapURL = ldaps://ldap.example.org:636
-	    idp.authn.LDAP.useStartTLS = false
+            idp.authn.LDAP.useStartTLS = false
             idp.authn.LDAP.sslConfig = certificateTrust
             idp.authn.LDAP.trustCertificates = %{idp.home}/credentials/ldap-server.crt
             idp.authn.LDAP.returnAttributes = ### List space-separated of attributes to retrieve from AD directly or '*' for all attributes ###
             idp.authn.LDAP.baseDN = CN=Users,DC=ad,DC=example,DC=org
             idp.authn.LDAP.subtreeSearch = false         
-	    idp.authn.LDAP.bindDN = CN=idpuser,CN=Users,DC=ad,DC=example,DC=org
-	    # The userFilter is used to locate a directory entry to bind against for LDAP authentication.
+            idp.authn.LDAP.bindDN = CN=idpuser,CN=Users,DC=ad,DC=example,DC=org
+            # The userFilter is used to locate a directory entry to bind against for LDAP authentication.
             idp.authn.LDAP.userFilter = (sAMAccountName={user})
             # The searchFilter is is used to find user attributes from an LDAP source.
             idp.authn.LDAP.searchFilter = (sAMAccountName=$resolutionContext.principal)
@@ -803,8 +803,8 @@ This Storage service will memorize User Consent data on persistent database SQL.
             idp.authn.LDAP.returnAttributes = ### List space-separated of attributes to retrieve from AD directly or '*' for all attributes###
             idp.authn.LDAP.baseDN = CN=Users,DC=ad,DC=example,DC=org
             idp.authn.LDAP.subtreeSearch = false
-	    idp.authn.LDAP.bindDN = CN=idpuser,CN=Users,DC=ad,DC=example,DC=org
-	    # The userFilter is used to locate a directory entry to bind against for LDAP authentication.
+            idp.authn.LDAP.bindDN = CN=idpuser,CN=Users,DC=ad,DC=example,DC=org
+            # The userFilter is used to locate a directory entry to bind against for LDAP authentication.
             idp.authn.LDAP.userFilter = (sAMAccountName={user})
             # The searchFilter is is used to find user attributes from an LDAP source.
             idp.authn.LDAP.searchFilter = (sAMAccountName=$resolutionContext.principal)
