@@ -644,6 +644,7 @@ This Storage service will memorize User Consent data on persistent database SQL.
             ```properties
             idp.authn.LDAP.authenticator = bindSearchAuthenticator
             idp.authn.LDAP.ldapURL = ldaps://ldap.example.org:636
+	    idp.authn.LDAP.useStartTLS = false
             idp.authn.LDAP.sslConfig = certificateTrust
             idp.authn.LDAP.trustCertificates = %{idp.home}/credentials/ldap-server.crt
             idp.authn.LDAP.returnAttributes = ### List space-separated of attributes to retrieve from OpenLDAP directly or '*' for all attributes ###
@@ -752,6 +753,7 @@ This Storage service will memorize User Consent data on persistent database SQL.
             ```properties
             idp.authn.LDAP.authenticator = bindSearchAuthenticator
             idp.authn.LDAP.ldapURL = ldaps://ldap.example.org:636
+	    idp.authn.LDAP.useStartTLS = false
             idp.authn.LDAP.sslConfig = certificateTrust
             idp.authn.LDAP.trustCertificates = %{idp.home}/credentials/ldap-server.crt
             idp.authn.LDAP.returnAttributes = ### List space-separated of attributes to retrieve from AD directly or '*' for all attributes ###
