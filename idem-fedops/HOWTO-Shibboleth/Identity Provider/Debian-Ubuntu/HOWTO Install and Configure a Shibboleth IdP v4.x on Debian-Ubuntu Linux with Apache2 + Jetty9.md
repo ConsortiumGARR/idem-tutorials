@@ -576,12 +576,17 @@ This Storage service will memorize User Consent data on persistent database SQL.
 1. Check that you can reach the Directory from your IDP server:
    * For Active Directory: 
      ```bash
-     ldapsearch -x -h <AD-SERVER-FQDN-OR-IP> -D 'CN=idpuser,CN=Users,DC=ad,DC=example,DC=org' -w '<IDPUSER-PASSWORD>' -b 'CN=Users,DC=ad,DC=example,DC=org'
+     ldapsearch -x -h <AD-SERVER-FQDN-OR-IP> -D 'CN=idpuser,CN=Users,DC=ad,DC=example,DC=org' -w '<IDPUSER-PASSWORD>' -b 'CN=Users,DC=ad,DC=example,DC=org' '(sAMAccountName=<USERNAME-USED-IN-THE-LOGIN-FORM>)'
      ```
+
+     `(sAMAccountName=<USERNAME-USED-IN-THE-LOGIN-FORM>)` ==> `(sAMAccountName=$resolutionContext.principal)` searchFilter
+     
    * For OpenLDAP: 
      ```bash
-     ldapsearch -x -h <LDAP-SERVER-FQDN-OR-IP> -D 'cn=idpuser,ou=system,dc=example,dc=org' -w '<IDPUSER-PASSWORD>' -b 'ou=people,dc=example,dc=org'
+     ldapsearch -x -h <LDAP-SERVER-FQDN-OR-IP> -D 'cn=idpuser,ou=system,dc=example,dc=org' -w '<IDPUSER-PASSWORD>' -b 'ou=people,dc=example,dc=org' '(uid=<USERNAME-USED-IN-THE-LOGIN-FORM>)'
      ```
+     
+     `(uid=<USERNAME-USED-IN-THE-LOGIN-FORM>)` ==> `(uid=$resolutionContext.principal)` searchFilter
 
 2. Connect the openLDAP to the IdP to allow the authentication of the users:
    
@@ -603,7 +608,6 @@ This Storage service will memorize User Consent data on persistent database SQL.
             idp.authn.LDAP.authenticator = bindSearchAuthenticator
             idp.authn.LDAP.ldapURL = ldap://ldap.example.org:389
             idp.authn.LDAP.useStartTLS = true
-            idp.authn.LDAP.useSSL = false
             idp.authn.LDAP.sslConfig = certificateTrust
             idp.authn.LDAP.trustCertificates = %{idp.home}/credentials/ldap-server.crt
             idp.authn.LDAP.returnAttributes = ### List space-separated of attributes to retrieve from OpenLDAP directly or '*' for all attributes ###
@@ -640,8 +644,6 @@ This Storage service will memorize User Consent data on persistent database SQL.
             ```properties
             idp.authn.LDAP.authenticator = bindSearchAuthenticator
             idp.authn.LDAP.ldapURL = ldaps://ldap.example.org:636
-            idp.authn.LDAP.useStartTLS = false
-            idp.authn.LDAP.useSSL = true
             idp.authn.LDAP.sslConfig = certificateTrust
             idp.authn.LDAP.trustCertificates = %{idp.home}/credentials/ldap-server.crt
             idp.authn.LDAP.returnAttributes = ### List space-separated of attributes to retrieve from OpenLDAP directly or '*' for all attributes ###
@@ -679,7 +681,6 @@ This Storage service will memorize User Consent data on persistent database SQL.
             idp.authn.LDAP.authenticator = bindSearchAuthenticator
             idp.authn.LDAP.ldapURL = ldap://ldap.example.org:389
             idp.authn.LDAP.useStartTLS = false
-            idp.authn.LDAP.useSSL = false
             idp.authn.LDAP.returnAttributes = ### List space-separated of attributes to retrieve from OpenLDAP directly or '*' for all attributes ###
             idp.authn.LDAP.baseDN = ou=people,dc=example,dc=org
             idp.authn.LDAP.subtreeSearch = false
@@ -714,7 +715,6 @@ This Storage service will memorize User Consent data on persistent database SQL.
             idp.authn.LDAP.authenticator = bindSearchAuthenticator
             idp.authn.LDAP.ldapURL = ldap://ldap.example.org:389
             idp.authn.LDAP.useStartTLS = true
-            idp.authn.LDAP.useSSL = false
             idp.authn.LDAP.sslConfig = certificateTrust
             idp.authn.LDAP.trustCertificates = %{idp.home}/credentials/ldap-server.crt
             idp.authn.LDAP.returnAttributes = ### List space-separated of attributes to retrieve from AD directly or '*' for all attributes ###
@@ -752,8 +752,6 @@ This Storage service will memorize User Consent data on persistent database SQL.
             ```properties
             idp.authn.LDAP.authenticator = bindSearchAuthenticator
             idp.authn.LDAP.ldapURL = ldaps://ldap.example.org:636
-            idp.authn.LDAP.useStartTLS = false
-            idp.authn.LDAP.useSSL = true
             idp.authn.LDAP.sslConfig = certificateTrust
             idp.authn.LDAP.trustCertificates = %{idp.home}/credentials/ldap-server.crt
             idp.authn.LDAP.returnAttributes = ### List space-separated of attributes to retrieve from AD directly or '*' for all attributes ###
@@ -791,7 +789,6 @@ This Storage service will memorize User Consent data on persistent database SQL.
             idp.authn.LDAP.authenticator = bindSearchAuthenticator
             idp.authn.LDAP.ldapURL = ldap://ldap.example.org:389
             idp.authn.LDAP.useStartTLS = false
-            idp.authn.LDAP.useSSL = false
             idp.authn.LDAP.returnAttributes = ### List space-separated of attributes to retrieve from AD directly or '*' for all attributes###
             idp.authn.LDAP.baseDN = CN=Users,DC=ad,DC=example,DC=org
             idp.authn.LDAP.subtreeSearch = false
