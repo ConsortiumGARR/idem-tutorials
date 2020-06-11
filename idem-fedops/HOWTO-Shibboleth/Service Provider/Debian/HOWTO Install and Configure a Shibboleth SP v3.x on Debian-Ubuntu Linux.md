@@ -281,7 +281,7 @@
    * `vim /etc/shibboleth/shibboleth2.xml`
 
      ```bash
-     <ApplicationDefaults entityID="https://<HOST>/shibboleth"
+     <ApplicationDefaults entityID="https://sp.example.org/shibboleth"
                           REMOTE_USER="eppn subject-id pairwise-id persistent-id"
                           cipherSuites="DEFAULT:!EXP:!LOW:!aNULL:!eNULL:!DES:!IDEA:!SEED:!RC4:!3DES:!kRSA:!SSLv2:!SSLv3:!TLSv1:!TLSv1.1"
                           sessionHook="/Shibboleth.sso/AttrChecker"
