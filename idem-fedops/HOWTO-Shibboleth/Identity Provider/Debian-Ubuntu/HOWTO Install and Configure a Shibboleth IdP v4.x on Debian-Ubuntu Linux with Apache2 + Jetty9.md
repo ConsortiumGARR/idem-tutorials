@@ -1082,13 +1082,13 @@ Translate the IdP messages in your language:
            p:socketTimeout="PT30S"
            p:cacheDirectory="%{idp.home}/tmp/httpClientCache" />
      
-     <!-- ...other things... -->
-     
      <bean id="IDEM-Resources" class="net.shibboleth.ext.spring.resource.FileBackedHTTPResource"
            c:client-ref="MyHTTPClient"
            c:url="https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/attribute-filter-v4-resources.xml"
            c:backingFile="%{idp.home}/conf/attribute-filter-v4-resources.xml"/>     
+     ```
      
+     ```xml
      <util:list id ="shibboleth.AttributeFilterResources">
          <value>%{idp.home}/conf/attribute-filter.xml</value>
          <value>%{idp.home}/conf/attribute-filter-v4-idem.xml</value>
