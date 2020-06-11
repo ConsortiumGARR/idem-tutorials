@@ -842,7 +842,9 @@ This Storage service will memorize User Consent data on persistent database SQL.
 File(s): conf/attribute-registry.xml, conf/attributes/default-rules.xml, conf/attribute-resolver.xml, conf/attributes/custom/
 
 1. Download `schac.xml` (provided by IDEM) into the right location:
-   * `wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/attributes/schac.xml -O /opt/shibboleth-idp/conf/attributes/schac.xml`
+   ```bash
+   wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/attributes/schac.xml -O /opt/shibboleth-idp/conf/attributes/schac.xml
+   ```
 
 2. Change the `default-rules.xml` to include the new `schac.xml` file:
    * `vim /opt/shibboleth-idp/conf/attributes/default-rules.xml`
@@ -859,13 +861,17 @@ File(s): conf/attribute-registry.xml, conf/attributes/default-rules.xml, conf/at
      ```
 
 3. Create the custom `eduPersonTargetedID.properties` file:
-   * `wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/attributes/custom/eduPersonTargetedID.properties -O /opt/shibboleth-idp/conf/attributes/custom/eduPersonTargetedID.properties`
+   ```bash 
+   wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/attributes/custom/eduPersonTargetedID.properties -O /opt/shibboleth-idp/conf/attributes/custom/eduPersonTargetedID.properties
+   ```
 
 #### Configure the attribute resolver (sample)
 
 1. Define which attributes your IdP can manage into your Attribute Resolver file. Here you can find a sample **attribute-resolver-sample.xml** as example:
     * Download the sample attribute resolver provided by IDEM GARR AAI Federation Operators (OpenLDAP / Active Directory compliant):
-      * `wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/attribute-resolver-v4-idem-sample.xml -O /opt/shibboleth-idp/conf/attribute-resolver.xml`
+      * ```bash
+        wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/attribute-resolver-v4-idem-sample.xml -O /opt/shibboleth-idp/conf/attribute-resolver.xml
+	```
 
         If you decide to use the Solutions plain LDAP/AD, remove or comment the following directives from your Attribute Resolver file:
 
@@ -963,7 +969,9 @@ Translate the IdP messages in your language:
    * `sudo su -`
 
 2. Download the attribute filter file:
-   * `wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/attribute-filter-v4-idem.xml -O /opt/shibboleth-idp/conf/attribute-filter-v4-idem.xml`
+   * ```bash
+     wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/attribute-filter-v4-idem.xml -O /opt/shibboleth-idp/conf/attribute-filter-v4-idem.xml
+     ```
 
 3. Modify your `services.xml`:
    * `vim /opt/shibboleth-idp/conf/services.xml`
@@ -1055,7 +1063,9 @@ Translate the IdP messages in your language:
    * `sudo su -`
    
 2. Download the attribute filter file:
-   * `wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/attribute-filter-v4-required.xml -O /opt/shibboleth-idp/conf/attribute-filter-v4-required.xml`
+   ```bash
+   wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/attribute-filter-v4-required.xml -O /opt/shibboleth-idp/conf/attribute-filter-v4-required.xml
+   ```
    
 3. Create the directory "`tmp/httpClientCache`" used by "`shibboleth.FileCachingHttpClient`":
    * `mkdir -p /opt/shibboleth-idp/tmp/httpClientCache ; chown jetty /opt/shibboleth-idp/tmp/httpClientCache`
@@ -1101,7 +1111,9 @@ Translate the IdP messages in your language:
 ### Appendix B: Configure attribute filter policies for the REFEDS Research and Scholarship and the GEANT Data Protection Code of Conduct Entity Categories
 
 1. Download the attribute filter file:
-   * `wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/attribute-filter-v4-rs-coco.xml -O /opt/shibboleth-idp/conf/attribute-filter-v4-rs-coco.xml`
+   ```bash
+   wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/attribute-filter-v4-rs-coco.xml -O /opt/shibboleth-idp/conf/attribute-filter-v4-rs-coco.xml
+   ```
 
 2. Modify your `services.xml`:
    * `vim /opt/shibboleth-idp/conf/services.xml`
@@ -1129,7 +1141,9 @@ Translate the IdP messages in your language:
 
 2. Create a DUMP of `shibpid` table from the previous DB `shibboleth` on the OLD IdP:
    * `cd /tmp`
-   * `mysqldump --complete-insert --no-create-db --no-create-info -u root -p shibboleth shibpid > /tmp/shibboleth_shibpid.sql`
+   * ```bash
+     mysqldump --complete-insert --no-create-db --no-create-info -u root -p shibboleth shibpid > /tmp/shibboleth_shibpid.sql
+     ```
 
 3. Move the `/tmp/shibboleth_shibpid.sql` of old IdP into `/tmp/shibboleth_shibpid.sql` on the new IdP.
  
