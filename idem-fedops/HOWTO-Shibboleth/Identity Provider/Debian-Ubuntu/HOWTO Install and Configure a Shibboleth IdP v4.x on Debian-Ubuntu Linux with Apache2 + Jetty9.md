@@ -82,7 +82,9 @@
    * `apt update && apt-get upgrade -y --no-install-recommends`
   
 4. Install the required packages:
-   * `apt install vim wget gnupg ca-certificates openssl apache2 ntp libservlet3.1-java liblogback-java --no-install-recommends`
+   ```bash
+   apt install vim wget gnupg ca-certificates openssl apache2 ntp libservlet3.1-java liblogback-java --no-install-recommends
+   ```
 
 5. Install Amazon Corretto JDK:
    * `wget -O- https://apt.corretto.aws/corretto.key | sudo apt-key add -`
@@ -128,7 +130,9 @@
    * `chmod 644 /etc/ssl/certs/idp.example.org.crt`
 
    **(ALTERNATIVE)** Create a self-signed certificate:
-   * `openssl req -x509 -newkey rsa:4096 -keyout /etc/ssl/private/idp.example.org.key -out /etc/ssl/certs/idp.example.org.crt -nodes -days 1095`
+   ```bash
+   openssl req -x509 -newkey rsa:4096 -keyout /etc/ssl/private/idp.example.org.key -out /etc/ssl/certs/idp.example.org.crt -nodes -days 1095
+   ```
    
    (*Replace `idp.example.org` with your IdP Full Qualified Domain Name*)
 
@@ -140,9 +144,13 @@ Jetty is a Web server and a Java Servlet container. It will be used to run the I
    * `sudo su -`
 
 2. Download and Extract Jetty:
-   * `cd /usr/local/src`
-   * `wget https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-distribution/9.4.29.v20200521/jetty-distribution-9.4.29.v20200521.tar.gz`
-   * `tar xzvf jetty-distribution-9.4.29.v20200521.tar.gz`
+   ```bash
+   cd /usr/local/src
+    
+   wget https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-distribution/9.4.29.v20200521/jetty-distribution-9.4.29.v20200521.tar.gz
+     
+   tar xzvf jetty-distribution-9.4.29.v20200521.tar.gz
+   ```
 
 3. Create the `jetty-src` folder as a symbolic link. It will be useful for future Jetty updates:
    * `ln -nsf jetty-distribution-9.4.29.v20200521 jetty-src`
