@@ -51,6 +51,7 @@
  * jetty 9.4.x
  * apache2 (>= 2.4)
  * openssl
+ * gnupg
  * libservlet3.1-java
  * liblogback-java
  * default-mysql-server (if JPAStorageService is used)
@@ -81,7 +82,7 @@
    * `apt update && apt-get upgrade -y --no-install-recommends`
   
 4. Install the required packages:
-   * `apt install vim wget ca-certificates openssl apache2 ntp libservlet3.1-java liblogback-java --no-install-recommends`
+   * `apt install vim wget gnupg ca-certificates openssl apache2 ntp libservlet3.1-java liblogback-java --no-install-recommends`
 
 5. Install Amazon Corretto JDK:
    * `wget -O- https://apt.corretto.aws/corretto.key | sudo apt-key add -`
