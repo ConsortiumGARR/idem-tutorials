@@ -871,17 +871,17 @@ File(s): conf/attribute-registry.xml, conf/attributes/default-rules.xml, conf/at
     * Download the sample attribute resolver provided by IDEM GARR AAI Federation Operators (OpenLDAP / Active Directory compliant):
       * ```bash
         wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/attribute-resolver-v4-idem-sample.xml -O /opt/shibboleth-idp/conf/attribute-resolver.xml
-	```
+	    ```
 
-        If you decide to use the Solutions plain LDAP/AD, remove or comment the following directives from your Attribute Resolver file:
+	    If you decide to use the Solutions plain LDAP/AD, remove or comment the following directives from your Attribute Resolver file:
 
         ```xml
         Line 1:  useStartTLS="%{idp.attribute.resolver.LDAP.useStartTLS:true}"
         Line 2:  trustFile="%{idp.attribute.resolver.LDAP.trustCertificates}"
         ```
 
-    * Configure the right owner:
-      * `chown jetty /opt/shibboleth-idp/conf/attribute-resolver.xml`
+      * Configure the right owner:
+        * `chown jetty /opt/shibboleth-idp/conf/attribute-resolver.xml`
 
 2. Restart IdP to apply the changes:
    * `touch /opt/jetty/webapps/idp.xml`
