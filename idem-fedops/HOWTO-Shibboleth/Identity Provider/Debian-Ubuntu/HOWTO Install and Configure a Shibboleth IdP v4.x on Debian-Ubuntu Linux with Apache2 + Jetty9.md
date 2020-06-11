@@ -239,7 +239,9 @@ The Apache HTTP Server will be configured as a reverse proxy and it will be used
    * `sudo chown -R www-data: /var/www/html/idp.example.org`
 
 3. Create the Virtualhost file (pay attention to replace 'idp.example.org' and other info with yours):
-   * `wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/apache2/idp.example.org.conf -O /etc/apache2/sites-available/idp.example.org.conf`
+   * ```bash
+     wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/apache2/idp.example.org.conf -O /etc/apache2/sites-available/idp.example.org.conf
+     ```
 
 4. Enable the required Apache2 modules and the virtual hosts:
    * `a2enmod proxy_http ssl headers alias include negotiation`
