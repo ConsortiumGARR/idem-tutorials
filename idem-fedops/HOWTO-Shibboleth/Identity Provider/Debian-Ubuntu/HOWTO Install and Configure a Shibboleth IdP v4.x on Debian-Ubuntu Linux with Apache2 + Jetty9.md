@@ -614,7 +614,9 @@ This Storage service will memorize User Consent data on persistent database SQL.
            ```
          
          * `vim /opt/shibboleth-idp/conf/ldap.properties`
-
+            
+            The `idp.authn.LDAP.returnAttributes` list, MUST contains the attribute chosen for the persistent-id generation
+	 
             ```properties
             idp.authn.LDAP.authenticator = bindSearchAuthenticator
             idp.authn.LDAP.ldapURL = ldap://ldap.example.org:389
@@ -653,6 +655,8 @@ This Storage service will memorize User Consent data on persistent database SQL.
            ```
          
          * `vim /opt/shibboleth-idp/conf/ldap.properties`
+
+            The `idp.authn.LDAP.returnAttributes` list, MUST contains the attribute chosen for the persistent-id generation
 
             ```properties
             idp.authn.LDAP.authenticator = bindSearchAuthenticator
@@ -693,6 +697,8 @@ This Storage service will memorize User Consent data on persistent database SQL.
          
          * `vim /opt/shibboleth-idp/conf/ldap.properties`
 
+            The `idp.authn.LDAP.returnAttributes` list, MUST contains the attribute chosen for the persistent-id generation
+
             ```properties
             idp.authn.LDAP.authenticator = bindSearchAuthenticator
             idp.authn.LDAP.ldapURL = ldap://ldap.example.org:389
@@ -728,6 +734,8 @@ This Storage service will memorize User Consent data on persistent database SQL.
            ```
          
          * `vim /opt/shibboleth-idp/conf/ldap.properties`
+
+            The `idp.authn.LDAP.returnAttributes` list, MUST contains the attribute chosen for the persistent-id generation
 
             ```properties
             idp.authn.LDAP.authenticator = bindSearchAuthenticator
@@ -768,6 +776,8 @@ This Storage service will memorize User Consent data on persistent database SQL.
          
          * `vim /opt/shibboleth-idp/conf/ldap.properties`
 
+            The `idp.authn.LDAP.returnAttributes` list, MUST contains the attribute chosen for the persistent-id generation
+
             ```properties
             idp.authn.LDAP.authenticator = bindSearchAuthenticator
             idp.authn.LDAP.ldapURL = ldaps://ldap.example.org:636
@@ -806,6 +816,8 @@ This Storage service will memorize User Consent data on persistent database SQL.
            ```
          
          * `vim /opt/shibboleth-idp/conf/ldap.properties`
+
+            The `idp.authn.LDAP.returnAttributes` list, MUST contains the attribute chosen for the persistent-id generation
 
             ```properties
             idp.authn.LDAP.authenticator = bindSearchAuthenticator
