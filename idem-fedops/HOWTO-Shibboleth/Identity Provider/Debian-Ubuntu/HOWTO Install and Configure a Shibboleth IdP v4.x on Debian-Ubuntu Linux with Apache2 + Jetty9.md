@@ -26,7 +26,7 @@
    9. [Disable SAML1 Deprecated Protocol](#disable-saml1-deprecated-protocol)
    10. [Configure Attribute Filters to release the mandatory attributes to the IDEM Default Resources](#configure-attribute-filters-to-release-the-mandatory-attributes-to-the-idem-default-resources)
    11. [Register the IdP on the IDEM Test Federation](#register-the-idp-on-the-idem-test-federation)
-6. [Appendix A: Configure Attribute Filters to release the mandatory attributes to the IDEM Production Resources](#appendix-a-configure-attribute-filters-to-release-the-mandatory-attributes-to-the-idem-production-resources)
+6. [Appendix A: Configure Attribute Filters to release the required attributes for common resources](#appendix-a-configure-attribute-filters-to-release-the-required-attributes-for-common-resources)
 7. [Appendix B: Configure attribute filter policies for the REFEDS Research and Scholarship and the GEANT Data Protection Code of Conduct Entity Categories](#appendix-b-configure-attribute-filter-policies-for-the-refeds-research-and-scholarship-and-the-geant-data-protection-code-of-conduct-entity-categories)
 8. [Appendix C: Import persistent-id from a previous database](#appendix-c-import-persistent-id-from-a-previous-database)
 9. [Appendix D: Useful logs to find problems](#appendix-d-useful-logs-to-find-problems)
@@ -1069,7 +1069,7 @@ Translate the IdP messages in your language:
 
 5. Wait that your IdP Metadata is approved by an IDEM Federation Operator into the metadata stream and the next steps provided by the operator itself.
 
-### Appendix A: Configure Attribute Filters to release the mandatory attributes to the IDEM Production Resources
+### Appendix A: Configure Attribute Filters to release the required attributes for common resources
 
 1. Become ROOT:
    * `sudo su -`
