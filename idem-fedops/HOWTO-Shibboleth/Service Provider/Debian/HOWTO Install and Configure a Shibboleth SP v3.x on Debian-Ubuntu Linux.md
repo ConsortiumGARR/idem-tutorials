@@ -174,7 +174,7 @@
         SAML2
      </SSO>
      ...
-     <MetadataProvider type="XML" uri="http://md.idem.garr.it/metadata/idem-test-metadata-sha256.xml" legacyOrgName="true" backingFilePath="idem-test-metadata-sha256.xml" maxRefreshDelay="7200">
+     <MetadataProvider type="XML" url="http://md.idem.garr.it/metadata/idem-test-metadata-sha256.xml" legacyOrgName="true" backingFilePath="idem-test-metadata-sha256.xml" maxRefreshDelay="7200">
         <MetadataFilter type="Signature" certificate="federation-cert.pem" verifyBackup="false"/>
         <MetadataFilter type="RequireValidUntil" maxValidityInterval="864000" />
      </MetadataProvider>
