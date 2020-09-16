@@ -281,6 +281,7 @@
 ````
 ldapmodify -Y EXTERNAL -H ldapi:/// <<EOF
 dn: cn=module,cn=config
+changetype: modify
 cn: module
 objectclass: olcModuleList
 objectclass: top
