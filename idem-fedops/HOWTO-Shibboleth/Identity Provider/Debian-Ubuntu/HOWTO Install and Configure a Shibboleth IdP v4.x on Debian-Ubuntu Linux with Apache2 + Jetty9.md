@@ -66,8 +66,10 @@
  * Put HTTPS credentials in the right place:
    * HTTPS Server Certificate (Public Key) inside `/etc/ssl/certs` 
    * HTTPS Server Key (Private Key) inside `/etc/ssl/private`
-   * Download TCS CA Cert into `/etc/ssl/certs`
-     - `wget -O /etc/ssl/certs/GEANT_OV_RSA_CA_4.pem https://crt.sh/?d=2475254782`
+   * Add CA Cert into `/etc/ssl/certs`
+     * If you use GARR TCS (Sectigo CA): `wget -O /etc/ssl/certs/GEANT_OV_RSA_CA_4.pem https://crt.sh/?d=2475254782`
+     * If you use ACME (Let's Encrypt): `ln -s /etc/letsencrypt/live/<SERVER_FQDN>/chain.pem /etc/ssl/certs/ACME-CA.pem`
+
 
 ## Install Instructions
 
@@ -149,16 +151,16 @@ Jetty is a Web server and a Java Servlet container. It will be used to run the I
    ```bash
    cd /usr/local/src
     
-   wget https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-distribution/9.4.29.v20200521/jetty-distribution-9.4.29.v20200521.tar.gz
+   wget https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-distribution/9.4.31.v20200723/jetty-distribution-9.4.31.v20200723.tar.gz
      
-   tar xzvf jetty-distribution-9.4.29.v20200521.tar.gz
+   tar xzvf jetty-distribution-9.4.31.v20200723.tar.gz
    ```
 
 3. Create the `jetty-src` folder as a symbolic link. It will be useful for future Jetty updates:
-   * `ln -nsf jetty-distribution-9.4.29.v20200521 jetty-src`
+   * `ln -nsf jetty-distribution-9.4.31.v20200723 jetty-src`
 
-4. Create the user `jetty` that can run the web server:
-   * `useradd -r -m jetty`
+4. Create the system user `jetty` that can run the web server (without home directory):
+   * `useradd -r -M jetty`
 
 5. Create your custom Jetty configuration that overrides the default one and will survive upgrades:
    * `mkdir /opt/jetty`
@@ -230,6 +232,8 @@ It is a Java Web Application that can be deployed with its WAR file.
      ```
 
      By starting from this point, the variable **idp.home** refers to the directory: `/opt/shibboleth-idp`
+     Backup the `###PASSWORD-FOR-BACKCHANNEL###` value somewhere to be able to find it when you need it.
+     The `###PASSWORD-FOR-COOKIE-ENCRYPTION###` will be saved into `/opt/shibboleth-idp/credentials/secrets.properties` as `idp.sealer.storePassword` and `idp.sealer.keyPassword` value.
 
 4. Make the **jetty** user able to access the IdP main directories:
    * `cd /opt/shibboleth-idp`
@@ -250,12 +254,12 @@ The Apache HTTP Server will be configured as a reverse proxy and it will be used
 
 3. Create the Virtualhost file (pay attention to replace 'idp.example.org' and other info with yours):
    * ```bash
-     wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/apache2/idp.example.org.conf -O /etc/apache2/sites-available/idp.example.org.conf
+     wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/apache2/idp.example.org.conf -O /etc/apache2/sites-available/$(hostname -f).conf
      ```
 
 4. Enable the required Apache2 modules and the virtual hosts:
    * `a2enmod proxy_http ssl headers alias include negotiation`
-   * `a2ensite idp.example.org.conf`
+   * `a2ensite $(hostname -f).conf`
    * `a2dissite 000-default.conf`
    * `systemctl restart apache2.service`
 
@@ -328,31 +332,30 @@ This Storage service will memorize User Consent data on persistent database SQL.
 
 4. Address several security concerns in a default MariaDB installation (if it is not already done):
    * `mysql_secure_installation`
+   
+5. (OPTIONAL) Database Root Access without password:
+   * `vim /root/.my.cnf`
 
-5. Create the `StorageRegords` table on the `storageservice` database:
+     ```cnf
+     [client]
+     user=root
+     password=##ROOT-DB-PASSWORD-CHANGEME##
+     ```
+
+6. Create the `StorageRegords` table on the `storageservice` database:
    * `wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/db/shib-ss-db.sql -O /root/shib-ss-db.sql`
-     
-   * (OPTIONAL) Database Access without password:
-      * `vim /root/.my.cnf`
-
-        ```cnf
-        [client]
-        user=root
-        password=##ROOT-DB-PASSWORD-CHANGEME##
-        ```
-
    * fill missing data on `shib-ss-db.sql` before import
    * `mysql -u root < shib-ss-db.sql`
    * `systemctl restart mariadb.service`
 
-6. Rebuild the IdP with the needed libraries:
+7. Rebuild the IdP with the needed libraries:
    * `cd /opt/shibboleth-idp`
    * `ln -s /usr/share/java/mariadb-java-client.jar edit-webapp/WEB-INF/lib`
    * `ln -s /usr/share/java/commons-dbcp.jar edit-webapp/WEB-INF/lib`
    * `ln -s /usr/share/java/commons-pool.jar edit-webapp/WEB-INF/lib`
    * `bin/build.sh`
    
-7. Enable JPA Storage Service:
+8. Enable JPA Storage Service:
    * `vim /opt/shibboleth-idp/conf/global.xml` 
      
      and add the following directives to the tail, just before the last **`</beans>`** tag:
@@ -400,17 +403,17 @@ This Storage service will memorize User Consent data on persistent database SQL.
      
      remember to change "**`###_SS-USERNAME-CHANGEME_###`**" and "**`###_SS-DB-USER-PASSWORD-CHANGEME_###`**" with your DB user and password data
 
-8. Set the consent storage service to the JPA storage service:
+9. Set the consent storage service to the JPA storage service:
    * `vim /opt/shibboleth-idp/conf/idp.properties`
 
      ```properties
      idp.consent.StorageService = storageservice.JPAStorageService
      ```
 	 
-9. Restart IdP to apply the changes:
+10. Restart IdP to apply the changes:
    * `touch /opt/jetty/webapps/idp.xml`
 
-10. Check IdP Status:
+11. Check IdP Status:
    * `bash /opt/shibboleth-idp/bin/status.sh`
 
 ### Configure Shibboleth Identity Provider to release the persistent-id
@@ -481,30 +484,29 @@ This Storage service will memorize User Consent data on persistent database SQL.
 4. Address several security concerns in a default MariaDB installation (if it is not already done):
    * `mysql_secure_installation`
 
-5. Create `shibpid` table on `shibboleth` database.
+5. (OPTIONAL) Database Access without password:
+   * `vim /root/.my.cnf`
+
+     ```cnf
+     [client]
+     user=root
+     password=##ROOT-DB-PASSWORD-CHANGEME##
+     ```
+
+6. Create `shibpid` table on `shibboleth` database.
    * `wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/db/shib-pid-db.sql -O /root/shib-pid-db.sql`
-
-   * (OPTIONAL) Database Access without password:
-     * `vim /root/.my.cnf`
-
-       ```cnf
-       [client]
-       user=root
-       password=##ROOT-DB-PASSWORD-CHANGEME##
-       ```
-
    * fill missing data on `shib-pid-db.sql` before import
    * `mysql -u root < shib-pid-db.sql`
    * `systemctl restart mariadb.service`
 
-6. Rebuild the IdP with the required libraries:
+7. Rebuild the IdP with the required libraries:
    * `cd /opt/shibboleth-idp`
    * `ln -s /usr/share/java/mariadb-java-client.jar edit-webapp/WEB-INF/lib`
    * `ln -s /usr/share/java/commons-dbcp.jar edit-webapp/WEB-INF/lib`
    * `ln -s /usr/share/java/commons-pool.jar edit-webapp/WEB-INF/lib`
    * `bin/build.sh`
 
-7. Enable Persistent Identifier's store:
+8. Enable Persistent Identifier's store:
    * `vim /opt/shibboleth-idp/conf/global.xml` 
      
      and add the following directives to the tail, just before the last **`</beans>`** tag:
@@ -530,7 +532,7 @@ This Storage service will memorize User Consent data on persistent database SQL.
      
      remember to change "**`###_SHIB-USERNAME-CHANGEME_###`**" and "**`###_SHIB-DB-USER-PASSWORD-CHANGEME_###`**" with your DB user and password data
 
-8. Enable the generation of the `persistent-id`:
+9. Enable the generation of the `persistent-id`:
    * `vim /opt/shibboleth-idp/conf/saml-nameid.properties`
 
       The *sourceAttribute* MUST be an attribute, or a list of comma-separated attributes, that uniquely identify the subject of the generated `persistent-id`.
@@ -578,23 +580,23 @@ This Storage service will memorize User Consent data on persistent database SQL.
        * Transform each letter of username, before storing in into the database, to Lowercase or Uppercase by setting the proper constant.
        `<util:constant id="shibboleth.c14n.simple.Lowercase" static-field="java.lang.Boolean.TRUE"/>`
 
-9. Restart IdP to apply the changes:
+10. Restart IdP to apply the changes:
    * `touch /opt/jetty/webapps/idp.xml`
 
-10. Check IdP Status:
+11. Check IdP Status:
    * `bash /opt/shibboleth-idp/bin/status.sh`
 
 ### Configure the Directory (openLDAP or AD) Connection
 
 1. Check that you can reach the Directory from your IDP server:
-   * For Active Directory: 
+   * For Active Directory:
      ```bash
      ldapsearch -x -h <AD-SERVER-FQDN-OR-IP> -D 'CN=idpuser,CN=Users,DC=ad,DC=example,DC=org' -w '<IDPUSER-PASSWORD>' -b 'CN=Users,DC=ad,DC=example,DC=org' '(sAMAccountName=<USERNAME-USED-IN-THE-LOGIN-FORM>)'
      ```
 
      `(sAMAccountName=<USERNAME-USED-IN-THE-LOGIN-FORM>)` ==> `(sAMAccountName=$resolutionContext.principal)` searchFilter
      
-   * For OpenLDAP: 
+   * For OpenLDAP:
      ```bash
      ldapsearch -x -h <LDAP-SERVER-FQDN-OR-IP> -D 'cn=idpuser,ou=system,dc=example,dc=org' -w '<IDPUSER-PASSWORD>' -b 'ou=people,dc=example,dc=org' '(uid=<USERNAME-USED-IN-THE-LOGIN-FORM>)'
      ```
@@ -625,7 +627,7 @@ This Storage service will memorize User Consent data on persistent database SQL.
             idp.authn.LDAP.useStartTLS = true
             idp.authn.LDAP.sslConfig = certificateTrust
             idp.authn.LDAP.trustCertificates = %{idp.home}/credentials/ldap-server.crt
-            idp.authn.LDAP.returnAttributes = ### List space-separated of attributes to retrieve from OpenLDAP directly or '*' for all attributes ###
+            idp.authn.LDAP.returnAttributes = ### List space-separated of attributes to retrieve from directory directly or the symbol '*' to retrieve all ###
             idp.authn.LDAP.baseDN = ou=people,dc=example,dc=org
             idp.authn.LDAP.subtreeSearch = false
 	        idp.authn.LDAP.bindDN = cn=idpuser,ou=system,dc=example,dc=org
@@ -666,7 +668,7 @@ This Storage service will memorize User Consent data on persistent database SQL.
 	        idp.authn.LDAP.useStartTLS = false
             idp.authn.LDAP.sslConfig = certificateTrust
             idp.authn.LDAP.trustCertificates = %{idp.home}/credentials/ldap-server.crt
-            idp.authn.LDAP.returnAttributes = ### List space-separated of attributes to retrieve from OpenLDAP directly or '*' for all attributes ###
+            idp.authn.LDAP.returnAttributes = ### List space-separated of attributes to retrieve from directory directly or the symbol '*' to retrieve all ###
             idp.authn.LDAP.baseDN = ou=people,dc=example,dc=org
             idp.authn.LDAP.subtreeSearch = false
             idp.authn.LDAP.bindDN = cn=idpuser,ou=system,dc=example,dc=org
@@ -705,7 +707,7 @@ This Storage service will memorize User Consent data on persistent database SQL.
             idp.authn.LDAP.authenticator = bindSearchAuthenticator
             idp.authn.LDAP.ldapURL = ldap://ldap.example.org:389
             idp.authn.LDAP.useStartTLS = false
-            idp.authn.LDAP.returnAttributes = ### List space-separated of attributes to retrieve from OpenLDAP directly or '*' for all attributes ###
+            idp.authn.LDAP.returnAttributes = ### List space-separated of attributes to retrieve from directory directly or the symbol '*' to retrieve all ###
             idp.authn.LDAP.baseDN = ou=people,dc=example,dc=org
             idp.authn.LDAP.subtreeSearch = false
             idp.authn.LDAP.bindDN = cn=idpuser,ou=system,dc=example,dc=org
@@ -745,7 +747,7 @@ This Storage service will memorize User Consent data on persistent database SQL.
             idp.authn.LDAP.useStartTLS = true
             idp.authn.LDAP.sslConfig = certificateTrust
             idp.authn.LDAP.trustCertificates = %{idp.home}/credentials/ldap-server.crt
-            idp.authn.LDAP.returnAttributes = ### List space-separated of attributes to retrieve from AD directly or '*' for all attributes ###
+            idp.authn.LDAP.returnAttributes = ### List space-separated of attributes to retrieve from directory directly or the symbol '*' to retrieve all ###
             idp.authn.LDAP.baseDN = CN=Users,DC=ad,DC=example,DC=org
             idp.authn.LDAP.subtreeSearch = false
             idp.authn.LDAP.bindDN = CN=idpuser,CN=Users,DC=ad,DC=example,DC=org
@@ -786,7 +788,7 @@ This Storage service will memorize User Consent data on persistent database SQL.
             idp.authn.LDAP.useStartTLS = false
             idp.authn.LDAP.sslConfig = certificateTrust
             idp.authn.LDAP.trustCertificates = %{idp.home}/credentials/ldap-server.crt
-            idp.authn.LDAP.returnAttributes = ### List space-separated of attributes to retrieve from AD directly or '*' for all attributes ###
+            idp.authn.LDAP.returnAttributes = ### List space-separated of attributes to retrieve from directory directly or the symbol '*' to retrieve all ###
             idp.authn.LDAP.baseDN = CN=Users,DC=ad,DC=example,DC=org
             idp.authn.LDAP.subtreeSearch = false         
             idp.authn.LDAP.bindDN = CN=idpuser,CN=Users,DC=ad,DC=example,DC=org
@@ -825,7 +827,7 @@ This Storage service will memorize User Consent data on persistent database SQL.
             idp.authn.LDAP.authenticator = bindSearchAuthenticator
             idp.authn.LDAP.ldapURL = ldap://ldap.example.org:389
             idp.authn.LDAP.useStartTLS = false
-            idp.authn.LDAP.returnAttributes = ### List space-separated of attributes to retrieve from AD directly or '*' for all attributes###
+            idp.authn.LDAP.returnAttributes = ### List space-separated of attributes to retrieve from directory directly or the symbol '*' to retrieve all ###
             idp.authn.LDAP.baseDN = CN=Users,DC=ad,DC=example,DC=org
             idp.authn.LDAP.subtreeSearch = false
             idp.authn.LDAP.bindDN = CN=idpuser,CN=Users,DC=ad,DC=example,DC=org
@@ -853,7 +855,7 @@ This Storage service will memorize User Consent data on persistent database SQL.
 
 #### Configure the attribute resolution with Attribute Registry
 
-File(s): conf/attribute-registry.xml, conf/attributes/default-rules.xml, conf/attribute-resolver.xml, conf/attributes/custom/
+File(s): `conf/attribute-registry.xml`, `conf/attributes/default-rules.xml`, `conf/attribute-resolver.xml`, `conf/attributes/custom/`
 
 1. Download `schac.xml` (provided by IDEM) into the right location:
    ```bash
@@ -938,7 +940,7 @@ Translate the IdP messages in your language:
           - urn:mace:shibboleth:1.0
 
         - Remove completely the comment on <mdui:UIInfo>. 
-          You will add once you will add it on the "IDEM Entity Registry", the web application provided by the IDEM Federation to manage metadata.
+          You will add it on the "IDEM Entity Registry", the web application provided by the IDEM Federation to manage metadata.
 
         - Remove the endpoint:
           <ArtifactResolutionService Binding="urn:oasis:names:tc:SAML:1.0:bindings:SOAP-binding" Location="https://idp.example.org:8443/idp/profile/SAML1/SOAP/ArtifactResolution" index="1"/>
@@ -1061,17 +1063,19 @@ Translate the IdP messages in your language:
    *  `bash /opt/shibboleth-idp/bin/reload-service.sh -id shibboleth.MetadataResolverService`
     
 4. Check that your IdP release at least eduPersonScopedAffiliation, eduPersonTargetedID and a saml2:NameID transient/persistent to the testing SPs provided by IDEM:
-   * `bash /opt/shibboleth-idp/bin/aacli.sh -n <USERNAME> -r https://sp-demo.aai-test.garr.it/shibboleth --saml2` 
+   * `bash /opt/shibboleth-idp/bin/aacli.sh -n <USERNAME> -r https://sp.aai-test.garr.it/shibboleth --saml2` 
      
      (the command will have a `transient` NameID into the Subject of the assertion)
 
-   * `bash /opt/shibboleth-idp/bin/aacli.sh -n <USERNAME> -r https://sp24-test.garr.it/shibboleth --saml2`
+   * `bash /opt/shibboleth-idp/bin/aacli.sh -n <USERNAME> -r https://sp-demo.idem.garr.it/shibboleth --saml2`
 
      (the command will have a `persistent` NameID into the Subject of the assertion)
 
 5. Wait that your IdP Metadata is approved by an IDEM Federation Operator into the metadata stream and the next steps provided by the operator itself.
 
 ### Appendix A: Configure Attribute Filters to release the required attributes for common resources
+
+> Follow these steps ONLY when your IdP is accepted into IDEM Production Federation
 
 1. Become ROOT:
    * `sudo su -`
@@ -1099,7 +1103,7 @@ Translate the IdP messages in your language:
      <bean id="IDEM-Resources" class="net.shibboleth.ext.spring.resource.FileBackedHTTPResource"
            c:client-ref="MyHTTPClient"
            c:url="https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/attribute-filter-v4-resources.xml"
-           c:backingFile="%{idp.home}/conf/attribute-filter-v4-resources.xml"/>     
+           c:backingFile="%{idp.home}/conf/attribute-filter-v4-resources.xml"/>
      ```
      
      ```xml
@@ -1123,6 +1127,8 @@ Translate the IdP messages in your language:
 
 
 ### Appendix B: Configure attribute filter policies for the REFEDS Research and Scholarship and the GEANT Data Protection Code of Conduct Entity Categories
+
+> Follow these steps ONLY when your IdP is accepted into IDEM Production Federation and if the Entity Categories mentioned are enabled for your IdP
 
 1. Download the attribute filter file:
    ```bash
@@ -1150,6 +1156,8 @@ Translate the IdP messages in your language:
 
 ### Appendix C: Import persistent-id from a previous database
 
+> Follow these steps ONLY when your need to import persistent-id from another IdP
+
 1. Become ROOT:
    * `sudo su -`
 
@@ -1168,6 +1176,8 @@ Translate the IdP messages in your language:
    * `rm /tmp/shibboleth_shibpid.sql`
    
 ### Appendix D: Useful logs to find problems
+
+> Follow this if do you want to find a problem of your IdP.
 
 1. Jetty Logs:
    * `cd /opt/jetty/logs`
