@@ -71,9 +71,9 @@
 
 
    **(ALTERNATIVE)** Create a self-signed certificate:
-   * `openssl req -x509 -newkey rsa:4096 -keyout /etc/pki/tls/private/idp.example.org.key -out /etc/pki/tls/certs/idp.example.org.crt -nodes -days 1095`
+   * `openssl req -x509 -newkey rsa:4096 -keyout /etc/pki/tls/private/$(hostname -f).key -out /etc/pki/tls/certs/$(hostname -f).crt -nodes -days 1095`
    
-   (*Replace `idp.example.org` with your IdP Full Qualified Domain Name*)
+   (*`$(hostname -f)` will provide your IdP Full Qualified Domain Name*)
 
 ## Install Instructions
 
@@ -131,8 +131,8 @@
    * `chmod 0755 /etc/profile.d/javaenv.sh`
 
 5. Configure the right privileges for the SSL Certificate and Key used by HTTPS:
-   * `chmod 400 /etc/pki/tls/private/idp.example.org.key`
-   * `chmod 644 /etc/pki/tls/certs/idp.example.org.crt`
+   * `chmod 400 /etc/pki/tls/private/$(hostname -f).key`
+   * `chmod 644 /etc/pki/tls/certs/$(hostname -f).crt`
 
 ### Install Jetty 9 Web Server
 
@@ -204,7 +204,7 @@ It is a Java Web Application that can be deployed with its WAR file.
    * `tar -xzf shibboleth-identity-provider-4.x.y.tar.gz`
 
 4. Run the installer `install.sh`:
-   * `bash /usr/local/src/shibboleth-identity-provider-4.x.y/bin/install.sh -Didp.host.name=idp.example.org`
+   * `bash /usr/local/src/shibboleth-identity-provider-4.x.y/bin/install.sh -Didp.host.name=$(hostname -f)`
 
      ```bash
      Buildfile: /usr/local/src/shibboleth-identity-provider-4.x.y/bin/build.xml
@@ -238,7 +238,7 @@ The Apache HTTP Server will be configured as a reverse proxy and it will be used
    * `mkdir /var/www/html/$(hostname -f)`
    * `sudo chown -R apache: /var/www/html/$(hostname -f)`
 
-2. Create the Virtualhost file (pay attention to replace 'idp.example.org' and other info with yours):
+2. Create the Virtualhost file (pay attention to replace '`idp.example.org`' and other info with yours):
    * `wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/apache2/idp.example.org.conf -O /etc/httpd/conf.d/$(hostname -f).conf`
 
 3. Configure SELinux to allow `mod_proxy` to initiate outbound connections:
