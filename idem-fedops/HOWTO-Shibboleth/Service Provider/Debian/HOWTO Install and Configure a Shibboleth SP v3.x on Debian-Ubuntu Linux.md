@@ -56,11 +56,15 @@
 1. Become ROOT:
    * `sudo su -`
 
-2. Change the default mirror with the GARR ones:
-   * `sed -i 's/deb.debian.org/debian.mirror.garr.it/g' /etc/apt/sources.list`
-   * `apt update && apt upgrade`
+2. Change the default mirror to the GARR ones on /etc/apt/sources.list (OPTIONAL):
+
+   * `debian.mirror.garr.it` (Debian)
+   * `ubuntu.mirror.garr.it` (Ubuntu)
+   
+3. Update packages:
+   * `apt update && apt-get upgrade -y --no-install-recommends`
   
-3. Install the packages required: 
+4. Install the packages required: 
    * `apt install ca-certificates vim openssl`
 
 ### Configure the environment
