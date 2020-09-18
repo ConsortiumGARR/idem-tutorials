@@ -1,4 +1,4 @@
-# HOWTO Install and Configure a Shibboleth IdP v4.x on CentOS 7 with Apache2 + Jetty9
+# HOWTO Install and Configure a Shibboleth IdP v4.x on CentOS with Apache2 + Jetty9
 
 <img width="120px" src="https://wiki.idem.garr.it/IDEM_Approved.png" />
 
@@ -42,6 +42,7 @@
  * CPU: 2 Core
  * RAM: 4 GB
  * HDD: 20 GB
+ * OS: Centos 7
 
 ## Software that will be installed
 
