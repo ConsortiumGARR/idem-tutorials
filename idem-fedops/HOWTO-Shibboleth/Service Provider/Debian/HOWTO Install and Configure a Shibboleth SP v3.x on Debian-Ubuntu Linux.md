@@ -56,7 +56,7 @@
 1. Become ROOT:
    * `sudo su -`
 
-2. Change the default mirror to the GARR ones on /etc/apt/sources.list (OPTIONAL):
+2. Change the default mirror to the GARR ones on `/etc/apt/sources.list` (OPTIONAL):
 
    * `debian.mirror.garr.it` (Debian)
    * `ubuntu.mirror.garr.it` (Ubuntu)
