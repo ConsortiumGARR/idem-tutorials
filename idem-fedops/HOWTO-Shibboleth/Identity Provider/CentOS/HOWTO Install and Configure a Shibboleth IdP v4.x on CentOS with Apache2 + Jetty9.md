@@ -27,7 +27,8 @@
    8. [Translate IdP messages into the preferred language](#translate-idp-messages-into-preferred-language)
    9. [Disable SAML1 Deprecated Protocol](#disable-saml1-deprecated-protocol)
    10. [Configure Attribute Filters to release the mandatory attributes to the IDEM Default Resources](#configure-attribute-filters-to-release-the-mandatory-attributes-to-the-idem-default-resources)
-   11. [Register the IdP on the IDEM Test Federation](#register-the-idp-on-the-idem-test-federation)
+   11. [Secure cookies and other IDP data](#secure-cookies-and-other-idp-data)
+   12. [Register the IdP on the IDEM Test Federation](#register-the-idp-on-the-idem-test-federation)
 6. [Appendix A: Configure Attribute Filters to release the mandatory attributes to the IDEM Production Resources](#appendix-a-configure-attribute-filters-to-release-the-mandatory-attributes-to-the-idem-production-resources)
 7. [Appendix B: Configure attribute filter policies for the REFEDS Research and Scholarship and the GEANT Data Protection Code of Conduct Entity Categories](#appendix-b-configure-attribute-filter-policies-for-the-refeds-research-and-scholarship-and-the-geant-data-protection-code-of-conduct-entity-categories)
 8. [Appendix C: Import persistent-id from a previous database](#appendix-c-import-persistent-id-from-a-previous-database)
@@ -203,8 +204,10 @@ It is a Java Web Application that can be deployed with its WAR file.
    * `wget http://shibboleth.net/downloads/identity-provider/4.x.y/shibboleth-identity-provider-4.x.y.tar.gz`
    * `tar -xzf shibboleth-identity-provider-4.x.y.tar.gz`
 
-4. Run the installer `install.sh`:
-   * `bash /usr/local/src/shibboleth-identity-provider-4.x.y/bin/install.sh -Didp.host.name=$(hostname -f)`
+3. Run the installer `install.sh`:
+   > According to [NSA and NIST](https://www.keylength.com/en/compare/), RSA with 3072 bit-modulus is the minimum to protect up to TOP SECRET over than 2030.
+   
+   * `bash /usr/local/src/shibboleth-identity-provider-4.x.y/bin/install.sh -Didp.host.name=$(hostname -f) -Didp.keysize=3072`
 
      ```bash
      Buildfile: /usr/local/src/shibboleth-identity-provider-4.x.y/bin/build.xml
@@ -906,6 +909,9 @@ Translate the IdP messages in your language:
 ### Disable SAML1 Deprecated Protocol
 
 1. Modify the IdP metadata to enable only the SAML2 protocol:
+   > The `<AttributeAuthorityDescriptor>` role is needed only if you have SPs that use AttributeQuery to request attributes to your IdP.
+   > Read details on the [Shibboleth Official Documentation](https://wiki.shibboleth.net/confluence/display/IDP4/SecurityAndNetworking#SecurityAndNetworking-AttributeQuery).
+
    * `vim /opt/shibboleth-idp/metadata/idp-metadata.xml`
 
       ```xml
@@ -939,7 +945,7 @@ Translate the IdP messages in your language:
 
         - Remove all ":8443" from the existing URL (such port is not used anymore)
 
-      <AttributeAuthorityDescriptor> Section:
+      <AttributeAuthorityDescriptor> Section (Needed ONLY if AttributeQuery is used by specific SPs. Otherwise, remove entirely):
         - From the list "protocolSupportEnumeration" replace the value:
           - urn:oasis:names:tc:SAML:1.1:protocol
           with:
@@ -986,6 +992,102 @@ Translate the IdP messages in your language:
    
 5. Check IdP Status:
    * `bash /opt/shibboleth-idp/bin/status.sh`
+
+### Secure cookies and other IDP data
+
+> The default configuration of the IdP relies on a component called a "DataSealer" which in turn uses an AES secret key to secure cookies and certain other data for the IdPs own use. This key must never be shared with anybody else, and must be copied to every server node making up a cluster.
+> The Java "JCEKS" keystore file stores secret keys instead of public/private keys and certificates and a parallel file tracks the key version number.
+
+> These instructions will regularly update the secret key (and increase its version) and provide you the capability to push it to cluster nodes and continually maintain the secrecy of the key.
+
+> See the official Shibboleth documentation: https://wiki.shibboleth.net/confluence/display/IDP4/SecretKeyManagement
+
+1. Create the `updateIDPsecret.sh` script:
+   * `sudo vim /opt/shibboleth-idp/bin/updateIDPsecret.sh`
+     
+     ```bash
+     #!/bin/bash
+ 
+     set -e
+     set -u
+  
+     # Default IDP_HOME if not already set
+     if [ ! -d "${IDP_HOME:=/opt/shibboleth-idp}" ]
+     then
+         echo "ERROR: Directory does not exist: ${IDP_HOME}" >&2
+         exit 1
+     fi
+
+     function get_config {
+         # Key to lookup (escape . for regex lookup)
+         local KEY=${1:?"No key provided to look up value"}
+         # Passed default value
+         local DEFAULT="${2:-}"
+         # Lookup key, strip spaces, replace idp.home with IDP_HOME value
+         local RESULT=$(sed -rn '/^'"${KEY//./\\.}"'\s*=/ { s|^[^=]*=(.*)\s*$|\1|; s|%\{idp\.home\}|'"${IDP_HOME}"'|g; p}' ${IDP_HOME}/conf/idp.properties)
+         if [ -z "$RESULT" ]
+         then
+            local RESULT=$(sed -rn '/^'"${KEY//./\\.}"'\s*=/ { s|^[^=]*=(.*)\s*$|\1|; s|%\{idp\.home\}|'"${IDP_HOME}"'|g; p}' ${IDP_HOME}/credentials/secrets.properties)
+         fi
+         # Set if no result with default - exit if no default
+         echo ${RESULT:-${DEFAULT:?"No value in config and no default defined for: '${KEY}'"}}
+     }
+ 
+     # Get config values
+     ## Official config items ##
+     storefile=$(get_config idp.sealer.storeResource)
+     versionfile=$(get_config idp.sealer.versionResource)
+     storepass=$(get_config idp.sealer.storePassword)
+     alias=$(get_config idp.sealer.aliasBase secret)
+     ## Extended config items ##
+     count=$(get_config idp.sealer._count 30)
+     # default cannot be empty - so "self" is the default (self is skipped for syncing)
+     sync_hosts=$(get_config idp.sealer._sync_hosts ${HOSTNAME})
+ 
+     # Run the keygen utility
+     ${0%/*}/runclass.sh net.shibboleth.utilities.java.support.security.BasicKeystoreKeyStrategyTool \
+         --storefile "${storefile}" \
+         --storepass "${storepass}" \
+         --versionfile "${versionfile}" \
+         --alias "${alias}" \
+         --count "${count}"
+ 
+     # Display current version
+     echo "INFO: $(tac "${versionfile}" | tr "\n" " ")" >&2
+ 
+     for EACH in ${sync_hosts}
+     do
+         if [ "${HOSTNAME}" == "${EACH}" ]
+         then
+             echo "INFO: Host '${EACH}' is myself - skipping" >&2
+         elif ! ping -q -c 1 -W 3 ${EACH} >/dev/null 2>&1
+         then
+             echo "ERROR: Host '${EACH}' not reachable - skipping" >&2
+         else
+             # run scp in the background
+             scp "${storefile}" "${versionfile}" "${EACH}:${IDP_HOME}/credentials/" &
+         fi
+     done
+     ```
+
+2. Provide the right privileges to the script:
+   * `sudo chmod +x /opt/shibboleth-idp/bin/updateIDPsecret.sh`
+
+3. Create the CRON script to run it:
+   * `sudo vim /etc/cron.daily/updateIDPsecret.sh`
+     
+     ```bash
+     #!/bin/bash
+
+     /opt/shibboleth-idp/bin/updateIDPsecret.sh
+     ```
+
+4. Provide the right privileges to the script:
+   * `sudo chmod +x /etc/cron.daily/updateIDPsecret.sh`
+   
+5. Add the following properties to `idp.properties` if you need to set different values than defaults:
+   * `idp.sealer._count` - Number of earlier keys to keep (default 30)
+   * `idp.sealer._sync_hosts` - Space separated list of hosts to scp the sealer files to (default generate locally)
 
 ### Register the IdP on the IDEM Test Federation
 
