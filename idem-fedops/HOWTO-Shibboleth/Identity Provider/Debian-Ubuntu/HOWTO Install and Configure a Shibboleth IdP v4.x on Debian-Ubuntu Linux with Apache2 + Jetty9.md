@@ -27,7 +27,8 @@
    8. [Translate IdP messages into the preferred language](#translate-idp-messages-into-preferred-language)
    9. [Disable SAML1 Deprecated Protocol](#disable-saml1-deprecated-protocol)
    10. [Configure Attribute Filters to release the mandatory attributes to the IDEM Default Resources](#configure-attribute-filters-to-release-the-mandatory-attributes-to-the-idem-default-resources)
-   11. [Register the IdP on the IDEM Test Federation](#register-the-idp-on-the-idem-test-federation)
+   11. [Secure cookies and other IDP data](#secure-cookies-and-other-idp-data)
+   12. [Register the IdP on the IDEM Test Federation](#register-the-idp-on-the-idem-test-federation)
 6. [Appendix A: Configure Attribute Filters to release the required attributes for common resources](#appendix-a-configure-attribute-filters-to-release-the-required-attributes-for-common-resources)
 7. [Appendix B: Configure attribute filter policies for the REFEDS Research and Scholarship and the GEANT Data Protection Code of Conduct Entity Categories](#appendix-b-configure-attribute-filter-policies-for-the-refeds-research-and-scholarship-and-the-geant-data-protection-code-of-conduct-entity-categories)
 8. [Appendix C: Import persistent-id from a previous database](#appendix-c-import-persistent-id-from-a-previous-database)
@@ -1088,7 +1089,10 @@ Translate the IdP messages in your language:
      done
      ```
 
-2. Create the CRON script to run it:
+2. Provide the right privileges to the script:
+   * `sudo chmod +x /opt/shibboleth-idp/bin/updateIDPsecret.sh`
+
+3. Create the CRON script to run it:
    * `sudo vim /etc/cron.daily/updateIDPsecret.sh`
      
      ```bash
