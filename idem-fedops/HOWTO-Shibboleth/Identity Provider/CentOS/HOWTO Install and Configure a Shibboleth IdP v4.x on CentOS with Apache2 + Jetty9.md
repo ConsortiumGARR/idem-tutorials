@@ -1167,7 +1167,7 @@ Translate the IdP messages in your language:
 4. Modify your `services.xml`:
    * `vim /opt/shibboleth-idp/conf/services.xml`
    
-     and add this beans on the top of the file, under the first `<beans>` TAG, only one time:
+     and add the following two beans on the top of the file, under the first `<beans>` TAG, only one time:
 
      ```xml
      <bean id="MyHTTPClient" parent="shibboleth.FileCachingHttpClientFactory"
@@ -1175,14 +1175,16 @@ Translate the IdP messages in your language:
            p:connectionRequestTimeout="PT30S"
            p:socketTimeout="PT30S"
            p:cacheDirectory="%{idp.home}/tmp/httpClientCache" />
-     
-     <!-- ...other things... -->
-     
+
      <bean id="IDEM-Resources" class="net.shibboleth.ext.spring.resource.FileBackedHTTPResource"
            c:client-ref="MyHTTPClient"
            c:url="https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/attribute-filter-v4-resources.xml"
            c:backingFile="%{idp.home}/conf/attribute-filter-v4-resources.xml"/>
-     
+     ```
+
+     and enrich the "`AttributeFilterResources`" list with "`attribute-filter-v4-required.xml`" and "`IDEM-Resources`":
+
+     ```     
      <util:list id ="shibboleth.AttributeFilterResources">
          <value>%{idp.home}/conf/attribute-filter.xml</value>
          <value>%{idp.home}/conf/attribute-filter-v4-idem.xml</value>
