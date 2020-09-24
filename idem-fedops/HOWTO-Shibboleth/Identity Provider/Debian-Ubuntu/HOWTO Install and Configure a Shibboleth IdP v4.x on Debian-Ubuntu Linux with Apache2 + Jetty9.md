@@ -1190,7 +1190,7 @@ Translate the IdP messages in your language:
 4. Modify your `services.xml`:
    * `vim /opt/shibboleth-idp/conf/services.xml`
 
-     and add this beans on the top of the file, under the first `<beans>` TAG, only one time:
+     and add the following two beans on the top of the file, under the first `<beans>` TAG, only one time:
 
      ```xml
      <bean id="MyHTTPClient" parent="shibboleth.FileCachingHttpClientFactory"
@@ -1204,6 +1204,8 @@ Translate the IdP messages in your language:
            c:url="https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/attribute-filter-v4-resources.xml"
            c:backingFile="%{idp.home}/conf/attribute-filter-v4-resources.xml"/>
      ```
+     
+     and enrich the "`AttributeFilterResources`" list with "`attribute-filter-v4-required.xml`" and "`IDEM-Resources`":
      
      ```xml
      <util:list id ="shibboleth.AttributeFilterResources">
