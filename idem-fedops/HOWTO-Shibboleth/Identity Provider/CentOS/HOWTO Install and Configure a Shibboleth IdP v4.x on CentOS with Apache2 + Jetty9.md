@@ -621,7 +621,7 @@ This Storage service will memorize User Consent data on persistent database SQL.
             idp.authn.LDAP.useStartTLS = true
             idp.authn.LDAP.sslConfig = certificateTrust
             idp.authn.LDAP.trustCertificates = %{idp.home}/credentials/ldap-server.crt
-            idp.authn.LDAP.returnAttributes = ### List space-separated of attributes to retrieve from directory directly or the symbol '*' to retrieve all ###
+            idp.authn.LDAP.returnAttributes = ### List space-separated of attributes to retrieve from the directory directly ###
             idp.authn.LDAP.baseDN = ou=people,dc=example,dc=org
             idp.authn.LDAP.subtreeSearch = false
             idp.authn.LDAP.bindDN = cn=idpuser,ou=system,dc=example,dc=org
@@ -661,7 +661,7 @@ This Storage service will memorize User Consent data on persistent database SQL.
 	        idp.authn.LDAP.useStartTLS = false
             idp.authn.LDAP.sslConfig = certificateTrust
             idp.authn.LDAP.trustCertificates = %{idp.home}/credentials/ldap-server.crt
-            idp.authn.LDAP.returnAttributes = ### List space-separated of attributes to retrieve from directory directly or the symbol '*' to retrieve all ###
+            idp.authn.LDAP.returnAttributes = ### List space-separated of attributes to retrieve from the directory directly ###
             idp.authn.LDAP.baseDN = ou=people,dc=example,dc=org
             idp.authn.LDAP.subtreeSearch = false
             idp.authn.LDAP.bindDN = cn=idpuser,ou=system,dc=example,dc=org
@@ -699,7 +699,7 @@ This Storage service will memorize User Consent data on persistent database SQL.
             idp.authn.LDAP.authenticator = bindSearchAuthenticator
             idp.authn.LDAP.ldapURL = ldap://ldap.example.org:389
             idp.authn.LDAP.useStartTLS = false
-            idp.authn.LDAP.returnAttributes = ### List space-separated of attributes to retrieve from directory directly or the symbol '*' to retrieve all ###
+            idp.authn.LDAP.returnAttributes = ### List space-separated of attributes to retrieve from the directory directly ###
             idp.authn.LDAP.baseDN = ou=people,dc=example,dc=org
             idp.authn.LDAP.subtreeSearch = false
             idp.authn.LDAP.bindDN = cn=idpuser,ou=system,dc=example,dc=org
@@ -738,7 +738,7 @@ This Storage service will memorize User Consent data on persistent database SQL.
             idp.authn.LDAP.useStartTLS = true
             idp.authn.LDAP.sslConfig = certificateTrust
             idp.authn.LDAP.trustCertificates = %{idp.home}/credentials/ldap-server.crt
-            idp.authn.LDAP.returnAttributes = ### List space-separated of attributes to retrieve from directory directly or the symbol '*' to retrieve all ###
+            idp.authn.LDAP.returnAttributes = ### List space-separated of attributes to retrieve from the directory directly ###
             idp.authn.LDAP.baseDN = CN=Users,DC=ad,DC=example,DC=org
             idp.authn.LDAP.subtreeSearch = false
             idp.authn.LDAP.bindDN = CN=idpuser,CN=Users,DC=ad,DC=example,DC=org
@@ -778,7 +778,7 @@ This Storage service will memorize User Consent data on persistent database SQL.
             idp.authn.LDAP.useStartTLS = false
             idp.authn.LDAP.sslConfig = certificateTrust
             idp.authn.LDAP.trustCertificates = %{idp.home}/credentials/ldap-server.crt
-            idp.authn.LDAP.returnAttributes = ### List space-separated of attributes to retrieve from directory directly or the symbol '*' to retrieve all ###
+            idp.authn.LDAP.returnAttributes = ### List space-separated of attributes to retrieve from the directory directly ###
             idp.authn.LDAP.baseDN = CN=Users,DC=ad,DC=example,DC=org
             idp.authn.LDAP.subtreeSearch = false         
             idp.authn.LDAP.bindDN = CN=idpuser,CN=Users,DC=ad,DC=example,DC=org
@@ -816,7 +816,7 @@ This Storage service will memorize User Consent data on persistent database SQL.
             idp.authn.LDAP.authenticator = bindSearchAuthenticator
             idp.authn.LDAP.ldapURL = ldap://ldap.example.org:389
             idp.authn.LDAP.useStartTLS = false
-            idp.authn.LDAP.returnAttributes = ### List space-separated of attributes to retrieve from directory directly or the symbol '*' to retrieve all ###
+            idp.authn.LDAP.returnAttributes = ### List space-separated of attributes to retrieve from the directory directly ###
             idp.authn.LDAP.baseDN = CN=Users,DC=ad,DC=example,DC=org
             idp.authn.LDAP.subtreeSearch = false
             idp.authn.LDAP.bindDN = CN=idpuser,CN=Users,DC=ad,DC=example,DC=org
