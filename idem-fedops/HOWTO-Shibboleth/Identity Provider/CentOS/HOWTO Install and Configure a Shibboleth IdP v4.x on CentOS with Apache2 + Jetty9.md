@@ -1184,7 +1184,7 @@ Translate the IdP messages in your language:
 
      and enrich the "`AttributeFilterResources`" list with "`attribute-filter-v4-required.xml`" and "`IDEM-Resources`":
 
-     ```     
+     ```xml   
      <util:list id ="shibboleth.AttributeFilterResources">
          <value>%{idp.home}/conf/attribute-filter.xml</value>
          <value>%{idp.home}/conf/attribute-filter-v4-idem.xml</value>
