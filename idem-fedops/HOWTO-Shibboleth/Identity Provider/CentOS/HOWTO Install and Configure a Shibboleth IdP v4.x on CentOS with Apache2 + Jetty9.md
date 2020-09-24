@@ -1167,7 +1167,7 @@ Translate the IdP messages in your language:
 4. Modify your `services.xml`:
    * `vim /opt/shibboleth-idp/conf/services.xml`
    
-     and add this beans on the top of the file, under the first <beans> TAG, only one time:
+     and add this beans on the top of the file, under the first `<beans>` TAG, only one time:
 
      ```xml
      <bean id="MyHTTPClient" parent="shibboleth.FileCachingHttpClientFactory"
