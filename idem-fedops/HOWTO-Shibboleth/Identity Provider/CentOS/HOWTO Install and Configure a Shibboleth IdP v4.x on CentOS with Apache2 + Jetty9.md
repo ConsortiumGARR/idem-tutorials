@@ -356,13 +356,13 @@ This Storage service will memorize User Consent data on persistent database SQL.
 
      ```xml
      <!-- DB-independent Configuration -->
-     
-     <bean id="storageservice.JPAStorageService.JPAVendorAdapter" 
-           class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
-           <property name="database" value="MYSQL" />
-     </bean>
 
-     <bean id="storageservice.JPAStorageService.entityManagerFactory"
+     <bean id="storageservice.JPAStorageService" 
+           class="org.opensaml.storage.impl.JPAStorageService"
+           p:cleanupInterval="%{idp.storage.cleanupInterval:PT10M}"
+           c:factory-ref="storageservice.JPAStorageService.EntityManagerFactory"/>
+
+     <bean id="storageservice.JPAStorageService.EntityManagerFactory"
            class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
            <property name="packagesToScan" value="org.opensaml.storage.impl"/>
            <property name="dataSource" ref="storageservice.JPAStorageService.DataSource"/>
@@ -371,13 +371,15 @@ This Storage service will memorize User Consent data on persistent database SQL.
               <bean class="org.springframework.orm.jpa.vendor.HibernateJpaDialect" />
            </property>
      </bean>
-     
-     <bean id="storageservice.JPAStorageService" 
-           class="org.opensaml.storage.impl.JPAStorageService"
-           p:cleanupInterval="%{idp.storage.cleanupInterval:PT10M}"
-           c:factory-ref="storageservice.JPAStorageService.entityManagerFactory"/>
 
-     <!-- Add bean to store User Consent data on 'storageservice' database -->
+     <!-- DB-dependent Configuration -->
+
+     <bean id="storageservice.JPAStorageService.JPAVendorAdapter" 
+           class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+           <property name="database" value="MYSQL" />
+     </bean>
+
+     <!-- Bean to store IdP data unrelated with persistent identifiers on 'storageservice' database -->
 
      <bean id="storageservice.JPAStorageService.DataSource"
            class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close" lazy-init="true"
@@ -506,7 +508,31 @@ This Storage service will memorize User Consent data on persistent database SQL.
      and add the following directives to the tail, just before the last **`</beans>`** tag:
 
      ```bash
-     <!-- Add bean to store persistent-id on shibboleth database -->
+     <!-- DB-independent Configuration -->
+
+     <bean id="shibboleth.JPAStorageService" 
+           class="org.opensaml.storage.impl.JPAStorageService"
+           p:cleanupInterval="%{idp.storage.cleanupInterval:PT10M}"
+           c:factory-ref="shibboleth.JPAStorageService.EntityManagerFactory"/>
+
+     <bean id="shibboleth.JPAStorageService.EntityManagerFactory"
+           class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+           <property name="packagesToScan" value="org.opensaml.storage.impl"/>
+           <property name="dataSource" ref="shibboleth.JPAStorageService.DataSource"/>
+           <property name="jpaVendorAdapter" ref="shibboleth.JPAStorageService.JPAVendorAdapter"/>
+           <property name="jpaDialect">
+              <bean class="org.springframework.orm.jpa.vendor.HibernateJpaDialect" />
+           </property>
+     </bean>
+
+     <!-- DB-dependent Configuration -->
+
+     <bean id="shibboleth.JPAStorageService.JPAVendorAdapter" 
+           class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+           <property name="database" value="MYSQL" />
+     </bean>
+
+     <!-- Bean to store persistent-id on 'shibboleth' database -->
 
      <bean id="shibboleth.JPAStorageService.DataSource"
            class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close" lazy-init="true"
