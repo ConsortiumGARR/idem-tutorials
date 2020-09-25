@@ -517,30 +517,6 @@ This Storage service will memorize User Consent data on persistent database SQL.
      and add the following directives to the tail, just before the last **`</beans>`** tag:
 
      ```xml
-     <!-- DB-independent Configuration -->
-
-     <bean id="shibboleth.JPAStorageService" 
-           class="org.opensaml.storage.impl.JPAStorageService"
-           p:cleanupInterval="%{idp.storage.cleanupInterval:PT10M}"
-           c:factory-ref="shibboleth.JPAStorageService.EntityManagerFactory"/>
-
-     <bean id="shibboleth.JPAStorageService.EntityManagerFactory"
-           class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
-           <property name="packagesToScan" value="org.opensaml.storage.impl"/>
-           <property name="dataSource" ref="shibboleth.JPAStorageService.DataSource"/>
-           <property name="jpaVendorAdapter" ref="shibboleth.JPAStorageService.JPAVendorAdapter"/>
-           <property name="jpaDialect">
-              <bean class="org.springframework.orm.jpa.vendor.HibernateJpaDialect" />
-           </property>
-     </bean>
-
-     <!-- DB-dependent Configuration -->
-
-     <bean id="shibboleth.JPAStorageService.JPAVendorAdapter" 
-           class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
-           <property name="database" value="MYSQL" />
-     </bean>
-
      <!-- Bean to store persistent-id on 'shibboleth' database -->
 
      <bean id="shibboleth.JPAStorageService.DataSource"
