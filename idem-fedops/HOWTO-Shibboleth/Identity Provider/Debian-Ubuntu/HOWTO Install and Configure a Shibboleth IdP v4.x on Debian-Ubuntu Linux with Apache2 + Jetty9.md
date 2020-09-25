@@ -519,7 +519,7 @@ This Storage service will memorize User Consent data on persistent database SQL.
      ```xml
      <!-- Bean to store persistent-id on 'shibboleth' database -->
 
-     <bean id="shibboleth.JPAStorageService.DataSource"
+     <bean id="MyDataSource"
            class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close" lazy-init="true"
            p:driverClassName="org.mariadb.jdbc.Driver"
            p:url="jdbc:mysql://localhost:3306/shibboleth?autoReconnect=true"
@@ -557,7 +557,7 @@ This Storage service will memorize User Consent data on persistent database SQL.
      # ... other things ...#
      idp.persistentId.generator = shibboleth.StoredPersistentIdGenerator
      # ... other things ...#
-     idp.persistentId.dataSource = shibboleth.JPAStorageService.DataSource
+     idp.persistentId.dataSource = MyDataSource
      # ... other things ...#
      ```
      
