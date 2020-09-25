@@ -361,7 +361,7 @@ This Storage service will memorize User Consent data on persistent database SQL.
 8. Enable JPA Storage Service:
    * `vim /opt/shibboleth-idp/conf/global.xml` 
      
-     and add the following directives to the tail, just before the last **`</beans>`** tag (only if they are not already present):
+     and add the following directives to the tail, just before the last **`</beans>`** tag:
 
      ```xml
      <!-- DB-independent Configuration -->
