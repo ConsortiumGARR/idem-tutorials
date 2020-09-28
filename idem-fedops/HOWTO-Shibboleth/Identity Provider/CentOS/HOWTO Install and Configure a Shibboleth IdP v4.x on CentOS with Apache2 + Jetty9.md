@@ -460,10 +460,38 @@ This Storage service will memorize User Consent data on persistent database SQL.
      idp.persistentId.salt = ### result of 'openssl rand -base64 36' ###
      ```
      
-3. Restart IdP to apply the changes:
+3. Add the `<AttributeDefinition>` and the `<DataConnector>` needed into the `attribute-resolver.xml`:
+    * `vim /opt/shibboleth-idp/conf/attribute-resolver.xml`
+      
+      ```xml
+
+      <!-- ...other things ... -->
+
+      <!--  AttributeDefinition for eduPersonTargetedID - Stored Mode  -->
+ 
+      <AttributeDefinition xsi:type="SAML2NameID" nameIdFormat="urn:oasis:names:tc:SAML:2.0:nameid-format:persistent" id="eduPersonTargetedID">
+          <InputDataConnector ref="myComputedId" attributeNames="computedID" />
+      </AttributeDefinition>
+
+      <!-- ... other things... -->
+
+      <!--  Data Connector for eduPersonTargetedID - Stored Mode  -->
+
+      <DataConnector id="myComputedId" xsi:type="ComputedId"
+          generatedAttributeID="computedID"
+          salt="%{idp.persistentId.salt}"
+          algorithm="%{idp.persistentId.algorithm:SHA}"
+          encoding="%{idp.persistentId.encoding:BASE32}">
+
+          <InputDataConnector ref="myLDAP" attributeNames="%{idp.persistentId.sourceAttribute}" />
+
+      </DataConnector>
+      ```
+
+4. Restart IdP to apply the changes:
    * `touch /opt/jetty/webapps/idp.xml`
 
-4. Check IdP Status:
+5. Check IdP Status:
    * `bash /opt/shibboleth-idp/bin/status.sh`
 
 #### Stored mode - using a database
