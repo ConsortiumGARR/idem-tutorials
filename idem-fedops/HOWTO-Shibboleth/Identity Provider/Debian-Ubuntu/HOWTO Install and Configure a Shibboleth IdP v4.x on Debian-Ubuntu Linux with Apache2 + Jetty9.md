@@ -585,10 +585,38 @@ This Storage service will memorize User Consent data on persistent database SQL.
        * Transform each letter of username, before storing in into the database, to Lowercase or Uppercase by setting the proper constant.
        `<util:constant id="shibboleth.c14n.simple.Lowercase" static-field="java.lang.Boolean.TRUE"/>`
 
-10. Restart IdP to apply the changes:
+10. Add the `<AttributeDefinition>` and the `<DataConnector>` needed into the `attribute-resolver.xml`:
+    * `vim /opt/shibboleth-idp/conf/attribute-resolver.xml`
+      
+      ```xml
+
+      <!-- ...other things ... -->
+
+      <!--  AttributeDefinition for eduPersonTargetedID - Stored Mode  -->
+ 
+      <AttributeDefinition xsi:type="SAML2NameID" nameIdFormat="urn:oasis:names:tc:SAML:2.0:nameid-format:persistent" id="eduPersonTargetedID">
+          <InputDataConnector ref="myStoredId" attributeNames="persistentID" />
+      </AttributeDefinition>
+
+      <!-- ... other things... -->
+
+      <!--  Data Connector for eduPersonTargetedID - Stored Mode  -->
+
+      <DataConnector id="myStoredId" xsi:type="StoredId"
+         generatedAttributeID="persistentID"
+         salt="%{idp.persistentId.salt}"
+         queryTimeout="0">
+
+         <InputDataConnector ref="myLDAP" attributeNames="%{idp.persistentId.sourceAttribute}" />
+
+         <BeanManagedConnection>MyDataSource</BeanManagedConnection>
+      </DataConnector>
+      ```
+
+11. Restart IdP to apply the changes:
    * `touch /opt/jetty/webapps/idp.xml`
 
-11. Check IdP Status:
+12. Check IdP Status:
    * `bash /opt/shibboleth-idp/bin/status.sh`
 
 ### Configure the Directory (openLDAP or AD) Connection
