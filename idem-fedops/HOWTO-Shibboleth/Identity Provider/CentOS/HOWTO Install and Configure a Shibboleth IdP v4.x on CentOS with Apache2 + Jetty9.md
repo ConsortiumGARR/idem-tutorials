@@ -48,7 +48,7 @@
 ## Software that will be installed
 
  * ca-certificates
- * ntp
+ * chrony
  * vim
  * Amazon Corretto 11 JDK
  * jetty 9.4.x
@@ -87,27 +87,22 @@
    * `yum update ; yum upgrade -y`
    
 3. Install the packages required:
-   * `yum install -y vim wget openssl httpd ntp mod_ssl tar openldap-clients bash-completion bash-completion-extras`
+   * `yum install -y vim wget openssl httpd chrony mod_ssl tar openldap-clients`
 
-4. Enable bash completion:
-   * `find / -name "bash_completion.sh"`
-   * `source /etc/profile.d/bash_completion.sh`
-
-6. Install Amazon Corretto JDK:
+4. Install Amazon Corretto JDK:
      * `rpm --import https://yum.corretto.aws/corretto.key`
      * `wget https://yum.corretto.aws/corretto.repo -O /etc/yum.repos.d/corretto.repo`
      * `yum install -y java-11-amazon-corretto-devel`
    
-7. Check that Amanzon Corretto JDK is installed and selected:
+5. Check that Amanzon Corretto JDK is installed and selected:
    * `java -version`
    * `update-alternatives --config java` (press [Enter] to leave settings unchanged)
 
-8. Activate NTP:
-   * `systemctl enable ntpd`
-   * `systemctl start ntpd`
+6. Activate NTP:
+   * `systemctl enable chronyd`
    * `date`
 
-9. Configure the Timezone to "Europe/Rome":
+7. Configure the Timezone to "Europe/Rome":
    * `timedatectl set-timezone Europe/Rome`
 
 ### Configure the environment
