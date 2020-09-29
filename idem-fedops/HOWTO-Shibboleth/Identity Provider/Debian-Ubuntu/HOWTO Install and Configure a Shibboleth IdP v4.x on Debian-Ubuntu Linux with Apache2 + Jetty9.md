@@ -476,7 +476,7 @@ This Storage service will memorize User Consent data on persistent database SQL.
 
       <!-- ...other things ... -->
 
-      <!--  AttributeDefinition for eduPersonTargetedID - Stored Mode  -->
+      <!--  AttributeDefinition for eduPersonTargetedID - Computed Mode  -->
  
       <AttributeDefinition xsi:type="SAML2NameID" nameIdFormat="urn:oasis:names:tc:SAML:2.0:nameid-format:persistent" id="eduPersonTargetedID">
           <InputDataConnector ref="myComputedId" attributeNames="computedID" />
@@ -484,7 +484,7 @@ This Storage service will memorize User Consent data on persistent database SQL.
 
       <!-- ... other things... -->
 
-      <!--  Data Connector for eduPersonTargetedID - Stored Mode  -->
+      <!--  Data Connector for eduPersonTargetedID - Computed Mode  -->
 
       <DataConnector id="myComputedId" xsi:type="ComputedId"
           generatedAttributeID="computedID"
