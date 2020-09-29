@@ -289,16 +289,11 @@ The Apache HTTP Server will be configured as a reverse proxy and it will be used
 
 #### Default (HTML Local Storage, Encryption GCM, No Database) - Recommended
 
+> The HTML Local Storage requires JavaScript be enabled because reading and writing to the client requires an explicit page be rendered.
+> Note that this feature is safe to enable globally. The implementation is written to check for this capability in each client, and to back off to cookies.
+> The default configuration generates encrypted assertions that a large percentage of non-Shibboleth SPs are going to be unable to decrypt, resulting a wide variety of failures and error messages. Some old Shibboleth SPs or software running on old Operating Systems will also fail to work.
 
 If you don't change anything, the IdP stores data in a long-lived browser cookie that can contain an extremely small number of records. This could bring problems in the long term period.
-
-#### HTML Local Storage - Recommended
-
-> It requires JavaScript be enabled because reading and writing to the client requires an explicit page be rendered.
-> Note that this feature is safe to enable globally. The implementation is written to check for this capability in each client, and to back off to cookies.
-> The default configuration generates encrypted Assertions that a large percentage of non-Shibboleth SPs are going to be unable to decrypt, resulting a wide variety of failures and error messages. Some old Shibboleth SPs or software running on old Operating Systems will also fail to work.
-
-If you don't change anything, the IdP stores data locally within the user's browser.
 
 See the configuration files and the Shibboleth documentation for details.
 
