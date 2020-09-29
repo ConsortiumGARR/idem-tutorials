@@ -174,7 +174,7 @@ Jetty is a Web server and a Java Servlet container. It will be used to run the I
 
 9. Create the service loadable from command line:
    * `cd /etc/init.d`
-   * `ln -s /usr/local/src/jetty-src/bin/jetty.sh jetty`
+   * `chkconfig --add jetty`
    * `systemctl enable jetty`
 
 10. Check if all settings are OK:
