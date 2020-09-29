@@ -278,8 +278,7 @@ The Apache HTTP Server will be configured as a reverse proxy and it will be used
    * https://idp.example.org/idp/shibboleth
 
 5. Check IdP Status:
-   * `cd /opt/shibboleth-idp/bin`
-   * `./status.sh`
+   * `bash /opt/shibboleth-idp/bin/status.sh`
    
 ### Configure Shibboleth Identity Provider StorageService (User Consent)
 
@@ -298,8 +297,7 @@ If you don't change anything, the IdP stores data in a long-lived browser cookie
 See the configuration files and the Shibboleth documentation for details.
 
 Check IdP Status:
-   * `cd /opt/shibboleth-idp/bin`
-   * `./status.sh`
+   * `bash /opt/shibboleth-idp/bin/status.sh`
 
 #### JPA Storage Service - using a database
  
