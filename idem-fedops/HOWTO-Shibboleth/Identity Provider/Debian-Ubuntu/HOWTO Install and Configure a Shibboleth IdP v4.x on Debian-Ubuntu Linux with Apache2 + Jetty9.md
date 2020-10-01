@@ -16,11 +16,11 @@
    1. [Configure SSL on Apache2 (front-end of Jetty)](#configure-ssl-on-apache2-front-end-of-jetty)
    2. [Configure Jetty](#configure-jetty)
    3. [Configure Shibboleth Identity Provider StorageService (User Consent)](#configure-shibboleth-identity-provider-storageservice-user-consent)
-      1. [Default (HTML Local Storage, Encryption GCM, No Database) - Recommended](#default-html-local-storage-encryption-gcm-no-database---recommended)
-      2. [JPA Storage Service - using a database](#jpa-storage-service---using-a-database)
+      1. [Mode A - Default (HTML Local Storage, Encryption GCM, No Database) - Recommended](#mode-a---default-html-local-storage-encryption-gcm-no-database---recommended)
+      2. [Mode B - JPA Storage Service - using a database](#mode-b---jpa-storage-service---using-a-database)
    4. [Configure Shibboleth Identity Provider to release the persistent-id](#configure-shibboleth-identity-provider-to-release-the-persistent-id)
-      1. [Computed mode - Default & Recommended](#computed-mode---default--recommended)
-      2. [Stored mode - using a database](#stored-mode---using-a-database)
+      1. [Mode A - Computed mode - Default & Recommended](#mode-a---computed-mode---default--recommended)
+      2. [Mode B - Stored mode - using a database](#mode-b---stored-mode---using-a-database)
    5. [Configure the Directory (openLDAP or AD) Connection](#configure-the-directory-openldap-or-ad-connection)
    6. [Configure the attribute resolution with Attribute Registry](#configure-the-attribute-resolution-with-attribute-registry)
    7. [Configure Shibboleth IdP Logging](#configure-shibboleth-idp-logging)
@@ -307,7 +307,7 @@ The Apache HTTP Server will be configured as a reverse proxy and it will be used
 
 > The IdP provides a number of general-purpose storage facilities that can be used by core subsystems like session management and consent. 
 
-#### Default (HTML Local Storage, Encryption GCM, No Database) - Recommended
+#### Mode A - Default (HTML Local Storage, Encryption GCM, No Database) - Recommended
 
 > It requires JavaScript be enabled because reading and writing to the client requires an explicit page be rendered.
 > Note that this feature is safe to enable globally. The implementation is written to check for this capability in each client, and to back off to cookies.
@@ -320,7 +320,7 @@ See the configuration files and the Shibboleth documentation for details.
 Check IdP Status:
    * `bash /opt/shibboleth-idp/bin/status.sh`
 
-#### JPA Storage Service - using a database
+#### Mode B - JPA Storage Service - using a database
 
 This Storage service will memorize User Consent data on persistent database SQL.
 
@@ -430,7 +430,7 @@ This Storage service will memorize User Consent data on persistent database SQL.
 >
 > By default, a transient NameID will be released to Service Providers if the persistent one is not requested.
 
-#### Computed mode - Default & Recommended
+#### Mode A - Computed mode - Default & Recommended
 
 1. Become ROOT: 
    * `sudo su -`
@@ -503,7 +503,7 @@ This Storage service will memorize User Consent data on persistent database SQL.
 5. Check IdP Status:
    * `bash /opt/shibboleth-idp/bin/status.sh`
 
-#### Stored mode - using a database
+#### Mode B - Stored mode - using a database
 
 1. Become ROOT: 
    * `sudo su -`
@@ -683,7 +683,7 @@ This Storage service will memorize User Consent data on persistent database SQL.
          
          * `vim /opt/shibboleth-idp/conf/ldap.properties`
             
-            The `idp.authn.LDAP.returnAttributes` list MUST contains the attribute chosen for the persistent-id generation
+            The `idp.authn.LDAP.returnAttributes` list MUST contains the attribute chosen for the persistent-id generation (idp.persistentId.sourceAttribute)
 	 
             ```properties
             idp.authn.LDAP.authenticator = bindSearchAuthenticator
@@ -723,7 +723,7 @@ This Storage service will memorize User Consent data on persistent database SQL.
          
          * `vim /opt/shibboleth-idp/conf/ldap.properties`
 
-            The `idp.authn.LDAP.returnAttributes` list MUST contains the attribute chosen for the persistent-id generation
+            The `idp.authn.LDAP.returnAttributes` list MUST contains the attribute chosen for the persistent-id generation (idp.persistentId.sourceAttribute)
 
             ```properties
             idp.authn.LDAP.authenticator = bindSearchAuthenticator
@@ -763,7 +763,7 @@ This Storage service will memorize User Consent data on persistent database SQL.
          
          * `vim /opt/shibboleth-idp/conf/ldap.properties`
 
-            The `idp.authn.LDAP.returnAttributes` list MUST contains the attribute chosen for the persistent-id generation
+            The `idp.authn.LDAP.returnAttributes` list MUST contains the attribute chosen for the persistent-id generation (idp.persistentId.sourceAttribute)
 
             ```properties
             idp.authn.LDAP.authenticator = bindSearchAuthenticator
@@ -800,7 +800,7 @@ This Storage service will memorize User Consent data on persistent database SQL.
          
          * `vim /opt/shibboleth-idp/conf/ldap.properties`
 
-            The `idp.authn.LDAP.returnAttributes` list MUST contains the attribute chosen for the persistent-id generation
+            The `idp.authn.LDAP.returnAttributes` list MUST contains the attribute chosen for the persistent-id generation (idp.persistentId.sourceAttribute)
 
             ```properties
             idp.authn.LDAP.authenticator = bindSearchAuthenticator
@@ -840,7 +840,7 @@ This Storage service will memorize User Consent data on persistent database SQL.
          
          * `vim /opt/shibboleth-idp/conf/ldap.properties`
 
-            The `idp.authn.LDAP.returnAttributes` list MUST contains the attribute chosen for the persistent-id generation
+            The `idp.authn.LDAP.returnAttributes` list MUST contains the attribute chosen for the persistent-id generation (idp.persistentId.sourceAttribute)
 
             ```properties
             idp.authn.LDAP.authenticator = bindSearchAuthenticator
@@ -880,7 +880,7 @@ This Storage service will memorize User Consent data on persistent database SQL.
          
          * `vim /opt/shibboleth-idp/conf/ldap.properties`
 
-            The `idp.authn.LDAP.returnAttributes` list MUST contains the attribute chosen for the persistent-id generation
+            The `idp.authn.LDAP.returnAttributes` list MUST contains the attribute chosen for the persistent-id generation (idp.persistentId.sourceAttribute)
 
             ```properties
             idp.authn.LDAP.authenticator = bindSearchAuthenticator
@@ -1220,15 +1220,17 @@ Translate the IdP messages in your language:
    *  `bash /opt/shibboleth-idp/bin/reload-service.sh -id shibboleth.MetadataResolverService`
     
 4. Check that your IdP release at least eduPersonScopedAffiliation, eduPersonTargetedID and a saml2:NameID transient/persistent to the testing SPs provided by IDEM:
-   * `bash /opt/shibboleth-idp/bin/aacli.sh -n <USERNAME> -r https://sp.aai-test.garr.it/shibboleth --saml2` 
+   * `bash /opt/shibboleth-idp/bin/aacli.sh -n <USERNAME> -r https://sp.example.org/shibboleth --saml2` 
      
      (the command will have a `transient` NameID into the Subject of the assertion)
 
-   * `bash /opt/shibboleth-idp/bin/aacli.sh -n <USERNAME> -r https://sp-demo.idem.garr.it/shibboleth --saml2`
+   * `bash /opt/shibboleth-idp/bin/aacli.sh -n <USERNAME> -r https://sp-demo.aai-test.garr.it/shibboleth --saml2`
 
      (the command will have a `persistent` NameID into the Subject of the assertion)
 
 5. Wait that your IdP Metadata is approved by an IDEM Federation Operator into the metadata stream and the next steps provided by the operator itself.
+
+6. Follow the [instructions provided by IDEM](https://wiki.idem.garr.it/wiki/RegistraEntita).
 
 ### Appendix A: Configure Attribute Filters to release the required attributes for common resources
 
