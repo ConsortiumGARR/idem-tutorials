@@ -236,7 +236,7 @@ The Apache HTTP Server will be configured as a reverse proxy and it will be used
    * `mkdir /var/www/html/$(hostname -f)`
    * `sudo chown -R apache: /var/www/html/$(hostname -f)`
 
-2. Create the Virtualhost file (pay attention to replace '`idp.example.org`' and other info with yours):
+2. Create the Virtualhost file (pay attention and follow the starting comment):
    * `wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/apache2/idp.example.org.conf -O /etc/httpd/conf.d/$(hostname -f).conf`
 
 3. Configure SELinux to allow `mod_proxy` to initiate outbound connections:
