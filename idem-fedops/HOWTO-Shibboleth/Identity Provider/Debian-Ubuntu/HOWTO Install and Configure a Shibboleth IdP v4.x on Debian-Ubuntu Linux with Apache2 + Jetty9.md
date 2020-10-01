@@ -1151,7 +1151,7 @@ Translate the IdP messages in your language:
    * `sudo chmod +x /opt/shibboleth-idp/bin/updateIDPsecret.sh`
 
 3. Create the CRON script to run it:
-   * `sudo vim /etc/cron.daily/updateIDPsecret.sh`
+   * `sudo vim /etc/cron.daily/updateIDPsecret`
      
      ```bash
      #!/bin/bash
@@ -1160,7 +1160,7 @@ Translate the IdP messages in your language:
      ```
 
 4. Provide the right privileges to the script:
-   * `sudo chmod +x /etc/cron.daily/updateIDPsecret.sh`
+   * `sudo chmod +x /etc/cron.daily/updateIDPsecret`
    
 5. Add the following properties to `idp.properties` if you need to set different values than defaults:
    * `idp.sealer._count` - Number of earlier keys to keep (default 30)
