@@ -1130,8 +1130,11 @@ Translate the IdP messages in your language:
 
 4. Provide the right privileges to the script:
    * `sudo chmod +x /etc/cron.daily/updateIDPsecret`
+
+5. Confirm that the script will be run daily with (you should see your script in the command output):
+   * `sudo run-parts --test /etc/cron.daily`
    
-5. Add the following properties to `idp.properties` if you need to set different values than defaults:
+6. Add the following properties to `idp.properties` if you need to set different values than defaults:
    * `idp.sealer._count` - Number of earlier keys to keep (default 30)
    * `idp.sealer._sync_hosts` - Space separated list of hosts to scp the sealer files to (default generate locally)
 
