@@ -1188,16 +1188,18 @@ Translate the IdP messages in your language:
 3. Reload service with id `shibboleth.MetadataResolverService` to retrieve the Federation Metadata:
    *  `bash /opt/shibboleth-idp/bin/reload-service.sh -id shibboleth.MetadataResolverService`
     
-4. Check that your IdP release at least eduPersonScopedAffiliation, eduPersonTargetedID and a saml2:NameID transient/persistent to the testing SPs provided by IDEM:
-   * `bash /opt/shibboleth-idp/bin/aacli.sh -n <USERNAME> -r https://sp.aai-test.garr.it/shibboleth --saml2` 
+4. Check that your IdP release at least eduPersonScopedAffiliation, eduPersonTargetedID and a saml2:NameID transient/persistent to the testing SP provided by IDEM:
+   * `bash /opt/shibboleth-idp/bin/aacli.sh -n <USERNAME> -r https://sp.example.org/shibboleth --saml2` 
      
      (the command will have a `transient` NameID into the Subject of the assertion)
 
-   * `bash /opt/shibboleth-idp/bin/aacli.sh -n <USERNAME> -r https://sp-demo.garr.it/shibboleth --saml2`
+   * `bash /opt/shibboleth-idp/bin/aacli.sh -n <USERNAME> -r https://sp-demo.aai-test.garr.it/shibboleth --saml2`
 
      (the command will have a `persistent` NameID into the Subject of the assertion)
 
 5. Wait that your IdP Metadata is approved by an IDEM Federation Operator into the metadata stream and the next steps provided by the operator itself.
+
+6. Follow the [instructions provided by IDEM](https://wiki.idem.garr.it/wiki/RegistraEntita)
 
 ### Appendix A: Configure Attribute Filters to release the mandatory attributes to the IDEM Production Resources
 
