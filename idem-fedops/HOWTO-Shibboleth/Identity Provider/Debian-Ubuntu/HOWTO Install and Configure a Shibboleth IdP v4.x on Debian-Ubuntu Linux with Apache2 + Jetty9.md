@@ -1233,7 +1233,7 @@ Translate the IdP messages in your language:
      
      (the command will have a `transient` NameID into the Subject of the assertion)
 
-   * `bash /opt/shibboleth-idp/bin/aacli.sh -n <USERNAME> -r https://sp-demo.aai-test.garr.it/shibboleth --saml2`
+   * `bash /opt/shibboleth-idp/bin/aacli.sh -n <USERNAME> -r https://sp.aai-test.garr.it/shibboleth --saml2`
 
      (the command will have a `persistent` NameID into the Subject of the assertion)
 
