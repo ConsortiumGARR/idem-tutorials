@@ -1219,7 +1219,7 @@ Translate the IdP messages in your language:
     *  `./reload-service.sh -id shibboleth.MetadataResolverService`
 
 4. One hour after the IDEM Federation Operators approval your entity on IDEM Entity Registry, check if you can login with your IdP on the following services:
-    * https://sp-demo.aai-test.garr.it/secure   (Service Provider provided for testing the IDEM Test Federation)
+    * https://sp.aai-test.garr.it/secure   (Service Provider provided for testing the IDEM Test Federation)
     * https://sp24-test.garr.it/secure (Service Provider provided for testing the IDEM Test Federation and IDEM Production Federation)
 
     or check which attributes are released to one the above SP with AACLI:
