@@ -43,7 +43,7 @@
  * CPU: 2 Core
  * RAM: 4 GB
  * HDD: 20 GB
- * OS: Centos 7
+ * OS: Centos 7, Centos 8
 
 ## Software that will be installed
 
