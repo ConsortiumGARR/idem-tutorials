@@ -281,7 +281,7 @@ The Apache HTTP Server will be configured as a reverse proxy and it will be used
      wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/apache2/idp.example.org.conf -O /etc/apache2/sites-available/$(hostname -f).conf
      ```
 
-4. Put HTTPS credentials in the right place:
+4. Put SSL credentials in the right place:
    * HTTPS Server Certificate (Public Key) inside `/etc/ssl/certs` 
    * HTTPS Server Key (Private Key) inside `/etc/ssl/private`
    * Add CA Cert into `/etc/ssl/certs`
