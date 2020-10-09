@@ -4,17 +4,18 @@
 
 ## Table of Contents
 
-1. [Hardware Requirements](#hardware-requirements)
+1. [Requirements](#requirements)
+   1. [Hardware](#hardware)
+   2. [Other](#other)
 2. [Software that will be installed](#software-that-will-be-installed)
-3. [Other Requirements](#other-requirements)
-4. [Install Instructions](#install-instructions)
+3. [Install Instructions](#install-instructions)
    1. [Install software requirements](#install-software-requirements)
    2. [Configure the environment](#configure-the-environment)
-   3. [Install Jetty 9 Web Server](#install-jetty-9-web-server)
-   4. [Install Shibboleth Identity Provider v4.x](#install-shibboleth-identity-provider-v4x)
-5. [Configuration Instructions](#configuration-instructions)
-   1. [Configure SSL on Apache2 (front-end of Jetty)](#configure-ssl-on-apache2-front-end-of-jetty)
-   2. [Configure Jetty](#configure-jetty)
+   3. [Install Shibboleth Identity Provider v4.x](#install-shibboleth-identity-provider-v4x)
+   4. [Install Jetty 9 Web Server](#install-jetty-9-web-server)
+4. [Configuration Instructions](#configuration-instructions)
+   1. [Configure Jetty](#configure-jetty)
+   2. [Configure SSL on Apache2 (front-end of Jetty)](#configure-ssl-on-apache2-front-end-of-jetty)
    3. [Configure Shibboleth Identity Provider StorageService (User Consent)](#configure-shibboleth-identity-provider-storageservice-user-consent)
       1. [Mode A - Default (HTML Local Storage, Encryption GCM, No Database) - Recommended](#mode-a---default-html-local-storage-encryption-gcm-no-database---recommended)
       2. [Mode B - JPA Storage Service - using a database](#mode-b---jpa-storage-service---using-a-database)
@@ -29,21 +30,33 @@
    10. [Configure Attribute Filters to release the mandatory attributes to the IDEM Default Resources](#configure-attribute-filters-to-release-the-mandatory-attributes-to-the-idem-default-resources)
    11. [Secure cookies and other IDP data](#secure-cookies-and-other-idp-data)
    12. [Register the IdP on the IDEM Test Federation](#register-the-idp-on-the-idem-test-federation)
-6. [Appendix A: Configure Attribute Filters to release the mandatory attributes to the IDEM Production Resources](#appendix-a-configure-attribute-filters-to-release-the-mandatory-attributes-to-the-idem-production-resources)
-7. [Appendix B: Configure attribute filter policies for the REFEDS Research and Scholarship and the GEANT Data Protection Code of Conduct Entity Categories](#appendix-b-configure-attribute-filter-policies-for-the-refeds-research-and-scholarship-and-the-geant-data-protection-code-of-conduct-entity-categories)
-8. [Appendix C: Import persistent-id from a previous database](#appendix-c-import-persistent-id-from-a-previous-database)
-9. [Appendix D: Useful logs to find problems](#appendix-d-useful-logs-to-find-problems)
-10. [Utilities](#utilities)
-11. [Useful Documentation](#useful-documentation)
-12. [Authors](#authors)
+5. [Appendix A: Configure Attribute Filters to release the mandatory attributes to the IDEM Production Resources](#appendix-a-configure-attribute-filters-to-release-the-mandatory-attributes-to-the-idem-production-resources)
+6. [Appendix B: Configure attribute filter policies for the REFEDS Research and Scholarship and the GEANT Data Protection Code of Conduct Entity Categories](#appendix-b-configure-attribute-filter-policies-for-the-refeds-research-and-scholarship-and-the-geant-data-protection-code-of-conduct-entity-categories)
+7. [Appendix C: Import persistent-id from a previous database](#appendix-c-import-persistent-id-from-a-previous-database)
+8. [Appendix D: Useful logs to find problems](#appendix-d-useful-logs-to-find-problems)
+9. [Utilities](#utilities)
+10. [Useful Documentation](#useful-documentation)
+11. [Authors](#authors)
     * [Original Author](#original-author)
 
-## Hardware Requirements
+## Requirements
+
+### Hardware
 
  * CPU: 2 Core
  * RAM: 4 GB
  * HDD: 20 GB
  * OS: Centos 7, Centos 8
+ 
+### Other
+
+ * SSL Credentials: HTTPS Certificate & Key
+ * Logo:
+   * size: 80x60 px (or other that respect the aspect-ratio)
+   * format: PNG
+ * Favicon: 
+   * size: 16x16 px (or other that respect the aspect-ratio)
+   * format: PNG
 
 ## Software that will be installed
 
@@ -59,22 +72,6 @@
  * mariadb-server (if JPAStorageService is used)
  * mysql-connector-java (if JPAStorageService is used)
  * apache-commons-dbcp (if JPAStorageService is used)
-
-
-## Other Requirements
-
- * Put HTTPS credentials in the right place:
-   * HTTPS Server Certificate (Public Key) inside `/etc/pki/tls/certs`
-   * HTTPS Server Key (Private Key) inside `/etc/pki/tls/private`	
-   * Add CA Cert into `/etc/pki/tls/certs`
-     * If you use GARR TCS (Sectigo CA): `wget -O /etc/pki/tls/certs/GEANT_OV_RSA_CA_4.pem https://crt.sh/?d=2475254782`
-     * If you use ACME (Let's Encrypt): `ln -s /etc/letsencrypt/live/<SERVER_FQDN>/chain.pem /etc/pki/tls/certs/ACME-CA.pem`
-
-
-   **(ALTERNATIVE)** Create a self-signed certificate:
-   * `openssl req -x509 -newkey rsa:4096 -keyout /etc/pki/tls/private/$(hostname -f).key -out /etc/pki/tls/certs/$(hostname -f).crt -nodes -days 1095`
-   
-   (*`$(hostname -f)` will provide your IdP Full Qualified Domain Name*)
 
 ## Install Instructions
 
@@ -98,7 +95,7 @@
    * `java -version`
    * `update-alternatives --config java` (press [Enter] to leave settings unchanged)
 
-6. Activate NTP:
+6. Activate Chrony:
    * `systemctl enable chronyd`
    * `date`
 
@@ -126,9 +123,41 @@
    * `echo export JAVA_HOME=/usr/lib/jvm/java > /etc/profile.d/javaenv.sh`
    * `chmod 0755 /etc/profile.d/javaenv.sh`
 
-5. Configure the right privileges for the SSL Certificate and Key used by HTTPS:
-   * `chmod 400 /etc/pki/tls/private/$(hostname -f).key`
-   * `chmod 644 /etc/pki/tls/certs/$(hostname -f).crt`
+### Install Shibboleth Identity Provider v4.x
+
+The Identity Provider (IdP) is responsible for user authentication and providing user information to the Service Provider (SP). It is located at the home organization, which is the organization which maintains the user's account.
+It is a Java Web Application that can be deployed with its WAR file.
+
+1. Become ROOT:
+   * `sudo su -`
+
+2. Download the Shibboleth Identity Provider v4.x.y (replace '4.x.y' with the latest version found [here](https://shibboleth.net/downloads/identity-provider/)):
+   * `cd /usr/local/src`
+   * `wget http://shibboleth.net/downloads/identity-provider/4.x.y/shibboleth-identity-provider-4.x.y.tar.gz`
+   * `tar -xzf shibboleth-identity-provider-4.x.y.tar.gz`
+
+3. Run the installer `install.sh`:
+   > According to [NSA and NIST](https://www.keylength.com/en/compare/), RSA with 3072 bit-modulus is the minimum to protect up to TOP SECRET over than 2030.
+   
+   * `bash /usr/local/src/shibboleth-identity-provider-4.x.y/bin/install.sh -Didp.host.name=$(hostname -f) -Didp.keysize=3072`
+
+     ```bash
+     Buildfile: /usr/local/src/shibboleth-identity-provider-4.x.y/bin/build.xml
+
+     install:
+     Source (Distribution) Directory (press <enter> to accept default): [/usr/local/src/shibboleth-identity-provider-4.x.y] ?
+     Installation Directory: [/opt/shibboleth-idp] ?
+     Backchannel PKCS12 Password: ###PASSWORD-FOR-BACKCHANNEL###
+     Re-enter password:           ###PASSWORD-FOR-BACKCHANNEL###
+     Cookie Encryption Key Password: ###PASSWORD-FOR-COOKIE-ENCRYPTION###
+     Re-enter password:              ###PASSWORD-FOR-COOKIE-ENCRYPTION###
+     SAML EntityID: [https://idp.example.org/idp/shibboleth] ?
+     Attribute Scope: [example.org] ?
+     ```
+
+     By starting from this point the variable **idp.home** refers to the directory: `/opt/shibboleth-idp`
+     Backup the `###PASSWORD-FOR-BACKCHANNEL###` value somewhere to be able to find it when you need it.
+     The `###PASSWORD-FOR-COOKIE-ENCRYPTION###` will be saved into `/opt/shibboleth-idp/credentials/secrets.properties` as `idp.sealer.storePassword` and `idp.sealer.keyPassword` value.
 
 ### Install Jetty 9 Web Server
 
@@ -187,70 +216,7 @@ Jetty is a Web server and a Java Servlet container. It will be used to run the I
       * `rm /var/run/jetty/jetty.pid`
       * `service jetty start`
 
-### Install Shibboleth Identity Provider v4.x
-
-The Identity Provider (IdP) is responsible for user authentication and providing user information to the Service Provider (SP). It is located at the home organization, which is the organization which maintains the user's account.
-It is a Java Web Application that can be deployed with its WAR file.
-
-1. Become ROOT:
-   * `sudo su -`
-
-2. Download the Shibboleth Identity Provider v4.x.y (replace '4.x.y' with the latest version found [here](https://shibboleth.net/downloads/identity-provider/)):
-   * `cd /usr/local/src`
-   * `wget http://shibboleth.net/downloads/identity-provider/4.x.y/shibboleth-identity-provider-4.x.y.tar.gz`
-   * `tar -xzf shibboleth-identity-provider-4.x.y.tar.gz`
-
-3. Run the installer `install.sh`:
-   > According to [NSA and NIST](https://www.keylength.com/en/compare/), RSA with 3072 bit-modulus is the minimum to protect up to TOP SECRET over than 2030.
-   
-   * `bash /usr/local/src/shibboleth-identity-provider-4.x.y/bin/install.sh -Didp.host.name=$(hostname -f) -Didp.keysize=3072`
-
-     ```bash
-     Buildfile: /usr/local/src/shibboleth-identity-provider-4.x.y/bin/build.xml
-
-     install:
-     Source (Distribution) Directory (press <enter> to accept default): [/usr/local/src/shibboleth-identity-provider-4.x.y] ?
-     Installation Directory: [/opt/shibboleth-idp] ?
-     Backchannel PKCS12 Password: ###PASSWORD-FOR-BACKCHANNEL###
-     Re-enter password:           ###PASSWORD-FOR-BACKCHANNEL###
-     Cookie Encryption Key Password: ###PASSWORD-FOR-COOKIE-ENCRYPTION###
-     Re-enter password:              ###PASSWORD-FOR-COOKIE-ENCRYPTION###
-     SAML EntityID: [https://idp.example.org/idp/shibboleth] ?
-     Attribute Scope: [example.org] ?
-     ```
-
-     By starting from this point the variable **idp.home** refers to the directory: `/opt/shibboleth-idp`
-     Backup the `###PASSWORD-FOR-BACKCHANNEL###` value somewhere to be able to find it when you need it.
-     The `###PASSWORD-FOR-COOKIE-ENCRYPTION###` will be saved into `/opt/shibboleth-idp/credentials/secrets.properties` as `idp.sealer.storePassword` and `idp.sealer.keyPassword` value.
-
-5. Make the **jetty** user able to access the IdP main directories:
-   * `cd /opt/shibboleth-idp`
-   * `chown -R jetty logs/ metadata/ credentials/ conf/ system/ war/`
-
 ## Configuration Instructions
-
-### Configure SSL on Apache2 (front-end of Jetty)
-
-The Apache HTTP Server will be configured as a reverse proxy and it will be used for SSL offloading.
-
-1. Create the DocumentRoot:
-   * `mkdir /var/www/html/$(hostname -f)`
-   * `sudo chown -R apache: /var/www/html/$(hostname -f)`
-
-2. Create the Virtualhost file (pay attention and follow the starting comment):
-   * `wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/apache2/idp.example.org.conf -O /etc/httpd/conf.d/$(hostname -f).conf`
-
-3. Configure SELinux to allow `mod_proxy` to initiate outbound connections:
-   * `/usr/sbin/setsebool -P httpd_can_network_connect 1`
-
-4. Restart Apache: 
-   * `systemctl restart httpd.service`
-
-5. Check if the Apache Welcome page is available:
-    * https://idp.example.org
-
-6. Verify the strength of your IdP's machine on:
-   * [**https://www.ssllabs.com/ssltest/analyze.html**](https://www.ssllabs.com/ssltest/analyze.html)
 
 ### Configure Jetty
 
@@ -272,14 +238,54 @@ The Apache HTTP Server will be configured as a reverse proxy and it will be used
      </Configure>
      ```
 
-3. Restart Jetty:
+3. Make the **jetty** user owner of IdP main directories:
+   * `cd /opt/shibboleth-idp`
+   * `chown -R jetty logs/ metadata/ credentials/ conf/ system/ war/`
+
+4. Restart Jetty:
    * `systemctl restart jetty.service`
 
-4. Check that IdP metadata is available on:
+5. Check that IdP metadata is available on:
    * https://idp.example.org/idp/shibboleth
 
-5. Check IdP Status:
+6. Check IdP Status:
    * `bash /opt/shibboleth-idp/bin/status.sh`
+
+### Configure SSL on Apache2 (front-end of Jetty)
+
+The Apache HTTP Server will be configured as a reverse proxy and it will be used for SSL offloading.
+
+1. Create the DocumentRoot:
+   * `mkdir /var/www/html/$(hostname -f)`
+   * `sudo chown -R apache: /var/www/html/$(hostname -f)`
+
+2. Create the Virtualhost file (pay attention and follow the starting comment):
+   * `wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/apache2/idp.example.org.conf -O /etc/httpd/conf.d/$(hostname -f).conf`
+   
+3. Put SSL credentials in the right place:
+   * HTTPS Server Certificate (Public Key) inside `/etc/pki/tls/certs`
+   * HTTPS Server Key (Private Key) inside `/etc/pki/tls/private`	
+   * Add CA Cert into `/etc/pki/tls/certs`
+     * If you use GARR TCS (Sectigo CA): `wget -O /etc/pki/tls/certs/GEANT_OV_RSA_CA_4.pem https://crt.sh/?d=2475254782`
+     * If you use ACME (Let's Encrypt): `ln -s /etc/letsencrypt/live/<SERVER_FQDN>/chain.pem /etc/pki/tls/certs/ACME-CA.pem`
+
+4. Configure the right privileges for the SSL Certificate and Key used by HTTPS:
+   * `chmod 400 /etc/pki/tls/private/$(hostname -f).key`
+   * `chmod 644 /etc/pki/tls/certs/$(hostname -f).crt`
+   
+     (*`$(hostname -f)` will provide your IdP Full Qualified Domain Name*)
+
+5. Configure SELinux to allow `mod_proxy` to initiate outbound connections:
+   * `/usr/sbin/setsebool -P httpd_can_network_connect 1`
+
+6. Restart Apache: 
+   * `systemctl restart httpd.service`
+
+7. Check if the Apache Welcome page is available:
+    * https://idp.example.org
+
+8. Verify the strength of your IdP's machine on:
+   * [**https://www.ssllabs.com/ssltest/analyze.html**](https://www.ssllabs.com/ssltest/analyze.html)
    
 ### Configure Shibboleth Identity Provider StorageService (User Consent)
 
