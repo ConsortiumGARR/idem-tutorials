@@ -17,14 +17,14 @@
    1. [Configure Jetty](#configure-jetty)
    2. [Configure SSL on Apache2 (front-end of Jetty)](#configure-ssl-on-apache2-front-end-of-jetty)
    3. [Configure Shibboleth Identity Provider StorageService (User Consent)](#configure-shibboleth-identity-provider-storageservice-user-consent)
-      1. [Mode A - Default (HTML Local Storage, Encryption GCM, No Database) - Recommended](#mode-a---default-html-local-storage-encryption-gcm-no-database---recommended)
-      2. [Mode B - JPA Storage Service - using a database](#mode-b---jpa-storage-service---using-a-database)
+      1. [Strategy A - Default (HTML Local Storage, Encryption GCM, No Database) - Recommended](#strategy-a---default-html-local-storage-encryption-gcm-no-database---recommended)
+      2. [Strategy B - JPA Storage Service - using a database](#strategy-b---jpa-storage-service---using-a-database)
    4. [Configure Shibboleth Identity Provider to release the persistent NameID](#configure-shibboleth-identity-provider-to-release-the-persistent-nameid)
-      1. [Mode A - Computed mode - Default & Recommended](#mode-a---computed-mode---default--recommended)
-      2. [Mode B - Stored mode - using a database](#mode-b---stored-mode---using-a-database)
+      1. [Strategy A - Computed mode - Default & Recommended](#strategy-a---computed-mode---default--recommended)
+      2. [Strategy B - Stored mode - using a database](#strategy-b---stored-mode---using-a-database)
    5. [Configure Shibboleth Identity Provider to release the eduPersonTargetedID](#configure-shibboleth-identity-provider-to-release-the-edupersontargetedid)
-      1. [Mode A - Computed mode - using the computed persistent NameID](#mode-a---computed-mode---using-the-computed-persistent-nameid)
-      2. [Mode B - Stored mode - using a database](#mode-b---stored-mode---using-the-persistent-nameid-database)
+      1. [Strategy A - Computed mode - using the computed persistent NameID](#strategy-a---computed-mode---using-the-computed-persistent-nameid)
+      2. [Strategy B - Stored mode - using a database](#strategy-b---stored-mode---using-the-persistent-nameid-database)
    6. [Configure the Directory (openLDAP or AD) Connection](#configure-the-directory-openldap-or-ad-connection)
    7. [Configure the attribute resolution with Attribute Registry](#configure-the-attribute-resolution-with-attribute-registry)
    8. [Configure Shibboleth IdP Logging](#configure-shibboleth-idp-logging)
@@ -316,7 +316,7 @@ The Apache HTTP Server will be configured as a reverse proxy and it will be used
 
 > The IdP provides a number of general-purpose storage facilities that can be used by core subsystems like session management and consent. 
 
-#### Mode A - Default (HTML Local Storage, Encryption GCM, No Database) - Recommended
+#### Strategy A - Default (HTML Local Storage, Encryption GCM, No Database) - Recommended
 
 > It requires JavaScript be enabled because reading and writing to the client requires an explicit page be rendered.
 > Note that this feature is safe to enable globally. The implementation is written to check for this capability in each client, and to back off to cookies.
@@ -329,7 +329,7 @@ See the configuration files and the Shibboleth documentation for details.
 Check IdP Status:
    * `bash /opt/shibboleth-idp/bin/status.sh`
 
-#### Mode B - JPA Storage Service - using a database
+#### Strategy B - JPA Storage Service - using a database
 
 This Storage service will memorize User Consent data on persistent database SQL.
 
@@ -439,7 +439,7 @@ This Storage service will memorize User Consent data on persistent database SQL.
 >
 > By default, a transient NameID will be released to Service Providers if the persistent one is not requested.
 
-#### Mode A - Computed mode - Default & Recommended
+#### Strategy A - Computed mode - Default & Recommended
 
 1. Become ROOT: 
    * `sudo su -`
@@ -484,7 +484,7 @@ This Storage service will memorize User Consent data on persistent database SQL.
 4. Check IdP Status:
    * `bash /opt/shibboleth-idp/bin/status.sh`
 
-#### Mode B - Stored mode - using a database
+#### Strategy B - Stored mode - using a database
 
 1. Become ROOT: 
    * `sudo su -`
@@ -605,7 +605,7 @@ This Storage service will memorize User Consent data on persistent database SQL.
 > eduPersonTargetedID is an abstracted version of the SAML V2.0 Name Identifier format of "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent".
 > To be able to follow these steps, you need to have followed the previous steps on "persistent" NameID generation.
 
-#### Mode A - Computed mode - using the computed persistent NameID
+#### Strategy A - Computed mode - using the computed persistent NameID
 
 1. Add the `<AttributeDefinition>` and the `<DataConnector>` needed into the `attribute-resolver.xml`:
     * `vim /opt/shibboleth-idp/conf/attribute-resolver.xml`
@@ -646,7 +646,7 @@ This Storage service will memorize User Consent data on persistent database SQL.
 5. Check IdP Status:
    * `bash /opt/shibboleth-idp/bin/status.sh`
 
-#### Mode B - Stored mode - using the persistent NameID database
+#### Strategy B - Stored mode - using the persistent NameID database
 
 1. Add the `<AttributeDefinition>` and the `<DataConnector>` needed into the `attribute-resolver.xml`:
     * `vim /opt/shibboleth-idp/conf/attribute-resolver.xml`
