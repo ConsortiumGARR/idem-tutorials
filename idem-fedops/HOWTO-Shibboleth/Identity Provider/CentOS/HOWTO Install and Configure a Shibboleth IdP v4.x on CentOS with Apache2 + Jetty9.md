@@ -405,10 +405,10 @@ This Storage service will memorize User Consent data on persistent database SQL.
      ```
 	 
 10. Restart IdP to apply the changes:
-   * `touch /opt/jetty/webapps/idp.xml`
+    * `touch /opt/jetty/webapps/idp.xml`
 
 11. Check IdP Status:
-   * `bash /opt/shibboleth-idp/bin/status.sh`
+    * `bash /opt/shibboleth-idp/bin/status.sh`
 
 ### Configure Shibboleth Identity Provider to release the persistent NameID
 
@@ -575,10 +575,10 @@ This Storage service will memorize User Consent data on persistent database SQL.
        `<util:constant id="shibboleth.c14n.simple.Lowercase" static-field="java.lang.Boolean.TRUE"/>`
 
 10. Restart IdP to apply the changes:
-   * `touch /opt/jetty/webapps/idp.xml`
+    * `touch /opt/jetty/webapps/idp.xml`
 
 11. Check IdP Status:
-   * `bash /opt/shibboleth-idp/bin/status.sh`
+    * `bash /opt/shibboleth-idp/bin/status.sh`
 
 ### Configure Shibboleth Identity Provider to release the eduPersonTargetedID
 
@@ -588,32 +588,32 @@ This Storage service will memorize User Consent data on persistent database SQL.
 #### Strategy A - Computed mode - using the computed persistent NameID
 
 1. Add the `<AttributeDefinition>` and the `<DataConnector>` needed into the `attribute-resolver.xml`:
-    * `vim /opt/shibboleth-idp/conf/attribute-resolver.xml`
+   * `vim /opt/shibboleth-idp/conf/attribute-resolver.xml`
       
-      ```xml
+     ```xml
 
-      <!-- ...other things ... -->
+     <!-- ...other things ... -->
 
-      <!--  AttributeDefinition for eduPersonTargetedID - Computed Mode  -->
+     <!--  AttributeDefinition for eduPersonTargetedID - Computed Mode  -->
  
-      <AttributeDefinition xsi:type="SAML2NameID" nameIdFormat="urn:oasis:names:tc:SAML:2.0:nameid-format:persistent" id="eduPersonTargetedID">
-          <InputDataConnector ref="myComputedId" attributeNames="computedID" />
-      </AttributeDefinition>
+     <AttributeDefinition xsi:type="SAML2NameID" nameIdFormat="urn:oasis:names:tc:SAML:2.0:nameid-format:persistent" id="eduPersonTargetedID">
+         <InputDataConnector ref="myComputedId" attributeNames="computedID" />
+     </AttributeDefinition>
 
-      <!-- ... other things... -->
+     <!-- ... other things... -->
 
-      <!--  Data Connector for eduPersonTargetedID - Computed Mode  -->
+     <!--  Data Connector for eduPersonTargetedID - Computed Mode  -->
 
-      <DataConnector id="myComputedId" xsi:type="ComputedId"
-          generatedAttributeID="computedID"
-          salt="%{idp.persistentId.salt}"
-          algorithm="%{idp.persistentId.algorithm:SHA}"
-          encoding="%{idp.persistentId.encoding:BASE32}">
+     <DataConnector id="myComputedId" xsi:type="ComputedId"
+         generatedAttributeID="computedID"
+         salt="%{idp.persistentId.salt}"
+         algorithm="%{idp.persistentId.algorithm:SHA}"
+         encoding="%{idp.persistentId.encoding:BASE32}">
 
-          <InputDataConnector ref="myLDAP" attributeNames="%{idp.persistentId.sourceAttribute}" />
+         <InputDataConnector ref="myLDAP" attributeNames="%{idp.persistentId.sourceAttribute}" />
 
-      </DataConnector>
-      ```
+     </DataConnector>
+     ```
 
 3. Create the custom `eduPersonTargetedID.properties` file:
    ```bash 
@@ -629,32 +629,32 @@ This Storage service will memorize User Consent data on persistent database SQL.
 #### Strategy B - Stored mode - using the persistent NameID database
 
 1. Add the `<AttributeDefinition>` and the `<DataConnector>` needed into the `attribute-resolver.xml`:
-    * `vim /opt/shibboleth-idp/conf/attribute-resolver.xml`
+   * `vim /opt/shibboleth-idp/conf/attribute-resolver.xml`
       
-      ```xml
+     ```xml
 
-      <!-- ...other things ... -->
+     <!-- ...other things ... -->
 
-      <!--  AttributeDefinition for eduPersonTargetedID - Stored Mode  -->
+     <!--  AttributeDefinition for eduPersonTargetedID - Stored Mode  -->
  
-      <AttributeDefinition xsi:type="SAML2NameID" nameIdFormat="urn:oasis:names:tc:SAML:2.0:nameid-format:persistent" id="eduPersonTargetedID">
-          <InputDataConnector ref="myStoredId" attributeNames="persistentID" />
-      </AttributeDefinition>
+     <AttributeDefinition xsi:type="SAML2NameID" nameIdFormat="urn:oasis:names:tc:SAML:2.0:nameid-format:persistent" id="eduPersonTargetedID">
+         <InputDataConnector ref="myStoredId" attributeNames="persistentID" />
+     </AttributeDefinition>
 
-      <!-- ... other things... -->
+     <!-- ... other things... -->
 
-      <!--  Data Connector for eduPersonTargetedID - Stored Mode  -->
+     <!--  Data Connector for eduPersonTargetedID - Stored Mode  -->
 
-      <DataConnector id="myStoredId" xsi:type="StoredId"
-         generatedAttributeID="persistentID"
-         salt="%{idp.persistentId.salt}"
-         queryTimeout="0">
+     <DataConnector id="myStoredId" xsi:type="StoredId"
+        generatedAttributeID="persistentID"
+        salt="%{idp.persistentId.salt}"
+        queryTimeout="0">
 
-         <InputDataConnector ref="myLDAP" attributeNames="%{idp.persistentId.sourceAttribute}" />
+        <InputDataConnector ref="myLDAP" attributeNames="%{idp.persistentId.sourceAttribute}" />
 
-         <BeanManagedConnection>MyDataSource</BeanManagedConnection>
-      </DataConnector>
-      ```
+        <BeanManagedConnection>MyDataSource</BeanManagedConnection>
+     </DataConnector>
+     ```
 
 2. Create the custom `eduPersonTargetedID.properties` file:
    ```bash 
