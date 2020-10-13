@@ -939,7 +939,7 @@ This Storage service will memorize User Consent data on persistent database SQL.
 
 File(s): `conf/attribute-registry.xml`, `conf/attributes/default-rules.xml`, `conf/attribute-resolver.xml`, `conf/attributes/custom/`
 
-1. Download `schac.xml` (provided by IDEM) into the right location:
+1. Download `schac.xml` into the right location:
    * `wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/attributes/schac.xml -O /opt/shibboleth-idp/conf/attributes/schac.xml`
 
 2. Change the `default-rules.xml` to include the new `schac.xml` file:
@@ -955,9 +955,6 @@ File(s): `conf/attribute-registry.xml`, `conf/attributes/default-rules.xml`, `co
          <import resource="schac.xml" />
      </beans>
      ```
-
-3. Create the custom `eduPersonTargetedID.properties` file:
-   * `wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/attributes/custom/eduPersonTargetedID.properties -O /opt/shibboleth-idp/conf/attributes/custom/eduPersonTargetedID.properties`
 
 #### Configure the attribute resolver (sample)
 
