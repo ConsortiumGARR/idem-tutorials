@@ -17,19 +17,22 @@
    1. [Configure Jetty](#configure-jetty)
    2. [Configure SSL on Apache2 (front-end of Jetty)](#configure-ssl-on-apache2-front-end-of-jetty)
    3. [Configure Shibboleth Identity Provider StorageService (User Consent)](#configure-shibboleth-identity-provider-storageservice-user-consent)
-      1. [Mode A - Default (HTML Local Storage, Encryption GCM, No Database) - Recommended](#mode-a---default-html-local-storage-encryption-gcm-no-database---recommended)
-      2. [Mode B - JPA Storage Service - using a database](#mode-b---jpa-storage-service---using-a-database)
-   4. [Configure Shibboleth Identity Provider to release the persistent-id](#configure-shibboleth-identity-provider-to-release-the-persistent-id)
-      1. [Mode A - Computed mode - Default & Recommended](#mode-a---computed-mode---default--recommended)
-      2. [Mode B - Stored mode - using a database](#mode-b---stored-mode---using-a-database)
-   5. [Configure the Directory (openLDAP or AD) Connection](#configure-the-directory-openldap-or-ad-connection)
-   6. [Configure the attribute resolution with Attribute Registry](#configure-the-attribute-resolution-with-attribute-registry)
-   7. [Configure IdP Logging](#configure-idp-logging)
-   8. [Translate IdP messages into the preferred language](#translate-idp-messages-into-preferred-language)
-   9. [Disable SAML1 Deprecated Protocol](#disable-saml1-deprecated-protocol)
-   10. [Configure Attribute Filters to release the mandatory attributes to the IDEM Default Resources](#configure-attribute-filters-to-release-the-mandatory-attributes-to-the-idem-default-resources)
-   11. [Secure cookies and other IDP data](#secure-cookies-and-other-idp-data)
-   12. [Register the IdP on the IDEM Test Federation](#register-the-idp-on-the-idem-test-federation)
+      1. [Strategy A - Default (HTML Local Storage, Encryption GCM, No Database) - Recommended](#strategy-a---default-html-local-storage-encryption-gcm-no-database---recommended)
+      2. [Strategy B - JPA Storage Service - using a database](#strategy-b---jpa-storage-service---using-a-database)
+   4. [Configure Shibboleth Identity Provider to release the persistent NameID](#configure-shibboleth-identity-provider-to-release-the-persistent-nameid)
+      1. [Strategy A - Computed mode - Default & Recommended](#strategy-a---computed-mode---default--recommended)
+      2. [Strategy B - Stored mode - using a database](#strategy-b---stored-mode---using-a-database)
+   5. [Configure Shibboleth Identity Provider to release the eduPersonTargetedID](#configure-shibboleth-identity-provider-to-release-the-edupersontargetedid)
+      1. [Strategy A - Computed mode - using the computed persistent NameID](#strategy-a---computed-mode---using-the-computed-persistent-nameid)
+      2. [Strategy B - Stored mode - using a database](#strategy-b---stored-mode---using-the-persistent-nameid-database)
+   6. [Configure the Directory (openLDAP or AD) Connection](#configure-the-directory-openldap-or-ad-connection)
+   7. [Configure the attribute resolution with Attribute Registry](#configure-the-attribute-resolution-with-attribute-registry)
+   8. [Configure IdP Logging](#configure-idp-logging)
+   9. [Translate IdP messages into the preferred language](#translate-idp-messages-into-preferred-language)
+   10. [Disable SAML1 Deprecated Protocol](#disable-saml1-deprecated-protocol)
+   11. [Configure Attribute Filters to release the mandatory attributes to the IDEM Default Resources](#configure-attribute-filters-to-release-the-mandatory-attributes-to-the-idem-default-resources)
+   12. [Secure cookies and other IDP data](#secure-cookies-and-other-idp-data)
+   13. [Register the IdP on the IDEM Test Federation](#register-the-idp-on-the-idem-test-federation)
 5. [Appendix A: Configure Attribute Filters to release the mandatory attributes to the IDEM Production Resources](#appendix-a-configure-attribute-filters-to-release-the-mandatory-attributes-to-the-idem-production-resources)
 6. [Appendix B: Configure attribute filter policies for the REFEDS Research and Scholarship and the GEANT Data Protection Code of Conduct Entity Categories](#appendix-b-configure-attribute-filter-policies-for-the-refeds-research-and-scholarship-and-the-geant-data-protection-code-of-conduct-entity-categories)
 7. [Appendix C: Import persistent-id from a previous database](#appendix-c-import-persistent-id-from-a-previous-database)
@@ -293,7 +296,7 @@ The Apache HTTP Server will be configured as a reverse proxy and it will be used
 
 > The IdP provides a number of general-purpose storage facilities that can be used by core subsystems like session management and consent. 
 
-#### Mode A - Default (HTML Local Storage, Encryption GCM, No Database) - Recommended
+#### Strategy A - Default (HTML Local Storage, Encryption GCM, No Database) - Recommended
 
 > The HTML Local Storage requires JavaScript be enabled because reading and writing to the client requires an explicit page be rendered.
 > Note that this feature is safe to enable globally. The implementation is written to check for this capability in each client, and to back off to cookies.
@@ -306,7 +309,7 @@ See the configuration files and the Shibboleth documentation for details.
 Check IdP Status:
    * `bash /opt/shibboleth-idp/bin/status.sh`
 
-#### Mode B - JPA Storage Service - using a database
+#### Strategy B - JPA Storage Service - using a database
  
 This Storage service will memorize User Consent data on persistent database SQL.
 
@@ -407,7 +410,7 @@ This Storage service will memorize User Consent data on persistent database SQL.
 11. Check IdP Status:
    * `bash /opt/shibboleth-idp/bin/status.sh`
 
-### Configure Shibboleth Identity Provider to release the persistent-id
+### Configure Shibboleth Identity Provider to release the persistent NameID
 
 **Shibboleth Documentation reference** https://wiki.shibboleth.net/confluence/display/IDP4/PersistentNameIDGenerationConfiguration
 
@@ -416,7 +419,7 @@ This Storage service will memorize User Consent data on persistent database SQL.
 
 > By default, a transient NameID will always be released to the Service Provider if the persistent one is not requested.
 
-#### Mode A - Computed mode - Default & Recommended
+#### Strategy A - Computed mode - Default & Recommended
 
 1. Become ROOT: 
    * `sudo su -`
@@ -454,42 +457,14 @@ This Storage service will memorize User Consent data on persistent database SQL.
      ```properties
      idp.persistentId.salt = ### result of 'openssl rand -base64 36' ###
      ```
-     
-3. Add the `<AttributeDefinition>` and the `<DataConnector>` needed into the `attribute-resolver.xml`:
-    * `vim /opt/shibboleth-idp/conf/attribute-resolver.xml`
-      
-      ```xml
 
-      <!-- ...other things ... -->
-
-      <!--  AttributeDefinition for eduPersonTargetedID - Stored Mode  -->
- 
-      <AttributeDefinition xsi:type="SAML2NameID" nameIdFormat="urn:oasis:names:tc:SAML:2.0:nameid-format:persistent" id="eduPersonTargetedID">
-          <InputDataConnector ref="myComputedId" attributeNames="computedID" />
-      </AttributeDefinition>
-
-      <!-- ... other things... -->
-
-      <!--  Data Connector for eduPersonTargetedID - Stored Mode  -->
-
-      <DataConnector id="myComputedId" xsi:type="ComputedId"
-          generatedAttributeID="computedID"
-          salt="%{idp.persistentId.salt}"
-          algorithm="%{idp.persistentId.algorithm:SHA}"
-          encoding="%{idp.persistentId.encoding:BASE32}">
-
-          <InputDataConnector ref="myLDAP" attributeNames="%{idp.persistentId.sourceAttribute}" />
-
-      </DataConnector>
-      ```
-
-4. Restart IdP to apply the changes:
+3. Restart IdP to apply the changes:
    * `touch /opt/jetty/webapps/idp.xml`
 
-5. Check IdP Status:
+4. Check IdP Status:
    * `bash /opt/shibboleth-idp/bin/status.sh`
 
-#### Mode B - Stored mode - using a database
+#### Strategy B - Stored mode - using a database
 
 1. Become ROOT of the machine:
    * `sudo su -`
@@ -599,7 +574,61 @@ This Storage service will memorize User Consent data on persistent database SQL.
        * Transform each letter of username, before storing in into the database, to Lowercase or Uppercase by setting the proper constant.
        `<util:constant id="shibboleth.c14n.simple.Lowercase" static-field="java.lang.Boolean.TRUE"/>`
 
-10. Add the `<AttributeDefinition>` and the `<DataConnector>` needed into the `attribute-resolver.xml`:
+10. Restart IdP to apply the changes:
+   * `touch /opt/jetty/webapps/idp.xml`
+
+11. Check IdP Status:
+   * `bash /opt/shibboleth-idp/bin/status.sh`
+
+### Configure Shibboleth Identity Provider to release the eduPersonTargetedID
+
+> eduPersonTargetedID is an abstracted version of the SAML V2.0 Name Identifier format of "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent".
+> To be able to follow these steps, you need to have followed the previous steps on "persistent" NameID generation.
+
+#### Strategy A - Computed mode - using the computed persistent NameID
+
+1. Add the `<AttributeDefinition>` and the `<DataConnector>` needed into the `attribute-resolver.xml`:
+    * `vim /opt/shibboleth-idp/conf/attribute-resolver.xml`
+      
+      ```xml
+
+      <!-- ...other things ... -->
+
+      <!--  AttributeDefinition for eduPersonTargetedID - Computed Mode  -->
+ 
+      <AttributeDefinition xsi:type="SAML2NameID" nameIdFormat="urn:oasis:names:tc:SAML:2.0:nameid-format:persistent" id="eduPersonTargetedID">
+          <InputDataConnector ref="myComputedId" attributeNames="computedID" />
+      </AttributeDefinition>
+
+      <!-- ... other things... -->
+
+      <!--  Data Connector for eduPersonTargetedID - Computed Mode  -->
+
+      <DataConnector id="myComputedId" xsi:type="ComputedId"
+          generatedAttributeID="computedID"
+          salt="%{idp.persistentId.salt}"
+          algorithm="%{idp.persistentId.algorithm:SHA}"
+          encoding="%{idp.persistentId.encoding:BASE32}">
+
+          <InputDataConnector ref="myLDAP" attributeNames="%{idp.persistentId.sourceAttribute}" />
+
+      </DataConnector>
+      ```
+
+3. Create the custom `eduPersonTargetedID.properties` file:
+   ```bash 
+   wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/attributes/custom/eduPersonTargetedID.properties -O /opt/shibboleth-idp/conf/attributes/custom/eduPersonTargetedID.properties
+   ```
+
+4. Restart IdP to apply the changes:
+   * `touch /opt/jetty/webapps/idp.xml`
+
+5. Check IdP Status:
+   * `bash /opt/shibboleth-idp/bin/status.sh`
+
+#### Strategy B - Stored mode - using the persistent NameID database
+
+1. Add the `<AttributeDefinition>` and the `<DataConnector>` needed into the `attribute-resolver.xml`:
     * `vim /opt/shibboleth-idp/conf/attribute-resolver.xml`
       
       ```xml
@@ -627,10 +656,15 @@ This Storage service will memorize User Consent data on persistent database SQL.
       </DataConnector>
       ```
 
-11. Restart IdP to apply the changes:
+2. Create the custom `eduPersonTargetedID.properties` file:
+   ```bash 
+   wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/attributes/custom/eduPersonTargetedID.properties -O /opt/shibboleth-idp/conf/attributes/custom/eduPersonTargetedID.properties
+   ```
+
+3. Restart IdP to apply the changes:
    * `touch /opt/jetty/webapps/idp.xml`
 
-12. Check IdP Status:
+4. Check IdP Status:
    * `bash /opt/shibboleth-idp/bin/status.sh`
 
 ### Configure the Directory (openLDAP or AD) Connection
