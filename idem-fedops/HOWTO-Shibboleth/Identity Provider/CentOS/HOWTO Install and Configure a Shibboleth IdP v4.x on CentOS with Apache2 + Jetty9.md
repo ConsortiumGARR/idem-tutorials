@@ -19,13 +19,13 @@
    3. [Configure Shibboleth Identity Provider StorageService (User Consent)](#configure-shibboleth-identity-provider-storageservice-user-consent)
       1. [Strategy A - Default (HTML Local Storage, Encryption GCM, No Database) - Recommended](#strategy-a---default-html-local-storage-encryption-gcm-no-database---recommended)
       2. [Strategy B - JPA Storage Service - using a database](#strategy-b---jpa-storage-service---using-a-database)
-   4. [Configure Shibboleth Identity Provider to release the persistent NameID](#configure-shibboleth-identity-provider-to-release-the-persistent-nameid)
+   4. [Configure the Directory (openLDAP or AD) Connection](#configure-the-directory-openldap-or-ad-connection)
+   5. [Configure Shibboleth Identity Provider to release the persistent NameID](#configure-shibboleth-identity-provider-to-release-the-persistent-nameid)
       1. [Strategy A - Computed mode - Default & Recommended](#strategy-a---computed-mode---default--recommended)
       2. [Strategy B - Stored mode - using a database](#strategy-b---stored-mode---using-a-database)
-   5. [Configure Shibboleth Identity Provider to release the eduPersonTargetedID](#configure-shibboleth-identity-provider-to-release-the-edupersontargetedid)
+   6. [Configure Shibboleth Identity Provider to release the eduPersonTargetedID](#configure-shibboleth-identity-provider-to-release-the-edupersontargetedid)
       1. [Strategy A - Computed mode - using the computed persistent NameID](#strategy-a---computed-mode---using-the-computed-persistent-nameid)
       2. [Strategy B - Stored mode - using a database](#strategy-b---stored-mode---using-the-persistent-nameid-database)
-   6. [Configure the Directory (openLDAP or AD) Connection](#configure-the-directory-openldap-or-ad-connection)
    7. [Configure the attribute resolution with Attribute Registry](#configure-the-attribute-resolution-with-attribute-registry)
    8. [Configure IdP Logging](#configure-idp-logging)
    9. [Translate IdP messages into the preferred language](#translate-idp-messages-into-preferred-language)
@@ -410,263 +410,6 @@ This Storage service will memorize User Consent data on persistent database SQL.
 11. Check IdP Status:
     * `bash /opt/shibboleth-idp/bin/status.sh`
 
-### Configure Shibboleth Identity Provider to release the persistent NameID
-
-**Shibboleth Documentation reference** https://wiki.shibboleth.net/confluence/display/IDP4/PersistentNameIDGenerationConfiguration
-
-> SAML 2.0 (but not SAML 1.x) defines a kind of NameID called a "persistent" identifier that every SP receives for the IdP users.
-> This part will teach you how to release the "persistent" identifiers with a database (Stored Mode) or without it (Computed Mode).
-
-> By default, a transient NameID will always be released to the Service Provider if the persistent one is not requested.
-
-#### Strategy A - Computed mode - Default & Recommended
-
-1. Become ROOT: 
-   * `sudo su -`
-
-2. Enable the generation of the computed `persistent-id` with:
-   * `vim /opt/shibboleth-idp/conf/saml-nameid.properties`
-     
-     The *sourceAttribute* MUST be an attribute, or a list of comma-separated attributes, that uniquely identify the subject of the generated `persistent-id`.
-      
-     The *sourceAttribute* MUST be **Stable**, **Permanent** and **Not-reassignable** attribute.
-
-     ```properties
-     # ... other things ...#
-     # OpenLDAP has the UserID into "uid" attribute
-     idp.persistentId.sourceAttribute = uid
-     
-     # Active Directory has the UserID into "sAMAccountName"
-     #idp.persistentId.sourceAttribute = sAMAccountName
-     # ... other things ...#
-     
-     # BASE64 will match Shibboleth V2 values, we recommend BASE32 encoding for new installs.
-     idp.persistentId.encoding = BASE32
-     idp.persistentId.generator = shibboleth.ComputedPersistentIdGenerator
-     ```
-
-   * `vim /opt/shibboleth-idp/conf/saml-nameid.xml`
-     * Uncomment the line:
-
-       ```xml
-       <ref bean="shibboleth.SAML2PersistentGenerator" />
-       ```
-
-   * `vim /opt/shibboleth-idp/credentials/secrets.properties`
-
-     ```properties
-     idp.persistentId.salt = ### result of 'openssl rand -base64 36' ###
-     ```
-
-3. Restart IdP to apply the changes:
-   * `touch /opt/jetty/webapps/idp.xml`
-
-4. Check IdP Status:
-   * `bash /opt/shibboleth-idp/bin/status.sh`
-
-#### Strategy B - Stored mode - using a database
-
-1. Become ROOT of the machine:
-   * `sudo su -`
-
-2. Install required packages:
-   * `yum install mariadb-server mysql-connector-java apache-commons-dbcp`
-
-3. Activate MariaDB database service:
-   * `systemctl start mariadb.service`
-
-4. Address several security concerns in a default MariaDB installation (if it is not already done):
-   * `mysql_secure_installation`
-
-5. (OPTIONAL) MySQL DB Access without password:
-   * `vim /root/.my.cnf`
-
-     ```cnf
-     [client]
-     user=root
-     password=##ROOT-DB-PASSWORD-CHANGEME##
-     ```
-
-6. Create `shibpid` table on `shibboleth` database.
-   * `wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/db/shib-pid-db.sql -O /root/shib-pid-db.sql`
-   * fill missing data on `shib-pid-db.sql` before import
-   * `mysql -u root < shib-pid-db.sql`
-   * `systemctl restart mariadb.service`
-
-7. Rebuild IdP with the needed libraries:
-   * `cd /opt/shibboleth-idp`
-   * `ln -s /usr/share/java/mysql-connector-java.jar edit-webapp/WEB-INF/lib`
-   * `ln -s /usr/share/java/commons-dbcp.jar edit-webapp/WEB-INF/lib`
-   * `ln -s /usr/share/java/commons-pool.jar edit-webapp/WEB-INF/lib`
-   * `bin/build.sh`
-
-8. Enable Persistent Identifier's store:
-   * `vim /opt/shibboleth-idp/conf/global.xml` 
-     
-     and add the following directives to the tail, just before the last **`</beans>`** tag:
-
-     ```bash
-     <!-- Bean to store persistent-id on 'shibboleth' database -->
-
-     <bean id="MyDataSource"
-           class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close" lazy-init="true"
-           p:driverClassName="com.mysql.jdbc.Driver"
-           p:url="jdbc:mysql://localhost:3306/shibboleth?autoReconnect=true"
-           p:username="###_SHIB-USERNAME-CHANGEME_###"
-           p:password="###_SHIB-DB-USER-PASSWORD-CHANGEME_###"
-           p:maxActive="10"
-           p:maxIdle="5"
-           p:maxWait="15000"
-           p:testOnBorrow="true"
-           p:validationQuery="select 1"
-           p:validationQueryTimeout="5" />
-     ```
-
-     :warning: **IMPORTANT**:
-
-     remember to change "**`###_SHIB-USERNAME-CHANGEME_###`**" and "**`###_SHIB-DB-USER-PASSWORD-CHANGEME_###`**" with your DB user and password data
-
-9. Enable the generation of the `persistent-id`:
-   * `vim /opt/shibboleth-idp/conf/saml-nameid.properties`
-
-      The *sourceAttribute* MUST be an attribute, or a list of comma-separated attributes, that uniquely identify the subject of the generated `persistent-id`.
-      
-      The *sourceAttribute* MUST be **Stable**, **Permanent** and **Not-reassignable** attribute.
-   
-     ```properties
-     # ... other things ...#
-     # OpenLDAP has the UserID into "uid" attribute
-     idp.persistentId.sourceAttribute = uid
-
-     # Active Directory has the UserID into "sAMAccountName"
-     #idp.persistentId.sourceAttribute = sAMAccountName
-     
-     # BASE64 will match Shibboleth V2 values, we recommend BASE32 encoding for new installs.
-     idp.persistentId.encoding = BASE32
-     # ... other things ...#
-     idp.persistentId.generator = shibboleth.StoredPersistentIdGenerator
-     # ... other things ...#
-     idp.persistentId.dataSource = MyDataSource
-     # ... other things ...#
-     ```
-     
-   * `vim /opt/shibboleth-idp/credentials/secrets.properties`
-     ```properties
-     idp.persistentId.salt = ### result of 'openssl rand -base64 36'###
-     ```
-
-   * Enable the **SAML2PersistentGenerator**:
-     * `vim /opt/shibboleth-idp/conf/saml-nameid.xml`
-       * Uncomment the line:
-
-         ```xml
-         <ref bean="shibboleth.SAML2PersistentGenerator" />
-         ```
-
-     * `vim /opt/shibboleth-idp/conf/c14n/subject-c14n.xml`
-       * Uncomment the line:
-
-         ```xml
-         <ref bean="c14n/SAML2Persistent" />
-         ```
-       
-     * (OPTIONAL) `vim /opt/shibboleth-idp/conf/c14n/simple-subject-c14n-config.xml`
-       * Transform each letter of username, before storing in into the database, to Lowercase or Uppercase by setting the proper constant.
-       `<util:constant id="shibboleth.c14n.simple.Lowercase" static-field="java.lang.Boolean.TRUE"/>`
-
-10. Restart IdP to apply the changes:
-    * `touch /opt/jetty/webapps/idp.xml`
-
-11. Check IdP Status:
-    * `bash /opt/shibboleth-idp/bin/status.sh`
-
-### Configure Shibboleth Identity Provider to release the eduPersonTargetedID
-
-> eduPersonTargetedID is an abstracted version of the SAML V2.0 Name Identifier format of "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent".
-> To be able to follow these steps, you need to have followed the previous steps on "persistent" NameID generation.
-
-#### Strategy A - Computed mode - using the computed persistent NameID
-
-1. Add the `<AttributeDefinition>` and the `<DataConnector>` needed into the `attribute-resolver.xml`:
-   * `vim /opt/shibboleth-idp/conf/attribute-resolver.xml`
-      
-     ```xml
-
-     <!-- ...other things ... -->
-
-     <!--  AttributeDefinition for eduPersonTargetedID - Computed Mode  -->
- 
-     <AttributeDefinition xsi:type="SAML2NameID" nameIdFormat="urn:oasis:names:tc:SAML:2.0:nameid-format:persistent" id="eduPersonTargetedID">
-         <InputDataConnector ref="myComputedId" attributeNames="computedID" />
-     </AttributeDefinition>
-
-     <!-- ... other things... -->
-
-     <!--  Data Connector for eduPersonTargetedID - Computed Mode  -->
-
-     <DataConnector id="myComputedId" xsi:type="ComputedId"
-         generatedAttributeID="computedID"
-         salt="%{idp.persistentId.salt}"
-         algorithm="%{idp.persistentId.algorithm:SHA}"
-         encoding="%{idp.persistentId.encoding:BASE32}">
-
-         <InputDataConnector ref="myLDAP" attributeNames="%{idp.persistentId.sourceAttribute}" />
-
-     </DataConnector>
-     ```
-
-3. Create the custom `eduPersonTargetedID.properties` file:
-   ```bash 
-   wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/attributes/custom/eduPersonTargetedID.properties -O /opt/shibboleth-idp/conf/attributes/custom/eduPersonTargetedID.properties
-   ```
-
-4. Restart IdP to apply the changes:
-   * `touch /opt/jetty/webapps/idp.xml`
-
-5. Check IdP Status:
-   * `bash /opt/shibboleth-idp/bin/status.sh`
-
-#### Strategy B - Stored mode - using the persistent NameID database
-
-1. Add the `<AttributeDefinition>` and the `<DataConnector>` needed into the `attribute-resolver.xml`:
-   * `vim /opt/shibboleth-idp/conf/attribute-resolver.xml`
-      
-     ```xml
-
-     <!-- ...other things ... -->
-
-     <!--  AttributeDefinition for eduPersonTargetedID - Stored Mode  -->
- 
-     <AttributeDefinition xsi:type="SAML2NameID" nameIdFormat="urn:oasis:names:tc:SAML:2.0:nameid-format:persistent" id="eduPersonTargetedID">
-         <InputDataConnector ref="myStoredId" attributeNames="persistentID" />
-     </AttributeDefinition>
-
-     <!-- ... other things... -->
-
-     <!--  Data Connector for eduPersonTargetedID - Stored Mode  -->
-
-     <DataConnector id="myStoredId" xsi:type="StoredId"
-        generatedAttributeID="persistentID"
-        salt="%{idp.persistentId.salt}"
-        queryTimeout="0">
-
-        <InputDataConnector ref="myLDAP" attributeNames="%{idp.persistentId.sourceAttribute}" />
-
-        <BeanManagedConnection>MyDataSource</BeanManagedConnection>
-     </DataConnector>
-     ```
-
-2. Create the custom `eduPersonTargetedID.properties` file:
-   ```bash 
-   wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/attributes/custom/eduPersonTargetedID.properties -O /opt/shibboleth-idp/conf/attributes/custom/eduPersonTargetedID.properties
-   ```
-
-3. Restart IdP to apply the changes:
-   * `touch /opt/jetty/webapps/idp.xml`
-
-4. Check IdP Status:
-   * `bash /opt/shibboleth-idp/bin/status.sh`
-
 ### Configure the Directory (openLDAP or AD) Connection
 
 1. Check that you can reach the Directory from your IDP server:
@@ -934,6 +677,268 @@ This Storage service will memorize User Consent data on persistent database SQL.
            * the baseDN ==> `ou=people,dc=example,dc=org` (branch containing the registered users)
            * the bindDN ==> `cn=idpuser,ou=system,dc=example,dc=org` (distinguished name for the user that can made queries on the LDAP)
 
+3. Restart IdP to apply the changes:
+   * `touch /opt/jetty/webapps/idp.xml`
+
+4. Check IdP Status:
+   * `bash /opt/shibboleth-idp/bin/status.sh`
+
+### Configure Shibboleth Identity Provider to release the persistent NameID
+
+**Shibboleth Documentation reference** https://wiki.shibboleth.net/confluence/display/IDP4/PersistentNameIDGenerationConfiguration
+
+> SAML 2.0 (but not SAML 1.x) defines a kind of NameID called a "persistent" identifier that every SP receives for the IdP users.
+> This part will teach you how to release the "persistent" identifiers with a database (Stored Mode) or without it (Computed Mode).
+
+> By default, a transient NameID will always be released to the Service Provider if the persistent one is not requested.
+
+#### Strategy A - Computed mode - Default & Recommended
+
+1. Become ROOT: 
+   * `sudo su -`
+
+2. Enable the generation of the computed `persistent-id` with:
+   * `vim /opt/shibboleth-idp/conf/saml-nameid.properties`
+     
+     The *sourceAttribute* MUST be an attribute, or a list of comma-separated attributes, that uniquely identify the subject of the generated `persistent-id`.
+      
+     The *sourceAttribute* MUST be **Stable**, **Permanent** and **Not-reassignable** attribute.
+
+     ```properties
+     # ... other things ...#
+     # OpenLDAP has the UserID into "uid" attribute
+     idp.persistentId.sourceAttribute = uid
+     
+     # Active Directory has the UserID into "sAMAccountName"
+     #idp.persistentId.sourceAttribute = sAMAccountName
+     # ... other things ...#
+     
+     # BASE64 will match Shibboleth V2 values, we recommend BASE32 encoding for new installs.
+     idp.persistentId.encoding = BASE32
+     idp.persistentId.generator = shibboleth.ComputedPersistentIdGenerator
+     ```
+
+   * `vim /opt/shibboleth-idp/conf/saml-nameid.xml`
+     * Uncomment the line:
+
+       ```xml
+       <ref bean="shibboleth.SAML2PersistentGenerator" />
+       ```
+
+   * `vim /opt/shibboleth-idp/credentials/secrets.properties`
+
+     ```properties
+     idp.persistentId.salt = ### result of 'openssl rand -base64 36' ###
+     ```
+
+3. Restart IdP to apply the changes:
+   * `touch /opt/jetty/webapps/idp.xml`
+
+4. Check IdP Status:
+   * `bash /opt/shibboleth-idp/bin/status.sh`
+
+#### Strategy B - Stored mode - using a database
+
+1. Become ROOT of the machine:
+   * `sudo su -`
+
+2. Install required packages:
+   * `yum install mariadb-server mysql-connector-java apache-commons-dbcp`
+
+3. Activate MariaDB database service:
+   * `systemctl start mariadb.service`
+
+4. Address several security concerns in a default MariaDB installation (if it is not already done):
+   * `mysql_secure_installation`
+
+5. (OPTIONAL) MySQL DB Access without password:
+   * `vim /root/.my.cnf`
+
+     ```cnf
+     [client]
+     user=root
+     password=##ROOT-DB-PASSWORD-CHANGEME##
+     ```
+
+6. Create `shibpid` table on `shibboleth` database.
+   * `wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/db/shib-pid-db.sql -O /root/shib-pid-db.sql`
+   * fill missing data on `shib-pid-db.sql` before import
+   * `mysql -u root < shib-pid-db.sql`
+   * `systemctl restart mariadb.service`
+
+7. Rebuild IdP with the needed libraries:
+   * `cd /opt/shibboleth-idp`
+   * `ln -s /usr/share/java/mysql-connector-java.jar edit-webapp/WEB-INF/lib`
+   * `ln -s /usr/share/java/commons-dbcp.jar edit-webapp/WEB-INF/lib`
+   * `ln -s /usr/share/java/commons-pool.jar edit-webapp/WEB-INF/lib`
+   * `bin/build.sh`
+
+8. Enable Persistent Identifier's store:
+   * `vim /opt/shibboleth-idp/conf/global.xml` 
+     
+     and add the following directives to the tail, just before the last **`</beans>`** tag:
+
+     ```bash
+     <!-- Bean to store persistent-id on 'shibboleth' database -->
+
+     <bean id="MyDataSource"
+           class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close" lazy-init="true"
+           p:driverClassName="com.mysql.jdbc.Driver"
+           p:url="jdbc:mysql://localhost:3306/shibboleth?autoReconnect=true"
+           p:username="###_SHIB-USERNAME-CHANGEME_###"
+           p:password="###_SHIB-DB-USER-PASSWORD-CHANGEME_###"
+           p:maxActive="10"
+           p:maxIdle="5"
+           p:maxWait="15000"
+           p:testOnBorrow="true"
+           p:validationQuery="select 1"
+           p:validationQueryTimeout="5" />
+     ```
+
+     :warning: **IMPORTANT**:
+
+     remember to change "**`###_SHIB-USERNAME-CHANGEME_###`**" and "**`###_SHIB-DB-USER-PASSWORD-CHANGEME_###`**" with your DB user and password data
+
+9. Enable the generation of the `persistent-id`:
+   * `vim /opt/shibboleth-idp/conf/saml-nameid.properties`
+
+      The *sourceAttribute* MUST be an attribute, or a list of comma-separated attributes, that uniquely identify the subject of the generated `persistent-id`.
+      
+      The *sourceAttribute* MUST be **Stable**, **Permanent** and **Not-reassignable** attribute.
+   
+     ```properties
+     # ... other things ...#
+     # OpenLDAP has the UserID into "uid" attribute
+     idp.persistentId.sourceAttribute = uid
+
+     # Active Directory has the UserID into "sAMAccountName"
+     #idp.persistentId.sourceAttribute = sAMAccountName
+     
+     # BASE64 will match Shibboleth V2 values, we recommend BASE32 encoding for new installs.
+     idp.persistentId.encoding = BASE32
+     # ... other things ...#
+     idp.persistentId.generator = shibboleth.StoredPersistentIdGenerator
+     # ... other things ...#
+     idp.persistentId.dataSource = MyDataSource
+     # ... other things ...#
+     ```
+     
+   * `vim /opt/shibboleth-idp/credentials/secrets.properties`
+     ```properties
+     idp.persistentId.salt = ### result of 'openssl rand -base64 36'###
+     ```
+
+   * Enable the **SAML2PersistentGenerator**:
+     * `vim /opt/shibboleth-idp/conf/saml-nameid.xml`
+       * Uncomment the line:
+
+         ```xml
+         <ref bean="shibboleth.SAML2PersistentGenerator" />
+         ```
+
+     * `vim /opt/shibboleth-idp/conf/c14n/subject-c14n.xml`
+       * Uncomment the line:
+
+         ```xml
+         <ref bean="c14n/SAML2Persistent" />
+         ```
+       
+     * (OPTIONAL) `vim /opt/shibboleth-idp/conf/c14n/simple-subject-c14n-config.xml`
+       * Transform each letter of username, before storing in into the database, to Lowercase or Uppercase by setting the proper constant.
+       `<util:constant id="shibboleth.c14n.simple.Lowercase" static-field="java.lang.Boolean.TRUE"/>`
+
+10. Restart IdP to apply the changes:
+    * `touch /opt/jetty/webapps/idp.xml`
+
+11. Check IdP Status:
+    * `bash /opt/shibboleth-idp/bin/status.sh`
+
+### Configure Shibboleth Identity Provider to release the eduPersonTargetedID
+
+> eduPersonTargetedID is an abstracted version of the SAML V2.0 Name Identifier format of "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent".
+> To be able to follow these steps, you need to have followed the previous steps on "persistent" NameID generation.
+
+#### Strategy A - Computed mode - using the computed persistent NameID
+
+1. Add the `<AttributeDefinition>` and the `<DataConnector>` needed into the `attribute-resolver.xml`:
+   * `vim /opt/shibboleth-idp/conf/attribute-resolver.xml`
+      
+     ```xml
+
+     <!-- ...other things ... -->
+
+     <!--  AttributeDefinition for eduPersonTargetedID - Computed Mode  -->
+ 
+     <AttributeDefinition xsi:type="SAML2NameID" nameIdFormat="urn:oasis:names:tc:SAML:2.0:nameid-format:persistent" id="eduPersonTargetedID">
+         <InputDataConnector ref="myComputedId" attributeNames="computedID" />
+     </AttributeDefinition>
+
+     <!-- ... other things... -->
+
+     <!--  Data Connector for eduPersonTargetedID - Computed Mode  -->
+
+     <DataConnector id="myComputedId" xsi:type="ComputedId"
+         generatedAttributeID="computedID"
+         salt="%{idp.persistentId.salt}"
+         algorithm="%{idp.persistentId.algorithm:SHA}"
+         encoding="%{idp.persistentId.encoding:BASE32}">
+
+         <InputDataConnector ref="myLDAP" attributeNames="%{idp.persistentId.sourceAttribute}" />
+
+     </DataConnector>
+     ```
+
+3. Create the custom `eduPersonTargetedID.properties` file:
+   ```bash 
+   wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/attributes/custom/eduPersonTargetedID.properties -O /opt/shibboleth-idp/conf/attributes/custom/eduPersonTargetedID.properties
+   ```
+
+4. Restart IdP to apply the changes:
+   * `touch /opt/jetty/webapps/idp.xml`
+
+5. Check IdP Status:
+   * `bash /opt/shibboleth-idp/bin/status.sh`
+
+#### Strategy B - Stored mode - using the persistent NameID database
+
+1. Add the `<AttributeDefinition>` and the `<DataConnector>` needed into the `attribute-resolver.xml`:
+   * `vim /opt/shibboleth-idp/conf/attribute-resolver.xml`
+      
+     ```xml
+
+     <!-- ...other things ... -->
+
+     <!--  AttributeDefinition for eduPersonTargetedID - Stored Mode  -->
+ 
+     <AttributeDefinition xsi:type="SAML2NameID" nameIdFormat="urn:oasis:names:tc:SAML:2.0:nameid-format:persistent" id="eduPersonTargetedID">
+         <InputDataConnector ref="myStoredId" attributeNames="persistentID" />
+     </AttributeDefinition>
+
+     <!-- ... other things... -->
+
+     <!--  Data Connector for eduPersonTargetedID - Stored Mode  -->
+
+     <DataConnector id="myStoredId" xsi:type="StoredId"
+        generatedAttributeID="persistentID"
+        salt="%{idp.persistentId.salt}"
+        queryTimeout="0">
+
+        <InputDataConnector ref="myLDAP" attributeNames="%{idp.persistentId.sourceAttribute}" />
+
+        <BeanManagedConnection>MyDataSource</BeanManagedConnection>
+     </DataConnector>
+     ```
+
+2. Create the custom `eduPersonTargetedID.properties` file:
+   ```bash 
+   wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/attributes/custom/eduPersonTargetedID.properties -O /opt/shibboleth-idp/conf/attributes/custom/eduPersonTargetedID.properties
+   ```
+
+3. Restart IdP to apply the changes:
+   * `touch /opt/jetty/webapps/idp.xml`
+
+4. Check IdP Status:
+   * `bash /opt/shibboleth-idp/bin/status.sh`
 
 #### Configure the attribute resolution with Attribute Registry
 
