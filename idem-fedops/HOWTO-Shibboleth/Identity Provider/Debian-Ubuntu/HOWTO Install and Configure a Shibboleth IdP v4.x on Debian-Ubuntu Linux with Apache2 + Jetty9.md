@@ -27,12 +27,13 @@
       1. [Strategy A - Computed mode - using the computed persistent NameID](#strategy-a---computed-mode---using-the-computed-persistent-nameid)
       2. [Strategy B - Stored mode - using a database](#strategy-b---stored-mode---using-the-persistent-nameid-database)
    7. [Configure the attribute resolution with Attribute Registry](#configure-the-attribute-resolution-with-attribute-registry)
-   8. [Configure Shibboleth IdP Logging](#configure-shibboleth-idp-logging)
-   9. [Translate IdP messages into the preferred language](#translate-idp-messages-into-preferred-language)
-   10. [Disable SAML1 Deprecated Protocol](#disable-saml1-deprecated-protocol)
-   11. [Configure Attribute Filters to release the mandatory attributes to the IDEM Default Resources](#configure-attribute-filters-to-release-the-mandatory-attributes-to-the-idem-default-resources)
-   12. [Secure cookies and other IDP data](#secure-cookies-and-other-idp-data)
-   13. [Register the IdP on the IDEM Test Federation](#register-the-idp-on-the-idem-test-federation)
+   8. [Configure the attribute resolver (sample)](#configure-the-attribute-resolver-sample)
+   9. [Configure Shibboleth IdP Logging](#configure-shibboleth-idp-logging)
+   10. [Translate IdP messages into the preferred language](#translate-idp-messages-into-preferred-language)
+   11. [Disable SAML1 Deprecated Protocol](#disable-saml1-deprecated-protocol)
+   12. [Configure Attribute Filters to release the mandatory attributes to the IDEM Default Resources](#configure-attribute-filters-to-release-the-mandatory-attributes-to-the-idem-default-resources)
+   13. [Secure cookies and other IDP data](#secure-cookies-and-other-idp-data)
+   14. [Register the IdP on the IDEM Test Federation](#register-the-idp-on-the-idem-test-federation)
 5. [Appendix A: Configure Attribute Filters to release the required attributes for common resources](#appendix-a-configure-attribute-filters-to-release-the-required-attributes-for-common-resources)
 6. [Appendix B: Configure attribute filter policies for the REFEDS Research and Scholarship and the GEANT Data Protection Code of Conduct Entity Categories](#appendix-b-configure-attribute-filter-policies-for-the-refeds-research-and-scholarship-and-the-geant-data-protection-code-of-conduct-entity-categories)
 7. [Appendix C: Import persistent-id from a previous database](#appendix-c-import-persistent-id-from-a-previous-database)
@@ -987,7 +988,7 @@ File(s): `conf/attribute-registry.xml`, `conf/attributes/default-rules.xml`, `co
      </beans>
      ```
 
-#### Configure the attribute resolver (sample)
+### Configure the attribute resolver (sample)
 
 1. Define which attributes your IdP can manage into your Attribute Resolver file. Here you can find a sample **attribute-resolver-sample.xml** as example:
     * Download the sample attribute resolver provided by IDEM GARR AAI Federation Operators (OpenLDAP / Active Directory compliant):
