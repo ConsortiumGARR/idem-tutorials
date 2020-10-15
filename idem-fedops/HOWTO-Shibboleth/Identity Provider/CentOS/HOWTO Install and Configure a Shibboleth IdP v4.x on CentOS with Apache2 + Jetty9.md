@@ -940,7 +940,7 @@ This Storage service will memorize User Consent data on persistent database SQL.
 4. Check IdP Status:
    * `bash /opt/shibboleth-idp/bin/status.sh`
 
-#### Configure the attribute resolution with Attribute Registry
+### Configure the attribute resolution with Attribute Registry
 
 File(s): `conf/attribute-registry.xml`, `conf/attributes/default-rules.xml`, `conf/attribute-resolver.xml`, `conf/attributes/custom/`
 
@@ -961,7 +961,7 @@ File(s): `conf/attribute-registry.xml`, `conf/attributes/default-rules.xml`, `co
      </beans>
      ```
 
-#### Configure the attribute resolver (sample)
+### Configure the attribute resolver (sample)
 
 1. Define which attributes your IdP can manage into your Attribute Resolver file. Here you can find a sample **attribute-resolver-sample.xml** as example:
     * Download the sample attribute resolver provided by IDEM GARR AAI Federation Operators (OpenLDAP / Active Directory compliant):
