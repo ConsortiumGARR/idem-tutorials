@@ -31,8 +31,8 @@
    9. [Configure Shibboleth IdP Logging](#configure-shibboleth-idp-logging)
    10. [Translate IdP messages into the preferred language](#translate-idp-messages-into-preferred-language)
    11. [Disable SAML1 Deprecated Protocol](#disable-saml1-deprecated-protocol)
-   12. [Configure Attribute Filters to release the mandatory attributes to the IDEM Default Resources](#configure-attribute-filters-to-release-the-mandatory-attributes-to-the-idem-default-resources)
-   13. [Secure cookies and other IDP data](#secure-cookies-and-other-idp-data)
+   12. [Secure cookies and other IDP data](#secure-cookies-and-other-idp-data)
+   13. [Configure Attribute Filters to release the mandatory attributes to the IDEM Default Resources](#configure-attribute-filters-to-release-the-mandatory-attributes-to-the-idem-default-resources)
    14. [Register the IdP on the IDEM Test Federation](#register-the-idp-on-the-idem-test-federation)
 5. [Appendix A: Configure Attribute Filters to release the required attributes for common resources](#appendix-a-configure-attribute-filters-to-release-the-required-attributes-for-common-resources)
 6. [Appendix B: Configure attribute filter policies for the REFEDS Research and Scholarship and the GEANT Data Protection Code of Conduct Entity Categories](#appendix-b-configure-attribute-filter-policies-for-the-refeds-research-and-scholarship-and-the-geant-data-protection-code-of-conduct-entity-categories)
@@ -1088,36 +1088,6 @@ Translate the IdP messages in your language:
    
 2. Check that the metadata is available on:
    * https://idp.example.org/idp/shibboleth
-   
-### Configure Attribute Filters to release the mandatory attributes to the IDEM Default Resources
-
-1. Become ROOT:
-   * `sudo su -`
-
-2. Download the attribute filter file:
-   * ```bash
-     wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/attribute-filter-v4-idem.xml -O /opt/shibboleth-idp/conf/attribute-filter-v4-idem.xml
-     ```
-
-3. Modify your `services.xml`:
-   * `vim /opt/shibboleth-idp/conf/services.xml`
-
-     ```xml
-     <!-- ...other things... -->
-     
-     <util:list id ="shibboleth.AttributeFilterResources">
-         <value>%{idp.home}/conf/attribute-filter.xml</value>
-         <value>%{idp.home}/conf/attribute-filter-v4-idem.xml</value>
-     </util:list>
-     
-     <!-- ...other things... -->
-     ```
-
-4. Restart IdP to apply the changes:
-   * `touch /opt/jetty/webapps/idp.xml`
-   
-5. Check IdP Status:
-   * `bash /opt/shibboleth-idp/bin/status.sh`
 
 ### Secure cookies and other IDP data
 
@@ -1217,6 +1187,36 @@ Translate the IdP messages in your language:
 6. Add the following properties to `idp.properties` if you need to set different values than defaults:
    * `idp.sealer._count` - Number of earlier keys to keep (default 30)
    * `idp.sealer._sync_hosts` - Space separated list of hosts to scp the sealer files to (default generate locally)
+
+### Configure Attribute Filters to release the mandatory attributes to the IDEM Default Resources
+
+1. Become ROOT:
+   * `sudo su -`
+
+2. Download the attribute filter file:
+   * ```bash
+     wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/attribute-filter-v4-idem.xml -O /opt/shibboleth-idp/conf/attribute-filter-v4-idem.xml
+     ```
+
+3. Modify your `services.xml`:
+   * `vim /opt/shibboleth-idp/conf/services.xml`
+
+     ```xml
+     <!-- ...other things... -->
+     
+     <util:list id ="shibboleth.AttributeFilterResources">
+         <value>%{idp.home}/conf/attribute-filter.xml</value>
+         <value>%{idp.home}/conf/attribute-filter-v4-idem.xml</value>
+     </util:list>
+     
+     <!-- ...other things... -->
+     ```
+
+4. Restart IdP to apply the changes:
+   * `touch /opt/jetty/webapps/idp.xml`
+   
+5. Check IdP Status:
+   * `bash /opt/shibboleth-idp/bin/status.sh`
 
 ### Register the IdP on the IDEM Test Federation
 
