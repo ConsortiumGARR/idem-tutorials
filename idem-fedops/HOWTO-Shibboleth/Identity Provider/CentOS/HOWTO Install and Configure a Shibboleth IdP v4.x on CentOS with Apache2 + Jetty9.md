@@ -16,7 +16,7 @@
 4. [Configuration Instructions](#configuration-instructions)
    1. [Configure Jetty](#configure-jetty)
    2. [Configure SSL on Apache2 (front-end of Jetty)](#configure-ssl-on-apache2-front-end-of-jetty)
-   3. [Configure Shibboleth Identity Provider StorageService (User Consent)](#configure-shibboleth-identity-provider-storageservice-user-consent)
+   3. [Configure Shibboleth Identity Provider Storage](#configure-shibboleth-identity-provider-storage)
       1. [Strategy A - Default (HTML Local Storage, Encryption GCM, No Database) - Recommended](#strategy-a---default-html-local-storage-encryption-gcm-no-database---recommended)
       2. [Strategy B - JPA Storage Service - using a database](#strategy-b---jpa-storage-service---using-a-database)
    4. [Configure the Directory (openLDAP or AD) Connection](#configure-the-directory-openldap-or-ad-connection)
@@ -291,7 +291,7 @@ The Apache HTTP Server will be configured as a reverse proxy and it will be used
 8. Verify the strength of your IdP's machine on:
    * [**https://www.ssllabs.com/ssltest/analyze.html**](https://www.ssllabs.com/ssltest/analyze.html)
    
-### Configure Shibboleth Identity Provider StorageService (User Consent)
+### Configure Shibboleth Identity Provider Storage
 
 *Shibboleth Documentation reference* https://wiki.shibboleth.net/confluence/display/IDP4/StorageConfiguration
 
