@@ -23,11 +23,11 @@
    5. [Configure Shibboleth Identity Provider to release the persistent NameID](#configure-shibboleth-identity-provider-to-release-the-persistent-nameid)
       1. [Strategy A - Computed mode - Default & Recommended](#strategy-a---computed-mode---default--recommended)
       2. [Strategy B - Stored mode - using a database](#strategy-b---stored-mode---using-a-database)
-   6. [Configure Shibboleth Identity Provider to release the eduPersonTargetedID](#configure-shibboleth-identity-provider-to-release-the-edupersontargetedid)
+   6. [Configure the attribute resolver (sample)](#configure-the-attribute-resolver-sample)
+   7. [Configure Shibboleth Identity Provider to release the eduPersonTargetedID](#configure-shibboleth-identity-provider-to-release-the-edupersontargetedid)
       1. [Strategy A - Computed mode - using the computed persistent NameID](#strategy-a---computed-mode---using-the-computed-persistent-nameid)
       2. [Strategy B - Stored mode - using a database](#strategy-b---stored-mode---using-the-persistent-nameid-database)
-   7. [Configure the attribute resolution with Attribute Registry](#configure-the-attribute-resolution-with-attribute-registry)
-   8. [Configure the attribute resolver (sample)](#configure-the-attribute-resolver-sample)
+   8. [Configure the attribute resolution with Attribute Registry](#configure-the-attribute-resolution-with-attribute-registry)
    9. [Configure Shibboleth IdP Logging](#configure-shibboleth-idp-logging)
    10. [Translate IdP messages into the preferred language](#translate-idp-messages-into-preferred-language)
    11. [Disable SAML1 Deprecated Protocol](#disable-saml1-deprecated-protocol)
@@ -878,6 +878,30 @@ This Storage service will memorize User Consent data on persistent database SQL.
 11. Check IdP Status:
    * `bash /opt/shibboleth-idp/bin/status.sh`
 
+### Configure the attribute resolver (sample)
+
+1. Define which attributes your IdP can manage into your Attribute Resolver file. Here you can find a sample **attribute-resolver-sample.xml** as example:
+    * Download the sample attribute resolver provided by IDEM GARR AAI Federation Operators (OpenLDAP / Active Directory compliant):
+      * ```bash
+        wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/attribute-resolver-v4-idem-sample.xml -O /opt/shibboleth-idp/conf/attribute-resolver.xml
+        ```
+
+        If you decide to use the Solutions plain LDAP/AD, remove or comment the following directives from your Attribute Resolver file:
+
+        ```xml
+        Line 1:  useStartTLS="%{idp.attribute.resolver.LDAP.useStartTLS:true}"
+        Line 2:  trustFile="%{idp.attribute.resolver.LDAP.trustCertificates}"
+        ```
+
+      * Configure the right owner:
+        * `chown jetty /opt/shibboleth-idp/conf/attribute-resolver.xml`
+
+2. Restart IdP to apply the changes:
+   * `touch /opt/jetty/webapps/idp.xml`
+
+3. Check IdP Status:
+   * `bash /opt/shibboleth-idp/bin/status.sh`
+
 ### Configure Shibboleth Identity Provider to release the eduPersonTargetedID
 
 > eduPersonTargetedID is an abstracted version of the SAML V2.0 Name Identifier format of "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent".
@@ -987,30 +1011,6 @@ File(s): `conf/attribute-registry.xml`, `conf/attributes/default-rules.xml`, `co
          <import resource="schac.xml" />
      </beans>
      ```
-
-### Configure the attribute resolver (sample)
-
-1. Define which attributes your IdP can manage into your Attribute Resolver file. Here you can find a sample **attribute-resolver-sample.xml** as example:
-    * Download the sample attribute resolver provided by IDEM GARR AAI Federation Operators (OpenLDAP / Active Directory compliant):
-      * ```bash
-        wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/attribute-resolver-v4-idem-sample.xml -O /opt/shibboleth-idp/conf/attribute-resolver.xml
-	    ```
-
-	    If you decide to use the Solutions plain LDAP/AD, remove or comment the following directives from your Attribute Resolver file:
-
-        ```xml
-        Line 1:  useStartTLS="%{idp.attribute.resolver.LDAP.useStartTLS:true}"
-        Line 2:  trustFile="%{idp.attribute.resolver.LDAP.trustCertificates}"
-        ```
-
-      * Configure the right owner:
-        * `chown jetty /opt/shibboleth-idp/conf/attribute-resolver.xml`
-
-2. Restart IdP to apply the changes:
-   * `touch /opt/jetty/webapps/idp.xml`
-
-3. Check IdP Status:
-   * `bash /opt/shibboleth-idp/bin/status.sh`
 
 ### Configure Shibboleth IdP Logging
 
