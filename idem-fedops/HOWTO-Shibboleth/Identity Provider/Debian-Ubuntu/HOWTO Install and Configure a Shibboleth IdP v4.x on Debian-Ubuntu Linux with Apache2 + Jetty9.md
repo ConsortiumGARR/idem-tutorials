@@ -1311,20 +1311,20 @@ Translate the IdP messages in your language:
            p:socketTimeout="PT30S"
            p:cacheDirectory="%{idp.home}/tmp/httpClientCache" />
      
-     <bean id="IDEM-Resources" class="net.shibboleth.ext.spring.resource.FileBackedHTTPResource"
+     <bean id="SpecialResources" class="net.shibboleth.ext.spring.resource.FileBackedHTTPResource"
            c:client-ref="MyHTTPClient"
            c:url="https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/attribute-filter-v4-resources.xml"
            c:backingFile="%{idp.home}/conf/attribute-filter-v4-resources.xml"/>
      ```
      
-     and enrich the "`AttributeFilterResources`" list with "`attribute-filter-v4-required.xml`" and "`IDEM-Resources`":
+     and enrich the "`AttributeFilterResources`" list with "`attribute-filter-v4-required.xml`" and "`SpecialResources`":
      
      ```xml
      <util:list id ="shibboleth.AttributeFilterResources">
          <value>%{idp.home}/conf/attribute-filter.xml</value>
          <value>%{idp.home}/conf/attribute-filter-v4-idem.xml</value>
          <value>%{idp.home}/conf/attribute-filter-v4-required.xml</value>
-         <ref bean="IDEM-Resources"/>
+         <ref bean="SpecialResources"/>
      </util:list>
      
      <!-- ...other things... -->
@@ -1356,7 +1356,7 @@ Translate the IdP messages in your language:
          <value>%{idp.home}/conf/attribute-filter.xml</value>
          <value>%{idp.home}/conf/attribute-filter-v4-idem.xml</value>
          <value>%{idp.home}/conf/attribute-filter-v4-required.xml</value>
-         <ref bean="IDEM-Resources"/>
+         <ref bean="SpecialResources"/>
          <value>%{idp.home}/conf/attribute-filter-v4-rs-coco.xml</value>
      </util:list>
      ```
