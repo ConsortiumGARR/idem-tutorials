@@ -1358,7 +1358,7 @@ Translate the IdP messages in your language:
 
 ### Appendix C: Configure Attribute Filter Policy to release attributes to resources compliant with Entity Categories
 
-> Follow these steps ONLY when your IdP is accepted into IDEM Production Federation and if it is supports [Entity Categories promoted by IDEM](https://wiki.idem.garr.it/wiki/EntityAttribute-Category):
+> Follow these steps ONLY once your IdP is accepted into IDEM Production Federation and if it has been enabled to support [Entity Categories promoted by IDEM](https://wiki.idem.garr.it/wiki/EntityAttribute-Category)
 
 1. Download the attribute filter file:
    * ```bash
