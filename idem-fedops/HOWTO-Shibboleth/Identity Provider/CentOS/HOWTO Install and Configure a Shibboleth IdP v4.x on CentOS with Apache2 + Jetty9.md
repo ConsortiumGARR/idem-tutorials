@@ -28,7 +28,7 @@
       1. [Strategy A - Computed mode - using the computed persistent NameID](#strategy-a---computed-mode---using-the-computed-persistent-nameid)
       2. [Strategy B - Stored mode - using a database](#strategy-b---stored-mode---using-the-persistent-nameid-database)
    8. [Configure the attribute resolution with Attribute Registry](#configure-the-attribute-resolution-with-attribute-registry)
-   9. [Configure IdP Logging](#configure-idp-logging)
+   9. [Configure Shibboleth IdP Logging](#configure-shibboleth-idp-logging)
    10. [Translate IdP messages into the preferred language](#translate-idp-messages-into-preferred-language)
    11. [Disable SAML1 Deprecated Protocol](#disable-saml1-deprecated-protocol)
    12. [Secure cookies and other IDP data](#secure-cookies-and-other-idp-data)
@@ -985,7 +985,7 @@ File(s): `conf/attribute-registry.xml`, `conf/attributes/default-rules.xml`, `co
      </beans>
      ```
 
-### Configure IdP Logging
+### Configure Shibboleth IdP Logging
 
 Enrich IDP logs with the authentication error occurred on LDAP:
    * ```bash
