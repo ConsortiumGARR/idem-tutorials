@@ -35,7 +35,7 @@
    13. [Configure Attribute Filters to release the mandatory attributes to the IDEM Default Resources](#configure-attribute-filters-to-release-the-mandatory-attributes-to-the-idem-default-resources)
    14. [Register the IdP on the IDEM Test Federation](#register-the-idp-on-the-idem-test-federation)
 5. [Appendix A: Configure Attribute Filters to release the mandatory attributes to the IDEM Production Resources](#appendix-a-configure-attribute-filters-to-release-the-mandatory-attributes-to-the-idem-production-resources)
-6. [Appendix B: Configure attribute filter policies for the REFEDS Research and Scholarship and the GEANT Data Protection Code of Conduct Entity Categories](#appendix-b-configure-attribute-filter-policies-for-the-refeds-research-and-scholarship-and-the-geant-data-protection-code-of-conduct-entity-categories)
+6. [Appendix B: Configure attribute filter policies for Entity Categories](#appendix-b-configure-attribute-filter-policies-for-entity-categories)
 7. [Appendix C: Import persistent-id from a previous database](#appendix-c-import-persistent-id-from-a-previous-database)
 8. [Appendix D: Useful logs to find problems](#appendix-d-useful-logs-to-find-problems)
 9. [Utilities](#utilities)
@@ -1166,7 +1166,7 @@ Translate the IdP messages in your language:
    * `sudo su -`
 
 2. Download the attribute filter file:
-   * `wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/attribute-filter-v4-idem.xml -O /opt/shibboleth-idp/conf/attribute-filter-v4-idem.xml`
+   * `wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/attribute-filter-v4-idem-default.xml -O /opt/shibboleth-idp/conf/attribute-filter-v4-idem-default.xml`
 
 3. Modify your `services.xml`:
    * `vim /opt/shibboleth-idp/conf/services.xml`
@@ -1176,7 +1176,7 @@ Translate the IdP messages in your language:
      
      <util:list id ="shibboleth.AttributeFilterResources">
          <value>%{idp.home}/conf/attribute-filter.xml</value>
-         <value>%{idp.home}/conf/attribute-filter-v4-idem.xml</value>
+         <value>%{idp.home}/conf/attribute-filter-v4-idem-default.xml</value>
      </util:list>
      
      <!-- ...other things... -->
@@ -1260,7 +1260,7 @@ Translate the IdP messages in your language:
    * `sudo su -`
    
 2. Download the attribute filter file:
-   * `wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/attribute-filter-v4-required.xml -O /opt/shibboleth-idp/conf/attribute-filter-v4-required.xml`
+   * `wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/attribute-filter-v4-idem-required.xml -O /opt/shibboleth-idp/conf/attribute-filter-v4-idem-required.xml`
    
 3. Create the directory "`tmp/httpClientCache`" used by "`shibboleth.FileCachingHttpClient`":
    * `mkdir -p /opt/shibboleth-idp/tmp/httpClientCache ; chown jetty /opt/shibboleth-idp/tmp/httpClientCache`
@@ -1279,17 +1279,17 @@ Translate the IdP messages in your language:
 
      <bean id="SpecialResources" class="net.shibboleth.ext.spring.resource.FileBackedHTTPResource"
            c:client-ref="MyHTTPClient"
-           c:url="https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/attribute-filter-v4-resources.xml"
-           c:backingFile="%{idp.home}/conf/attribute-filter-v4-resources.xml"/>
+           c:url="https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/attribute-filter-v4-idem-special-resources.xml"
+           c:backingFile="%{idp.home}/conf/attribute-filter-v4-idem-special-resources.xml"/>
      ```
 
-     and enrich the "`AttributeFilterResources`" list with "`attribute-filter-v4-required.xml`" and "`SpecialResources`":
+     and enrich the "`AttributeFilterResources`" list with "`attribute-filter-v4-idem-required.xml`" and "`SpecialResources`":
 
      ```xml   
      <util:list id ="shibboleth.AttributeFilterResources">
          <value>%{idp.home}/conf/attribute-filter.xml</value>
-         <value>%{idp.home}/conf/attribute-filter-v4-idem.xml</value>
-         <value>%{idp.home}/conf/attribute-filter-v4-required.xml</value>
+         <value>%{idp.home}/conf/attribute-filter-v4-idem-default.xml</value>
+         <value>%{idp.home}/conf/attribute-filter-v4-idem-required.xml</value>
          <ref bean="SpecialResources"/>
      </util:list>
      
@@ -1304,12 +1304,12 @@ Translate the IdP messages in your language:
    
    It has to release persistent NameID into the Subject of the assertion or eduPersonTargetedID, eduPersonAffiliation and the mail attribute only.
 
-### Appendix B: Configure attribute filter policies for the REFEDS Research and Scholarship and the GEANT Data Protection Code of Conduct Entity Categories
+### Appendix B: Configure attribute filter policies for Entity Categories
 
-> Follow these steps ONLY when your IdP is accepted into IDEM Production Federation and if the Entity Categories mentioned are enabled for your IdP
+> Follow these steps ONLY when your IdP is accepted into IDEM Production Federation and if it is supports [Entity Categories promoted by IDEM](https://wiki.idem.garr.it/wiki/EntityAttribute-Category):
 
 1. Download the attribute filter file:
-   * `wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/attribute-filter-v4-rs-coco.xml -O /opt/shibboleth-idp/conf/attribute-filter-v4-rs-coco.xml`
+   * `wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/attribute-filter-v4-idem-ec.xml -O /opt/shibboleth-idp/conf/attribute-filter-v4-idem-ec.xml`
 
 2. Modify your `services.xml`:
    * `vim /opt/shibboleth-idp/conf/services.xml`
@@ -1317,10 +1317,10 @@ Translate the IdP messages in your language:
      ```xml
      <util:list id ="shibboleth.AttributeFilterResources">
          <value>%{idp.home}/conf/attribute-filter.xml</value>
-         <value>%{idp.home}/conf/attribute-filter-v4-idem.xml</value>
+         <value>%{idp.home}/conf/attribute-filter-v4-idem-default.xml</value>
          <value>%{idp.home}/conf/attribute-filter-v4-required.xml</value>
          <ref bean="SpecialResources"/>
-         <value>%{idp.home}/conf/attribute-filter-v4-rs-coco.xml</value>
+         <value>%{idp.home}/conf/attribute-filter-v4-idem-ec.xml</value>
      </util:list>
      ```
 
