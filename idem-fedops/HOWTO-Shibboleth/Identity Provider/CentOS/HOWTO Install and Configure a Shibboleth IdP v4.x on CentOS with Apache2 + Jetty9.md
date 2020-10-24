@@ -144,7 +144,8 @@ It is a Java Web Application that can be deployed with its WAR file.
 3. Run the installer `install.sh`:
    > According to [NSA and NIST](https://www.keylength.com/en/compare/), RSA with 3072 bit-modulus is the minimum to protect up to TOP SECRET over than 2030.
    
-   * `bash /usr/local/src/shibboleth-identity-provider-4.x.y/bin/install.sh -Didp.host.name=$(hostname -f) -Didp.keysize=3072`
+   * `cd /usr/local/src/shibboleth-identity-provider-4.x.y/bin`
+   * `bash install.sh -Didp.host.name=$(hostname -f) -Didp.keysize=3072`
 
      ```bash
      Buildfile: /usr/local/src/shibboleth-identity-provider-4.x.y/bin/build.xml
@@ -172,9 +173,13 @@ Jetty is a Web server and a Java Servlet container. It will be used to run the I
    * `sudo su -`
 
 2. Download and Extract Jetty:
-   * `cd /usr/local/src`
-   * `wget https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-distribution/9.4.31.v20200723/jetty-distribution-9.4.31.v20200723.tar.gz`
-   * `tar xzvf jetty-distribution-9.4.31.v20200723.tar.gz`
+   ```bash
+   cd /usr/local/src
+   
+   wget https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-distribution/9.4.31.v20200723/jetty-distribution-9.4.31.v20200723.tar.gz
+   
+   tar xzvf jetty-distribution-9.4.31.v20200723.tar.gz
+   ```
 
 3. Create the `jetty-src` folder as a symbolic link. It will be useful for future Jetty updates:
    * `ln -nsf jetty-distribution-9.4.31.v20200723 jetty-src`
@@ -265,14 +270,18 @@ The Apache HTTP Server will be configured as a reverse proxy and it will be used
    * `sudo chown -R apache: /var/www/html/$(hostname -f)`
 
 2. Create the Virtualhost file (pay attention and follow the starting comment):
-   * `wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/apache2/idp.example.org.conf -O /etc/httpd/conf.d/$(hostname -f).conf`
+   * ```bash
+     wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/apache2/idp.example.org.conf -O /etc/httpd/conf.d/$(hostname -f).conf
+     ```
    
 3. Put SSL credentials in the right place:
    * HTTPS Server Certificate (Public Key) inside `/etc/pki/tls/certs`
    * HTTPS Server Key (Private Key) inside `/etc/pki/tls/private`	
    * Add CA Cert into `/etc/pki/tls/certs`
-     * If you use GARR TCS (Sectigo CA): `wget -O /etc/pki/tls/certs/GEANT_OV_RSA_CA_4.pem https://crt.sh/?d=2475254782`
-     * If you use ACME (Let's Encrypt): `ln -s /etc/letsencrypt/live/<SERVER_FQDN>/chain.pem /etc/pki/tls/certs/ACME-CA.pem`
+     * If you use GARR TCS (Sectigo CA): 
+       * `wget -O /etc/pki/tls/certs/GEANT_OV_RSA_CA_4.pem https://crt.sh/?d=2475254782`
+     * If you use ACME (Let's Encrypt): 
+       * `ln -s /etc/letsencrypt/live/<SERVER_FQDN>/chain.pem /etc/pki/tls/certs/ACME-CA.pem`
 
 4. Configure the right privileges for the SSL Certificate and Key used by HTTPS:
    * `chmod 400 /etc/pki/tls/private/$(hostname -f).key`
@@ -846,8 +855,9 @@ This Storage service will memorize User Consent data on persistent database SQL.
          ```
        
      * (OPTIONAL) `vim /opt/shibboleth-idp/conf/c14n/simple-subject-c14n-config.xml`
-       * Transform each letter of username, before storing in into the database, to Lowercase or Uppercase by setting the proper constant.
-       `<util:constant id="shibboleth.c14n.simple.Lowercase" static-field="java.lang.Boolean.TRUE"/>`
+       * Transform each letter of username, before storing in into the database, to Lowercase or Uppercase by setting the proper constant:
+       
+         `<util:constant id="shibboleth.c14n.simple.Lowercase" static-field="java.lang.Boolean.TRUE"/>`
 
 10. Restart IdP to apply the changes:
     * `touch /opt/jetty/webapps/idp.xml`
@@ -859,7 +869,9 @@ This Storage service will memorize User Consent data on persistent database SQL.
 
 1. Define which attributes your IdP can manage into your Attribute Resolver file. Here you can find a sample **attribute-resolver-sample.xml** as example:
     * Download the sample attribute resolver provided by IDEM GARR AAI Federation Operators (OpenLDAP / Active Directory compliant):
-      * `wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/attribute-resolver-v4-idem-sample.xml -O /opt/shibboleth-idp/conf/attribute-resolver.xml`
+      * ```bash
+        wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/attribute-resolver-v4-idem-sample.xml -O /opt/shibboleth-idp/conf/attribute-resolver.xml
+        ```
 
         If you decide to use the Solutions plain LDAP/AD, remove or comment the following directives from your Attribute Resolver file:
 
@@ -913,9 +925,9 @@ This Storage service will memorize User Consent data on persistent database SQL.
      ```
 
 3. Create the custom `eduPersonTargetedID.properties` file:
-   ```bash 
-   wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/attributes/custom/eduPersonTargetedID.properties -O /opt/shibboleth-idp/conf/attributes/custom/eduPersonTargetedID.properties
-   ```
+   * ```bash 
+     wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/attributes/custom/eduPersonTargetedID.properties -O /opt/shibboleth-idp/conf/attributes/custom/eduPersonTargetedID.properties
+     ```
 
 4. Restart IdP to apply the changes:
    * `touch /opt/jetty/webapps/idp.xml`
@@ -954,9 +966,9 @@ This Storage service will memorize User Consent data on persistent database SQL.
      ```
 
 2. Create the custom `eduPersonTargetedID.properties` file:
-   ```bash 
-   wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/attributes/custom/eduPersonTargetedID.properties -O /opt/shibboleth-idp/conf/attributes/custom/eduPersonTargetedID.properties
-   ```
+   * ```bash 
+     wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/attributes/custom/eduPersonTargetedID.properties -O /opt/shibboleth-idp/conf/attributes/custom/eduPersonTargetedID.properties
+     ```
 
 3. Restart IdP to apply the changes:
    * `touch /opt/jetty/webapps/idp.xml`
@@ -969,7 +981,9 @@ This Storage service will memorize User Consent data on persistent database SQL.
 File(s): `conf/attribute-registry.xml`, `conf/attributes/default-rules.xml`, `conf/attribute-resolver.xml`, `conf/attributes/custom/`
 
 1. Download `schac.xml` into the right location:
-   * `wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/attributes/schac.xml -O /opt/shibboleth-idp/conf/attributes/schac.xml`
+   * ```bash
+     wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/attributes/schac.xml -O /opt/shibboleth-idp/conf/attributes/schac.xml
+     ```
 
 2. Change the `default-rules.xml` to include the new `schac.xml` file:
    * `vim /opt/shibboleth-idp/conf/attributes/default-rules.xml`
@@ -1167,7 +1181,9 @@ Translate the IdP messages in your language:
    * `sudo su -`
 
 2. Download the attribute filter file:
-   * `wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/attribute-filter-v4-idem-default.xml -O /opt/shibboleth-idp/conf/attribute-filter-v4-idem-default.xml`
+   * ```bash
+     wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/attribute-filter-v4-idem-default.xml -O /opt/shibboleth-idp/conf/attribute-filter-v4-idem-default.xml
+     ```
 
 3. Modify your `services.xml`:
    * `vim /opt/shibboleth-idp/conf/services.xml`
@@ -1197,7 +1213,9 @@ Translate the IdP messages in your language:
 2. Configure the IdP to retrieve the Federation Metadata:
 
    * Retrieve the Federation Certificate used to verify signed metadata:
-     *  `wget https://md.idem.garr.it/certs/idem-signer-20220121.pem -O /opt/shibboleth-idp/metadata/federation-cert.pem`
+     *  ```bash
+        wget https://md.idem.garr.it/certs/idem-signer-20220121.pem -O /opt/shibboleth-idp/metadata/federation-cert.pem
+        ```
 
    * Check the validity:
      *  `cd /opt/shibboleth-idp/metadata`
@@ -1261,7 +1279,9 @@ Translate the IdP messages in your language:
    * `sudo su -`
    
 2. Download the attribute filter file:
-   * `wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/attribute-filter-v4-idem-required.xml -O /opt/shibboleth-idp/conf/attribute-filter-v4-idem-required.xml`
+   * ```bash
+     wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/attribute-filter-v4-idem-required.xml -O /opt/shibboleth-idp/conf/attribute-filter-v4-idem-required.xml
+     ```
 
 3. Modify your `services.xml`:
    * `vim /opt/shibboleth-idp/conf/services.xml`
@@ -1341,7 +1361,9 @@ Translate the IdP messages in your language:
 > Follow these steps ONLY when your IdP is accepted into IDEM Production Federation and if it is supports [Entity Categories promoted by IDEM](https://wiki.idem.garr.it/wiki/EntityAttribute-Category):
 
 1. Download the attribute filter file:
-   * `wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/attribute-filter-v4-idem-ec.xml -O /opt/shibboleth-idp/conf/attribute-filter-v4-idem-ec.xml`
+   * ```bash
+     wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/attribute-filter-v4-idem-ec.xml -O /opt/shibboleth-idp/conf/attribute-filter-v4-idem-ec.xml
+     ```
 
 2. Modify your `services.xml`:
    * `vim /opt/shibboleth-idp/conf/services.xml`
