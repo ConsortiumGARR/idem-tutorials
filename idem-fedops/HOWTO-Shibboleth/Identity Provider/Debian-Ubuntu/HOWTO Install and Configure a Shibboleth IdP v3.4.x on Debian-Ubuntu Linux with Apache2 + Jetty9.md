@@ -1230,7 +1230,7 @@ Translate the IdP messages in your language:
 ### Configure attribute filter policies for the REFEDS Research and Scholarship and the GEANT Data Protection Code of Conduct Entity Categories
 
 1. Download the attribute filter file:
-   * `wget -O /opt/shibboleth-idp/conf/attribute-filter-v3-RS-CoCo.xml https://github.com/ConsortiumGARR/idem-tutorials/raw/master/idem-fedops/HOWTO-Shibboleth/Identity%20Provider/utils/attribute-filter-v3-RS-CoCo.xml`
+   * `wget -O /opt/shibboleth-idp/conf/attribute-filter-v3-ec.xml https://registry.idem.garr.it/idem-conf/shibboleth/IDP3/attribute-filter-v3-ec.xml`
 
 2. Modify your `services.xml`:
    * `vim /opt/shibboleth-idp/conf/services.xml`
@@ -1238,7 +1238,7 @@ Translate the IdP messages in your language:
      ```xml
      <util:list id ="shibboleth.AttributeFilterResources">
          <!-- <value>%{idp.home}/conf/attribute-filter.xml</value> -->
-         <value>%{idp.home}/conf/attribute-filter-v3-RS-CoCo.xml</value>
+         <value>%{idp.home}/conf/attribute-filter-v3-ec.xml</value>
       </util:list>
       ```
 
@@ -1314,7 +1314,7 @@ Translate the IdP messages in your language:
      ...
      <util:list id ="shibboleth.AttributeFilterResources">
          <!-- <value>%{idp.home}/conf/attribute-filter.xml</value> -->
-         <value>%{idp.home}/conf/attribute-filter-v3-RS-CoCo.xml</value>
+         <value>%{idp.home}/conf/attribute-filter-v3-ec.xml</value>
          <value>%{idp.home}/conf/attribute-filter-v3-all.xml</value>
      </util:list>
      ```
@@ -1333,7 +1333,7 @@ Translate the IdP messages in your language:
      ```xml
      <util:list id ="shibboleth.AttributeFilterResources">
          <!-- <value>%{idp.home}/conf/attribute-filter.xml</value> -->
-         <value>%{idp.home}/conf/attribute-filter-v3-RS-CoCo.xml</value>		 
+         <value>%{idp.home}/conf/attribute-filter-v3-ec.xml</value>		 
          <value>%{idp.home}/conf/attribute-filter-v3-all.xml</value>
          <value>%{idp.home}/conf/attribute-filter-v3-eduGAIN.xml</value>
       </util:list>
@@ -1361,7 +1361,7 @@ Translate the IdP messages in your language:
           
        <util:list id ="shibboleth.AttributeFilterResources">
            <value>%{idp.home}/conf/attribute-filter.xml</value>
-           <value>%{idp.home}/conf/attribute-filter-v3-RS-CoCo.xml</value>
+           <value>%{idp.home}/conf/attribute-filter-v3-ec.xml</value>
            <ref bean="IDEM-Default-Filter"/>
        </util:list>
        ```
@@ -1385,7 +1385,7 @@ Translate the IdP messages in your language:
 	     
        <util:list id ="shibboleth.AttributeFilterResources">
            <value>%{idp.home}/conf/attribute-filter.xml</value>
-           <value>%{idp.home}/conf/attribute-filter-v3-RS-CoCo.xml</value>
+           <value>%{idp.home}/conf/attribute-filter-v3-ec.xml</value>
            <ref bean="IDEM-Default-Filter"/>
        </util:list>
        ```
@@ -1409,7 +1409,7 @@ Translate the IdP messages in your language:
        
        <util:list id ="shibboleth.AttributeFilterResources">
            <value>%{idp.home}/conf/attribute-filter.xml</value>
-           <value>%{idp.home}/conf/attribute-filter-v3-RS-CoCo.xml</value>
+           <value>%{idp.home}/conf/attribute-filter-v3-ec.xml</value>
            <ref bean="IDEM-Default-Filter"/>
            <ref bean="IDEM-Production-Filter"/>
        </util:list>
@@ -1434,7 +1434,7 @@ Translate the IdP messages in your language:
        
        <util:list id ="shibboleth.AttributeFilterResources">
            <value>%{idp.home}/conf/attribute-filter.xml</value>
-           <value>%{idp.home}/conf/attribute-filter-v3-RS-CoCo.xml</value>
+           <value>%{idp.home}/conf/attribute-filter-v3-ec.xml</value>
            <ref bean="IDEM-Default-Filter"/>
            <ref bean="IDEM-Production-Filter"/>
        </util:list>
