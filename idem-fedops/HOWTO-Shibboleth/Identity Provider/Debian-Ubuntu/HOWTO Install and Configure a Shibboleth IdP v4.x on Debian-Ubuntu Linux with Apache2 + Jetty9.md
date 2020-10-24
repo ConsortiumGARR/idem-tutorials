@@ -947,9 +947,9 @@ This Storage service will memorize User Consent data on persistent database SQL.
       ```
 
 3. Create the custom `eduPersonTargetedID.properties` file:
-   ```bash 
-   wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/attributes/custom/eduPersonTargetedID.properties -O /opt/shibboleth-idp/conf/attributes/custom/eduPersonTargetedID.properties
-   ```
+   * ```bash 
+     wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/attributes/custom/eduPersonTargetedID.properties -O /opt/shibboleth-idp/conf/attributes/custom/eduPersonTargetedID.properties
+     ```
 
 4. Restart IdP to apply the changes:
    * `touch /opt/jetty/webapps/idp.xml`
@@ -988,9 +988,9 @@ This Storage service will memorize User Consent data on persistent database SQL.
       ```
 
 2. Create the custom `eduPersonTargetedID.properties` file:
-   ```bash 
-   wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/attributes/custom/eduPersonTargetedID.properties -O /opt/shibboleth-idp/conf/attributes/custom/eduPersonTargetedID.properties
-   ```
+   * ```bash 
+     wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/attributes/custom/eduPersonTargetedID.properties -O /opt/shibboleth-idp/conf/attributes/custom/eduPersonTargetedID.properties
+     ```
 
 3. Restart IdP to apply the changes:
    * `touch /opt/jetty/webapps/idp.xml`
@@ -1003,9 +1003,9 @@ This Storage service will memorize User Consent data on persistent database SQL.
 File(s): `conf/attribute-registry.xml`, `conf/attributes/default-rules.xml`, `conf/attribute-resolver.xml`, `conf/attributes/custom/`
 
 1. Download `schac.xml` (provided by IDEM) into the right location:
-   ```bash
-   wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/attributes/schac.xml -O /opt/shibboleth-idp/conf/attributes/schac.xml
-   ```
+   * ```bash
+     wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/attributes/schac.xml -O /opt/shibboleth-idp/conf/attributes/schac.xml
+     ```
 
 2. Change the `default-rules.xml` to include the new `schac.xml` file:
    * `vim /opt/shibboleth-idp/conf/attributes/default-rules.xml`
@@ -1303,9 +1303,9 @@ Translate the IdP messages in your language:
    * `sudo su -`
    
 2. Download the attribute filter file:
-   ```bash
-   wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/attribute-filter-v4-idem-required.xml -O /opt/shibboleth-idp/conf/attribute-filter-v4-idem-required.xml
-   ```
+   * ```bash
+     wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/attribute-filter-v4-idem-required.xml -O /opt/shibboleth-idp/conf/attribute-filter-v4-idem-required.xml
+     ```
 
 3. Modify your `services.xml`:
    * `vim /opt/shibboleth-idp/conf/services.xml`
@@ -1386,9 +1386,9 @@ Translate the IdP messages in your language:
 > Follow these steps ONLY once your IdP is accepted into IDEM Production Federation and if it has been enabled to support [Entity Categories promoted by IDEM](https://wiki.idem.garr.it/wiki/EntityAttribute-Category)
 
 1. Download the attribute filter file:
-   ```bash
-   wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/attribute-filter-v4-idem-ec.xml -O /opt/shibboleth-idp/conf/attribute-filter-v4-idem-ec.xml
-   ```
+   * ```bash
+     wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/attribute-filter-v4-idem-ec.xml -O /opt/shibboleth-idp/conf/attribute-filter-v4-idem-ec.xml
+     ```
 
 2. Modify your `services.xml`:
    * `vim /opt/shibboleth-idp/conf/services.xml`
