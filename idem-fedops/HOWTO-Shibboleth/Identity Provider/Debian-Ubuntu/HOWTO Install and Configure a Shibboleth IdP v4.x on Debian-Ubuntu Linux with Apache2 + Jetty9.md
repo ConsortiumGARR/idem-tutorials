@@ -1372,14 +1372,13 @@ Translate the IdP messages in your language:
      <!-- ...other things... -->
      ```
 
-5. Restart IdP to apply the changes:
+4. Restart IdP to apply the changes:
    * `touch /opt/jetty/webapps/idp.xml`
    
-6. Run AACLI:
+5. Run AACLI:
    * `bash /opt/shibboleth-idp/bin/aacli.sh -n <USERNAME> -r https://filesender.garr.it/shibboleth --saml2`
    
    It has to release `persistent` NameID into the Subject assertion and attributes `eduPersonTargetedID`, `eduPersonScopedAffiliation` and `mail` only.
-
 
 ### Appendix C: Configure Attribute Filter Policy to release attributes to resources compliant with Entity Categories
 
