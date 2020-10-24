@@ -1345,7 +1345,7 @@ Translate the IdP messages in your language:
 
 1. Download the attribute filter file:
    ```bash
-   wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/attribute-filter-v4-rs-coco.xml -O /opt/shibboleth-idp/conf/attribute-filter-v4-rs-coco.xml
+   wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/attribute-filter-v4-ec.xml -O /opt/shibboleth-idp/conf/attribute-filter-v4-ec.xml
    ```
 
 2. Modify your `services.xml`:
@@ -1357,7 +1357,7 @@ Translate the IdP messages in your language:
          <value>%{idp.home}/conf/attribute-filter-v4-idem.xml</value>
          <value>%{idp.home}/conf/attribute-filter-v4-required.xml</value>
          <ref bean="SpecialResources"/>
-         <value>%{idp.home}/conf/attribute-filter-v4-rs-coco.xml</value>
+         <value>%{idp.home}/conf/attribute-filter-v4-ec.xml</value>
      </util:list>
      ```
 
