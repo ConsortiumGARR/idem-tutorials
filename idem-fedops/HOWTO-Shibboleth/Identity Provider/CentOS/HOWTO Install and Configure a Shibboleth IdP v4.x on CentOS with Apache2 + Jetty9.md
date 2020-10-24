@@ -1393,7 +1393,9 @@ Translate the IdP messages in your language:
 
 2. Create a DUMP of `shibpid` table from the previous DB `shibboleth` on the OLD IdP:
    * `cd /tmp`
-   * `mysqldump --complete-insert --no-create-db --no-create-info -u root -p shibboleth shibpid > /tmp/shibboleth_shibpid.sql`
+   * ```bash
+     mysqldump --complete-insert --no-create-db --no-create-info -u root -p shibboleth shibpid > /tmp/shibboleth_shibpid.sql
+     ```
 
 3. Move the `/tmp/shibboleth_shibpid.sql` of old IdP into `/tmp/shibboleth_shibpid.sql` on the new IdP.
  
