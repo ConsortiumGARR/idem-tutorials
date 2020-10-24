@@ -1446,6 +1446,7 @@ Translate the IdP messages in your language:
 
 ### Utilities
 * AACLI: Useful to understand which attributes will be released to the federated resources
+  * `export JAVA_HOME=/usr/lib/jvm/java-11-amazon-corretto`
   * `bash /opt/shibboleth-idp/bin/aacli.sh -n <USERNAME> -r <ENTITYID-SP> --saml2`
 
 ### Useful Documentation
