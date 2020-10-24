@@ -154,7 +154,8 @@ It is a Java Web Application that can be deployed with its WAR file.
 3. Run the installer `install.sh`:
 > According to [NSA and NIST](https://www.keylength.com/en/compare/), RSA with 3072 bit-modulus is the minimum to protect up to TOP SECRET over than 2030.
 
-   * `bash /usr/local/src/shibboleth-identity-provider-4.x.y/bin/install.sh -Didp.host.name=$(hostname -f) -Didp.keysize=3072`
+   * `cd /usr/local/src/shibboleth-identity-provider-4.x.y/bin`
+   * `bash install.sh -Didp.host.name=$(hostname -f) -Didp.keysize=3072`
   
      ```bash
      Buildfile: /usr/local/src/shibboleth-identity-provider-4.x.y/bin/build.xml
@@ -290,8 +291,10 @@ The Apache HTTP Server will be configured as a reverse proxy and it will be used
    * HTTPS Server Certificate (Public Key) inside `/etc/ssl/certs` 
    * HTTPS Server Key (Private Key) inside `/etc/ssl/private`
    * Add CA Cert into `/etc/ssl/certs`
-     * If you use GARR TCS (Sectigo CA): `wget -O /etc/ssl/certs/GEANT_OV_RSA_CA_4.pem https://crt.sh/?d=2475254782`
-     * If you use ACME (Let's Encrypt): `ln -s /etc/letsencrypt/live/<SERVER_FQDN>/chain.pem /etc/ssl/certs/ACME-CA.pem`
+     * If you use GARR TCS (Sectigo CA):
+       * `wget -O /etc/ssl/certs/GEANT_OV_RSA_CA_4.pem https://crt.sh/?d=2475254782`
+     * If you use ACME (Let's Encrypt):
+       * `ln -s /etc/letsencrypt/live/<SERVER_FQDN>/chain.pem /etc/ssl/certs/ACME-CA.pem`
 
 5. Configure the right privileges for the SSL Certificate and Key used by HTTPS:
    * `chmod 400 /etc/ssl/private/$(hostname -f).key`
@@ -339,7 +342,9 @@ This Storage service will memorize User Consent data on persistent database SQL.
    * `sudo su -`
 
 2. Install required packages:
-   * `apt install default-mysql-server libmariadb-java libcommons-dbcp-java libcommons-pool-java --no-install-recommends`
+   * ```bash
+     apt install default-mysql-server libmariadb-java libcommons-dbcp-java libcommons-pool-java --no-install-recommends
+     ```
 
 3. Activate MariaDB database service:
    * `systemctl start mariadb.service`
@@ -769,7 +774,9 @@ This Storage service will memorize User Consent data on persistent database SQL.
    * `sudo su -`
 
 2. Install required packages:
-   * `apt install default-mysql-server libmariadb-java libcommons-dbcp-java libcommons-pool-java --no-install-recommends`
+   * ```bash
+     apt install default-mysql-server libmariadb-java libcommons-dbcp-java libcommons-pool-java --no-install-recommends
+     ```
 
 3. Activate MariaDB database service:
    * `systemctl start mariadb.service`
@@ -870,8 +877,9 @@ This Storage service will memorize User Consent data on persistent database SQL.
          ```
        
      * (OPTIONAL) `vim /opt/shibboleth-idp/conf/c14n/simple-subject-c14n-config.xml`
-       * Transform each letter of username, before storing in into the database, to Lowercase or Uppercase by setting the proper constant.
-       `<util:constant id="shibboleth.c14n.simple.Lowercase" static-field="java.lang.Boolean.TRUE"/>`
+       * Transform each letter of username, before storing in into the database, to Lowercase or Uppercase by setting the proper constant:
+       
+         `<util:constant id="shibboleth.c14n.simple.Lowercase" static-field="java.lang.Boolean.TRUE"/>`
 
 10. Restart IdP to apply the changes:
    * `touch /opt/jetty/webapps/idp.xml`
@@ -1227,7 +1235,9 @@ Translate the IdP messages in your language:
 2. Configure the IdP to retrieve the Federation Metadata:
 
    * Retrieve the Federation Certificate used to verify signed metadata:
-     *  `wget https://md.idem.garr.it/certs/idem-signer-20220121.pem -O /opt/shibboleth-idp/metadata/federation-cert.pem`
+     *  ```bash
+        wget https://md.idem.garr.it/certs/idem-signer-20220121.pem -O /opt/shibboleth-idp/metadata/federation-cert.pem
+        ```
 
    * Check the validity:
      *  `cd /opt/shibboleth-idp/metadata`
