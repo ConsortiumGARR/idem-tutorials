@@ -1325,7 +1325,7 @@ Translate the IdP messages in your language:
 4. Restart IdP to apply the changes:
    * `touch /opt/jetty/webapps/idp.xml`
    
-5. Check to be able to retrieve `eduPersonScopedAffiliation` and `eduPersonTargetedID` / persistent NameID for an user:
+5. Run AACLI:
    * `bash /opt/shibboleth-idp/bin/aacli.sh -n <USERNAME> -r https://filesender.garr.it/shibboleth --saml2`
    
    It has to release `persistent` NameID into the Subject assertion and attributes `eduPersonTargetedID`, `eduPersonScopedAffiliation` and `mail` only.
@@ -1375,7 +1375,7 @@ Translate the IdP messages in your language:
 5. Restart IdP to apply the changes:
    * `touch /opt/jetty/webapps/idp.xml`
    
-6. Check to be able to retrieve `eduPersonScopedAffiliation` and `eduPersonTargetedID` / persistent NameID for an user:
+6. Run AACLI:
    * `bash /opt/shibboleth-idp/bin/aacli.sh -n <USERNAME> -r https://filesender.garr.it/shibboleth --saml2`
    
    It has to release `persistent` NameID into the Subject assertion and attributes `eduPersonTargetedID`, `eduPersonScopedAffiliation` and `mail` only.
