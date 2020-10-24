@@ -32,15 +32,16 @@
    10. [Translate IdP messages into the preferred language](#translate-idp-messages-into-preferred-language)
    11. [Disable SAML1 Deprecated Protocol](#disable-saml1-deprecated-protocol)
    12. [Secure cookies and other IDP data](#secure-cookies-and-other-idp-data)
-   13. [Configure Attribute Filters to release the mandatory attributes to the IDEM Default Resources](#configure-attribute-filters-to-release-the-mandatory-attributes-to-the-idem-default-resources)
+   13. [Configure Attribute Filter Policy to release mandatory attributes to IDEM Default Resources](#configure-attribute-filter-policy-to-release-mandatory-attributes-to-idem-default-resources)
    14. [Register the IdP on the IDEM Test Federation](#register-the-idp-on-the-idem-test-federation)
-5. [Appendix A: Configure Attribute Filters to release the required attributes for common resources](#appendix-a-configure-attribute-filters-to-release-the-required-attributes-for-common-resources)
-6. [Appendix B: Configure attribute filter policies for the REFEDS Research and Scholarship and the GEANT Data Protection Code of Conduct Entity Categories](#appendix-b-configure-attribute-filter-policies-for-the-refeds-research-and-scholarship-and-the-geant-data-protection-code-of-conduct-entity-categories)
-7. [Appendix C: Import persistent-id from a previous database](#appendix-c-import-persistent-id-from-a-previous-database)
-8. [Appendix D: Useful logs to find problems](#appendix-d-useful-logs-to-find-problems)
-9. [Utilities](#utilities)
-10. [Useful Documentation](#useful-documentation)
-11. [Authors](#authors)
+5. [Appendix A: Configure Attribute Filter Policy to release required attributes to IDEM resources](#appendix-a-configure-attribute-filter-policy-to-release-required-attributes-to-idem-resources)
+6. [Appendix B: Configure Attribute Filter Policy to release attributes to Special Resources](#appendix-b-configure-attribute-filter-policy-to-release-attributes-to-special-resources)
+7. [Appendix C: Configure Attribute Filter Policy to release attributes to resources compliant with Entity Categories](#appendix-c-configure-attribute-filter-policy-to-release-attributes-to-resources-compliant-with-entity-categories)
+8. [Appendix D: Import persistent-id from a previous database](#appendix-d-import-persistent-id-from-a-previous-database)
+9. [Appendix E: Useful logs to find problems](#appendix-e-useful-logs-to-find-problems)
+10. [Utilities](#utilities)
+11. [Useful Documentation](#useful-documentation)
+12. [Authors](#authors)
     * [Original Author](#original-author)
 
 ## Requirements
@@ -1188,14 +1189,14 @@ Translate the IdP messages in your language:
    * `idp.sealer._count` - Number of earlier keys to keep (default 30)
    * `idp.sealer._sync_hosts` - Space separated list of hosts to scp the sealer files to (default generate locally)
 
-### Configure Attribute Filters to release the mandatory attributes to the IDEM Default Resources
+### Configure Attribute Filter Policy to release mandatory attributes to IDEM Default Resources
 
 1. Become ROOT:
    * `sudo su -`
 
 2. Download the attribute filter file:
    * ```bash
-     wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/attribute-filter-v4-idem.xml -O /opt/shibboleth-idp/conf/attribute-filter-v4-idem.xml
+     wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/attribute-filter-v4-idem-default.xml -O /opt/shibboleth-idp/conf/attribute-filter-v4-idem-default.xml
      ```
 
 3. Modify your `services.xml`:
@@ -1206,7 +1207,7 @@ Translate the IdP messages in your language:
      
      <util:list id ="shibboleth.AttributeFilterResources">
          <value>%{idp.home}/conf/attribute-filter.xml</value>
-         <value>%{idp.home}/conf/attribute-filter-v4-idem.xml</value>
+         <value>%{idp.home}/conf/attribute-filter-v4-idem-default.xml</value>
      </util:list>
      
      <!-- ...other things... -->
@@ -1284,7 +1285,7 @@ Translate the IdP messages in your language:
 
 6. Follow the [instructions provided by IDEM](https://wiki.idem.garr.it/wiki/RegistraEntita).
 
-### Appendix A: Configure Attribute Filters to release the required attributes for common resources
+### Appendix A: Configure Attribute Filter Policy to release required attributes to IDEM resources
 
 > Follow these steps ONLY when your IdP is accepted into IDEM Production Federation
 
@@ -1293,13 +1294,44 @@ Translate the IdP messages in your language:
    
 2. Download the attribute filter file:
    ```bash
-   wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/attribute-filter-v4-required.xml -O /opt/shibboleth-idp/conf/attribute-filter-v4-required.xml
+   wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/attribute-filter-v4-idem-required.xml -O /opt/shibboleth-idp/conf/attribute-filter-v4-idem-required.xml
    ```
+
+3. Modify your `services.xml`:
+   * `vim /opt/shibboleth-idp/conf/services.xml`
+
+     and enrich the "`AttributeFilterResources`" list with "`attribute-filter-v4-idem-required.xml`":
+     
+     ```xml
+     <util:list id ="shibboleth.AttributeFilterResources">
+         <value>%{idp.home}/conf/attribute-filter.xml</value>
+         <value>%{idp.home}/conf/attribute-filter-v4-idem-default.xml</value>
+         <value>%{idp.home}/conf/attribute-filter-v4-idem-required.xml</value>
+     </util:list>
+     
+     <!-- ...other things... -->
+     ```
+
+4. Restart IdP to apply the changes:
+   * `touch /opt/jetty/webapps/idp.xml`
    
-3. Create the directory "`tmp/httpClientCache`" used by "`shibboleth.FileCachingHttpClient`":
+5. Check to be able to retrieve `eduPersonScopedAffiliation` and `eduPersonTargetedID` / persistent NameID for an user:
+   * `bash /opt/shibboleth-idp/bin/aacli.sh -n <USERNAME> -r https://filesender.garr.it/shibboleth --saml2`
+   
+   It has to release `persistent` NameID into the Subject assertion and attributes `eduPersonTargetedID`, `eduPersonScopedAffiliation` and `mail` only.
+
+### Appendix B: Configure Attribute Filter Policy to release attributes to Special Resources
+
+> Follow these steps ONLY when your IdP is accepted into IDEM Production Federation
+> The Attribute Filter Policy provided is intended for those resources that have special needs about attributes' values
+
+1. Become ROOT:
+   * `sudo su -`
+
+2. Create the directory "`tmp/httpClientCache`" used by "`shibboleth.FileCachingHttpClient`":
    * `mkdir -p /opt/shibboleth-idp/tmp/httpClientCache ; chown jetty /opt/shibboleth-idp/tmp/httpClientCache`
 
-4. Modify your `services.xml`:
+3. Modify your `services.xml`:
    * `vim /opt/shibboleth-idp/conf/services.xml`
 
      and add the following two beans on the top of the file, under the first `<beans>` TAG, only one time:
@@ -1313,17 +1345,17 @@ Translate the IdP messages in your language:
      
      <bean id="SpecialResources" class="net.shibboleth.ext.spring.resource.FileBackedHTTPResource"
            c:client-ref="MyHTTPClient"
-           c:url="https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/attribute-filter-v4-resources.xml"
-           c:backingFile="%{idp.home}/conf/attribute-filter-v4-resources.xml"/>
+           c:url="https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/attribute-filter-v4-idem-special-resources.xml"
+           c:backingFile="%{idp.home}/conf/attribute-filter-v4-idem-special-resources.xml"/>
      ```
      
-     and enrich the "`AttributeFilterResources`" list with "`attribute-filter-v4-required.xml`" and "`SpecialResources`":
+     and enrich the "`AttributeFilterResources`" list with "`SpecialResources`":
      
      ```xml
      <util:list id ="shibboleth.AttributeFilterResources">
          <value>%{idp.home}/conf/attribute-filter.xml</value>
-         <value>%{idp.home}/conf/attribute-filter-v4-idem.xml</value>
-         <value>%{idp.home}/conf/attribute-filter-v4-required.xml</value>
+         <value>%{idp.home}/conf/attribute-filter-v4-idem-default.xml</value>
+         <value>%{idp.home}/conf/attribute-filter-v4-idem-required.xml</value>
          <ref bean="SpecialResources"/>
      </util:list>
      
@@ -1336,16 +1368,16 @@ Translate the IdP messages in your language:
 6. Check to be able to retrieve `eduPersonScopedAffiliation` and `eduPersonTargetedID` / persistent NameID for an user:
    * `bash /opt/shibboleth-idp/bin/aacli.sh -n <USERNAME> -r https://filesender.garr.it/shibboleth --saml2`
    
-   It has to release persistent NameID into the Subject of the assertion or eduPersonTargetedIDeduPersonAffiliation and the mail attribute only.
+   It has to release `persistent` NameID into the Subject assertion and attributes `eduPersonTargetedID`, `eduPersonScopedAffiliation` and `mail` only.
 
 
-### Appendix B: Configure attribute filter policies for the REFEDS Research and Scholarship and the GEANT Data Protection Code of Conduct Entity Categories
+### Appendix C: Configure Attribute Filter Policy to release attributes to resources compliant with Entity Categories
 
-> Follow these steps ONLY when your IdP is accepted into IDEM Production Federation and if the Entity Categories mentioned are enabled for your IdP
+> Follow these steps ONLY once your IdP is accepted into IDEM Production Federation and if it has been enabled to support [Entity Categories promoted by IDEM](https://wiki.idem.garr.it/wiki/EntityAttribute-Category)
 
 1. Download the attribute filter file:
    ```bash
-   wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/attribute-filter-v4-ec.xml -O /opt/shibboleth-idp/conf/attribute-filter-v4-ec.xml
+   wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/attribute-filter-v4-idem-ec.xml -O /opt/shibboleth-idp/conf/attribute-filter-v4-idem-ec.xml
    ```
 
 2. Modify your `services.xml`:
@@ -1354,10 +1386,10 @@ Translate the IdP messages in your language:
      ```xml
      <util:list id ="shibboleth.AttributeFilterResources">
          <value>%{idp.home}/conf/attribute-filter.xml</value>
-         <value>%{idp.home}/conf/attribute-filter-v4-idem.xml</value>
-         <value>%{idp.home}/conf/attribute-filter-v4-required.xml</value>
+         <value>%{idp.home}/conf/attribute-filter-v4-idem-default.xml</value>
+         <value>%{idp.home}/conf/attribute-filter-v4-idem-required.xml</value>
          <ref bean="SpecialResources"/>
-         <value>%{idp.home}/conf/attribute-filter-v4-ec.xml</value>
+         <value>%{idp.home}/conf/attribute-filter-v4-idem-ec.xml</value>
      </util:list>
      ```
 
@@ -1367,7 +1399,7 @@ Translate the IdP messages in your language:
 4. Check IdP Status:
    * `bash /opt/shibboleth-idp/bin/status.sh`
 
-### Appendix C: Import persistent-id from a previous database
+### Appendix D: Import persistent-id from a previous database
 
 > Follow these steps ONLY when your need to import persistent-id from another IdP
 
@@ -1388,7 +1420,7 @@ Translate the IdP messages in your language:
 5. Delete `/tmp/shibboleth_shibpid.sql`:
    * `rm /tmp/shibboleth_shibpid.sql`
    
-### Appendix D: Useful logs to find problems
+### Appendix E: Useful logs to find problems
 
 > Follow this if do you want to find a problem of your IdP.
 
