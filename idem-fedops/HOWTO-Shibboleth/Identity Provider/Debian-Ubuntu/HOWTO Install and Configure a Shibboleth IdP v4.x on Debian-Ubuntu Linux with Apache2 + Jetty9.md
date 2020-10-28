@@ -361,7 +361,7 @@ This Storage service will memorize User Consent data on persistent database SQL.
      password=##ROOT-DB-PASSWORD-CHANGEME##
      ```
 
-6. Create the `StorageRegords` table on the `storageservice` database:
+6. Create the `StorageRecords` table on the `storageservice` database:
    * `wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/db/shib-ss-db.sql -O /root/shib-ss-db.sql`
    * fill missing data on `shib-ss-db.sql` before import
    * `mysql -u root < shib-ss-db.sql`
