@@ -485,11 +485,9 @@ This Storage service will memorize User Consent data on persistent database SQL.
             idp.authn.LDAP.exportAttributes = ### List space-separated of attributes to retrieve from the directory directly ###
             idp.authn.LDAP.baseDN = ou=people,dc=example,dc=org
             idp.authn.LDAP.subtreeSearch = false
-	        idp.authn.LDAP.bindDN = cn=idpuser,ou=system,dc=example,dc=org
+            idp.authn.LDAP.bindDN = cn=idpuser,ou=system,dc=example,dc=org
             # The userFilter is used to locate a directory entry to bind against for LDAP authentication.
-            idp.authn.LDAP.userFilter = (&(uid={user})(objectClass=inetOrgPerson))
-            # The searchFilter is is used to find user attributes from an LDAP source.
-            idp.authn.LDAP.searchFilter = (uid=$resolutionContext.principal)
+            idp.authn.LDAP.userFilter = (uid={user})
 
             # LDAP attribute configuration, see attribute-resolver.xml
             # Note, this likely won't apply to the use of legacy V2 resolver configurations
@@ -500,7 +498,8 @@ This Storage service will memorize User Consent data on persistent database SQL.
             idp.attribute.resolver.LDAP.bindDN              = %{idp.authn.LDAP.bindDN:undefined}
             idp.attribute.resolver.LDAP.useStartTLS         = %{idp.authn.LDAP.useStartTLS:true}
             idp.attribute.resolver.LDAP.trustCertificates   = %{idp.authn.LDAP.trustCertificates:undefined}
-            idp.attribute.resolver.LDAP.searchFilter        = %{idp.authn.LDAP.searchFilter:undefined}
+            # The searchFilter is used to find user attributes from an LDAP source.
+            idp.attribute.resolver.LDAP.searchFilter        = (uid=$resolutionContext.principal)
             ```
 
        * Solution 2: LDAP + TLS:
@@ -528,9 +527,7 @@ This Storage service will memorize User Consent data on persistent database SQL.
             idp.authn.LDAP.subtreeSearch = false
             idp.authn.LDAP.bindDN = cn=idpuser,ou=system,dc=example,dc=org
             # The userFilter is used to locate a directory entry to bind against for LDAP authentication.
-            idp.authn.LDAP.userFilter = (&(uid={user})(objectClass=inetOrgPerson))
-            # The searchFilter is is used to find user attributes from an LDAP source.
-            idp.authn.LDAP.searchFilter = (uid=$resolutionContext.principal)
+            idp.authn.LDAP.userFilter = (uid={user})
 
             # LDAP attribute configuration, see attribute-resolver.xml
             # Note, this likely won't apply to the use of legacy V2 resolver configurations
@@ -541,7 +538,8 @@ This Storage service will memorize User Consent data on persistent database SQL.
             idp.attribute.resolver.LDAP.bindDN              = %{idp.authn.LDAP.bindDN:undefined}
             idp.attribute.resolver.LDAP.useStartTLS         = %{idp.authn.LDAP.useStartTLS:true}
             idp.attribute.resolver.LDAP.trustCertificates   = %{idp.authn.LDAP.trustCertificates:undefined}
-            idp.attribute.resolver.LDAP.searchFilter        = %{idp.authn.LDAP.searchFilter:undefined}
+            # The searchFilter is used to find user attributes from an LDAP source.
+            idp.attribute.resolver.LDAP.searchFilter        = (uid=$resolutionContext.principal)
             ```
 
        * Solution 3: plain LDAP
@@ -567,9 +565,7 @@ This Storage service will memorize User Consent data on persistent database SQL.
             idp.authn.LDAP.subtreeSearch = false
             idp.authn.LDAP.bindDN = cn=idpuser,ou=system,dc=example,dc=org
             # The userFilter is used to locate a directory entry to bind against for LDAP authentication.
-            idp.authn.LDAP.userFilter = (&(uid={user})(objectClass=inetOrgPerson))
-            # The searchFilter is is used to find user attributes from an LDAP source.
-            idp.authn.LDAP.searchFilter = (uid=$resolutionContext.principal)
+            idp.authn.LDAP.userFilter = (uid={user})
 
             # LDAP attribute configuration, see attribute-resolver.xml
             # Note, this likely won't apply to the use of legacy V2 resolver configurations
@@ -578,7 +574,10 @@ This Storage service will memorize User Consent data on persistent database SQL.
             idp.attribute.resolver.LDAP.responseTimeout     = %{idp.authn.LDAP.responseTimeout:PT3S}
             idp.attribute.resolver.LDAP.baseDN              = %{idp.authn.LDAP.baseDN:undefined}
             idp.attribute.resolver.LDAP.bindDN              = %{idp.authn.LDAP.bindDN:undefined}
-            idp.attribute.resolver.LDAP.searchFilter        = %{idp.authn.LDAP.searchFilter:undefined}
+            idp.attribute.resolver.LDAP.useStartTLS         = %{idp.authn.LDAP.useStartTLS:true}
+            idp.attribute.resolver.LDAP.trustCertificates   = %{idp.authn.LDAP.trustCertificates:undefined}
+            # The searchFilter is used to find user attributes from an LDAP source.
+            idp.attribute.resolver.LDAP.searchFilter        = (uid=$resolutionContext.principal)
             ```
 
      * For Active Directory:
@@ -606,10 +605,8 @@ This Storage service will memorize User Consent data on persistent database SQL.
             idp.authn.LDAP.baseDN = CN=Users,DC=ad,DC=example,DC=org
             idp.authn.LDAP.subtreeSearch = false
             idp.authn.LDAP.bindDN = CN=idpuser,CN=Users,DC=ad,DC=example,DC=org
-            # The userFilter is used to locate a directory entry to bind against for LDAP authentication.
+            # The userFilter is used to locate a directory entry to bind against for AD authentication.
             idp.authn.LDAP.userFilter = (sAMAccountName={user})
-            # The searchFilter is is used to find user attributes from an LDAP source.
-            idp.authn.LDAP.searchFilter = (sAMAccountName=$resolutionContext.principal)
 
             # LDAP attribute configuration, see attribute-resolver.xml
             # Note, this likely won't apply to the use of legacy V2 resolver configurations
@@ -620,7 +617,8 @@ This Storage service will memorize User Consent data on persistent database SQL.
             idp.attribute.resolver.LDAP.bindDN              = %{idp.authn.LDAP.bindDN:undefined}
             idp.attribute.resolver.LDAP.useStartTLS         = %{idp.authn.LDAP.useStartTLS:true}
             idp.attribute.resolver.LDAP.trustCertificates   = %{idp.authn.LDAP.trustCertificates:undefined}
-            idp.attribute.resolver.LDAP.searchFilter        = %{idp.authn.LDAP.searchFilter:undefined}
+            # The searchFilter is used to find user attributes from an AD source.
+            idp.attribute.resolver.LDAP.searchFilter        = (sAMAccountName=$resolutionContext.principal)
             ```
 
        * Solution 2: AD + TLS:
@@ -647,10 +645,8 @@ This Storage service will memorize User Consent data on persistent database SQL.
             idp.authn.LDAP.baseDN = CN=Users,DC=ad,DC=example,DC=org
             idp.authn.LDAP.subtreeSearch = false         
             idp.authn.LDAP.bindDN = CN=idpuser,CN=Users,DC=ad,DC=example,DC=org
-            # The userFilter is used to locate a directory entry to bind against for LDAP authentication.
+            # The userFilter is used to locate a directory entry to bind against for AD authentication.
             idp.authn.LDAP.userFilter = (sAMAccountName={user})
-            # The searchFilter is is used to find user attributes from an LDAP source.
-            idp.authn.LDAP.searchFilter = (sAMAccountName=$resolutionContext.principal)
 
             # LDAP attribute configuration, see attribute-resolver.xml
             # Note, this likely won't apply to the use of legacy V2 resolver configurations
@@ -661,7 +657,8 @@ This Storage service will memorize User Consent data on persistent database SQL.
             idp.attribute.resolver.LDAP.bindDN              = %{idp.authn.LDAP.bindDN:undefined}
             idp.attribute.resolver.LDAP.useStartTLS         = %{idp.authn.LDAP.useStartTLS:true}
             idp.attribute.resolver.LDAP.trustCertificates   = %{idp.authn.LDAP.trustCertificates:undefined}
-            idp.attribute.resolver.LDAP.searchFilter        = %{idp.authn.LDAP.searchFilter:undefined}
+            # The searchFilter is used to find user attributes from an AD source.
+            idp.attribute.resolver.LDAP.searchFilter        = (sAMAccountName=$resolutionContext.principal)
             ```
 
        * Solution 3: plain AD
@@ -686,10 +683,8 @@ This Storage service will memorize User Consent data on persistent database SQL.
             idp.authn.LDAP.baseDN = CN=Users,DC=ad,DC=example,DC=org
             idp.authn.LDAP.subtreeSearch = false
             idp.authn.LDAP.bindDN = CN=idpuser,CN=Users,DC=ad,DC=example,DC=org
-            # The userFilter is used to locate a directory entry to bind against for LDAP authentication.
+            # The userFilter is used to locate a directory entry to bind against for AD authentication.
             idp.authn.LDAP.userFilter = (sAMAccountName={user})
-            # The searchFilter is is used to find user attributes from an LDAP source.
-            idp.authn.LDAP.searchFilter = (sAMAccountName=$resolutionContext.principal)
 
             # LDAP attribute configuration, see attribute-resolver.xml
             # Note, this likely won't apply to the use of legacy V2 resolver configurations
@@ -699,7 +694,9 @@ This Storage service will memorize User Consent data on persistent database SQL.
             idp.attribute.resolver.LDAP.baseDN              = %{idp.authn.LDAP.baseDN:undefined}
             idp.attribute.resolver.LDAP.bindDN              = %{idp.authn.LDAP.bindDN:undefined}
             idp.attribute.resolver.LDAP.useStartTLS         = %{idp.authn.LDAP.useStartTLS:true}
-            idp.attribute.resolver.LDAP.searchFilter        = %{idp.authn.LDAP.searchFilter:undefined}
+            idp.attribute.resolver.LDAP.trustCertificates   = %{idp.authn.LDAP.trustCertificates:undefined}
+            # The searchFilter is used to find user attributes from an AD source.
+            idp.attribute.resolver.LDAP.searchFilter        = (sAMAccountName=$resolutionContext.principal)
             ```
 
        **UTILITY FOR OPENLDAP ADMINISTRATOR:**
