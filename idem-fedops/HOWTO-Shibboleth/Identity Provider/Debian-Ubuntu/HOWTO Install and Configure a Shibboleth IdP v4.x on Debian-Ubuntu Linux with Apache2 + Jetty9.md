@@ -48,7 +48,7 @@
 
 ### Hardware
 
- * CPU: 2 Core
+ * CPU: 2 Core (64 bit)
  * RAM: 4 GB
  * HDD: 20 GB
  * OS: Debian 10 / Ubuntu 18.04
@@ -122,9 +122,12 @@
    * `vim /etc/hosts`
 
      ```bash
-     <YOUR SERVER PUBLIC IP ADDRESS> idp.example.org idp
+     <YOUR SERVER PUBLIC IP ADDRESS> idp.example.org <HOSTNAME>
      ```
-     (*Replace `idp.example.org` with your IdP Full Qualified Domain Name*)
+     
+   * `hostnamectl set-hostname <HOSTNAME>`
+
+     (*Replace `idp.example.org` with your IdP Full Qualified Domain Name and `<HOSTNAME>` with the IdP Hostname*)
 
 4. Set the variable `JAVA_HOME` in `/etc/environment`:
    * Set JAVA_HOME:
@@ -186,13 +189,13 @@ Jetty is a Web server and a Java Servlet container. It will be used to run the I
    ```bash
    cd /usr/local/src
     
-   wget https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-distribution/9.4.31.v20200723/jetty-distribution-9.4.31.v20200723.tar.gz
+   wget https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-distribution/9.4.33.v20201020/jetty-distribution-9.4.33.v20201020.tar.gz
      
-   tar xzvf jetty-distribution-9.4.31.v20200723.tar.gz
+   tar xzvf jetty-distribution-9.4.33.v20201020.tar.gz
    ```
 
 3. Create the `jetty-src` folder as a symbolic link. It will be useful for future Jetty updates:
-   * `ln -nsf jetty-distribution-9.4.31.v20200723 jetty-src`
+   * `ln -nsf jetty-distribution-9.4.33.v20201020 jetty-src`
 
 4. Create the system user `jetty` that can run the web server (without home directory):
    * `useradd -r -M jetty`
