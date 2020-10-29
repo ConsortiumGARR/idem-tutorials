@@ -48,7 +48,7 @@
 
 ### Hardware
 
- * CPU: 2 Core
+ * CPU: 2 Core (64 bit)
  * RAM: 4 GB
  * HDD: 20 GB
  * OS: Centos 7, Centos 8
@@ -118,11 +118,12 @@
    * `vim /etc/hosts`
 
      ```bash
-     <YOUR SERVER IP ADDRESS> idp.example.org idp
+     <YOUR SERVER IP ADDRESS> idp.example.org <HOSTNAME>
      ```
-     (*Replace `idp.example.org` with your IdP Full Qualified Domain Name*)
 
-   * `hostnamectl set-hostname idp`
+   * `hostnamectl set-hostname <HOSTNAME>`
+   
+     (*Replace `idp.example.org` with your IdP Full Qualified Domain Name and `<HOSTNAME>` with the IdP hostname*)
 
 4. Set the variable `JAVA_HOME` for the entire environment:
    * `echo export JAVA_HOME=/usr/lib/jvm/java > /etc/profile.d/javaenv.sh`
@@ -176,13 +177,13 @@ Jetty is a Web server and a Java Servlet container. It will be used to run the I
    ```bash
    cd /usr/local/src
    
-   wget https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-distribution/9.4.31.v20200723/jetty-distribution-9.4.31.v20200723.tar.gz
+   wget https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-distribution/9.4.33.v20201020/jetty-distribution-9.4.33.v20201020.tar.gz
    
-   tar xzvf jetty-distribution-9.4.31.v20200723.tar.gz
+   tar xzvf jetty-distribution-9.4.33.v20201020.tar.gz
    ```
 
 3. Create the `jetty-src` folder as a symbolic link. It will be useful for future Jetty updates:
-   * `ln -nsf jetty-distribution-9.4.31.v20200723 jetty-src`
+   * `ln -nsf jetty-distribution-9.4.33.v20201020 jetty-src`
 
 4. Create the user/group `jetty` that can run the web server:
    * `useradd --system --home-dir /usr/local/src/jetty-src --user-group jetty`
@@ -345,7 +346,7 @@ This Storage service will memorize User Consent data on persistent database SQL.
      password=##ROOT-DB-PASSWORD-CHANGEME##
      ```
 
-6. Create `StorageRegords` table on `storageservice` database:
+6. Create `StorageRecords` table on `storageservice` database:
    * `wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/db/shib-ss-db.sql -O /root/shib-ss-db.sql`
    * fill missing data on `shib-ss-db.sql` before import
    * `mysql -u root < /root/shib-ss-db.sql`
