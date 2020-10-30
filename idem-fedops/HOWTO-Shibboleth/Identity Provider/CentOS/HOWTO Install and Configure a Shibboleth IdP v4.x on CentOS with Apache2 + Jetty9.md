@@ -256,10 +256,7 @@ Jetty is a Web server and a Java Servlet container. It will be used to run the I
 4. Restart Jetty:
    * `systemctl restart jetty.service`
 
-5. Check that IdP metadata is available on:
-   * https://idp.example.org/idp/shibboleth
-
-6. Check IdP Status:
+5. Check IdP Status:
    * `bash /opt/shibboleth-idp/bin/status.sh`
 
 ### Configure SSL on Apache2 (front-end of Jetty)
@@ -296,8 +293,8 @@ The Apache HTTP Server will be configured as a reverse proxy and it will be used
 6. Restart Apache: 
    * `systemctl restart httpd.service`
 
-7. Check if the Apache Welcome page is available:
-    * https://idp.example.org
+7. Check that IdP metadata is available on:
+   * https://idp.example.org/idp/shibboleth
 
 8. Verify the strength of your IdP's machine on:
    * [**https://www.ssllabs.com/ssltest/analyze.html**](https://www.ssllabs.com/ssltest/analyze.html)
