@@ -473,7 +473,7 @@ This Storage service will memorize User Consent data on persistent database SQL.
          
          * `vim /opt/shibboleth-idp/conf/ldap.properties`
             
-            The `idp.attribute.resolver.LDAP.exportAttributes` list MUST contains the attribute chosen for the persistent-id generation (idp.persistentId.sourceAttribute)
+            The `idp.attribute.resolver.exportAttributes` list MUST contains the attribute chosen for the persistent-id generation (idp.persistentId.sourceAttribute)
 	 
             ```properties
             idp.authn.LDAP.authenticator = bindSearchAuthenticator
@@ -484,7 +484,7 @@ This Storage service will memorize User Consent data on persistent database SQL.
             # List of attributes to request during authentication
             idp.authn.LDAP.returnAttributes = passwordExpirationTime,loginGraceRemaining
             # List of attributes produced by the Data Connector that should be directly exported as resolved IdPAttributes without requiring actual Attribute Definitions
-            idp.attribute.resolver.LDAP.exportAttributes = ### List space-separated of attributes to retrieve from the directory directly ###
+            idp.attribute.resolver.exportAttributes = ### List space-separated of attributes to retrieve from the directory directly ###
             idp.authn.LDAP.baseDN = ou=people,dc=example,dc=org
             idp.authn.LDAP.subtreeSearch = false
             idp.authn.LDAP.bindDN = cn=idpuser,ou=system,dc=example,dc=org
@@ -515,7 +515,7 @@ This Storage service will memorize User Consent data on persistent database SQL.
          
          * `vim /opt/shibboleth-idp/conf/ldap.properties`
 
-            The `idp.attribute.resolver.LDAP.exportAttributes` list MUST contains the attribute chosen for the persistent-id generation (idp.persistentId.sourceAttribute)
+            The `idp.attribute.resolver.exportAttributes` list MUST contains the attribute chosen for the persistent-id generation (idp.persistentId.sourceAttribute)
 
             ```properties
             idp.authn.LDAP.authenticator = bindSearchAuthenticator
@@ -526,7 +526,7 @@ This Storage service will memorize User Consent data on persistent database SQL.
             # List of attributes to request during authentication
             idp.authn.LDAP.returnAttributes = passwordExpirationTime,loginGraceRemaining
             # List of attributes produced by the Data Connector that should be directly exported as resolved IdPAttributes without requiring actual Attribute Definitions
-            idp.attribute.resolver.LDAP.exportAttributes = ### List space-separated of attributes to retrieve from the directory directly ###
+            idp.attribute.resolver.exportAttributes = ### List space-separated of attributes to retrieve from the directory directly ###
             idp.authn.LDAP.baseDN = ou=people,dc=example,dc=org
             idp.authn.LDAP.subtreeSearch = false
             idp.authn.LDAP.bindDN = cn=idpuser,ou=system,dc=example,dc=org
@@ -557,7 +557,7 @@ This Storage service will memorize User Consent data on persistent database SQL.
          
          * `vim /opt/shibboleth-idp/conf/ldap.properties`
 
-            The `idp.attribute.resolver.LDAP.exportAttributes` list MUST contains the attribute chosen for the persistent-id generation (idp.persistentId.sourceAttribute)
+            The `idp.attribute.resolver.exportAttributes` list MUST contains the attribute chosen for the persistent-id generation (idp.persistentId.sourceAttribute)
 
             ```properties
             idp.authn.LDAP.authenticator = bindSearchAuthenticator
@@ -566,7 +566,7 @@ This Storage service will memorize User Consent data on persistent database SQL.
             # List of attributes to request during authentication
             idp.authn.LDAP.returnAttributes = passwordExpirationTime,loginGraceRemaining
             # List of attributes produced by the Data Connector that should be directly exported as resolved IdPAttributes without requiring actual Attribute Definitions
-            idp.attribute.resolver.LDAP.exportAttributes = ### List space-separated of attributes to retrieve from the directory directly ###
+            idp.attribute.resolver.exportAttributes = ### List space-separated of attributes to retrieve from the directory directly ###
             idp.authn.LDAP.baseDN = ou=people,dc=example,dc=org
             idp.authn.LDAP.subtreeSearch = false
             idp.authn.LDAP.bindDN = cn=idpuser,ou=system,dc=example,dc=org
@@ -598,7 +598,7 @@ This Storage service will memorize User Consent data on persistent database SQL.
          
          * `vim /opt/shibboleth-idp/conf/ldap.properties`
 
-            The `idp.attribute.resolver.LDAP.exportAttributes` list MUST contains the attribute chosen for the persistent-id generation (idp.persistentId.sourceAttribute)
+            The `idp.attribute.resolver.exportAttributes` list MUST contains the attribute chosen for the persistent-id generation (idp.persistentId.sourceAttribute)
 
             ```properties
             idp.authn.LDAP.authenticator = bindSearchAuthenticator
@@ -609,7 +609,7 @@ This Storage service will memorize User Consent data on persistent database SQL.
             # List of attributes to request during authentication
             idp.authn.LDAP.returnAttributes = passwordExpirationTime,loginGraceRemaining
             # List of attributes produced by the Data Connector that should be directly exported as resolved IdPAttributes without requiring actual Attribute Definitions
-            idp.attribute.resolver.LDAP.exportAttributes = ### List space-separated of attributes to retrieve from the directory directly ###
+            idp.attribute.resolver.exportAttributes = ### List space-separated of attributes to retrieve from the directory directly ###
             idp.authn.LDAP.baseDN = CN=Users,DC=ad,DC=example,DC=org
             idp.authn.LDAP.subtreeSearch = false
             idp.authn.LDAP.bindDN = CN=idpuser,CN=Users,DC=ad,DC=example,DC=org
@@ -640,7 +640,7 @@ This Storage service will memorize User Consent data on persistent database SQL.
          
          * `vim /opt/shibboleth-idp/conf/ldap.properties`
 
-            The `idp.attribute.resolver.LDAP.exportAttributes` list MUST contains the attribute chosen for the persistent-id generation (idp.persistentId.sourceAttribute)
+            The `idp.attribute.resolver.exportAttributes` list MUST contains the attribute chosen for the persistent-id generation (idp.persistentId.sourceAttribute)
 
             ```properties
             idp.authn.LDAP.authenticator = bindSearchAuthenticator
@@ -651,7 +651,7 @@ This Storage service will memorize User Consent data on persistent database SQL.
             # List of attributes to request during authentication
             idp.authn.LDAP.returnAttributes = passwordExpirationTime,loginGraceRemaining
             # List of attributes produced by the Data Connector that should be directly exported as resolved IdPAttributes without requiring actual Attribute Definitions
-            idp.attribute.resolver.LDAP.exportAttributes = ### List space-separated of attributes to retrieve from the directory directly ###
+            idp.attribute.resolver.exportAttributes = ### List space-separated of attributes to retrieve from the directory directly ###
             idp.authn.LDAP.baseDN = CN=Users,DC=ad,DC=example,DC=org
             idp.authn.LDAP.subtreeSearch = false         
             idp.authn.LDAP.bindDN = CN=idpuser,CN=Users,DC=ad,DC=example,DC=org
@@ -682,7 +682,7 @@ This Storage service will memorize User Consent data on persistent database SQL.
          
          * `vim /opt/shibboleth-idp/conf/ldap.properties`
 
-            The `idp.attribute.resolver.LDAP.exportAttributes` list MUST contains the attribute chosen for the persistent-id generation (idp.persistentId.sourceAttribute)
+            The `idp.attribute.resolver.exportAttributes` list MUST contains the attribute chosen for the persistent-id generation (idp.persistentId.sourceAttribute)
 
             ```properties
             idp.authn.LDAP.authenticator = bindSearchAuthenticator
@@ -691,7 +691,7 @@ This Storage service will memorize User Consent data on persistent database SQL.
             # List of attributes to request during authentication
             idp.authn.LDAP.returnAttributes = passwordExpirationTime,loginGraceRemaining
             # List of attributes produced by the Data Connector that should be directly exported as resolved IdPAttributes without requiring actual Attribute Definitions
-            idp.attribute.resolver.LDAP.exportAttributes = ### List space-separated of attributes to retrieve from the directory directly ###
+            idp.attribute.resolver.exportAttributes = ### List space-separated of attributes to retrieve from the directory directly ###
             idp.authn.LDAP.baseDN = CN=Users,DC=ad,DC=example,DC=org
             idp.authn.LDAP.subtreeSearch = false
             idp.authn.LDAP.bindDN = CN=idpuser,CN=Users,DC=ad,DC=example,DC=org
