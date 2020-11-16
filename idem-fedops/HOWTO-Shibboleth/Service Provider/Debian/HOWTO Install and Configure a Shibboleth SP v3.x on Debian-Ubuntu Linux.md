@@ -315,7 +315,7 @@
       </Handler>
       ```
 
-3. Add the following `<AttributeExtractor>' element under `<AttributeExtractor type="XML" validate="true" reloadChanges="false" path="attribute-map.xml"/>`
+3. Add the following `<AttributeExtractor>` element under `<AttributeExtractor type="XML" validate="true" reloadChanges="false" path="attribute-map.xml"/>`:
    * `vim /etc/shibboleth/shibboleth2.xml`
 
      ```bash
