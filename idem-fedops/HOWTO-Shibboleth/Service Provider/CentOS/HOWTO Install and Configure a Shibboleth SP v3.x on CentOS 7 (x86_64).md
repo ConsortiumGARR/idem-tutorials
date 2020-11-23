@@ -356,7 +356,7 @@
      ```bash
      <ApplicationDefaults entityID="https://<HOST>/shibboleth"
                           REMOTE_USER="eppn subject-id pairwise-id persistent-id"
-                          cipherSuites="DEFAULT:!EXP:!LOW:!aNULL:!eNULL:!DES:!IDEA:!SEED:!RC4:!3DES:!kRSA:!SSLv2:!SSLv3:!TLSv1:!TLSv1.1">
+                          cipherSuites="DEFAULT:!EXP:!LOW:!aNULL:!eNULL:!DES:!IDEA:!SEED:!RC4:!3DES:!kRSA:!SSLv2:!SSLv3:!TLSv1:!TLSv1.1"
                           sessionHook="/Shibboleth.sso/AttrChecker"
                           metadataAttributePrefix="Meta-">
      ```
@@ -381,7 +381,7 @@
       </Handler>
       ```
 
-3. Add the following `<AttributeExtractor>' element under `<AttributeExtractor type="XML" validate="true" reloadChanges="false" path="attribute-map.xml"/>`
+3. Add the following `<AttributeExtractor>` element under `<AttributeExtractor type="XML" validate="true" reloadChanges="false" path="attribute-map.xml"/>`
    * ```vim /etc/shibboleth/shibboleth2.xml```
 
      ```bash
