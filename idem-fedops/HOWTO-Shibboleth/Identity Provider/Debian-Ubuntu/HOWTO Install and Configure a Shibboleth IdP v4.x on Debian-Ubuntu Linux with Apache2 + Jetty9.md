@@ -431,8 +431,8 @@ This Storage service will memorize User Consent data on persistent database SQL.
      idp.consent.StorageService = storageservice.JPAStorageService
      ```
 	 
-10. Restart IdP to apply the changes:
-   * `touch /opt/jetty/webapps/idp.xml`
+10. Restart Jetty to apply the changes:
+   * `systemctl restart jetty.service"`
 
 11. Check IdP Status:
    * `bash /opt/shibboleth-idp/bin/status.sh`
@@ -716,8 +716,8 @@ This Storage service will memorize User Consent data on persistent database SQL.
            * the baseDN ==> `ou=people,dc=example,dc=org` (branch containing the registered users)
            * the bindDN ==> `cn=idpuser,ou=system,dc=example,dc=org` (distinguished name for the user that can made queries on the LDAP)
 
-4. Restart IdP to apply the changes:
-   * `touch /opt/jetty/webapps/idp.xml`
+4. Restart Jetty to apply the changes:
+   * `systemctl restart jetty.service"`
 
 5. Check IdP Status:
    * `bash /opt/shibboleth-idp/bin/status.sh`
@@ -771,8 +771,8 @@ This Storage service will memorize User Consent data on persistent database SQL.
      idp.persistentId.salt = ### result of 'openssl rand -base64 36' ###
      ```
 
-3. Restart IdP to apply the changes:
-   * `touch /opt/jetty/webapps/idp.xml`
+3. Restart Jetty to apply the changes:
+   * `systemctl restart jetty.service"`
 
 4. Check IdP Status:
    * `bash /opt/shibboleth-idp/bin/status.sh`
@@ -890,8 +890,8 @@ This Storage service will memorize User Consent data on persistent database SQL.
        
          `<util:constant id="shibboleth.c14n.simple.Lowercase" static-field="java.lang.Boolean.TRUE"/>`
 
-10. Restart IdP to apply the changes:
-   * `touch /opt/jetty/webapps/idp.xml`
+10. Restart Jetty to apply the changes:
+   * `systemctl restart jetty.service"`
 
 11. Check IdP Status:
    * `bash /opt/shibboleth-idp/bin/status.sh`
@@ -914,8 +914,8 @@ This Storage service will memorize User Consent data on persistent database SQL.
       * Configure the right owner:
         * `chown jetty /opt/shibboleth-idp/conf/attribute-resolver.xml`
 
-2. Restart IdP to apply the changes:
-   * `touch /opt/jetty/webapps/idp.xml`
+2. Restart Jetty to apply the changes:
+   * `systemctl restart jetty.service"`
 
 3. Check IdP Status:
    * `bash /opt/shibboleth-idp/bin/status.sh`
@@ -960,8 +960,8 @@ This Storage service will memorize User Consent data on persistent database SQL.
      wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/attributes/custom/eduPersonTargetedID.properties -O /opt/shibboleth-idp/conf/attributes/custom/eduPersonTargetedID.properties
      ```
 
-4. Restart IdP to apply the changes:
-   * `touch /opt/jetty/webapps/idp.xml`
+4. Restart Jetty to apply the changes:
+   * `systemctl restart jetty.service"`
 
 5. Check IdP Status:
    * `bash /opt/shibboleth-idp/bin/status.sh`
@@ -1001,8 +1001,8 @@ This Storage service will memorize User Consent data on persistent database SQL.
      wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/attributes/custom/eduPersonTargetedID.properties -O /opt/shibboleth-idp/conf/attributes/custom/eduPersonTargetedID.properties
      ```
 
-3. Restart IdP to apply the changes:
-   * `touch /opt/jetty/webapps/idp.xml`
+3. Restart Jetty to apply the changes:
+   * `systemctl restart jetty.service"`
 
 4. Check IdP Status:
    * `bash /opt/shibboleth-idp/bin/status.sh`
@@ -1046,7 +1046,7 @@ Enrich IDP logs with the authentication error occurred on LDAP:
 Translate the IdP messages in your language:
    * Get the files translated in your language from [Shibboleth page](https://wiki.shibboleth.net/confluence/display/IDP4/MessagesTranslation)
    * Put '`messages_XX.properties`' downloaded file into `/opt/shibboleth-idp/messages` directory
-   * Restart IdP to apply the changes: `touch /opt/jetty/webapps/idp.xml`
+   * Restart Jetty to apply the changes with `systemctl restart jetty.service"`
 
 ### Disable SAML1 Deprecated Protocol
 
@@ -1230,8 +1230,8 @@ Translate the IdP messages in your language:
      <!-- ...other things... -->
      ```
 
-4. Restart IdP to apply the changes:
-   * `touch /opt/jetty/webapps/idp.xml`
+4. Restart Jetty to apply the changes:
+   * `systemctl restart jetty.service"``
    
 5. Check IdP Status:
    * `bash /opt/shibboleth-idp/bin/status.sh`
@@ -1331,8 +1331,8 @@ Translate the IdP messages in your language:
      <!-- ...other things... -->
      ```
 
-4. Restart IdP to apply the changes:
-   * `touch /opt/jetty/webapps/idp.xml`
+4. Restart Jetty to apply the changes:
+   * `systemctl restart jetty.service"`
    
 5. Run AACLI:
    * `bash /opt/shibboleth-idp/bin/aacli.sh -n <USERNAME> -r https://filesender.garr.it/shibboleth --saml2`
@@ -1381,8 +1381,8 @@ Translate the IdP messages in your language:
      <!-- ...other things... -->
      ```
 
-4. Restart IdP to apply the changes:
-   * `touch /opt/jetty/webapps/idp.xml`
+4. Restart Jetty to apply the changes:
+   * `systemctl restart jetty.service"`
    
 5. Run AACLI:
    * `bash /opt/shibboleth-idp/bin/aacli.sh -n <USERNAME> -r https://filesender.garr.it/shibboleth --saml2`
@@ -1411,8 +1411,8 @@ Translate the IdP messages in your language:
      </util:list>
      ```
 
-3. Restart IdP to apply the changes:
-   * `touch /opt/jetty/webapps/idp.xml`
+3. Restart Jetty to apply the changes:
+   * `systemctl restart jetty.service"`
 
 4. Check IdP Status:
    * `bash /opt/shibboleth-idp/bin/status.sh`
