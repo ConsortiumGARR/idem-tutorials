@@ -504,26 +504,18 @@ The software installation provided by this guide is intended to run by ROOT user
 
      $config = [
         'key' => '<SECRET>',
-        'allowed_tags' => ['daily', 'hourly', 'frequent'],
+        'allowed_tags' => ['hourly'],
         'debug_message' => TRUE,
         'sendemail' => TRUE,
      ];
      ```
 
-   * Go to `https://ssp-idp.example.org/simplesaml/module.php/cron/croninfo.php` and copy the content of the crontab file:
+   * Insert the following Cron job to the crontab file (`crontab -e`):
    
      ```bash
-     # Run cron: [daily]
-     02 0 * * *  root  curl --silent "https://sp.example.org/simplesaml/module.php/cron/cron.php?key=<SECRET>&tag=daily" > /dev/null 2>&1
-
      # Run cron: [hourly]
      01 * * * *  root  curl --silent "https://sp.example.org/simplesaml/module.php/cron/cron.php?key=<SECRET>&tag=hourly" > /dev/null 2>&1
-
-     # Run cron: [frequent]
-     */30 * * * *  root  curl --silent "https://sp.example.org/simplesaml/module.php/cron/cron.php?key=<SECRET>&tag=frequent" > /dev/null 2>&1
      ```
-
-   * Paste the copied content to your `crontab -e` and change the value "`XXXXXXXXXX`" with "`*/30 * * * *`" under "`[frequent]`" cron.
 
    * Configure METAREFRESH:
      * `vim /var/simplesamlphp/config/config-metarefresh.php`
