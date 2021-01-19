@@ -514,7 +514,7 @@ The software installation provided by this guide is intended to run by ROOT user
    
      ```bash
      # Run cron: [hourly]
-     01 * * * *  root  curl --silent "https://sp.example.org/simplesaml/module.php/cron/cron.php?key=<SECRET>&tag=hourly" > /dev/null 2>&1
+     01 * * * *  root  curl --silent "https://idp.example.org/simplesaml/module.php/cron/cron.php?key=<SECRET>&tag=hourly" > /dev/null 2>&1
      ```
 
    * Configure METAREFRESH:
