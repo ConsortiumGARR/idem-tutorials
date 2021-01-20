@@ -254,14 +254,18 @@ The software installation provided by this guide is intended to run by ROOT user
      
    * `systemctl restart postfix.service`
 
-6. Set PHP 'memory_limit' to '512M' or more to allow the download of huge metadata files (like eduGAIN):
+6. Enable `mcrypt` module and set PHP `memory_limit` to '512M' or more to allow the download of huge metadata files (like eduGAIN):
 
-   * `vim /etc/php/7.3/apache2/php.ini`
+   * `vim /etc/php/7.3/mods-available/ssp.ini`
 
      ```bash
+     ; configuration for SSP
+     ; priority=20
+     extension=mcrypt.so
      memory_limit = 512M
      ```
 
+   * `sudo phpenmod ssp`
    * `systemctl restart apache2.service`
 
 ### Configure the Identity Provider
