@@ -13,7 +13,9 @@
    1. [Configure SSL on Apache2](#configure-ssl-on-apache2)
    2. [Configure SimpleSAMLphp](#configure-simplesamlphp)
    3. [Configure the Identity Provider](#configure-the-identity-provider)
-6. [Appendix A - How to release attributes to specific SP only](#appendix-a---how-to-release-attributes-to-specific-sp-only)
+5. [Appendix A - How to release attributes to specific SP only](#appendix-a---how-to-release-attributes-to-specific-sp-only)
+6. [Appendix B - How to manage sessions with Memcache](#appendix-b---how-to-manage-sessions-with-memcached)
+7. [Appendix C - How to collect useful-statistics](#appendix-c---how-to-collect-useful-statistics)
 5. [Authors](#authors)
 
 
