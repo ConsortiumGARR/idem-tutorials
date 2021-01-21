@@ -213,8 +213,6 @@ The software installation provided by this guide is intended to run by ROOT user
         
    * Secret Salt (```secretsalt```):
      * `tr -c -d '0123456789abcdefghijklmnopqrstuvwxyz' </dev/urandom | dd bs=32 count=1 2>/dev/null ; echo`
-        
-
 
 3. Change SimpleSAMLphp configuration:
    * `vim /var/simplesamlphp/config/config.php`
@@ -231,12 +229,24 @@ The software installation provided by this guide is intended to run by ROOT user
       /* ...other things... */
       'admin.protectindexpage' => true,
       /* ...other things... */
-      'logging.handler' => 'file',
+      'logging.level' => 'SimpleSAML\Logger::NOTICE',
+      'logging.handler' => 'syslog',
       /* ...other things... */
       'enable.saml20-idp' => true,
       /* ...other things... */
       'store.type' => 'phpsession',
       ```
+      
+   * `vim /etc/rsyslog.d/22-ssp-log.conf`
+   
+     ```bash
+     # SimpleSAMLphp logging
+     local5.*                        /var/log/simplesamlphp.log
+     # Notice level is reserved for statistics only...
+     local5.=notice                  /var/log/simplesamlphp.stat
+     ```
+     
+   * `sydo systemctl restart rsyslog.service`
 
 4. Check Login on the SSP appliance and retrieve the IdP "Entity ID" from "Fedearation" tab:
    * `https://ssp-idp.example.org/`
@@ -719,6 +729,10 @@ The software installation provided by this guide is intended to run by ROOT user
      'store.type' => 'memcache',
      /* ...other things... */
      ```
+     
+### Appendix C - How to collect useful statistics
+
+Follow https://simplesamlphp.org/docs/stable/statistics:statistics
 
 ### Authors
 
