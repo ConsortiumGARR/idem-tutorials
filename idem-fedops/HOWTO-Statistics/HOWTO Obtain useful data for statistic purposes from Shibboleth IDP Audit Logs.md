@@ -1,4 +1,4 @@
-# HOWTO obtain useful data for statistics purposes from Shibboleth IdP Audit logs
+# HOWTO Obtain useful data for statistics purposes from Shibboleth IdP Audit logs
 
 1. Ensure to have installed Python (possibly > 2.5) on your IdP
 
