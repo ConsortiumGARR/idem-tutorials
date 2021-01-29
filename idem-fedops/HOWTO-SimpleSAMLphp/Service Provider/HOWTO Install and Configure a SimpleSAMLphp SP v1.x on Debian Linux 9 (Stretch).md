@@ -271,7 +271,7 @@
 
      ```vim /opt/simplesamlphp/config/module_cron.php```
 
-     ```bash
+     ```php
      <?php
      /*
       * Configuration for the Cron module.
@@ -285,6 +285,7 @@
              'sendemail' => TRUE,
 
      );
+     ?>
      ```
 
    * Insert the following Cron job to the crontab file (`crontab -e`):
@@ -443,12 +444,12 @@
 
    * Go to 'https://sp.example.org/simplesaml/module.php/core/frontpage_federation.php' and forcing download of the Federation metadata by pressing on ```Metarefresh: fetch metadata``` or wait 1 day
 
-8. Set PHP 'memory_limit' to '256M' or more to allow the download of huge metadata files (like eduGAIN):
+8. Set PHP 'memory_limit' to '1024M' or more to allow the download of huge metadata files (like eduGAIN):
 
    * ```vim /etc/php/7.0/apache2/php.ini```
 
      ```bash
-     memory_limit = 256M
+     memory_limit = 1024M
      ```
 
 9. Choose and modify your authsources:
