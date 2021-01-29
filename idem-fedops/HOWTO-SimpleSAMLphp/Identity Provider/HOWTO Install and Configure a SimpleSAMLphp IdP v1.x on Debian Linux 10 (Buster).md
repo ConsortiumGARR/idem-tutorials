@@ -266,7 +266,7 @@ The software installation provided by this guide is intended to run by ROOT user
      
    * `systemctl restart postfix.service`
 
-6. Enable `mcrypt` module and set PHP `memory_limit` to '512M' or more to allow the download of huge metadata files (like eduGAIN):
+6. Enable `mcrypt` module and set PHP `memory_limit` to '1024M' or more to allow the download of huge metadata files (like eduGAIN):
 
    * `vim /etc/php/7.3/mods-available/ssp.ini`
 
@@ -274,7 +274,7 @@ The software installation provided by this guide is intended to run by ROOT user
      ; configuration for SSP
      ; priority=20
      extension=mcrypt.so
-     memory_limit = 512M
+     memory_limit = 1024M
      ```
 
    * `sudo phpenmod ssp`
@@ -512,7 +512,7 @@ The software installation provided by this guide is intended to run by ROOT user
    * Change the CRON configuration file:
      * `vim /var/simplesamlphp/config/module_cron.php`
 
-     ```bash
+     ```php
      <?php
      /*
       * Configuration for the Cron module.
@@ -524,6 +524,7 @@ The software installation provided by this guide is intended to run by ROOT user
         'debug_message' => TRUE,
         'sendemail' => TRUE,
      ];
+     ?>
      ```
 
    * Insert the following Cron job to the crontab file (`crontab -e`):
