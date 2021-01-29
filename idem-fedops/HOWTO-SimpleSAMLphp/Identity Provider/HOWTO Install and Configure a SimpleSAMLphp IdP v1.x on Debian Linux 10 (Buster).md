@@ -1,6 +1,6 @@
 # HOWTO Install and Configure a SimpleSAMLphp IdP v1.x on Debian Linux 10 (Buster) 
 
-[comment]: # (<img width="120px" src="https://wiki.idem.garr.it/IDEM_Approved.png" />)
+<img width="120px" src="https://wiki.idem.garr.it/IDEM_Approved.png" />
 
 ## Table of Contents
 
