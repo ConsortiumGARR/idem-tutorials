@@ -1,4 +1,4 @@
-# HOWTO Obtain useful data for statistics purposes from SimpleSAMLphp.md
+# HOWTO Get statistics data from SimpleSAMLphp
 
 This HOWTO is needed for those SimpleSAMLphp IdP that did not collect access statistics with `statistics` module of SSP.
 Who already use `statistics` module, do not need this.
