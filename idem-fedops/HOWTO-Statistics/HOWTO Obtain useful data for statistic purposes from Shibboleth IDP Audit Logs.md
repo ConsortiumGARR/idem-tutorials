@@ -2,44 +2,27 @@
 
 1. Ensure to have installed Python (possibly > 2.5) on your IdP
 
-2. Save the python script [idem-loganalysis-idp-v2_v3.py](./idem-loganalysis-idp-v2_v3.py) into a file "loganalysis.py"
+2. Save the python script [idem-loganalysis-idp_v3.py](./idem-loganalysis-idp_v3.py) into your HOME as `$HOME/loganalisys.py`
 
-3. Obtain the statistics from your logs:
-  * Number of logins done in september 2016: 
-    
-    ```zcat /opt/shibboleth-idp/logs/idp-audit-2016-09-*.gz | python loganalysis.py -l -```
-    
-    Returns:
-    
-    ```22 logins```
-  
-  * Number of logins done from the users in september 2016: 
-  
-    ```zcat /opt/shibboleth-idp/logs/idp-audit-2016-09-*.gz | python loganalysis.py -a -```
+3. Save the statistics into a file named `idp-<DOMAIN-NAME>-sso-stats.json`:
+   * Python 2.x: 
+     ```bash
+     zcat /opt/shibboleth-idp/logs/idp-audit-2020-[09-10-11-12]* /opt/shibboleth-idp/logs/idp-audit-2021-01-* | python $HOME/loganalisys.py -j - > idp-$(dnsdomainname)-sso-stats.json
+     ```
+   * Python 3.x:
+     ```bash
+     zcat /opt/shibboleth-idp/logs/idp-audit-2020-[09-10-11-12]* /opt/shibboleth-idp/logs/idp-audit-2021-01-* | python3 $HOME/loganalisys.py -j - > idp-$(dnsdomainname)-sso-stats.json
+     ```
+   
+### UTILITY
 
-    Returns:
-    
-    ```
-    21       | malavolti
-    1        | lalla
-    ```
-  
-  * Number of logins done for each SP in september 2016: 
-  
-    ```zcat /opt/shibboleth-idp/logs/idp-audit-2016-09-*.gz | python loganalysis.py -n -```
+See help message:
 
-    Returns:
-    
-    ```
-    logins   | relyingPartyId
-    -------------------------
-    21       | https://sp24-test.garr.it/shibboleth
-    1        | https://met.refeds.org/saml2/metadata/
-    ```
+* Python 2.x: `python loganalisys.py -h`
+* Python 3.x: `python3 loganalisys.py -h`
 
 ### Authors
 
 #### Original Author
 
  * Marco Malavolti (marco.malavolti@garr.it)
- * Davide Vaghetti (davide.vaghetti@garr.it)
