@@ -7,14 +7,22 @@
 3. Extract the data for January 2021 and save the statistics into a file named `idp-<DOMAIN-NAME>-Jan-2021-sso-stats.json`:
    * Python 2.x: 
      ```bash
-     zcat /opt/shibboleth-idp/logs/idp-audit-2020-[09-10-11-12]* /opt/shibboleth-idp/logs/idp-audit-2021-01-* | python $HOME/loganalisys.py -j - > idp-$(dnsdomainname)-Jan-2021-sso-stats.json
+     zcat /opt/shibboleth-idp/logs/idp-audit-2020-09* | python $HOME/loganalisys.py -j - > idp-$(dnsdomainname)-2020-09-sso-stats.json
+     zcat /opt/shibboleth-idp/logs/idp-audit-2020-10* | python $HOME/loganalisys.py -j - > idp-$(dnsdomainname)-2020-10-sso-stats.json
+     zcat /opt/shibboleth-idp/logs/idp-audit-2020-11* | python $HOME/loganalisys.py -j - > idp-$(dnsdomainname)-2020-11-sso-stats.json
+     zcat /opt/shibboleth-idp/logs/idp-audit-2020-12* | python $HOME/loganalisys.py -j - > idp-$(dnsdomainname)-2020-12-sso-stats.json
+     cat /opt/shibboleth-idp/logs/idp-audit-2021-01-* | python $HOME/loganalisys.py -j - > idp-$(dnsdomainname)-2021-01-sso-stats.json
      ```
    * Python 3.x:
      ```bash
-     zcat /opt/shibboleth-idp/logs/idp-audit-2020-[09-10-11-12]* /opt/shibboleth-idp/logs/idp-audit-2021-01-* | python3 $HOME/loganalisys.py -j - > idp-$(dnsdomainname)-Jan-2021-sso-stats.json
+     zcat /opt/shibboleth-idp/logs/idp-audit-2020-09* | python3 $HOME/loganalisys.py -j - > idp-$(dnsdomainname)-2020-09-sso-stats.json
+     zcat /opt/shibboleth-idp/logs/idp-audit-2020-10* | python3 $HOME/loganalisys.py -j - > idp-$(dnsdomainname)-2020-10-sso-stats.json
+     zcat /opt/shibboleth-idp/logs/idp-audit-2020-11* | python3 $HOME/loganalisys.py -j - > idp-$(dnsdomainname)-2020-11-sso-stats.json
+     zcat /opt/shibboleth-idp/logs/idp-audit-2020-12* | python3 $HOME/loganalisys.py -j - > idp-$(dnsdomainname)-2020-12-sso-stats.json
+     cat /opt/shibboleth-idp/logs/idp-audit-2021-01-* | python3 $HOME/loganalisys.py -j - > idp-$(dnsdomainname)-2021-01-sso-stats.json
      ```
      
-   Example (January 2021):
+   Example JSON output (for one month):
    ```json
    {
     "stats": {
