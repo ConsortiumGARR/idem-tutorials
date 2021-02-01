@@ -14,7 +14,7 @@
      zcat /opt/shibboleth-idp/logs/idp-audit-2020-[09-10-11-12]* /opt/shibboleth-idp/logs/idp-audit-2021-01-* | python3 $HOME/loganalisys.py -j - > idp-$(dnsdomainname)-Jan-2021-sso-stats.json
      ```
      
-   Example:
+   Example (January 2021):
    ```json
    {
     "stats": {
