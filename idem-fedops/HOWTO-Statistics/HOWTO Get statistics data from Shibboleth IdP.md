@@ -2,7 +2,10 @@
 
 1. Ensure to have installed Python (possibly > 2.5) on your IdP
 
-2. Save the python script [idem-loganalysis-idp_v3.py](https://raw.githubusercontent.com/ConsortiumGARR/idem-tutorials/master/idem-fedops/HOWTO-Statistics/idem-loganalysis-idp_v3.py) into your HOME as `$HOME/loganalisys.py`
+2. Save the python script [idem-loganalysis-idp_v3.py](https://raw.githubusercontent.com/ConsortiumGARR/idem-tutorials/master/idem-fedops/HOWTO-Statistics/idem-loganalysis-idp_v3.py) as `$HOME/loganalisys.py`, or just copy and paste the command below:
+```
+wget https://raw.githubusercontent.com/ConsortiumGARR/idem-tutorials/master/idem-fedops/HOWTO-Statistics/idem-loganalysis-idp_v3.py -O $HOME/loganalisys.py
+```
 
 3. Extract the data for January 2021 and save the statistics into a file named `idp-<DOMAIN-NAME>-Jan-2021-sso-stats.json`:
    * Python 2.x: 
