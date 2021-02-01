@@ -7,7 +7,7 @@
 wget https://raw.githubusercontent.com/ConsortiumGARR/idem-tutorials/master/idem-fedops/HOWTO-Statistics/idem-loganalysis-idp_v3.py -O $HOME/loganalisys.py
 ```
 
-3. Extract the data for January 2021 and save the statistics into a file named `idp-<DOMAIN-NAME>-Jan-2021-sso-stats.json`:
+3. Extract the data for each month and save the statistics in a corresponding JSON file:
    * Python 2.x: 
      ```bash
      zcat /opt/shibboleth-idp/logs/idp-audit-2020-09* | python $HOME/loganalisys.py -j - > idp-$(dnsdomainname)-2020-09-sso-stats.json
