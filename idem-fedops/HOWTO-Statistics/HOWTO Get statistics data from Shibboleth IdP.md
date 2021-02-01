@@ -4,14 +4,14 @@
 
 2. Save the python script [idem-loganalysis-idp_v3.py](./idem-loganalysis-idp_v3.py) into your HOME as `$HOME/loganalisys.py`
 
-3. Save the statistics into a file named `idp-<DOMAIN-NAME>-sso-stats.json`:
+3. Extract the data for January 2021 and save the statistics into a file named `idp-<DOMAIN-NAME>-Jan-2021-sso-stats.json`:
    * Python 2.x: 
      ```bash
-     zcat /opt/shibboleth-idp/logs/idp-audit-2020-[09-10-11-12]* /opt/shibboleth-idp/logs/idp-audit-2021-01-* | python $HOME/loganalisys.py -j - > idp-$(dnsdomainname)-sso-stats.json
+     zcat /opt/shibboleth-idp/logs/idp-audit-2020-[09-10-11-12]* /opt/shibboleth-idp/logs/idp-audit-2021-01-* | python $HOME/loganalisys.py -j - > idp-$(dnsdomainname)-Jan-2021-sso-stats.json
      ```
    * Python 3.x:
      ```bash
-     zcat /opt/shibboleth-idp/logs/idp-audit-2020-[09-10-11-12]* /opt/shibboleth-idp/logs/idp-audit-2021-01-* | python3 $HOME/loganalisys.py -j - > idp-$(dnsdomainname)-sso-stats.json
+     zcat /opt/shibboleth-idp/logs/idp-audit-2020-[09-10-11-12]* /opt/shibboleth-idp/logs/idp-audit-2021-01-* | python3 $HOME/loganalisys.py -j - > idp-$(dnsdomainname)-Jan-2021-sso-stats.json
      ```
      
    Example:
