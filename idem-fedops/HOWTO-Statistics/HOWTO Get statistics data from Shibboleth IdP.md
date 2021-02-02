@@ -1,6 +1,12 @@
 # HOWTO Get statistics data from Shibboleth IDP
 
-1. Ensure to have installed Python (possibly > 2.5) on your IdP
+1. Ensure to have installed Python (possibly > 2.5) on your IdP and to have the compliant format set for the `idp-audit.log` with:
+   * `cat /opt/shibboleth-idp/conf/audit.xml | grep Shibboleth-Audit`
+     ```xml  
+      <entry key="Shibboleth-Audit" value="%T|%b|%I|%SP|%P|%IDP|%bb|%III|%u|%ac|%attr|%n|%i|" />
+      ```
+
+     This is the format compliant with the script provided into this HOWTO.
 
 2. Save the python script [idem-loganalysis-idp_v3.py](https://raw.githubusercontent.com/ConsortiumGARR/idem-tutorials/master/idem-fedops/HOWTO-Statistics/idem-loganalysis-idp_v3.py) as `$HOME/loganalisys.py`, or just copy and paste the command below:
 ```
