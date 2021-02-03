@@ -20,13 +20,14 @@ def parse_files(files, options):
 
     login_string = "sso"
     fields_position = [3, 4, 8]
-    
+
     if options.shibidpv4:
         login_string = "success"
         fields_position = [4, 17, 3]
 
     # Audit log format we're trying to parse below:
     # datetime|req_bind|req_id|rp|msg_profile|idp|resp_bind|resp_id|user|authn_mech|attribs|name_id|assert_id|ip
+
     for event in lines:
         try:
             rp, msg_profile, user = list(event[i] for i in fields_position)
@@ -36,23 +37,24 @@ def parse_files(files, options):
                 "See the documentation."]))
             term(-1)
 
-        if msg_profile.lower().find("sso") > -1:
-            db['logins'] += 1
+        if rp:
+            if msg_profile.lower().find(login_string) > -1:
+                db['logins'] += 1
 
-            # we almost always need to count rps:
-            if len(rp) > 0:
-                if rp in db['rp']:
-                    db['rp'][rp] += 1
-                else:
-                    db['rp'][rp] = 1
-
-            # only count users if asked to
-            if len(user) > 0:
-                if options.uniqusers or options.xml or options.rrd or options.json:
-                    if user in db['users']:
-                        db['users'][user] += 1
+                # we almost always need to count rps:
+                if len(rp) > 0:
+                    if rp in db['rp']:
+                        db['rp'][rp] += 1
                     else:
-                        db['users'][user] = 1
+                        db['rp'][rp] = 1
+
+                # only count users if asked to
+                if len(user) > 0:
+                    if options.uniqusers or options.xml or options.rrd or options.json:
+                        if user in db['users']:
+                            db['users'][user] += 1
+                        else:
+                            db['users'][user] = 1
 
         # only count message profiles and rps if asked to
         if options.msgprofiles:
@@ -122,7 +124,6 @@ def login_count(db, options):
     logins = db['logins']
     if options.quiet:
         print(logins)
-    else:
         print("%d login%s" % (logins, ('', 's')[logins != 1]))
 
 
