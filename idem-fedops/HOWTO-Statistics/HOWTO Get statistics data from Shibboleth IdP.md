@@ -20,7 +20,7 @@ wget https://raw.githubusercontent.com/ConsortiumGARR/idem-tutorials/master/idem
      zcat /opt/shibboleth-idp/logs/idp-audit-2020-10* | python $HOME/loganalisys.py -j - > idp-$(dnsdomainname)-2020-10-sso-stats.json
      zcat /opt/shibboleth-idp/logs/idp-audit-2020-11* | python $HOME/loganalisys.py -j - > idp-$(dnsdomainname)-2020-11-sso-stats.json
      zcat /opt/shibboleth-idp/logs/idp-audit-2020-12* | python $HOME/loganalisys.py -j - > idp-$(dnsdomainname)-2020-12-sso-stats.json
-     zcat /opt/shibboleth-idp/logs/idp-audit-2021-01-* | python $HOME/loganalisys.py -j - > idp-$(dnsdomainname)-2021-01-sso-stats.json
+     zcat /opt/shibboleth-idp/logs/idp-audit-2021-01* | python $HOME/loganalisys.py -j - > idp-$(dnsdomainname)-2021-01-sso-stats.json
      ```
    * Python 3.x - IdP v3.x:
      ```bash
@@ -28,7 +28,7 @@ wget https://raw.githubusercontent.com/ConsortiumGARR/idem-tutorials/master/idem
      zcat /opt/shibboleth-idp/logs/idp-audit-2020-10* | python3 $HOME/loganalisys.py -j - > idp-$(dnsdomainname)-2020-10-sso-stats.json
      zcat /opt/shibboleth-idp/logs/idp-audit-2020-11* | python3 $HOME/loganalisys.py -j - > idp-$(dnsdomainname)-2020-11-sso-stats.json
      zcat /opt/shibboleth-idp/logs/idp-audit-2020-12* | python3 $HOME/loganalisys.py -j - > idp-$(dnsdomainname)-2020-12-sso-stats.json
-     zcat /opt/shibboleth-idp/logs/idp-audit-2021-01-* | python3 $HOME/loganalisys.py -j - > idp-$(dnsdomainname)-2021-01-sso-stats.json
+     zcat /opt/shibboleth-idp/logs/idp-audit-2021-01* | python3 $HOME/loganalisys.py -j - > idp-$(dnsdomainname)-2021-01-sso-stats.json
      ```
    * Python 2.x - IdP v4.x: 
      ```bash
@@ -36,7 +36,7 @@ wget https://raw.githubusercontent.com/ConsortiumGARR/idem-tutorials/master/idem
      zcat /opt/shibboleth-idp/logs/idp-audit-2020-10* | python $HOME/loganalisys.py -j4 - > idp-$(dnsdomainname)-2020-10-sso-stats.json
      zcat /opt/shibboleth-idp/logs/idp-audit-2020-11* | python $HOME/loganalisys.py -j4 - > idp-$(dnsdomainname)-2020-11-sso-stats.json
      zcat /opt/shibboleth-idp/logs/idp-audit-2020-12* | python $HOME/loganalisys.py -j4 - > idp-$(dnsdomainname)-2020-12-sso-stats.json
-     zcat /opt/shibboleth-idp/logs/idp-audit-2021-01-* | python $HOME/loganalisys.py -j4 - > idp-$(dnsdomainname)-2021-01-sso-stats.json
+     zcat /opt/shibboleth-idp/logs/idp-audit-2021-01* | python $HOME/loganalisys.py -j4 - > idp-$(dnsdomainname)-2021-01-sso-stats.json
      ```
    * Python 3.x - IdP v4.x:
      ```bash
@@ -44,7 +44,7 @@ wget https://raw.githubusercontent.com/ConsortiumGARR/idem-tutorials/master/idem
      zcat /opt/shibboleth-idp/logs/idp-audit-2020-10* | python3 $HOME/loganalisys.py -j4 - > idp-$(dnsdomainname)-2020-10-sso-stats.json
      zcat /opt/shibboleth-idp/logs/idp-audit-2020-11* | python3 $HOME/loganalisys.py -j4 - > idp-$(dnsdomainname)-2020-11-sso-stats.json
      zcat /opt/shibboleth-idp/logs/idp-audit-2020-12* | python3 $HOME/loganalisys.py -j4 - > idp-$(dnsdomainname)-2020-12-sso-stats.json
-     zcat /opt/shibboleth-idp/logs/idp-audit-2021-01-* | python3 $HOME/loganalisys.py -j4 - > idp-$(dnsdomainname)-2021-01-sso-stats.json
+     zcat /opt/shibboleth-idp/logs/idp-audit-2021-01* | python3 $HOME/loganalisys.py -j4 - > idp-$(dnsdomainname)-2021-01-sso-stats.json
      ```
      
    Example JSON output (for one month):
