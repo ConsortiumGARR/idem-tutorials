@@ -18,11 +18,18 @@ def parse_files(files, options):
     db = {}
     db['rp'], db['users'], db['msgprof'], db['logins'] = {}, {}, {}, 0
 
+    login_string = "sso"
+    fields_position = [3, 4, 8]
+    
+    if options.shibidpv4:
+        login_string = "success"
+        fields_position = [4, 17, 3]
+
     # Audit log format we're trying to parse below:
     # datetime|req_bind|req_id|rp|msg_profile|idp|resp_bind|resp_id|user|authn_mech|attribs|name_id|assert_id|ip
     for event in lines:
         try:
-            rp, msg_profile, user = list(event[i] for i in [3, 4, 8])
+            rp, msg_profile, user = list(event[i] for i in fields_position)
         except ValueError:
             print(linesep.join([
                 "ERROR: Unsupported log file format or compressed logs with Python < 2.5",
@@ -32,20 +39,20 @@ def parse_files(files, options):
         if msg_profile.lower().find("sso") > -1:
             db['logins'] += 1
 
-        # we almost always need to count rps:
-        if len(rp) > 0:
-            if rp in db['rp']:
-                db['rp'][rp] += 1
-            else:
-                db['rp'][rp] = 1
-
-        # only count users if asked to
-        if len(user) > 0:
-            if options.uniqusers or options.xml or options.rrd or options.json:
-                if user in db['users']:
-                    db['users'][user] += 1
+            # we almost always need to count rps:
+            if len(rp) > 0:
+                if rp in db['rp']:
+                    db['rp'][rp] += 1
                 else:
-                    db['users'][user] = 1
+                    db['rp'][rp] = 1
+
+            # only count users if asked to
+            if len(user) > 0:
+                if options.uniqusers or options.xml or options.rrd or options.json:
+                    if user in db['users']:
+                        db['users'][user] += 1
+                    else:
+                        db['users'][user] = 1
 
         # only count message profiles and rps if asked to
         if options.msgprofiles:
@@ -153,6 +160,7 @@ def rp_per_msg_profile(db, options):
 def getopts():
     """Parse command line options and arguments"""
     parser = OptionParser("Usage: %prog [options] [files ...]")
+    parser.add_option("-4", "--shibidpv4", action="store_true", help="Parse Shibboleth IdP V4 Audit logs")
     parser.add_option("-r", "--relyingparties", action="store_true", dest="uniqrp",
                       help="List of unique relying parties, sorted by name")
     parser.add_option("-c", "--rpcount", action="store_true",
