@@ -8,7 +8,7 @@ Who already use `statistics` module, do not need this.
 1. Follow the steps provided here: https://github.com/ConsortiumGARR/ssp-statistics-parser
 
 2. By considering only the "AlignedMonth" of "SSP to service",
-   generate a files named `idp-$(dnsdomainname)-sso-stat-<YEAR><MONTH>.json (es.: idp-garr.it-sso-stat-202009.txt)
+   generate a files named `idp-$(dnsdomainname)-sso-stat-<YEAR><MONTH>.json` (es.: idp-garr.it-sso-stat-202009.json)
    for each month requested with the JSON format:
 
    ```json
