@@ -483,7 +483,6 @@ This Storage service will memorize User Consent data on persistent database SQL.
             idp.authn.LDAP.trustCertificates = %{idp.home}/credentials/ldap-server.crt
             # List of attributes to request during authentication
             idp.authn.LDAP.returnAttributes = passwordExpirationTime,loginGraceRemaining
-            # List of attributes produced by the Data Connector that should be directly exported as resolved IdPAttributes without requiring actual Attribute Definitions
             idp.authn.LDAP.baseDN = ou=people,dc=example,dc=org
             idp.authn.LDAP.subtreeSearch = false
             idp.authn.LDAP.bindDN = cn=idpuser,ou=system,dc=example,dc=org
@@ -501,6 +500,7 @@ This Storage service will memorize User Consent data on persistent database SQL.
             idp.attribute.resolver.LDAP.trustCertificates   = %{idp.authn.LDAP.trustCertificates:undefined}
             # The searchFilter is used to find user attributes from an LDAP source.
             idp.attribute.resolver.LDAP.searchFilter        = (uid=$resolutionContext.principal)
+            # List of attributes produced by the Data Connector that should be directly exported as resolved IdPAttributes without requiring actual Attribute Definitions
             idp.attribute.resolver.LDAP.exportAttributes    = ### List space-separated of attributes to retrieve from the directory directly ###
             ```
 
@@ -525,7 +525,6 @@ This Storage service will memorize User Consent data on persistent database SQL.
             idp.authn.LDAP.trustCertificates = %{idp.home}/credentials/ldap-server.crt
             # List of attributes to request during authentication
             idp.authn.LDAP.returnAttributes = passwordExpirationTime,loginGraceRemaining
-            # List of attributes produced by the Data Connector that should be directly exported as resolved IdPAttributes without requiring actual Attribute Definitions
             idp.authn.LDAP.baseDN = ou=people,dc=example,dc=org
             idp.authn.LDAP.subtreeSearch = false
             idp.authn.LDAP.bindDN = cn=idpuser,ou=system,dc=example,dc=org
@@ -543,6 +542,7 @@ This Storage service will memorize User Consent data on persistent database SQL.
             idp.attribute.resolver.LDAP.trustCertificates   = %{idp.authn.LDAP.trustCertificates:undefined}
             # The searchFilter is used to find user attributes from an LDAP source.
             idp.attribute.resolver.LDAP.searchFilter        = (uid=$resolutionContext.principal)
+            # List of attributes produced by the Data Connector that should be directly exported as resolved IdPAttributes without requiring actual Attribute Definitions
             idp.attribute.resolver.LDAP.exportAttributes    = ### List space-separated of attributes to retrieve from the directory directly ###
             ```
 
@@ -565,7 +565,6 @@ This Storage service will memorize User Consent data on persistent database SQL.
             idp.authn.LDAP.useStartTLS = false
             # List of attributes to request during authentication
             idp.authn.LDAP.returnAttributes = passwordExpirationTime,loginGraceRemaining
-            # List of attributes produced by the Data Connector that should be directly exported as resolved IdPAttributes without requiring actual Attribute Definitions
             idp.authn.LDAP.baseDN = ou=people,dc=example,dc=org
             idp.authn.LDAP.subtreeSearch = false
             idp.authn.LDAP.bindDN = cn=idpuser,ou=system,dc=example,dc=org
@@ -583,6 +582,7 @@ This Storage service will memorize User Consent data on persistent database SQL.
             idp.attribute.resolver.LDAP.trustCertificates   = %{idp.authn.LDAP.trustCertificates:undefined}
             # The searchFilter is used to find user attributes from an LDAP source.
             idp.attribute.resolver.LDAP.searchFilter        = (uid=$resolutionContext.principal)
+            # List of attributes produced by the Data Connector that should be directly exported as resolved IdPAttributes without requiring actual Attribute Definitions
             idp.attribute.resolver.LDAP.exportAttributes    = ### List space-separated of attributes to retrieve from the directory directly ###
             ```
 
@@ -608,7 +608,6 @@ This Storage service will memorize User Consent data on persistent database SQL.
             idp.authn.LDAP.trustCertificates = %{idp.home}/credentials/ldap-server.crt
             # List of attributes to request during authentication
             idp.authn.LDAP.returnAttributes = passwordExpirationTime,loginGraceRemaining
-            # List of attributes produced by the Data Connector that should be directly exported as resolved IdPAttributes without requiring actual Attribute Definitions
             idp.authn.LDAP.baseDN = CN=Users,DC=ad,DC=example,DC=org
             idp.authn.LDAP.subtreeSearch = false
             idp.authn.LDAP.bindDN = CN=idpuser,CN=Users,DC=ad,DC=example,DC=org
@@ -626,6 +625,7 @@ This Storage service will memorize User Consent data on persistent database SQL.
             idp.attribute.resolver.LDAP.trustCertificates   = %{idp.authn.LDAP.trustCertificates:undefined}
             # The searchFilter is used to find user attributes from an AD source.
             idp.attribute.resolver.LDAP.searchFilter        = (sAMAccountName=$resolutionContext.principal)
+            # List of attributes produced by the Data Connector that should be directly exported as resolved IdPAttributes without requiring actual Attribute Definitions
             idp.attribute.resolver.LDAP.exportAttributes    = ### List space-separated of attributes to retrieve from the directory directly ###
             ```
 
@@ -650,7 +650,6 @@ This Storage service will memorize User Consent data on persistent database SQL.
             idp.authn.LDAP.trustCertificates = %{idp.home}/credentials/ldap-server.crt
             # List of attributes to request during authentication
             idp.authn.LDAP.returnAttributes = passwordExpirationTime,loginGraceRemaining
-            # List of attributes produced by the Data Connector that should be directly exported as resolved IdPAttributes without requiring actual Attribute Definitions
             idp.authn.LDAP.baseDN = CN=Users,DC=ad,DC=example,DC=org
             idp.authn.LDAP.subtreeSearch = false         
             idp.authn.LDAP.bindDN = CN=idpuser,CN=Users,DC=ad,DC=example,DC=org
@@ -668,6 +667,7 @@ This Storage service will memorize User Consent data on persistent database SQL.
             idp.attribute.resolver.LDAP.trustCertificates   = %{idp.authn.LDAP.trustCertificates:undefined}
             # The searchFilter is used to find user attributes from an AD source.
             idp.attribute.resolver.LDAP.searchFilter        = (sAMAccountName=$resolutionContext.principal)
+            # List of attributes produced by the Data Connector that should be directly exported as resolved IdPAttributes without requiring actual Attribute Definitions
             idp.attribute.resolver.LDAP.exportAttributes    = ### List space-separated of attributes to retrieve from the directory directly ###
             ```
 
@@ -690,7 +690,6 @@ This Storage service will memorize User Consent data on persistent database SQL.
             idp.authn.LDAP.useStartTLS = false
             # List of attributes to request during authentication
             idp.authn.LDAP.returnAttributes = passwordExpirationTime,loginGraceRemaining
-            # List of attributes produced by the Data Connector that should be directly exported as resolved IdPAttributes without requiring actual Attribute Definitions
             idp.authn.LDAP.baseDN = CN=Users,DC=ad,DC=example,DC=org
             idp.authn.LDAP.subtreeSearch = false
             idp.authn.LDAP.bindDN = CN=idpuser,CN=Users,DC=ad,DC=example,DC=org
@@ -708,6 +707,7 @@ This Storage service will memorize User Consent data on persistent database SQL.
             idp.attribute.resolver.LDAP.trustCertificates   = %{idp.authn.LDAP.trustCertificates:undefined}
             # The searchFilter is used to find user attributes from an AD source.
             idp.attribute.resolver.LDAP.searchFilter        = (sAMAccountName=$resolutionContext.principal)
+            # List of attributes produced by the Data Connector that should be directly exported as resolved IdPAttributes without requiring actual Attribute Definitions
             idp.attribute.resolver.LDAP.exportAttributes    = ### List space-separated of attributes to retrieve from the directory directly ###
             ```
 
