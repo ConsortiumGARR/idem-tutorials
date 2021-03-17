@@ -24,8 +24,7 @@ These GitHub Repository contains step-by-step tutorials on Identity and Service 
 #### HOWTO Install and Configure an Identity Provider
 
 1. [HOWTO Install and Configure a Shibboleth IdP v4.x on Debian-Ubuntu Linux with Apache2 + Jetty9](./idem-fedops/HOWTO-Shibboleth/Identity%20Provider/Debian-Ubuntu/HOWTO%20Install%20and%20Configure%20a%20Shibboleth%20IdP%20v4.x%20on%20Debian-Ubuntu%20Linux%20with%20Apache2%20%2B%20Jetty9.md)
-2. [HOWTO Install and Configure a Shibboleth IdP v3.4.x on Debian-Ubuntu Linux with Apache2 + Jetty9 (End Of Life Dec 2020)](./idem-fedops/HOWTO-Shibboleth/Identity%20Provider/Debian-Ubuntu/HOWTO%20Install%20and%20Configure%20a%20Shibboleth%20IdP%20v3.4.x%20on%20Debian-Ubuntu%20Linux%20with%20Apache2%20+%20Jetty9.md)
-3. [HOWTO Install and Configure a SimpleSAMLphp IDP v1.x on Debian Linux 10 (Buster)](./idem-fedops/HOWTO-SimpleSAMLphp/Identity%20Provider/HOWTO%20Install%20and%20Configure%20a%20SimpleSAMLphp%20IdP%20v1.x%20on%20Debian%20Linux%2010%20(Buster).md#howto-install-and-configure-a-simplesamlphp-idp-v1x-on-debian-linux-10-buster)
+2. [HOWTO Install and Configure a SimpleSAMLphp IDP v1.x on Debian Linux 10 (Buster)](./idem-fedops/HOWTO-SimpleSAMLphp/Identity%20Provider/HOWTO%20Install%20and%20Configure%20a%20SimpleSAMLphp%20IdP%20v1.x%20on%20Debian%20Linux%2010%20(Buster).md#howto-install-and-configure-a-simplesamlphp-idp-v1x-on-debian-linux-10-buster)
 
 #### HOWTO Install and Configure a Service Provider
 
@@ -37,9 +36,6 @@ These GitHub Repository contains step-by-step tutorials on Identity and Service 
 #### HOWTO Install and Configure an Identity Provider
 
 1. [HOWTO Install and Configure a Shibboleth IdP v4.x on CentOS with Apache2 + Jetty9](./idem-fedops/HOWTO-Shibboleth/Identity%20Provider/CentOS/HOWTO%20Install%20and%20Configure%20a%20Shibboleth%20IdP%20v4.x%20on%20CentOS%20with%20Apache2%20+%20Jetty9.md)
-2. [HOWTO Install and Configure a Shibboleth IdP v3.4.x on CentOS 7 with Apache2 + Jetty9 (End of Life Dec 2020)](./idem-fedops/HOWTO-Shibboleth/Identity%20Provider/CentOS/HOWTO%20Install%20and%20Configure%20a%20Shibboleth%20IdP%20v3.4.x%20on%20CentOS%207%20with%20Apache2%20+%20Jetty9.md)
-3. [HOWTO Install and Configure a Shibboleth IdP v3.2.1 on Linux Fedora 24 Server Edition with Apache2 + Jetty9](./idem-fedops/HOWTO-Shibboleth/Identity%20Provider/Fedora/HOWTO%20Install%20and%20Configure%20a%20Shibboleth%20IdP%20v3.2.1%20on%20Linux%20Fedora%2024%20Server%20Edition%20with%20Apache2%20%2B%20Jetty9.md)
-4. [HOWTO Install and Configure a Shibboleth IdP v3.2.1 on Linux Fedora 24 Server Edition with Apache2 + Tomcat8](./idem-fedops/HOWTO-Shibboleth/Identity%20Provider/Fedora/HOWTO%20Install%20and%20Configure%20a%20Shibboleth%20IdP%20v3.2.1%20on%20Linux%20Fedora%2024%20Server%20Edition%20with%20Apache2%20%2B%20Tomcat8.md)
 
 #### HOWTO Install and Configure a Service Provider
 1. [HOWTO Install and Configure a Shibboleth SP v3.x on CentOS 7 (x86_64)](./idem-fedops/HOWTO-Shibboleth/Service%20Provider/CentOS/HOWTO%20Install%20and%20Configure%20a%20Shibboleth%20SP%20v3.x%20on%20CentOS%207%20(x86_64).md)
@@ -68,6 +64,10 @@ These GitHub Repository contains step-by-step tutorials on Identity and Service 
 4. [HOWTO Install and Configure a Shibboleth IdP v3.2.1 on Ubuntu Linux LTS 16.04 with Apache2 + Tomcat8](./idem-fedops/HOWTO-Shibboleth/Identity%20Provider/Ubuntu/HOWTO%20Install%20and%20Configure%20a%20Shibboleth%20IdP%20v3.2.1%20on%20Ubuntu%20Linux%20LTS%2016.04%20with%20Apache2%20%2B%20Tomcat8.md)
 5. [HOWTO Install and Configure a Shibboleth SP v2.x on Debian Linux 9 (Stretch)](./idem-fedops/HOWTO-Shibboleth/Service%20Provider/Debian/HOWTO%20Install%20and%20Configure%20a%20Shibboleth%20SP%20v2.x%20on%20Debian%20Linux%209%20(Stretch).md)
 6. [HOWTO Install and Configure a Shibboleth SP v2.6.1(from source) on Debian Linux 9 (Stretch)](./idem-fedops/HOWTO-Shibboleth/Service%20Provider/Debian/HOWTO%20Install%20and%20Configure%20a%20Shibboleth%20SP%20v2.6.1(from%20source)%20on%20Debian%20Linux%209%20(Stretch).md)
+7. [HOWTO Install and Configure a Shibboleth IdP v3.4.x on Debian-Ubuntu Linux with Apache2 + Jetty9 (End Of Life Dec 2020)](./idem-fedops/HOWTO-Shibboleth/Identity%20Provider/Debian-Ubuntu/HOWTO%20Install%20and%20Configure%20a%20Shibboleth%20IdP%20v3.4.x%20on%20Debian-Ubuntu%20Linux%20with%20Apache2%20+%20Jetty9.md)
+8. [HOWTO Install and Configure a Shibboleth IdP v3.4.x on CentOS 7 with Apache2 + Jetty9 (End of Life Dec 2020)](./idem-fedops/HOWTO-Shibboleth/Identity%20Provider/CentOS/HOWTO%20Install%20and%20Configure%20a%20Shibboleth%20IdP%20v3.4.x%20on%20CentOS%207%20with%20Apache2%20+%20Jetty9.md)
+9. [HOWTO Install and Configure a Shibboleth IdP v3.2.1 on Linux Fedora 24 Server Edition with Apache2 + Jetty9](./idem-fedops/HOWTO-Shibboleth/Identity%20Provider/Fedora/HOWTO%20Install%20and%20Configure%20a%20Shibboleth%20IdP%20v3.2.1%20on%20Linux%20Fedora%2024%20Server%20Edition%20with%20Apache2%20%2B%20Jetty9.md)
+10. [HOWTO Install and Configure a Shibboleth IdP v3.2.1 on Linux Fedora 24 Server Edition with Apache2 + Tomcat8](./idem-fedops/HOWTO-Shibboleth/Identity%20Provider/Fedora/HOWTO%20Install%20and%20Configure%20a%20Shibboleth%20IdP%20v3.2.1%20on%20Linux%20Fedora%2024%20Server%20Edition%20with%20Apache2%20%2B%20Tomcat8.md)
 
 ## IDEM Community Users HOWTOs
 
