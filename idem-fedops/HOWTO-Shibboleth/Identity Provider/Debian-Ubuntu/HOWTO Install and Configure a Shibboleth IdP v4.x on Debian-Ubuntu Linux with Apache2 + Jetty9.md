@@ -1234,6 +1234,8 @@ Translate the IdP messages in your language:
      and enrich the "`AttributeFilterResources`" list with "`IdemAttributeFilterFull`":
      
      ```xml
+     <!-- ...other things... -->
+
      <util:list id ="shibboleth.AttributeFilterResources">
          <value>%{idp.home}/conf/attribute-filter.xml</value>
          <ref bean="IdemAttributeFilterFull"/>
@@ -1243,7 +1245,7 @@ Translate the IdP messages in your language:
      ```
 
 4. Restart Jetty to apply the changes:
-   * `systemctl restart jetty.service"``
+   * `systemctl restart jetty.service`
    
 5. Check IdP Status:
    * `bash /opt/shibboleth-idp/bin/status.sh`
