@@ -123,7 +123,7 @@
 
 2. Be sure that your firewall **doesn't block** the traffic on port **443** (or you can't access to your SP)
   
-   (OPTIONAL) Create a Certificate and a Key self-signed for HTTPS if you don't have yet the official ones provided by the Certificate Authority(DigicertCA):
+   (OPTIONAL) Create a Certificate and a Key self-signed for HTTPS if you don't have yet the official ones provided by the Certificate Authority:
    * ```bash
      openssl req -x509 -newkey rsa:4096 -keyout /etc/pki/tls/private/ssl-sp.key -out /etc/pki/tls/certs/ssl-sp.crt -nodes -days 1095
      ```
