@@ -302,7 +302,7 @@ The Apache HTTP Server will be configured as a reverse proxy and it will be used
 6. Enable the required Apache2 modules and the virtual hosts:
    * `a2enmod proxy_http ssl headers alias include negotiation`
    * `a2ensite $(hostname -f).conf`
-   * `a2dissite 000-default.conf`
+   * `a2dissite 000-default.conf default-ssl`
    * `systemctl restart apache2.service`
 
 7. Check that IdP metadata is available on:
