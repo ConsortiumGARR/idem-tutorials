@@ -7,24 +7,30 @@ The EDS is a set of Javascript and CSS files, so installing it and using it is s
 
 1. [Requirements](#requirements)
 2. [Installation](#installation)
-3. [Configuration](#configuration)
-4. [Whitelist - How to allow IdPs to access the federated resource](#whitelist---how-to-allow-idps-to-access-the-federated-resource)
+   1.[Debian](#debian)
+   2.[CentOS](#centos)
+4. [Enable EDS on Shibboleth SP](#enable-eds-on-shibboleth-sp)
+5. [Configuration](#configuration)
+6. [Whitelist - How to allow IdPs to access the federated resource](#whitelist---how-to-allow-idps-to-access-the-federated-resource)
   1. [How to allow the access to IdPs by specifying their entityID](#how-to-allow-the-access-to-idps-by-specifying-their-entityid)
   2. [How to allow the access to IdPs that support a specific Entity Category](#how-to-allow-the-access-to-idps-that-support-a-specific-entity-category)
   3. [How to allow the access to IdPs that support SIRTFI](#how-to-allow-the-access-to-idps-that-support-sirtfi)
-5. [Blacklist - How to disallow IdPs to access the federated resource](#blacklist---how-to-disallow-idps-to-access-the-federated-resource)
+7. [Blacklist - How to disallow IdPs to access the federated resource](#blacklist---how-to-disallow-idps-to-access-the-federated-resource)
   1. [How to disallow the access to IdPs by specifying their entityID](#how-to-disallow-the-access-to-idps-by-specifying-their-entityid)
   2. [How to disallow the access to IdPs that support a specific Entity Category](#how-to-disallow-the-access-to-idps-that-support-a-specific-entity-category)
-6. [Best Practices to follow to maximize the access to the resource](#best-practices-to-follow-to-maximize-the-access-to-the-resource)
-7. [Authors](#authors)
-8. [Credits](#credits)
+8. [Best Practices to follow to maximize the access to the resource](#best-practices-to-follow-to-maximize-the-access-to-the-resource)
+9. [Authors](#authors)
+10. [Credits](#credits)
 
 ## Requirements
 
 * Apache Server (>= 2.4)
 * A working Shibboleth Service Provider (>= 2.4)
+* Tested on: Debian, CentOS
 
 ## Installation
+
+### Debian
 1. `sudo su -`
 
 2. `cd /usr/local/src`
@@ -41,7 +47,18 @@ The EDS is a set of Javascript and CSS files, so installing it and using it is s
    * `mv /etc/shibboleth-ds/shibboleth-ds.conf /etc/apache2/conf-available/shibboleth-ds.conf`
    * `sed -i 's/Allow from all/Require all granted/g' /etc/apache2/conf-available/shibboleth-ds.conf`
 
-8. Update "`shibboleth2.xml`" file to the new Discovery Service page:
+8. Enable the Discovery Service Page:
+   * `a2enconf shibboleth-ds.conf`
+
+9. Restart Apache to load the new web site:
+   * `systemctl restart apache2.service`
+
+### CentOS
+1. `sudo su -`
+2. `yum install shibboleth-embedded-ds`
+
+## Enable EDS on Shibboleth SP
+1. Update "`shibboleth2.xml`" file to the new Discovery Service page:
    * `vim /etc/shibboleth/shibboleth2.xml `
  
      ```xml
@@ -56,12 +73,6 @@ The EDS is a set of Javascript and CSS files, so installing it and using it is s
      <!-- JSON feed of discovery information. -->
      <Handler type="DiscoveryFeed" Location="/DiscoFeed"/>
      ```
-
-9. Enable the Discovery Service Page:
-   * `a2enconf shibboleth-ds.conf`
-
-10. Restart Apache to load the new web site:
-    * `systemctl restart shibd.service ; systemctl restart apache2.service`
 
 ## Configuration
 The behaviour of Shibboleth Embedded Discovery Service is controlled by `IdPSelectUIParms` class contained. `idpselect_config.js`.
