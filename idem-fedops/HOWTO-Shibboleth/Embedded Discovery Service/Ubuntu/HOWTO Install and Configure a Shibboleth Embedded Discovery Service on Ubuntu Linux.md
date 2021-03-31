@@ -7,8 +7,8 @@ The EDS is a set of Javascript and CSS files, so installing it and using it is s
 
 1. [Requirements](#requirements)
 2. [Installation](#installation)
-   1.[Debian](#debian)
-   2.[CentOS](#centos)
+   1. [Debian](#debian)
+   2. [CentOS](#centos)
 4. [Enable EDS on Shibboleth SP](#enable-eds-on-shibboleth-sp)
 5. [Configuration](#configuration)
 6. [Whitelist - How to allow IdPs to access the federated resource](#whitelist---how-to-allow-idps-to-access-the-federated-resource)
