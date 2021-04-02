@@ -34,11 +34,12 @@
    12. [Secure cookies and other IDP data](#secure-cookies-and-other-idp-data)
    13. [Configure Attribute Filter Policy to release attributes to Federated Resources](#configure-attribute-filter-policy-to-release-attributes-to-federated-resources)
    14. [Register the IdP on the IDEM Test Federation](#register-the-idp-on-the-idem-test-federation)
-5. [Appendix A: Import persistent-id from a previous database](#appendix-a-import-persistent-id-from-a-previous-database)
-6. [Appendix B: Useful logs to find problems](#appendix-b-useful-logs-to-find-problems)
-7. [Utilities](#utilities)
-8. [Useful Documentation](#useful-documentation)
-9. [Authors](#authors)
+5. [Appendix A: Enable Consent Module: Attribute Release + Terms of Use Consent](#appendix-a-enable-consent-module-attribute-release-terms-of-use-consent)
+6. [Appendix B: Import persistent-id from a previous database](#appendix-b-import-persistent-id-from-a-previous-database)
+7. [Appendix C: Useful logs to find problems](#appendix-c-useful-logs-to-find-problems)
+8. [Utilities](#utilities)
+9. [Useful Documentation](#useful-documentation)
+10. [Authors](#authors)
     * [Original Author](#original-author)
 
 ## Requirements
@@ -174,13 +175,13 @@ Jetty is a Web server and a Java Servlet container. It will be used to run the I
    ```bash
    cd /usr/local/src
    
-   wget https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-distribution/9.4.33.v20201020/jetty-distribution-9.4.33.v20201020.tar.gz
+   wget https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-distribution/9.4.39.v20210325/jetty-distribution-9.4.39.v20210325.tar.gz
    
-   tar xzvf jetty-distribution-9.4.33.v20201020.tar.gz
+   tar xzvf jetty-distribution-9.4.39.v20210325.tar.gz
    ```
 
 3. Create the `jetty-src` folder as a symbolic link. It will be useful for future Jetty updates:
-   * `ln -nsf jetty-distribution-9.4.33.v20201020 jetty-src`
+   * `ln -nsf jetty-distribution-9.4.39.v20210325 jetty-src`
 
 4. Create the user/group `jetty` that can run the web server:
    * `useradd --system --home-dir /usr/local/src/jetty-src --user-group jetty`
@@ -248,13 +249,10 @@ Jetty is a Web server and a Java Servlet container. It will be used to run the I
 
 3. Make the **jetty** user owner of IdP main directories:
    * `cd /opt/shibboleth-idp`
-   * `chown -R jetty logs/ metadata/ credentials/ conf/ system/ war/`
+   * `chown -R jetty logs/ metadata/ credentials/ conf/ war/`
 
 4. Restart Jetty:
    * `systemctl restart jetty.service`
-
-5. Check IdP Status:
-   * `bash /opt/shibboleth-idp/bin/status.sh`
 
 ### Configure SSL on Apache2 (front-end of Jetty)
 
@@ -263,10 +261,11 @@ The Apache HTTP Server will be configured as a reverse proxy and it will be used
 1. Create the DocumentRoot:
    * `mkdir /var/www/html/$(hostname -f)`
    * `sudo chown -R apache: /var/www/html/$(hostname -f)`
+   * `echo '<h1>It Works!</h1>' > /var/www/html/$(hostname -f)/index.html`
 
 2. Create the Virtualhost file (pay attention and follow the starting comment):
    * ```bash
-     wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/apache2/idp.example.org.conf -O /etc/httpd/conf.d/$(hostname -f).conf
+     wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/apache2/idp.example.org.conf -O /etc/httpd/conf.d/000-$(hostname -f).conf
      ```
    
 3. Put SSL credentials in the right place:
@@ -275,6 +274,7 @@ The Apache HTTP Server will be configured as a reverse proxy and it will be used
    * Add CA Cert into `/etc/pki/tls/certs`
      * If you use GARR TCS (Sectigo CA): 
        * `wget -O /etc/pki/tls/certs/GEANT_OV_RSA_CA_4.pem https://crt.sh/?d=2475254782`
+       * `wget -O /etc/pki/ca-trust/source/anchors/SectigoRSAOrganizationValidationSecureServerCA.crt https://crt.sh/?d=924467857 ; update-ca-trust`
      * If you use ACME (Let's Encrypt): 
        * `ln -s /etc/letsencrypt/live/<SERVER_FQDN>/chain.pem /etc/pki/tls/certs/ACME-CA.pem`
 
@@ -285,6 +285,9 @@ The Apache HTTP Server will be configured as a reverse proxy and it will be used
      (*`$(hostname -f)` will provide your IdP Full Qualified Domain Name*)
 
 5. Configure SELinux to allow `mod_proxy` to initiate outbound connections:
+   * `sestatus`
+
+   If SELinux is enabled:
    * `/usr/sbin/setsebool -P httpd_can_network_connect 1`
 
 6. Restart Apache: 
@@ -437,260 +440,260 @@ This Storage service will memorize User Consent data on persistent database SQL.
    
    (for **TLS** solutions put the LDAP certificate into `/opt/shibboleth-idp/credentials/ldap-server.crt`)
 
-     * For OpenLDAP:
-       * Solution 1: LDAP + STARTTLS:
-         * `vim /opt/shibboleth-idp/credentials/secrets.properties`
+   * For OpenLDAP:
+     * Solution 1: LDAP + STARTTLS:
+       * `vim /opt/shibboleth-idp/credentials/secrets.properties`
          
-           ```properties
-           # Default access to LDAP authn and attribute stores. 
-           idp.authn.LDAP.bindDNCredential              = ###IDPUSER_PASSWORD###
-           idp.attribute.resolver.LDAP.bindDNCredential = %{idp.authn.LDAP.bindDNCredential:undefined}
-           ```
+         ```properties
+         # Default access to LDAP authn and attribute stores. 
+         idp.authn.LDAP.bindDNCredential              = ###IDPUSER_PASSWORD###
+         idp.attribute.resolver.LDAP.bindDNCredential = %{idp.authn.LDAP.bindDNCredential:undefined}
+         ```
          
-         * `vim /opt/shibboleth-idp/conf/ldap.properties`
+       * `vim /opt/shibboleth-idp/conf/ldap.properties`
 
-            The `idp.attribute.resolver.LDAP.exportAttributes` list MUST contains the attribute chosen for the persistent-id generation (idp.persistentId.sourceAttribute)
+          The `idp.attribute.resolver.LDAP.exportAttributes` list MUST contains the attribute chosen for the persistent-id generation (idp.persistentId.sourceAttribute)
 
-            ```properties
-            idp.authn.LDAP.authenticator = bindSearchAuthenticator
-            idp.authn.LDAP.ldapURL = ldap://ldap.example.org:389
-            idp.authn.LDAP.useStartTLS = true
-            idp.authn.LDAP.sslConfig = certificateTrust
-            idp.authn.LDAP.trustCertificates = %{idp.home}/credentials/ldap-server.crt
-            # List of attributes to request during authentication
-            idp.authn.LDAP.returnAttributes = passwordExpirationTime,loginGraceRemaining
-            idp.authn.LDAP.baseDN = ou=people,dc=example,dc=org
-            idp.authn.LDAP.subtreeSearch = false
-            idp.authn.LDAP.bindDN = cn=idpuser,ou=system,dc=example,dc=org
-            # The userFilter is used to locate a directory entry to bind against for LDAP authentication.
-            idp.authn.LDAP.userFilter = (uid={user})
+          ```properties
+          idp.authn.LDAP.authenticator = bindSearchAuthenticator
+          idp.authn.LDAP.ldapURL = ldap://ldap.example.org
+          idp.authn.LDAP.useStartTLS = true
+          idp.authn.LDAP.sslConfig = certificateTrust
+          idp.authn.LDAP.trustCertificates = %{idp.home}/credentials/ldap-server.crt
+          # List of attributes to request during authentication
+          idp.authn.LDAP.returnAttributes = passwordExpirationTime,loginGraceRemaining
+          idp.authn.LDAP.baseDN = ou=people,dc=example,dc=org
+          idp.authn.LDAP.subtreeSearch = false
+          idp.authn.LDAP.bindDN = cn=idpuser,ou=system,dc=example,dc=org
+          # The userFilter is used to locate a directory entry to bind against for LDAP authentication.
+          idp.authn.LDAP.userFilter = (uid={user})
 
-            # LDAP attribute configuration, see attribute-resolver.xml
-            # Note, this likely won't apply to the use of legacy V2 resolver configurations
-            idp.attribute.resolver.LDAP.ldapURL             = %{idp.authn.LDAP.ldapURL}
-            idp.attribute.resolver.LDAP.connectTimeout      = %{idp.authn.LDAP.connectTimeout:PT3S}
-            idp.attribute.resolver.LDAP.responseTimeout     = %{idp.authn.LDAP.responseTimeout:PT3S}
-            idp.attribute.resolver.LDAP.baseDN              = %{idp.authn.LDAP.baseDN:undefined}
-            idp.attribute.resolver.LDAP.bindDN              = %{idp.authn.LDAP.bindDN:undefined}
-            idp.attribute.resolver.LDAP.useStartTLS         = %{idp.authn.LDAP.useStartTLS:true}
-            idp.attribute.resolver.LDAP.trustCertificates   = %{idp.authn.LDAP.trustCertificates:undefined}
-            # The searchFilter is is used to find user attributes from an LDAP source
-            idp.attribute.resolver.LDAP.searchFilter        = (uid=$resolutionContext.principal)
-            # List of attributes produced by the Data Connector that should be directly exported as resolved IdPAttributes without requiring actual Attribute Definitions
-            idp.attribute.resolver.LDAP.exportAttributes    = ### List space-separated of attributes to retrieve from the directory directly ###
-            ```
+          # LDAP attribute configuration, see attribute-resolver.xml
+          # Note, this likely won't apply to the use of legacy V2 resolver configurations
+          idp.attribute.resolver.LDAP.ldapURL             = %{idp.authn.LDAP.ldapURL}
+          idp.attribute.resolver.LDAP.connectTimeout      = %{idp.authn.LDAP.connectTimeout:PT3S}
+          idp.attribute.resolver.LDAP.responseTimeout     = %{idp.authn.LDAP.responseTimeout:PT3S}
+          idp.attribute.resolver.LDAP.baseDN              = %{idp.authn.LDAP.baseDN:undefined}
+          idp.attribute.resolver.LDAP.bindDN              = %{idp.authn.LDAP.bindDN:undefined}
+          idp.attribute.resolver.LDAP.useStartTLS         = %{idp.authn.LDAP.useStartTLS:true}
+          idp.attribute.resolver.LDAP.trustCertificates   = %{idp.authn.LDAP.trustCertificates:undefined}
+          # The searchFilter is is used to find user attributes from an LDAP source
+          idp.attribute.resolver.LDAP.searchFilter        = (uid=$resolutionContext.principal)
+          # List of attributes produced by the Data Connector that should be directly exported as resolved IdPAttributes without requiring actual Attribute Definitions
+          idp.attribute.resolver.LDAP.exportAttributes    = ### List space-separated of attributes to retrieve from the directory directly ###
+          ```
 
-       * Solution 2: LDAP + TLS:
-         * `vim /opt/shibboleth-idp/credentials/secrets.properties`
+     * Solution 2: LDAP + TLS:
+       * `vim /opt/shibboleth-idp/credentials/secrets.properties`
          
-           ```properties
-           # Default access to LDAP authn and attribute stores. 
-           idp.authn.LDAP.bindDNCredential              = ###IDPUSER_PASSWORD###
-           idp.attribute.resolver.LDAP.bindDNCredential = %{idp.authn.LDAP.bindDNCredential:undefined}
-           ```
+         ```properties
+         # Default access to LDAP authn and attribute stores. 
+         idp.authn.LDAP.bindDNCredential              = ###IDPUSER_PASSWORD###
+         idp.attribute.resolver.LDAP.bindDNCredential = %{idp.authn.LDAP.bindDNCredential:undefined}
+         ```
          
-         * `vim /opt/shibboleth-idp/conf/ldap.properties`
+       * `vim /opt/shibboleth-idp/conf/ldap.properties`
 
-            The `idp.attribute.resolver.LDAP.exportAttributes` list MUST contains the attribute chosen for the persistent-id generation (idp.persistentId.sourceAttribute)
+          The `idp.attribute.resolver.LDAP.exportAttributes` list MUST contains the attribute chosen for the persistent-id generation (idp.persistentId.sourceAttribute)
 
-            ```properties
-            idp.authn.LDAP.authenticator = bindSearchAuthenticator
-            idp.authn.LDAP.ldapURL = ldaps://ldap.example.org:636
-	        idp.authn.LDAP.useStartTLS = false
-            idp.authn.LDAP.sslConfig = certificateTrust
-            idp.authn.LDAP.trustCertificates = %{idp.home}/credentials/ldap-server.crt
-            # List of attributes to request during authentication
-            idp.authn.LDAP.returnAttributes = passwordExpirationTime,loginGraceRemaining
-            idp.authn.LDAP.baseDN = ou=people,dc=example,dc=org
-            idp.authn.LDAP.subtreeSearch = false
-            idp.authn.LDAP.bindDN = cn=idpuser,ou=system,dc=example,dc=org
-            # The userFilter is used to locate a directory entry to bind against for LDAP authentication.
-            idp.authn.LDAP.userFilter = (uid={user})
+          ```properties
+          idp.authn.LDAP.authenticator = bindSearchAuthenticator
+          idp.authn.LDAP.ldapURL = ldaps://ldap.example.org
+          idp.authn.LDAP.useStartTLS = false
+          idp.authn.LDAP.sslConfig = certificateTrust
+          idp.authn.LDAP.trustCertificates = %{idp.home}/credentials/ldap-server.crt
+          # List of attributes to request during authentication
+          idp.authn.LDAP.returnAttributes = passwordExpirationTime,loginGraceRemaining
+          idp.authn.LDAP.baseDN = ou=people,dc=example,dc=org
+          idp.authn.LDAP.subtreeSearch = false
+          idp.authn.LDAP.bindDN = cn=idpuser,ou=system,dc=example,dc=org
+          # The userFilter is used to locate a directory entry to bind against for LDAP authentication.
+          idp.authn.LDAP.userFilter = (uid={user})
 
-            # LDAP attribute configuration, see attribute-resolver.xml
-            # Note, this likely won't apply to the use of legacy V2 resolver configurations
-            idp.attribute.resolver.LDAP.ldapURL             = %{idp.authn.LDAP.ldapURL}
-            idp.attribute.resolver.LDAP.connectTimeout      = %{idp.authn.LDAP.connectTimeout:PT3S}
-            idp.attribute.resolver.LDAP.responseTimeout     = %{idp.authn.LDAP.responseTimeout:PT3S}
-            idp.attribute.resolver.LDAP.baseDN              = %{idp.authn.LDAP.baseDN:undefined}
-            idp.attribute.resolver.LDAP.bindDN              = %{idp.authn.LDAP.bindDN:undefined}
-            idp.attribute.resolver.LDAP.useStartTLS         = %{idp.authn.LDAP.useStartTLS:true}
-            idp.attribute.resolver.LDAP.trustCertificates   = %{idp.authn.LDAP.trustCertificates:undefined}
-            # The searchFilter is is used to find user attributes from an LDAP source
-            idp.attribute.resolver.LDAP.searchFilter        = (uid=$resolutionContext.principal)
-            # List of attributes produced by the Data Connector that should be directly exported as resolved IdPAttributes without requiring actual Attribute Definitions
-            idp.attribute.resolver.LDAP.exportAttributes    = ### List space-separated of attributes to retrieve from the directory directly ###
-            ```
+          # LDAP attribute configuration, see attribute-resolver.xml
+          # Note, this likely won't apply to the use of legacy V2 resolver configurations
+          idp.attribute.resolver.LDAP.ldapURL             = %{idp.authn.LDAP.ldapURL}
+          idp.attribute.resolver.LDAP.connectTimeout      = %{idp.authn.LDAP.connectTimeout:PT3S}
+          idp.attribute.resolver.LDAP.responseTimeout     = %{idp.authn.LDAP.responseTimeout:PT3S}
+          idp.attribute.resolver.LDAP.baseDN              = %{idp.authn.LDAP.baseDN:undefined}
+          idp.attribute.resolver.LDAP.bindDN              = %{idp.authn.LDAP.bindDN:undefined}
+          idp.attribute.resolver.LDAP.useStartTLS         = %{idp.authn.LDAP.useStartTLS:true}
+          idp.attribute.resolver.LDAP.trustCertificates   = %{idp.authn.LDAP.trustCertificates:undefined}
+          # The searchFilter is is used to find user attributes from an LDAP source
+          idp.attribute.resolver.LDAP.searchFilter        = (uid=$resolutionContext.principal)
+          # List of attributes produced by the Data Connector that should be directly exported as resolved IdPAttributes without requiring actual Attribute Definitions
+          idp.attribute.resolver.LDAP.exportAttributes    = ### List space-separated of attributes to retrieve from the directory directly ###
+          ```
 
-       * Solution 3: plain LDAP
-         * `vim /opt/shibboleth-idp/credentials/secrets.properties`
+     * Solution 3: plain LDAP
+       * `vim /opt/shibboleth-idp/credentials/secrets.properties`
          
-           ```properties
-           # Default access to LDAP authn and attribute stores. 
-           idp.authn.LDAP.bindDNCredential              = ###IDPUSER_PASSWORD###
-           idp.attribute.resolver.LDAP.bindDNCredential = %{idp.authn.LDAP.bindDNCredential:undefined}
-           ```
+         ```properties
+         # Default access to LDAP authn and attribute stores. 
+         idp.authn.LDAP.bindDNCredential              = ###IDPUSER_PASSWORD###
+         idp.attribute.resolver.LDAP.bindDNCredential = %{idp.authn.LDAP.bindDNCredential:undefined}
+         ```
          
-         * `vim /opt/shibboleth-idp/conf/ldap.properties`
+       * `vim /opt/shibboleth-idp/conf/ldap.properties`
 
-            The `idp.attribute.resolver.LDAP.exportAttributes` list MUST contains the attribute chosen for the persistent-id generation (idp.persistentId.sourceAttribute)
+          The `idp.attribute.resolver.LDAP.exportAttributes` list MUST contains the attribute chosen for the persistent-id generation (idp.persistentId.sourceAttribute)
 
-            ```properties
-            idp.authn.LDAP.authenticator = bindSearchAuthenticator
-            idp.authn.LDAP.ldapURL = ldap://ldap.example.org:389
-            idp.authn.LDAP.useStartTLS = false
-            # List of attributes to request during authentication
-            idp.authn.LDAP.returnAttributes = passwordExpirationTime,loginGraceRemaining
-            idp.authn.LDAP.baseDN = ou=people,dc=example,dc=org
-            idp.authn.LDAP.subtreeSearch = false
-            idp.authn.LDAP.bindDN = cn=idpuser,ou=system,dc=example,dc=org
-            # The userFilter is used to locate a directory entry to bind against for LDAP authentication.
-            idp.authn.LDAP.userFilter = (uid={user})
+          ```properties
+          idp.authn.LDAP.authenticator = bindSearchAuthenticator
+          idp.authn.LDAP.ldapURL = ldap://ldap.example.org
+          idp.authn.LDAP.useStartTLS = false
+          # List of attributes to request during authentication
+          idp.authn.LDAP.returnAttributes = passwordExpirationTime,loginGraceRemaining
+          idp.authn.LDAP.baseDN = ou=people,dc=example,dc=org
+          idp.authn.LDAP.subtreeSearch = false
+          idp.authn.LDAP.bindDN = cn=idpuser,ou=system,dc=example,dc=org
+          # The userFilter is used to locate a directory entry to bind against for LDAP authentication.
+          idp.authn.LDAP.userFilter = (uid={user})
 
-            # LDAP attribute configuration, see attribute-resolver.xml
-            # Note, this likely won't apply to the use of legacy V2 resolver configurations
-            idp.attribute.resolver.LDAP.ldapURL             = %{idp.authn.LDAP.ldapURL}
-            idp.attribute.resolver.LDAP.connectTimeout      = %{idp.authn.LDAP.connectTimeout:PT3S}
-            idp.attribute.resolver.LDAP.responseTimeout     = %{idp.authn.LDAP.responseTimeout:PT3S}
-            idp.attribute.resolver.LDAP.baseDN              = %{idp.authn.LDAP.baseDN:undefined}
-            idp.attribute.resolver.LDAP.bindDN              = %{idp.authn.LDAP.bindDN:undefined}
-            idp.attribute.resolver.LDAP.useStartTLS         = %{idp.authn.LDAP.useStartTLS:true}
-            idp.attribute.resolver.LDAP.trustCertificates   = %{idp.authn.LDAP.trustCertificates:undefined}
-            # The searchFilter is is used to find user attributes from an LDAP source
-            idp.attribute.resolver.LDAP.searchFilter        = (uid=$resolutionContext.principal)
-            # List of attributes produced by the Data Connector that should be directly exported as resolved IdPAttributes without requiring actual Attribute Definitions
-            idp.attribute.resolver.LDAP.exportAttributes    = ### List space-separated of attributes to retrieve from the directory directly ###
-            ```
+          # LDAP attribute configuration, see attribute-resolver.xml
+          # Note, this likely won't apply to the use of legacy V2 resolver configurations
+          idp.attribute.resolver.LDAP.ldapURL             = %{idp.authn.LDAP.ldapURL}
+          idp.attribute.resolver.LDAP.connectTimeout      = %{idp.authn.LDAP.connectTimeout:PT3S}
+          idp.attribute.resolver.LDAP.responseTimeout     = %{idp.authn.LDAP.responseTimeout:PT3S}
+          idp.attribute.resolver.LDAP.baseDN              = %{idp.authn.LDAP.baseDN:undefined}
+          idp.attribute.resolver.LDAP.bindDN              = %{idp.authn.LDAP.bindDN:undefined}
+          idp.attribute.resolver.LDAP.useStartTLS         = %{idp.authn.LDAP.useStartTLS:true}
+          idp.attribute.resolver.LDAP.trustCertificates   = %{idp.authn.LDAP.trustCertificates:undefined}
+          # The searchFilter is is used to find user attributes from an LDAP source
+          idp.attribute.resolver.LDAP.searchFilter        = (uid=$resolutionContext.principal)
+          # List of attributes produced by the Data Connector that should be directly exported as resolved IdPAttributes without requiring actual Attribute Definitions
+          idp.attribute.resolver.LDAP.exportAttributes    = ### List space-separated of attributes to retrieve from the directory directly ###
+          ```
 
-     * For Active Directory:
-       * Solution 1: AD + STARTTLS:
-         * `vim /opt/shibboleth-idp/credentials/secrets.properties`
+   * For Active Directory:
+     * Solution 1: AD + STARTTLS:
+       * `vim /opt/shibboleth-idp/credentials/secrets.properties`
+        
+         ```properties
+         # Default access to LDAP authn and attribute stores. 
+         idp.authn.LDAP.bindDNCredential              = ###IDPUSER_PASSWORD###
+         idp.attribute.resolver.LDAP.bindDNCredential = %{idp.authn.LDAP.bindDNCredential:undefined}
+         ```
          
-           ```properties
-           # Default access to LDAP authn and attribute stores. 
-           idp.authn.LDAP.bindDNCredential              = ###IDPUSER_PASSWORD###
-           idp.attribute.resolver.LDAP.bindDNCredential = %{idp.authn.LDAP.bindDNCredential:undefined}
-           ```
+       * `vim /opt/shibboleth-idp/conf/ldap.properties`
+
+          The `idp.attribute.resolver.LDAP.exportAttributes` list MUST contains the attribute chosen for the persistent-id generation (idp.persistentId.sourceAttribute)
+
+          ```properties
+          idp.authn.LDAP.authenticator = bindSearchAuthenticator
+          idp.authn.LDAP.ldapURL = ldap://ldap.example.org
+          idp.authn.LDAP.useStartTLS = true
+          idp.authn.LDAP.sslConfig = certificateTrust
+          idp.authn.LDAP.trustCertificates = %{idp.home}/credentials/ldap-server.crt
+          # List of attributes to request during authentication
+          idp.authn.LDAP.returnAttributes = passwordExpirationTime,loginGraceRemaining
+          idp.authn.LDAP.baseDN = CN=Users,DC=ad,DC=example,DC=org
+          idp.authn.LDAP.subtreeSearch = false
+          idp.authn.LDAP.bindDN = CN=idpuser,CN=Users,DC=ad,DC=example,DC=org
+          # The userFilter is used to locate a directory entry to bind against for LDAP authentication.
+          idp.authn.LDAP.userFilter = (sAMAccountName={user})
+
+          # LDAP attribute configuration, see attribute-resolver.xml
+          # Note, this likely won't apply to the use of legacy V2 resolver configurations
+          idp.attribute.resolver.LDAP.ldapURL             = %{idp.authn.LDAP.ldapURL}
+          idp.attribute.resolver.LDAP.connectTimeout      = %{idp.authn.LDAP.connectTimeout:PT3S}
+          idp.attribute.resolver.LDAP.responseTimeout     = %{idp.authn.LDAP.responseTimeout:PT3S}
+          idp.attribute.resolver.LDAP.baseDN              = %{idp.authn.LDAP.baseDN:undefined}
+          idp.attribute.resolver.LDAP.bindDN              = %{idp.authn.LDAP.bindDN:undefined}
+          idp.attribute.resolver.LDAP.useStartTLS         = %{idp.authn.LDAP.useStartTLS:true}
+          idp.attribute.resolver.LDAP.trustCertificates   = %{idp.authn.LDAP.trustCertificates:undefined}
+          # The searchFilter is is used to find user attributes from an LDAP source
+          idp.attribute.resolver.LDAP.searchFilter        = (sAMAccountName=$resolutionContext.principal)
+          # List of attributes produced by the Data Connector that should be directly exported as resolved IdPAttributes without requiring actual Attribute Definitions
+          idp.attribute.resolver.LDAP.exportAttributes    = ### List space-separated of attributes to retrieve from the directory directly ###
+          ```
+
+     * Solution 2: AD + TLS:
+       * `vim /opt/shibboleth-idp/credentials/secrets.properties`
          
-         * `vim /opt/shibboleth-idp/conf/ldap.properties`
-
-            The `idp.attribute.resolver.LDAP.exportAttributes` list MUST contains the attribute chosen for the persistent-id generation (idp.persistentId.sourceAttribute)
-
-            ```properties
-            idp.authn.LDAP.authenticator = bindSearchAuthenticator
-            idp.authn.LDAP.ldapURL = ldap://ldap.example.org:389
-            idp.authn.LDAP.useStartTLS = true
-            idp.authn.LDAP.sslConfig = certificateTrust
-            idp.authn.LDAP.trustCertificates = %{idp.home}/credentials/ldap-server.crt
-            # List of attributes to request during authentication
-            idp.authn.LDAP.returnAttributes = passwordExpirationTime,loginGraceRemaining
-            idp.authn.LDAP.baseDN = CN=Users,DC=ad,DC=example,DC=org
-            idp.authn.LDAP.subtreeSearch = false
-            idp.authn.LDAP.bindDN = CN=idpuser,CN=Users,DC=ad,DC=example,DC=org
-            # The userFilter is used to locate a directory entry to bind against for LDAP authentication.
-            idp.authn.LDAP.userFilter = (sAMAccountName={user})
-
-            # LDAP attribute configuration, see attribute-resolver.xml
-            # Note, this likely won't apply to the use of legacy V2 resolver configurations
-            idp.attribute.resolver.LDAP.ldapURL             = %{idp.authn.LDAP.ldapURL}
-            idp.attribute.resolver.LDAP.connectTimeout      = %{idp.authn.LDAP.connectTimeout:PT3S}
-            idp.attribute.resolver.LDAP.responseTimeout     = %{idp.authn.LDAP.responseTimeout:PT3S}
-            idp.attribute.resolver.LDAP.baseDN              = %{idp.authn.LDAP.baseDN:undefined}
-            idp.attribute.resolver.LDAP.bindDN              = %{idp.authn.LDAP.bindDN:undefined}
-            idp.attribute.resolver.LDAP.useStartTLS         = %{idp.authn.LDAP.useStartTLS:true}
-            idp.attribute.resolver.LDAP.trustCertificates   = %{idp.authn.LDAP.trustCertificates:undefined}
-            # The searchFilter is is used to find user attributes from an LDAP source
-            idp.attribute.resolver.LDAP.searchFilter        = (sAMAccountName=$resolutionContext.principal)
-            # List of attributes produced by the Data Connector that should be directly exported as resolved IdPAttributes without requiring actual Attribute Definitions
-            idp.attribute.resolver.LDAP.exportAttributes    = ### List space-separated of attributes to retrieve from the directory directly ###
-            ```
-
-       * Solution 2: AD + TLS:
-         * `vim /opt/shibboleth-idp/credentials/secrets.properties`
+         ```properties
+         # Default access to LDAP authn and attribute stores. 
+         idp.authn.LDAP.bindDNCredential              = ###IDPUSER_PASSWORD###
+         idp.attribute.resolver.LDAP.bindDNCredential = %{idp.authn.LDAP.bindDNCredential:undefined}
+         ```
          
-           ```properties
-           # Default access to LDAP authn and attribute stores. 
-           idp.authn.LDAP.bindDNCredential              = ###IDPUSER_PASSWORD###
-           idp.attribute.resolver.LDAP.bindDNCredential = %{idp.authn.LDAP.bindDNCredential:undefined}
-           ```
+       * `vim /opt/shibboleth-idp/conf/ldap.properties`
+
+          The `idp.attribute.resolver.LDAP.exportAttributes` list MUST contains the attribute chosen for the persistent-id generation (idp.persistentId.sourceAttribute)
+
+          ```properties
+          idp.authn.LDAP.authenticator = bindSearchAuthenticator
+          idp.authn.LDAP.ldapURL = ldaps://ldap.example.org
+          idp.authn.LDAP.useStartTLS = false
+          idp.authn.LDAP.sslConfig = certificateTrust
+          idp.authn.LDAP.trustCertificates = %{idp.home}/credentials/ldap-server.crt
+          # List of attributes to request during authentication
+          idp.authn.LDAP.returnAttributes = passwordExpirationTime,loginGraceRemaining
+          idp.authn.LDAP.baseDN = CN=Users,DC=ad,DC=example,DC=org
+          idp.authn.LDAP.subtreeSearch = false         
+          idp.authn.LDAP.bindDN = CN=idpuser,CN=Users,DC=ad,DC=example,DC=org
+          # The userFilter is used to locate a directory entry to bind against for LDAP authentication.
+          idp.authn.LDAP.userFilter = (sAMAccountName={user})
+
+          # LDAP attribute configuration, see attribute-resolver.xml
+          # Note, this likely won't apply to the use of legacy V2 resolver configurations
+          idp.attribute.resolver.LDAP.ldapURL             = %{idp.authn.LDAP.ldapURL}
+          idp.attribute.resolver.LDAP.connectTimeout      = %{idp.authn.LDAP.connectTimeout:PT3S}
+          idp.attribute.resolver.LDAP.responseTimeout     = %{idp.authn.LDAP.responseTimeout:PT3S}
+          idp.attribute.resolver.LDAP.baseDN              = %{idp.authn.LDAP.baseDN:undefined}
+          idp.attribute.resolver.LDAP.bindDN              = %{idp.authn.LDAP.bindDN:undefined}
+          idp.attribute.resolver.LDAP.useStartTLS         = %{idp.authn.LDAP.useStartTLS:true}
+          idp.attribute.resolver.LDAP.trustCertificates   = %{idp.authn.LDAP.trustCertificates:undefined}
+          # The searchFilter is is used to find user attributes from an LDAP source
+          idp.attribute.resolver.LDAP.searchFilter        = (sAMAccountName=$resolutionContext.principal)
+          # List of attributes produced by the Data Connector that should be directly exported as resolved IdPAttributes without requiring actual Attribute Definitions
+          idp.attribute.resolver.LDAP.exportAttributes    = ### List space-separated of attributes to retrieve from the directory directly ###
+          ```
+
+     * Solution 3: plain AD
+       * `vim /opt/shibboleth-idp/credentials/secrets.properties`
+        
+         ```properties
+         # Default access to LDAP authn and attribute stores. 
+         idp.authn.LDAP.bindDNCredential              = ###IDPUSER_PASSWORD###
+         idp.attribute.resolver.LDAP.bindDNCredential = %{idp.authn.LDAP.bindDNCredential:undefined}
+         ```
          
-         * `vim /opt/shibboleth-idp/conf/ldap.properties`
+       * `vim /opt/shibboleth-idp/conf/ldap.properties`
 
-            The `idp.attribute.resolver.LDAP.exportAttributes` list MUST contains the attribute chosen for the persistent-id generation (idp.persistentId.sourceAttribute)
+          The `idp.attribute.resolver.LDAP.exportAttributes` list MUST contains the attribute chosen for the persistent-id generation (idp.persistentId.sourceAttribute)
 
-            ```properties
-            idp.authn.LDAP.authenticator = bindSearchAuthenticator
-            idp.authn.LDAP.ldapURL = ldaps://ldap.example.org:636
-            idp.authn.LDAP.useStartTLS = false
-            idp.authn.LDAP.sslConfig = certificateTrust
-            idp.authn.LDAP.trustCertificates = %{idp.home}/credentials/ldap-server.crt
-            # List of attributes to request during authentication
-            idp.authn.LDAP.returnAttributes = passwordExpirationTime,loginGraceRemaining
-            idp.authn.LDAP.baseDN = CN=Users,DC=ad,DC=example,DC=org
-            idp.authn.LDAP.subtreeSearch = false         
-            idp.authn.LDAP.bindDN = CN=idpuser,CN=Users,DC=ad,DC=example,DC=org
-            # The userFilter is used to locate a directory entry to bind against for LDAP authentication.
-            idp.authn.LDAP.userFilter = (sAMAccountName={user})
+          ```properties
+          idp.authn.LDAP.authenticator = bindSearchAuthenticator
+          idp.authn.LDAP.ldapURL = ldap://ldap.example.org
+          idp.authn.LDAP.useStartTLS = false
+          # List of attributes to request during authentication
+          idp.authn.LDAP.returnAttributes = passwordExpirationTime,loginGraceRemaining
+          idp.authn.LDAP.baseDN = CN=Users,DC=ad,DC=example,DC=org
+          idp.authn.LDAP.subtreeSearch = false
+          idp.authn.LDAP.bindDN = CN=idpuser,CN=Users,DC=ad,DC=example,DC=org
+          # The userFilter is used to locate a directory entry to bind against for LDAP authentication.
+          idp.authn.LDAP.userFilter = (sAMAccountName={user})
 
-            # LDAP attribute configuration, see attribute-resolver.xml
-            # Note, this likely won't apply to the use of legacy V2 resolver configurations
-            idp.attribute.resolver.LDAP.ldapURL             = %{idp.authn.LDAP.ldapURL}
-            idp.attribute.resolver.LDAP.connectTimeout      = %{idp.authn.LDAP.connectTimeout:PT3S}
-            idp.attribute.resolver.LDAP.responseTimeout     = %{idp.authn.LDAP.responseTimeout:PT3S}
-            idp.attribute.resolver.LDAP.baseDN              = %{idp.authn.LDAP.baseDN:undefined}
-            idp.attribute.resolver.LDAP.bindDN              = %{idp.authn.LDAP.bindDN:undefined}
-            idp.attribute.resolver.LDAP.useStartTLS         = %{idp.authn.LDAP.useStartTLS:true}
-            idp.attribute.resolver.LDAP.trustCertificates   = %{idp.authn.LDAP.trustCertificates:undefined}
-            # The searchFilter is is used to find user attributes from an LDAP source
-            idp.attribute.resolver.LDAP.searchFilter        = (sAMAccountName=$resolutionContext.principal)
-            # List of attributes produced by the Data Connector that should be directly exported as resolved IdPAttributes without requiring actual Attribute Definitions
-            idp.attribute.resolver.LDAP.exportAttributes    = ### List space-separated of attributes to retrieve from the directory directly ###
-            ```
+          # LDAP attribute configuration, see attribute-resolver.xml
+          # Note, this likely won't apply to the use of legacy V2 resolver configurations
+          idp.attribute.resolver.LDAP.ldapURL             = %{idp.authn.LDAP.ldapURL}
+          idp.attribute.resolver.LDAP.connectTimeout      = %{idp.authn.LDAP.connectTimeout:PT3S}
+          idp.attribute.resolver.LDAP.responseTimeout     = %{idp.authn.LDAP.responseTimeout:PT3S}
+          idp.attribute.resolver.LDAP.baseDN              = %{idp.authn.LDAP.baseDN:undefined}
+          idp.attribute.resolver.LDAP.bindDN              = %{idp.authn.LDAP.bindDN:undefined}
+          idp.attribute.resolver.LDAP.useStartTLS         = %{idp.authn.LDAP.useStartTLS:true}
+          idp.attribute.resolver.LDAP.trustCertificates   = %{idp.authn.LDAP.trustCertificates:undefined}
+          # The searchFilter is is used to find user attributes from an LDAP source
+          idp.attribute.resolver.LDAP.searchFilter        = (sAMAccountName=$resolutionContext.principal)
+          # List of attributes produced by the Data Connector that should be directly exported as resolved IdPAttributes without requiring actual Attribute Definitions
+          idp.attribute.resolver.LDAP.exportAttributes    = ### List space-separated of attributes to retrieve from the directory directly ###
+          ```
 
-       * Solution 3: plain AD
-         * `vim /opt/shibboleth-idp/credentials/secrets.properties`
-         
-           ```properties
-           # Default access to LDAP authn and attribute stores. 
-           idp.authn.LDAP.bindDNCredential              = ###IDPUSER_PASSWORD###
-           idp.attribute.resolver.LDAP.bindDNCredential = %{idp.authn.LDAP.bindDNCredential:undefined}
-           ```
-         
-         * `vim /opt/shibboleth-idp/conf/ldap.properties`
-
-            The `idp.attribute.resolver.LDAP.exportAttributes` list MUST contains the attribute chosen for the persistent-id generation (idp.persistentId.sourceAttribute)
-
-            ```properties
-            idp.authn.LDAP.authenticator = bindSearchAuthenticator
-            idp.authn.LDAP.ldapURL = ldap://ldap.example.org:389
-            idp.authn.LDAP.useStartTLS = false
-            # List of attributes to request during authentication
-            idp.authn.LDAP.returnAttributes = passwordExpirationTime,loginGraceRemaining
-            idp.authn.LDAP.baseDN = CN=Users,DC=ad,DC=example,DC=org
-            idp.authn.LDAP.subtreeSearch = false
-            idp.authn.LDAP.bindDN = CN=idpuser,CN=Users,DC=ad,DC=example,DC=org
-            # The userFilter is used to locate a directory entry to bind against for LDAP authentication.
-            idp.authn.LDAP.userFilter = (sAMAccountName={user})
-
-            # LDAP attribute configuration, see attribute-resolver.xml
-            # Note, this likely won't apply to the use of legacy V2 resolver configurations
-            idp.attribute.resolver.LDAP.ldapURL             = %{idp.authn.LDAP.ldapURL}
-            idp.attribute.resolver.LDAP.connectTimeout      = %{idp.authn.LDAP.connectTimeout:PT3S}
-            idp.attribute.resolver.LDAP.responseTimeout     = %{idp.authn.LDAP.responseTimeout:PT3S}
-            idp.attribute.resolver.LDAP.baseDN              = %{idp.authn.LDAP.baseDN:undefined}
-            idp.attribute.resolver.LDAP.bindDN              = %{idp.authn.LDAP.bindDN:undefined}
-            idp.attribute.resolver.LDAP.useStartTLS         = %{idp.authn.LDAP.useStartTLS:true}
-            idp.attribute.resolver.LDAP.trustCertificates   = %{idp.authn.LDAP.trustCertificates:undefined}
-            # The searchFilter is is used to find user attributes from an LDAP source
-            idp.attribute.resolver.LDAP.searchFilter        = (sAMAccountName=$resolutionContext.principal)
-            # List of attributes produced by the Data Connector that should be directly exported as resolved IdPAttributes without requiring actual Attribute Definitions
-            idp.attribute.resolver.LDAP.exportAttributes    = ### List space-separated of attributes to retrieve from the directory directly ###
-            ```
-
-       **UTILITY FOR OPENLDAP ADMINISTRATOR:**
-         * `slapcat | grep dn`
-           * the baseDN ==> `ou=people,dc=example,dc=org` (branch containing the registered users)
-           * the bindDN ==> `cn=idpuser,ou=system,dc=example,dc=org` (distinguished name for the user that can made queries on the LDAP)
+     **UTILITY FOR OPENLDAP ADMINISTRATOR:**
+       * `slapcat | grep dn`
+         * the baseDN ==> `ou=people,dc=example,dc=org` (branch containing the registered users)
+         * the bindDN ==> `cn=idpuser,ou=system,dc=example,dc=org` (distinguished name for the user that can made queries on the LDAP)
 
 3. Restart Jetty to apply the changes:
    * `systemctl restart jetty.service`
@@ -900,7 +903,7 @@ This Storage service will memorize User Consent data on persistent database SQL.
 
 #### Strategy A - Computed mode - using the computed persistent NameID
 
-1. Add the `<AttributeDefinition>` and the `<DataConnector>` needed into the `attribute-resolver.xml`:
+1. Check to have the `<AttributeDefinition>` and the `<DataConnector>` into the `attribute-resolver.xml`:
    * `vim /opt/shibboleth-idp/conf/attribute-resolver.xml`
       
      ```xml
@@ -910,15 +913,15 @@ This Storage service will memorize User Consent data on persistent database SQL.
      <!--  AttributeDefinition for eduPersonTargetedID - Computed Mode  -->
  
      <AttributeDefinition xsi:type="SAML2NameID" nameIdFormat="urn:oasis:names:tc:SAML:2.0:nameid-format:persistent" id="eduPersonTargetedID">
-         <InputDataConnector ref="myComputedId" attributeNames="computedID" />
+         <InputDataConnector ref="computed" attributeNames="computedId" />
      </AttributeDefinition>
 
      <!-- ... other things... -->
 
      <!--  Data Connector for eduPersonTargetedID - Computed Mode  -->
 
-     <DataConnector id="myComputedId" xsi:type="ComputedId"
-         generatedAttributeID="computedID"
+     <DataConnector id="computed" xsi:type="ComputedId"
+         generatedAttributeID="computedId"
          salt="%{idp.persistentId.salt}"
          algorithm="%{idp.persistentId.algorithm:SHA}"
          encoding="%{idp.persistentId.encoding:BASE32}">
@@ -941,7 +944,7 @@ This Storage service will memorize User Consent data on persistent database SQL.
 
 #### Strategy B - Stored mode - using the persistent NameID database
 
-1. Add the `<AttributeDefinition>` and the `<DataConnector>` needed into the `attribute-resolver.xml`:
+1. Check to have the `<AttributeDefinition>` and the `<DataConnector>` into the `attribute-resolver.xml`:
    * `vim /opt/shibboleth-idp/conf/attribute-resolver.xml`
       
      ```xml
@@ -951,15 +954,15 @@ This Storage service will memorize User Consent data on persistent database SQL.
      <!--  AttributeDefinition for eduPersonTargetedID - Stored Mode  -->
  
      <AttributeDefinition xsi:type="SAML2NameID" nameIdFormat="urn:oasis:names:tc:SAML:2.0:nameid-format:persistent" id="eduPersonTargetedID">
-         <InputDataConnector ref="myStoredId" attributeNames="persistentID" />
+         <InputDataConnector ref="stored" attributeNames="storedId" />
      </AttributeDefinition>
 
      <!-- ... other things... -->
 
      <!--  Data Connector for eduPersonTargetedID - Stored Mode  -->
 
-     <DataConnector id="myStoredId" xsi:type="StoredId"
-        generatedAttributeID="persistentID"
+     <DataConnector id="stored" xsi:type="StoredId"
+        generatedAttributeID="storedId"
         salt="%{idp.persistentId.salt}"
         queryTimeout="0">
 
@@ -1036,10 +1039,6 @@ Translate the IdP messages in your language:
         - Remove `validUntil` XML attribute.
 	
       <IDPSSODescriptor> Section:
-        - From the list of "protocolSupportEnumeration" remove:
-          - urn:oasis:names:tc:SAML:1.1:protocol
-          - urn:mace:shibboleth:1.0
-
         - Remove completely the comment on <mdui:UIInfo>. 
           You will add it on the "IDEM Entity Registry", the web application provided by the IDEM GARR AAI to manage metadata.
 
@@ -1175,7 +1174,7 @@ Translate the IdP messages in your language:
 5. Confirm that the script will be run daily with (you should see your script in the command output):
    * `sudo run-parts --test /etc/cron.daily`
    
-6. Add the following properties to `idp.properties` if you need to set different values than defaults:
+6. (OPTIONAL) Add the following properties to `conf/idp.properties` if you need to set different values than defaults:
    * `idp.sealer._count` - Number of earlier keys to keep (default 30)
    * `idp.sealer._sync_hosts` - Space separated list of hosts to scp the sealer files to (default generate locally)
 
@@ -1294,7 +1293,18 @@ Translate the IdP messages in your language:
 
 6. Follow the [instructions provided by IDEM](https://wiki.idem.garr.it/wiki/RegistraEntita).
 
-### Appendix A: Import persistent-id from a previous database
+### Appendix A: Enable Consent Module: Attribute Release + Terms of Use Consent
+
+> For details: https://wiki.shibboleth.net/confluence/display/IDP4/ConsentConfiguration
+
+* `bin/module.sh -t idp.intercept.Consent || bin/module.sh -e idp.intercept.Consent`
+
+* Edit `conf/relying-party.xml` with the right `postAuthenticationFlows`:
+  * `<bean parent="SAML2.SSO" p:postAuthenticationFlows="attribute-release" />` - to enable only Attribute Release Consent
+  * `<bean parent="SAML2.SSO" p:postAuthenticationFlows="#{ {'terms-of-use', 'attribute-release'} }" />` - to enable both
+
+
+### Appendix B: Import persistent-id from a previous database
 
 > Follow these steps ONLY when your need to import persistent-id from another IdP
 
@@ -1315,7 +1325,7 @@ Translate the IdP messages in your language:
 5. Delete `/tmp/shibboleth_shibpid.sql`:
    * `rm /tmp/shibboleth_shibpid.sql`
    
-### Appendix B: Useful logs to find problems
+### Appendix C: Useful logs to find problems
 
 > Follow this if do you want to find a problem of your IdP.
 
