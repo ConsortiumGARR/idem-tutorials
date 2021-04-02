@@ -1085,7 +1085,7 @@ Translate the IdP messages in your language:
       ```
    
 2. Check that the metadata is available on:
-   * https://idp.example.org/idp/shibboleth
+   * ht<span>tps://</span>idp.example.org/idp/shibboleth
 
 ### Secure cookies and other IDP data
 
