@@ -10,13 +10,16 @@
 4. [Other Requirements](#other-requirements)
 5. [Installation Instructions](#installation-instructions)
    1. [Install software requirements](#install-software-requirements)
-   2. [Install Shibboleth Service Provider](#install-shibboleth-service-provider)
+   2. [Install Apache2 Web Server](#install-apache2-web-server)
+   3. [Install Shibboleth Service Provider](#install-shibboleth-service-provider)
 6. [Configuration Instructions](#configuration-instructions)
    1. [Configure the environment](#configure-the-environment)
    2. [Configure SSL on Apache2](#configure-ssl-on-apache2)
    3. [Configure Shibboleth SP](#configure-shibboleth-sp)
-   4. [Configure an example federated resource "secure"](#configure-an-example-federated-resource-secure)
-   5. [Enable Attribute Support on Shibboleth SP](#enable-attribute-support-on-shibboleth-sp)
+   4. [Connect SP directly to an IdP](#connect-sp-directly-to-an-idp)
+   5. [Connect SP to the Federation](#connect-sp-to-the-federation)
+   6. [Configure an example federated resource "secure"](#configure-an-example-federated-resource-secure)
+   7. [Enable attributes on attribute mapping](#enable-attributes-on-attribute-mapping)
 7. [Appendix A - SE Linux](#appendix-a---se-linux)
 8. [Appendix B - Enable Attribute Checker Support on Shibboleth SP](#appendix-b---enable-attribute-checker-support-on-shibboleth-sp)
 9. [Authors](#authors)
@@ -348,7 +351,7 @@ Please, remember to **replace all occurence** of `example.org` domain name, or p
 4. Restart `httpd` daemon to enable PHP:
       * `systemctl restart httpd.service`
 
-### Enable Attribute Support on Shibboleth SP
+### Enable attributes on attribute mapping
 
 Enable attribute support by removing comment from the related content into "`/etc/shibboleth/attribute-map.xml`"
 
