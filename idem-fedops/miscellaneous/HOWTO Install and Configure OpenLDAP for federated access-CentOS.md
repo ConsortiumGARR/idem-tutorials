@@ -61,9 +61,9 @@
     * `<ORGANIZATION-NAME_CHANGEME>` ==> `Example Org`
 
 4. Create Certificate/Key:
-   * Self signed (2048 bit - 3 years before expiration):
+   * Self signed (3072 bit - 3 years before expiration) - **This HOWTO will use Self Signed Certificate for LDAP**:
 
-     * `sudo openssl req -newkey rsa:2048 -x509 -nodes -out /etc/openldap/ldap.example.org.crt -keyout /etc/openldap/ldap.example.org.key -days 1095`
+     * `sudo openssl req -newkey rsa:3072 -x509 -nodes -out /etc/openldap/ldap.example.org.crt -keyout /etc/openldap/ldap.example.org.key -days 1095`
 
      * `sudo chown ldap:ldap /etc/openldap/ldap.example.org.crt`
 
@@ -71,9 +71,9 @@
 
    * Signed:
 
-     * `sudo openssl req -new -newkey rsa:2048 -nodes -out /etc/ssl/certs/ldap.example.org.csr -keyout /etc/ssl/private/ldap.example.org.key -subj "/C=FR/ST=/L=Rennes/O=RENATER/CN=ldap.example.org"`
+     * `sudo openssl req -new -newkey rsa:3072 -nodes -out /etc/ssl/certs/ldap.example.org.csr -keyout /etc/ssl/private/ldap.example.org.key -subj "/C=IT/CN=ldap.example.org"`
 
-  **NOTES**: This HOWTO will use Self Signed Certificate for LDAP
+     (According to [NSA and NIST](https://www.keylength.com/en/compare/), RSA with 3072 bit-modulus is the minimum to protect up to TOP SECRET over than 2030)
 
 5. Enable SSL for LDAP:
    * `sudo vim /etc/openldap/ldap.conf`
@@ -85,7 +85,7 @@
 
    * `sudo chown ldap:ldap /etc/openldap/ldap.conf`
 
-  **NOTES**: Be sure to have set the correct FQDN on your `/etc/hosts` file
+  **NOTES**: Be sure to have set the correct FQDN in the `/etc/hosts` file
 
 6. Restart OpenLDAP:
    * `sudo systemctl restart slapd`
@@ -122,7 +122,7 @@
    * `sudo vim /etc/sysconfig/slapd`
 
      ```bash
-     SLAPD_URLS="ldapi:/// ldaps:/// ldaps:///"
+     SLAPD_URLS="ldapi:/// ldap:/// ldaps:///"
      ```
 
    * `sudo systemctl restart slapd`
@@ -204,12 +204,20 @@
    * `sudo ldapsearch -x -D 'cn=idpuser,ou=system,dc=example,dc=org' -W -b "ou=people,dc=example,dc=org"`
 
 9. Install needed schemas (eduPerson, SCHAC, Password Policy):
-   * `cd /etc/openldap/schema`
-   * `sudo curl https://raw.githubusercontent.com/GEANT/ansible-shibboleth/master/roles/openldap/files/eduperson-201602.ldif -o eduperson.ldif`
-   * `sudo curl https://raw.githubusercontent.com/GEANT/ansible-shibboleth/master/roles/openldap/files/schac-20150413.ldif -o schac.ldif`
-   * `sudo ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/openldap/schema/eduperson.ldif`
-   * `sudo ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/openldap/schema/schac.ldif`
-   * Verify with: `ldapsearch -Y EXTERNAL -H ldapi:/// -b cn=schema,cn=config dn`
+   * Run the following commands:
+     ```bash
+     cd /etc/openldap/schema
+
+     sudo curl https://raw.githubusercontent.com/GEANT/ansible-shibboleth/master/roles/openldap/files/eduperson-201602.ldif -o eduperson.ldif
+
+     sudo curl https://raw.githubusercontent.com/GEANT/ansible-shibboleth/master/roles/openldap/files/schac-20150413.ldif -o schac.ldif
+
+     sudo ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/openldap/schema/eduperson.ldif
+
+     sudo ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/openldap/schema/schac.ldif
+     ```
+   
+   * Verify all with: `ldapsearch -Y EXTERNAL -H ldapi:/// -b cn=schema,cn=config dn`
 
 10. Add MemberOf Configuration:
     
@@ -347,10 +355,50 @@
     * `sudo ldapadd -D "cn=root,dc=example,dc=org" -W -f /etc/openldap/scratch/user1.ldif`
 
 15. Check that 'idpuser' can find user1:
-    * `sudo ldapsearch -x -D 'cn=idpuser,ou=system,dc=example,dc=org' -W -b "uid=user1,ou=people,dc=example,dc=org"`
+    * ```bash 
+      sudo ldapsearch -x -D 'cn=idpuser,ou=system,dc=example,dc=org' -W -b "uid=user1,ou=people,dc=example,dc=org"
+      ```
 
 16. Check that LDAP has TLS ('anonymous' MUST BE returned):
     * `sudo ldapwhoami -H ldap:// -x -ZZ`
+
+17. Make mail, eduPersonPrincipalName and schacPersonalUniqueID as unique
+
+```
+ldapmodify -Y EXTERNAL -H ldapi:/// <<EOF
+dn: cn=module,cn=config
+changetype: modify
+cn: module
+objectclass: olcModuleList
+objectclass: top
+olcmoduleload: unique
+olcmodulepath: /usr/lib/ldap
+
+dn: olcOverlay=unique,olcDatabase={1}{{ ldap_backend }},cn=config
+objectClass: olcOverlayConfig
+objectClass: olcUniqueConfig
+olcOverlay: unique
+olcUniqueAttribute: mail
+olcUniqueAttribute: schacPersonalUniqueID
+olcUniqueAttribute: eduPersonPrincipalName
+EOF
+```
+
+18. Disable Anonymous bind
+
+```
+ldapmodify -Y EXTERNAL -H ldapi:/// <<EOF
+dn: cn=config
+changetype: modify
+add: olcDisallows
+olcDisallows: bind_anon
+
+dn: olcDatabase={-1}frontend,cn=config
+changetype: modify
+add: olcRequires
+olcRequires: authc
+EOF
+```
 
 ## LDAP IHM
 # Apache Directory Studio
