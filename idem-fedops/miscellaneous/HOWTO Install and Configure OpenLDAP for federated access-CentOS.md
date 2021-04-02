@@ -362,29 +362,7 @@
 16. Check that LDAP has TLS ('anonymous' MUST BE returned):
     * `sudo ldapwhoami -H ldap:// -x -ZZ`
 
-17. Make mail, eduPersonPrincipalName and schacPersonalUniqueID as unique
-
-```
-ldapmodify -Y EXTERNAL -H ldapi:/// <<EOF
-dn: cn=module,cn=config
-changetype: modify
-cn: module
-objectclass: olcModuleList
-objectclass: top
-olcmoduleload: unique
-olcmodulepath: /usr/lib/ldap
-
-dn: olcOverlay=unique,olcDatabase={1}hdb,cn=config
-objectClass: olcOverlayConfig
-objectClass: olcUniqueConfig
-olcOverlay: unique
-olcUniqueAttribute: mail
-olcUniqueAttribute: schacPersonalUniqueID
-olcUniqueAttribute: eduPersonPrincipalName
-EOF
-```
-
-18. Disable Anonymous bind
+17. Disable Anonymous bind
 
 ```
 ldapmodify -Y EXTERNAL -H ldapi:/// <<EOF
