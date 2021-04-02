@@ -122,7 +122,7 @@
    * `sudo vim /etc/sysconfig/slapd`
 
      ```bash
-     SLAPD_URLS="ldapi:/// ldaps:///"
+     SLAPD_URLS="ldapi:/// ldaps:/// ldaps:///"
      ```
 
    * `sudo systemctl restart slapd`
