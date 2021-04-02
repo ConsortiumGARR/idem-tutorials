@@ -6,11 +6,12 @@
 
 1. [Requirements Hardware](#requirements-hardware)
 2. [Software that will be installed](#software-that-will-be-installed)
-3. [Other Requirements](#other-requirements)
-4. [Installation Instructions](#installation-instructions)
+3. [Notes](#notes)
+4. [Other Requirements](#other-requirements)
+5. [Installation Instructions](#installation-instructions)
    1. [Install software requirements](#install-software-requirements)
    2. [Install Shibboleth Service Provider](#install-shibboleth-service-provider)
-5. [Configuration Instructions](#configuration-instructions)
+6. [Configuration Instructions](#configuration-instructions)
    1. [Configure the environment](#configure-the-environment)
    2. [Configure SSL on Apache2](#configure-ssl-on-apache2)
    3. [Configure Shibboleth SP](#configure-shibboleth-sp)
@@ -18,8 +19,8 @@
    5. [Enable Attribute Support on Shibboleth SP](#enable-attribute-support-on-shibboleth-sp)
    6. [Enable Attribute Checker Support on Shibboleth SP](#enable-attribute-checker-support-on-shibboleth-sp)
    7. [SE Linux](#se-linux)
-6. [Authors](#authors)
-7. [Thanks](#thanks)
+7. [Authors](#authors)
+8. [Thanks](#thanks)
 
 
 ## Requirements Hardware
@@ -38,13 +39,30 @@
  * openssl
  * shibboleth.x86_64
 
+## Notes
+
+This HOWTO use `example.org` to provide this guide with example values.
+
+Please, remember to **replace all occurence** of `example.org` domain name, or part of it, with the IdP domain name into the configuration files.
+
 ## Other Requirements
 
- * Place the SSL Credentials into the right place:
-   1. SSL Certificate: "`/etc/pki/tls/certs/ssl-sp.crt`"
-   2. SSL Key: "`/etc/pki/tls/private/ssl-sp.key`"
-   3. SSL CA: "`/etc/pki/ca-trust/source/anchors/ssl-ca.crt`"
-   4. Run the command: "`update-ca-trust extract`"
+ * Put SSL credentials in the right place:
+   * HTTPS Server Certificate (Public Key) inside `/etc/pki/tls/certs/$(hostname -f).crt`
+   * HTTPS Server Key (Private Key) inside `/etc/pki/tls/private/$(hostname -f).key`	
+   * Add CA Cert into `/etc/pki/tls/certs`
+     * If you use GARR TCS (Sectigo CA): 
+       * ```bash
+         wget -O /etc/pki/tls/certs/GEANT_OV_RSA_CA_4.pem https://crt.sh/?d=2475254782`
+ 
+         wget -O /etc/pki/ca-trust/source/anchors/SectigoRSAOrganizationValidationSecureServerCA.crt https://crt.sh/?d=924467857 ; update-ca-trust
+         ```
+     * If you use ACME (Let's Encrypt): 
+       * `ln -s /etc/letsencrypt/live/<SERVER_FQDN>/chain.pem /etc/pki/tls/certs/ACME-CA.pem`
+ 
+ 
+ (OPTIONAL) Create a Certificate and a Key self-signed for HTTPS if you don't have yet the official ones provided by the Certificate Authority:
+ * `openssl req -x509 -newkey rsa:4096 -keyout /etc/pki/tls/private/$(hostname -f).key -out /etc/pki/tls/certs/$(hostname -f).crt -nodes -days 1095`
 
 ## Installation Instructions
 
@@ -116,65 +134,32 @@
    * `vim /etc/hosts`
   
      ```bash
-     192.168.XX.YY sp.example.org sp
+     VV.ZZ.XX.YY sp.example.org sp
      ```
    (*Replace `sp.example.org` with your SP Full Qualified Domain Name*)
-   (*Replace `192.168.XX.YY` with your SP's private IP*)
+   (*Replace `VV.ZZ.XX.YY` with your SP's public IP*)
 
 2. Be sure that your firewall **doesn't block** the traffic on port **443** (or you can't access to your SP)
-  
-   (OPTIONAL) Create a Certificate and a Key self-signed for HTTPS if you don't have yet the official ones provided by the Certificate Authority:
-   * ```bash
-     openssl req -x509 -newkey rsa:4096 -keyout /etc/pki/tls/private/ssl-sp.key -out /etc/pki/tls/certs/ssl-sp.crt -nodes -days 1095
-     ```
 
 ### Configure SSL on Apache2
 
 1. Install "mod_ssl" to enable HTTPS configuration:
    * `yum install mod_ssl -y`
 
-2. Modify the file `/etc/httpd/conf.d/ssl.conf` as follows:
+2. Create the DocumentRoot:
+   * `mkdir /var/www/html/$(hostname -f)`
+   * `sudo chown -R apache: /var/www/html/$(hostname -f)`
+   * `echo '<h1>It Works!</h1>' > /var/www/html/$(hostname -f)/index.html`
 
-   ```apache
-   # ...other conf...
-   SSLStaplingCache shmcb:/var/run/ocsp(128000)
-   <VirtualHost _default_:443>
-   DocumentRoot /var/www/html
-   ServerName sp.example.org:443
-   ServerAdmin admin@example.org
-   # ...other conf...
-   SSLEngine On
-   # ...other conf...
-   SSLProtocol all -SSLv2 -SSLv3 -TLSv1 -TLSv1.1
-   # ...other conf...
-   SSLCipherSuite "EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH"
-   SSLHonorCipherOrder on
-   # ...other conf...
-   SSLCertificateFile /etc/pki/tls/certs/ssl-sp.crt
-   # ...other conf...
-   SSLCertificateKeyFile /etc/pki/tls/private/ssl-sp.key
-   # ...other conf...
-   SSLCACertificateFile /etc/pki/tls/certs/ca-bundle.crt
-   # ...other conf...
-   # Disable SSL Compression
-   SSLCompression Off
-        
-   # OCSP Stapling, only in httpd/apache >= 2.3.3
-   SSLUseStapling On
-   SSLStaplingResponderTimeout 5
-   SSLStaplingReturnResponderErrors off
-        
-   # Enable HTTP Strict Transport Security with a 2 year duration
-   Header always set Strict-Transport-Security "max-age=63072000;includeSubDomains;preload"
-   </VirtualHost>
-   ```
-   
-   (*Replace `sp.example.org` with your SP Full Qualified Domain Name*)
+3. Create the Virtualhost file (pay attention and follow the starting comment):
+   * ```bash
+     wget https://registry.idem.garr.it/idem-conf/shibboleth/SP3/apache2/sp.example.org.conf -O /etc/httpd/conf.d/000-$(hostname -f).conf
+     ```
 
-2. Reload Apache2 web server:
+4. Reload Apache2 web server:
    * `systemctl restart httpd.service`
 
-3. Configure Apache2 to open port **80** only for localhost:
+5. Configure Apache2 to open port **80** only for localhost:
    * `vim /etc/httpd/conf/httpd.conf`
 
      ```apache
@@ -183,22 +168,13 @@
      Listen 127.0.0.1:80
      ```
 
-4. Configure Apache2 to redirect all on HTTPS:
-   * `vim /etc/httpd/conf.d/000-default.conf`
-   
-     ```apache
-     <VirtualHost *:80>
-        ServerName "sp.example.org"
-        Redirect permanent "/" "https://sp.example.org/"
-        RedirectMatch permanent ^/(.*)$ https://sp.example.org/$1
-     </VirtualHost>
-     ```
-     
-     (*Replace `sp.example.org` with your SP Full Qualified Domain Name*)
+6. Deactivate the default site:
+   * `mv /etc/httpd/conf.d/000-default.conf /etc/httpd/conf.d/000-default.conf.deactivated`
 
+7. Restart Apache to apply changes
    * `systemctl restart httpd.service`
   
-5. Verify the strength of your SP's machine on:
+8. Verify the strength of your SP's machine on:
    * [**https://www.ssllabs.com/ssltest/analyze.html**](https://www.ssllabs.com/ssltest/analyze.html)
 
 ### Configure Shibboleth SP
@@ -307,6 +283,8 @@
          print "<p>Your REMOTE_USER is <strong>" . $_SERVER["REMOTE_USER"] . "</strong></p>";
          print "<p>Your email is <strong>" . $_SERVER['mail'] . "</strong></p>";
          print "<p>Your eduPersonPrincipalName is <strong>" . $_SERVER["eppn"] . "</strong></p>";
+         print "<p>Your eduPersonScopedAffiliation is <strong>" . $_SERVER["affiliation"] . "</strong></p>";
+         print "<p>Your eduPersonTargetedID is <strong>" . $_SERVER["persistent-id"] . "</strong></p>";
          print "<p>Your schacHomeOrganization is <strong>" . $_SERVER["schacHomeOrganization"] . "</strong></p>";
          print "<p>Your schacHomeOrganizationType is <strong>" . $_SERVER["schacHomeOrganizationType"] . "</strong></p>";
 
@@ -321,8 +299,7 @@
        } else if (array_key_exists("cn", $_SERVER)) {
        return implode(" ", explode(";", $_SERVER["cn"]));
        } else if (array_key_exists("givenName", $_SERVER) && array_key_exists("sn", $_SERVER)) {
-       return implode(" ", explode(";", $_SERVER["givenName"])) . " " .
-       implode(" ", explode(";", $_SERVER["sn"]));
+       return implode(" ", explode(";", $_SERVER["givenName"])) . " " . implode(" ", explode(";", $_SERVER["sn"]));
        }
        return "Unknown";
       }
