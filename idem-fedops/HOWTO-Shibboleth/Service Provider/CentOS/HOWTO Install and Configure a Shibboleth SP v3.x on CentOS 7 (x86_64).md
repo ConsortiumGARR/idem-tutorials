@@ -45,7 +45,7 @@
 
 This HOWTO use `example.org` to provide this guide with example values.
 
-Please, remember to **replace all occurence** of `example.org` domain name, or part of it, with the IdP domain name into the configuration files.
+Please, remember to **replace all occurence** of `example.org` domain name, or part of it, with the SP domain name into the configuration files.
 
 ## Other Requirements
 
