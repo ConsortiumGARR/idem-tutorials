@@ -16,10 +16,11 @@
    1. [Configure the environment](#configure-the-environment)
    2. [Configure SSL on Apache2](#configure-ssl-on-apache2)
    3. [Configure Shibboleth SP](#configure-shibboleth-sp)
-   4. [Connect SP directly to an IdP](#connect-sp-directly-to-an-idp)
-   5. [Connect SP to the Federation](#connect-sp-to-the-federation)
-   6. [Configure an example federated resource "secure"](#configure-an-example-federated-resource-secure)
-   7. [Enable attributes on attribute mapping](#enable-attributes-on-attribute-mapping)
+   4. [Configure an example federated resource "secure"](#configure-an-example-federated-resource-secure)
+   5. [Enable attributes on attribute mapping](#enable-attributes-on-attribute-mapping)
+   6. [Connect SP directly to an IdP](#connect-sp-directly-to-an-idp)
+   7. [Connect SP to the Federation](#connect-sp-to-the-federation)
+   8. [Test](#test)
 7. [Appendix A - SE Linux](#appendix-a---se-linux)
 8. [Appendix B - Enable Attribute Checker Support on Shibboleth SP](#appendix-b---enable-attribute-checker-support-on-shibboleth-sp)
 9. [Authors](#authors)
@@ -208,71 +209,6 @@ Please, remember to **replace all occurence** of `example.org` domain name, or p
 
    (*Replace `sp.example.org` with your SP Full Qualified Domain Name*)
 
-### Connect SP directly to an IdP
-
-> **Follow these steps if your organization is not connected to the [GARR Network](https://www.garr.it/en/infrastructures/network-infrastructure/connected-organizations-and-sites?key=all) or if you want connect only one IdP to your SP**
-
-1. Edit `shibboleth2.xml` opportunely:
-   * `vim /etc/shibboleth/shibboleth2.xml`
-
-     ```bash
-
-     <!-- If it is needed to manage the authentication on several IdPs
-          install and configure the Shibboleth Embedded Discovery Service
-          by following this HOWTO: http://tiny.cc/howto-idem-shib-eds 
-     -->
-     <SSO entityID="https://idp.example.org/idp/shibboleth">
-        SAML2
-     </SSO>
-
-     <MetadataProvider type="XML" validate="true"
-	                    url="https://idp.example.org/idp/shibboleth"
-                       backingFilePath="idp-metadata.xml" maxRefreshDelay="7200" />
-     ```
- 
-     (*Replace `entityID` with the IdP entityID and `url` with an URL where it can be downloaded its metadata*)
- 
- 2. Restart `shibd` and `httpd` daemon:
-    * `sudo systemctl restart shibd`
-    * `sudo systemctl restart httpd`
-
-### Connect SP to the Federation
-
-> **Follow these steps IF AND ONLY IF your organization is connected to the [GARR Network](https://www.garr.it/en/infrastructures/network-infrastructure/connected-organizations-and-sites?key=all)**
-
-1. Retrieve the IDEM GARR Federation Certificate needed to verify the signed metadata:
-   * `cd /etc/shibboleth/`
-   * `curl https://md.idem.garr.it/certs/idem-signer-20220121.pem -o federation-cert.pem`
-   * Check the validity:
-     *  `cd /etc/shibboleth`
-     *  `openssl x509 -in federation-cert.pem -fingerprint -sha1 -noout`
-       
-         (sha1: D1:68:6C:32:A4:E3:D4:FE:47:17:58:E7:15:FC:77:A8:44:D8:40:4D)
-     *  `openssl x509 -in federation-cert.pem -fingerprint -md5 -noout`
-
-         (md5: 48:3B:EE:27:0C:88:5D:A3:E7:0B:7C:74:9D:24:24:E0)
-
-2. Edit `shibboleth2.xml` opportunely:
-   * `vim /etc/shibboleth/shibboleth2.xml`
-
-     ```bash
-
-     <!-- To install and Configure the Shibboleth Embedded Discovery Service follow: http://tiny.cc/howto-idem-shib-eds -->
-     <SSO discoveryProtocol="SAMLDS" discoveryURL="https://wayf.idem-test.garr.it/WAYF">
-        SAML2
-     </SSO>
-
-     <MetadataProvider type="XML" url="http://md.idem.garr.it/metadata/idem-test-metadata-sha256.xml"
-                       backingFilePath="idem-test-metadata-sha256.xml" maxRefreshDelay="7200">
-           <MetadataFilter type="Signature" certificate="federation-cert.pem"/>
-           <MetadataFilter type="RequireValidUntil" maxValidityInterval="864000" />
-     </MetadataProvider>
-     ```
-
-3. Register you SP on IDEM Entity Registry:
-   (your entity has to be approved by an IDEM Federation Operator before become part of IDEM Test Federation):
-   * Go to `https://registry.idem.garr.it` and follow "Insert a New Service Provider into the IDEM Test Federation"
-
 
 ### Configure an example federated resource "secure"
 
@@ -354,6 +290,74 @@ Please, remember to **replace all occurence** of `example.org` domain name, or p
 ### Enable attributes on attribute mapping
 
 Enable attribute support by removing comment from the related content into "`/etc/shibboleth/attribute-map.xml`"
+
+### Connect SP directly to an IdP
+
+> **Follow these steps if your organization IS NOT connected to the [GARR Network](https://www.garr.it/en/infrastructures/network-infrastructure/connected-organizations-and-sites?key=all) or if you want to connect your SP with only one IdP**
+
+1. Edit `shibboleth2.xml` opportunely:
+   * `vim /etc/shibboleth/shibboleth2.xml`
+
+     ```bash
+
+     <!-- If it is needed to manage the authentication on several IdPs
+          install and configure the Shibboleth Embedded Discovery Service
+          by following this HOWTO: http://tiny.cc/howto-idem-shib-eds 
+     -->
+     <SSO entityID="https://idp.example.org/idp/shibboleth">
+        SAML2
+     </SSO>
+
+     <MetadataProvider type="XML" validate="true"
+                       url="https://idp.example.org/idp/shibboleth"
+                       backingFilePath="idp-metadata.xml" maxRefreshDelay="7200" />
+     ```
+ 
+     (*Replace `entityID` with the IdP entityID and `url` with an URL where it can be downloaded its metadata*)
+ 
+ 2. Restart `shibd` and `httpd` daemon:
+    * `sudo systemctl restart shibd`
+    * `sudo systemctl restart httpd`
+
+### Connect SP to the Federation
+
+> **Follow these steps IF AND ONLY IF your organization is connected to the [GARR Network](https://www.garr.it/en/infrastructures/network-infrastructure/connected-organizations-and-sites?key=all)**
+
+1. Retrieve the IDEM GARR Federation Certificate needed to verify the signed metadata:
+   * `cd /etc/shibboleth/`
+   * `curl https://md.idem.garr.it/certs/idem-signer-20220121.pem -o federation-cert.pem`
+   * Check the validity:
+     *  `cd /etc/shibboleth`
+     *  `openssl x509 -in federation-cert.pem -fingerprint -sha1 -noout`
+       
+         (sha1: D1:68:6C:32:A4:E3:D4:FE:47:17:58:E7:15:FC:77:A8:44:D8:40:4D)
+     *  `openssl x509 -in federation-cert.pem -fingerprint -md5 -noout`
+
+         (md5: 48:3B:EE:27:0C:88:5D:A3:E7:0B:7C:74:9D:24:24:E0)
+
+2. Edit `shibboleth2.xml` opportunely:
+   * `vim /etc/shibboleth/shibboleth2.xml`
+
+     ```bash
+
+     <!-- If it is needed to manage the authentication on several IdPs
+          install and configure the Shibboleth Embedded Discovery Service
+          by following this HOWTO: http://tiny.cc/howto-idem-shib-eds 
+     -->
+     <SSO discoveryProtocol="SAMLDS" discoveryURL="https://wayf.idem-test.garr.it/WAYF">
+        SAML2
+     </SSO>
+
+     <MetadataProvider type="XML" url="http://md.idem.garr.it/metadata/idem-test-metadata-sha256.xml"
+                       backingFilePath="idem-test-metadata-sha256.xml" maxRefreshDelay="7200">
+           <MetadataFilter type="Signature" certificate="federation-cert.pem"/>
+           <MetadataFilter type="RequireValidUntil" maxValidityInterval="864000" />
+     </MetadataProvider>
+     ```
+
+3. Register you SP on IDEM Entity Registry:
+   (your entity has to be approved by an IDEM Federation Operator before become part of IDEM Test Federation):
+   * Go to `https://registry.idem.garr.it` and follow "Insert a New Service Provider into the IDEM Test Federation"
 
 ### Test
 
