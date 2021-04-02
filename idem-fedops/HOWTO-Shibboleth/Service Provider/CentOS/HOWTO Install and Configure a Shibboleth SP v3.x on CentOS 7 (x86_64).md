@@ -17,10 +17,9 @@
    3. [Configure Shibboleth SP](#configure-shibboleth-sp)
    4. [Configure an example federated resource "secure"](#configure-an-example-federated-resource-secure)
    5. [Enable Attribute Support on Shibboleth SP](#enable-attribute-support-on-shibboleth-sp)
-   6. [Enable Attribute Checker Support on Shibboleth SP](#enable-attribute-checker-support-on-shibboleth-sp)
-   7. [SE Linux](#se-linux)
-7. [Authors](#authors)
-8. [Thanks](#thanks)
+7. [Appendix A - SE Linux](#appendix-a---se-linux)
+8. [Appendix B - Enable Attribute Checker Support on Shibboleth SP](#appendix-b---enable-attribute-checker-support-on-shibboleth-sp)
+9. [Authors](#authors)
 
 
 ## Requirements Hardware
@@ -53,7 +52,7 @@ Please, remember to **replace all occurence** of `example.org` domain name, or p
    * Add CA Cert into `/etc/pki/tls/certs`
      * If you use GARR TCS (Sectigo CA): 
        * ```bash
-         wget -O /etc/pki/tls/certs/GEANT_OV_RSA_CA_4.pem https://crt.sh/?d=2475254782`
+         wget -O /etc/pki/tls/certs/GEANT_OV_RSA_CA_4.pem https://crt.sh/?d=2475254782
  
          wget -O /etc/pki/ca-trust/source/anchors/SectigoRSAOrganizationValidationSecureServerCA.crt https://crt.sh/?d=924467857 ; update-ca-trust
          ```
@@ -81,8 +80,8 @@ Please, remember to **replace all occurence** of `example.org` domain name, or p
 2. Create the Shibboleth Repository:
    * `yum install httpd.x86_64`
 
-3. Remove the pre-set Apache welcome page
-   * `sed -i 's/^/#&/g' /etc/httpd/conf.d/welcome.conf`
+3. Disable  Apache welcome page
+   * `mv /etc/httpd/conf.d/welcome.conf /etc/httpd/conf.d/welcome.conf.deactivated`
    
 4. Prevent Apache from listing web directory files to visitors:
    * `sed -i "s/Options Indexes FollowSymLinks/Options FollowSymLinks/" /etc/httpd/conf/httpd.conf`
@@ -130,36 +129,43 @@ Please, remember to **replace all occurence** of `example.org` domain name, or p
 
 ### Configure the environment
 
-1. Modify your `/etc/hosts`:
+1. Become ROOT: 
+   * `sudo su -`
+
+2. Modify your `/etc/hosts`:
    * `vim /etc/hosts`
   
      ```bash
      VV.ZZ.XX.YY sp.example.org sp
      ```
-   (*Replace `sp.example.org` with your SP Full Qualified Domain Name*)
    (*Replace `VV.ZZ.XX.YY` with your SP's public IP*)
+   (*Replace `sp.example.org` with your SP Full Qualified Domain Name*)
+   (*Replace `sp` with your SP Hostname*)
 
-2. Be sure that your firewall **doesn't block** the traffic on port **443** (or you can't access to your SP)
+3. Be sure that your firewall **doesn't block** the traffic on port **443** (or you can't access to your SP)
 
 ### Configure SSL on Apache2
 
-1. Install "mod_ssl" to enable HTTPS configuration:
+1. Become ROOT: 
+   * `sudo su -`
+
+2. Install "mod_ssl" to enable HTTPS configuration:
    * `yum install mod_ssl -y`
 
-2. Create the DocumentRoot:
+3. Create the DocumentRoot:
    * `mkdir /var/www/html/$(hostname -f)`
    * `sudo chown -R apache: /var/www/html/$(hostname -f)`
    * `echo '<h1>It Works!</h1>' > /var/www/html/$(hostname -f)/index.html`
 
-3. Create the Virtualhost file (pay attention and follow the starting comment):
+4. Create the Virtualhost file (pay attention and follow the starting comment):
    * ```bash
      wget https://registry.idem.garr.it/idem-conf/shibboleth/SP3/apache2/sp.example.org.conf -O /etc/httpd/conf.d/000-$(hostname -f).conf
      ```
 
-4. Reload Apache2 web server:
+5. Reload Apache2 web server:
    * `systemctl restart httpd.service`
 
-5. Configure Apache2 to open port **80** only for localhost:
+6. Configure Apache2 to open port **80** only for localhost:
    * `vim /etc/httpd/conf/httpd.conf`
 
      ```apache
@@ -168,13 +174,13 @@ Please, remember to **replace all occurence** of `example.org` domain name, or p
      Listen 127.0.0.1:80
      ```
 
-6. Deactivate the default site:
+7. Deactivate the default site:
    * `mv /etc/httpd/conf.d/000-default.conf /etc/httpd/conf.d/000-default.conf.deactivated`
 
-7. Restart Apache to apply changes
+8. Restart Apache to apply changes
    * `systemctl restart httpd.service`
   
-8. Verify the strength of your SP's machine on:
+9. Verify the strength of your SP's machine on:
    * [**https://www.ssllabs.com/ssltest/analyze.html**](https://www.ssllabs.com/ssltest/analyze.html)
 
 ### Configure Shibboleth SP
@@ -182,7 +188,56 @@ Please, remember to **replace all occurence** of `example.org` domain name, or p
 1. Become ROOT: 
    * `sudo su -`
 
-2. Retrieve the Federation Certificate used to verify its signed metadata (ONLY FOR MEMBER OF ITALIAN IDEM FEDERATION):
+2. Change the SP entityID and technical contact email address:
+   * `sed -i "s/sp.example.org/$(hostname -f)/" shibboleth2.xml`
+   * `sed -i "s/root@localhost/<TECH-CONTACT-EMAIL-ADDRESS-HERE>/" shibboleth2.xml`
+
+3. Create SP metadata Signing and Encryption credentials:
+   * `cd /etc/shibboleth`  
+   * `./keygen.sh -u shibd -g shibd -h $(hostname -f) -y 30 -e https://$(hostname -f)/shibboleth -n sp-signing -f`
+   * `./keygen.sh -u shibd -g shibd -h $(hostname -f) -y 30 -e https://$(hostname -f)/shibboleth -n sp-encrypt -f`
+   * `LD_LIBRARY_PATH=/opt/shibboleth/lib64 /usr/sbin/shibd -t`
+   * `systemctl restart shibd.service`
+   * `systemctl restart httpd.service`
+
+4. Now you are able to reach your Shibboleth SP Metadata on:
+   * `https://sp.example.org/Shibboleth.sso/Metadata`
+
+   (*Replace `sp.example.org` with your SP Full Qualified Domain Name*)
+
+### Connect SP directly to an IdP
+
+> **Follow these steps if your organization is not connected to the [GARR Network](https://www.garr.it/en/infrastructures/network-infrastructure/connected-organizations-and-sites?key=all) or if you want connect only one IdP to your SP**
+
+1. Edit `shibboleth2.xml` opportunely:
+   * `vim /etc/shibboleth/shibboleth2.xml`
+
+     ```bash
+
+     <!-- If it is needed to manage the authentication on several IdPs
+          install and configure the Shibboleth Embedded Discovery Service
+          by following this HOWTO: http://tiny.cc/howto-idem-shib-eds 
+     -->
+     <SSO entityID="https://idp.example.org/idp/shibboleth">
+        SAML2
+     </SSO>
+
+     <MetadataProvider type="XML" validate="true"
+	                    url="https://idp.example.org/idp/shibboleth"
+                       backingFilePath="idp-metadata.xml" maxRefreshDelay="7200" />
+     ```
+ 
+     (*Replace `entityID` with the IdP entityID and `url` with an URL where it can be downloaded its metadata*)
+ 
+ 2. Restart `shibd` and `httpd` daemon:
+    * `sudo systemctl restart shibd`
+    * `sudo systemctl restart httpd`
+
+### Connect SP to the Federation
+
+> **Follow these steps IF AND ONLY IF your organization is connected to the [GARR Network](https://www.garr.it/en/infrastructures/network-infrastructure/connected-organizations-and-sites?key=all)**
+
+1. Retrieve the IDEM GARR Federation Certificate needed to verify the signed metadata:
    * `cd /etc/shibboleth/`
    * `curl https://md.idem.garr.it/certs/idem-signer-20220121.pem -o federation-cert.pem`
    * Check the validity:
@@ -194,59 +249,31 @@ Please, remember to **replace all occurence** of `example.org` domain name, or p
 
          (md5: 48:3B:EE:27:0C:88:5D:A3:E7:0B:7C:74:9D:24:24:E0)
 
-3. Edit `shibboleth2.xml` opportunely:
+2. Edit `shibboleth2.xml` opportunely:
    * `vim /etc/shibboleth/shibboleth2.xml`
 
      ```bash
-     ...
-     <ApplicationDefaults entityID="https://sp.example.org/shibboleth"
-          REMOTE_USER="eppn subject-id pairwise-id persistent-id"
-          cipherSuites="DEFAULT:!EXP:!LOW:!aNULL:!eNULL:!DES:!IDEA:!SEED:!RC4:!3DES:!kRSA:!SSLv2:!SSLv3:!TLSv1:!TLSv1.1">
-     ...
-     <Sessions lifetime="28800" timeout="3600" relayState="ss:mem"
-               checkAddress="false" handlerSSL="true" cookieProps="https">
-     ...
+
      <!-- To install and Configure the Shibboleth Embedded Discovery Service follow: http://tiny.cc/howto-idem-shib-eds -->
      <SSO discoveryProtocol="SAMLDS" discoveryURL="https://wayf.idem-test.garr.it/WAYF">
         SAML2
      </SSO>
-     ...
-     <Errors supportContact="support@example.org"
-            helpLocation="/about.html"
-            styleSheet="/shibboleth-sp/main.css"/>
-     ...
+
      <MetadataProvider type="XML" url="http://md.idem.garr.it/metadata/idem-test-metadata-sha256.xml"
-                       legacyOrgName="true" backingFilePath="idem-test-metadata-sha256.xml" maxRefreshDelay="7200">
+                       backingFilePath="idem-test-metadata-sha256.xml" maxRefreshDelay="7200">
            <MetadataFilter type="Signature" certificate="federation-cert.pem"/>
            <MetadataFilter type="RequireValidUntil" maxValidityInterval="864000" />
      </MetadataProvider>
-     
-     <!-- Map to extract attributes from SAML assertions. -->
-     <AttributeExtractor type="XML" validate="true" reloadChanges="true" path="attribute-map.xml"/>
      ```
-     
-     (*Replace `sp.example.org` with your SP Full Qualified Domain Name*)
 
-4. Create SP metadata Signing and Encryption credentials:
-   * `cd /etc/shibboleth`  
-   * `./keygen.sh -u shibd -g shibd -h $(hostname -f) -y 30 -e https://$(hostname -f)/shibboleth -n sp-signing -f`
-   * `./keygen.sh -u shibd -g shibd -h $(hostname -f) -y 30 -e https://$(hostname -f)/shibboleth -n sp-encrypt -f`
-   * `LD_LIBRARY_PATH=/opt/shibboleth/lib64 /usr/sbin/shibd -t`
-   * `systemctl restart shibd.service`
-   * `systemctl restart httpd.service`
-
-5. Now you are able to reach your Shibboleth SP Metadata on:
-   * `https://sp.example.org/Shibboleth.sso/Metadata`
-   (*Replace `sp.example.org` with your SP Full Qualified Domain Name*)
-
-6. Register you SP on IDEM Entity Registry (ONLY FOR ITALIAN IDEM FEDERATION MEMBER):
+3. Register you SP on IDEM Entity Registry:
    (your entity has to be approved by an IDEM Federation Operator before become part of IDEM Test Federation):
    * Go to `https://registry.idem.garr.it` and follow "Insert a New Service Provider into the IDEM Test Federation"
 
 
 ### Configure an example federated resource "secure"
 
-1. Check to have the Apache configuration for the "secure" application on:
+1. Check that the Apache configuration has the "secure" Location configured:
    * `vim /etc/httpd/conf.d/shib.conf`
   
      ```bash
@@ -259,9 +286,9 @@ Please, remember to **replace all occurence** of `example.org` domain name, or p
      ```
 
 2. Create the "`secure`" application into the DocumentRoot:
-   * `mkdir /var/www/html/secure`
+   * `mkdir /var/www/html/$(hostname -f)/secure`
 
-   * `vim /var/www/html/secure/index.php`
+   * `vim /var/www/html/$(hostname -f)/secure/index.php`
 
      ```php
      <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -272,7 +299,7 @@ Please, remember to **replace all occurence** of `example.org` domain name, or p
        </head>
        <body>
         <p>
-         <a href="https://sp.example.org/privacy.html">Privacy Policy</a>
+         <a href="/privacy.html">Privacy Policy</a> - <a href="/Shibboleth.sso/Logout">Logout</a>
         </p>
         <?php
          //The REMOTE_USER variable holds the name of the user authenticated by the web server.
@@ -306,8 +333,6 @@ Please, remember to **replace all occurence** of `example.org` domain name, or p
      ?>
      ```
 
-     (*Replace `sp.example.org` with your SP Full Qualified Domain Name*)
-
 3. Install PHP 7.x:
    1. Enable Remi and EPEL yum repositories on your system:
       * `yum install epel-release`
@@ -320,13 +345,35 @@ Please, remember to **replace all occurence** of `example.org` domain name, or p
    3. Verify:
       * `php -v`
 
-   4. Enable PHP:
+4. Restart `httpd` daemon to enable PHP:
       * `systemctl restart httpd.service`
 
 ### Enable Attribute Support on Shibboleth SP
-1. Enable attribute support by removing comment from the related content into "`/etc/shibboleth/attribute-map.xml`"
 
-### Enable Attribute Checker Support on Shibboleth SP
+Enable attribute support by removing comment from the related content into "`/etc/shibboleth/attribute-map.xml`"
+
+### Test
+
+Open the `https://sp.example.org/secure` application into your web browser
+
+(*Replace `sp.example.org` with your SP Full Qualified Domain Name*)
+
+### Appendix A - SE Linux
+
+If you'll met problem, probably they are related to SE Linux.
+
+If you want to disable it until the next server reboot, doing this:
+
+* `sudo setenforce 0`
+
+If you want to disable it forever do this:
+
+* `sed -i 's/SELINUX=enforcing/SELINUX=permissive/g' /etc/selinux/config ; setenforce permissive`
+
+The SE Linux is disabled if you will find `Current mode: permissive` from the command `sestatus`.
+
+### Appendix B - Enable Attribute Checker Support on Shibboleth SP
+
 1. Add a sessionHook for attribute checker: `sessionHook="/Shibboleth.sso/AttrChecker"` and the `metadataAttributePrefix="Meta-"` to `ApplicationDefaults`:
    * `vim /etc/shibboleth/shibboleth2.xml`
 
@@ -429,18 +476,8 @@ Please, remember to **replace all occurence** of `example.org` domain name, or p
      ./httpd/access.log:193.206.129.66 - - [20/Sep/2018:15:05:07 +0000] "GET /track.png?idp=https://garr-idp-test.irccs.garr.it/idp/shibboleth&miss=-SHIB_givenName-SHIB_cn-SHIB_sn-SHIB_eppn-SHIB_schacHomeOrganization-SHIB_schacHomeOrganizationType HTTP/1.1" 404 637 "https://sp.example.org/Shibboleth.sso/AttrChecker?return=https%3A%2F%2Fsp.example.org%2FShibboleth.sso%2FSAML2%2FPOST%3Fhook%3D1%26target%3Dss%253Amem%253A43af2031f33c3f4b1d61019471537e5bc3fde8431992247b3b6fd93a14e9802d&target=https%3A%2F%2Fsp.example.org%2Fsecure%2F"
      ```
 
-### SE Linux
-If you'll met problem, probably they are related to SE Linux.
+Thanks eduGAIN for the original "HOWTO" posted [here](https://wiki.geant.org/display/eduGAIN/How+to+configure+Shibboleth+SP+attribute+checker).
 
-If you want to disable it until the next server reboot, doing this:
-
-* `sudo setenforce 0`
-
-If you want to disable it forever do this:
-
-* `sed -i 's/SELINUX=enforcing/SELINUX=permissive/g' /etc/selinux/config ; setenforce permissive`
-
-The SE Linux is disabled if you will find `Current mode: permissive` from the command `sestatus`.
 
 ### Authors
 
@@ -448,7 +485,3 @@ The SE Linux is disabled if you will find `Current mode: permissive` from the co
 
  * Marco Malavolti (marco.malavolti@garr.it)
  * Barbara Monticini (barbara.monticini@garr.it)
- 
-### Thanks
-
- * eduGAIN Wiki: For the original [How to configure Shibboleth SP attribute checker](https://wiki.geant.org/display/eduGAIN/How+to+configure+Shibboleth+SP+attribute+checker)
