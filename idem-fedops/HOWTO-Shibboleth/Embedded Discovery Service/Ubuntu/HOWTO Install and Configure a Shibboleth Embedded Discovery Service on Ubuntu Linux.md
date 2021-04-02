@@ -35,17 +35,16 @@ The EDS is a set of Javascript and CSS files, so installing it and using it is s
 
 2. `cd /usr/local/src`
 
-3. `wget https://shibboleth.net/downloads/embedded-discovery-service/1.2.1/shibboleth-embedded-ds-1.2.1.tar.gz -O shibboleth-eds.tar.gz`
+3. `wget https://shibboleth.net/downloads/embedded-discovery-service/latest/shibboleth-embedded-ds-1.2.2.tar.gz -O shibboleth-eds.tar.gz`
 
 4. `tar xzf shibboleth-eds.tar.gz`
 
-5. `cd shibboleth-embedded-ds-1.2.1 `
+5. `cd shibboleth-embedded-ds-1.2.2`
 
 6. `sudo apt install make ; make install`
 
 7. Enable Discovery Service Web Page
    * `mv /etc/shibboleth-ds/shibboleth-ds.conf /etc/apache2/conf-available/shibboleth-ds.conf`
-   * `sed -i 's/Allow from all/Require all granted/g' /etc/apache2/conf-available/shibboleth-ds.conf`
 
 8. Enable the Discovery Service Page:
    * `a2enconf shibboleth-ds.conf`
