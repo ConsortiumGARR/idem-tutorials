@@ -8,12 +8,13 @@
    1. [Hardware](#hardware)
    2. [Other](#other)
 2. [Software that will be installed](#software-that-will-be-installed)
-3. [Install Instructions](#install-instructions)
+3. [Notes](#notes)
+4. [Install Instructions](#install-instructions)
    1. [Install software requirements](#install-software-requirements)
    2. [Configure the environment](#configure-the-environment)
    3. [Install Shibboleth Identity Provider v4.x](#install-shibboleth-identity-provider-v4x)
    4. [Install Jetty 9 Web Server](#install-jetty-9-web-server)
-4. [Configuration Instructions](#configuration-instructions)
+5. [Configuration Instructions](#configuration-instructions)
    1. [Configure Jetty](#configure-jetty)
    2. [Configure SSL on Apache2 (front-end of Jetty)](#configure-ssl-on-apache2-front-end-of-jetty)
    3. [Configure Shibboleth Identity Provider Storage](#configure-shibboleth-identity-provider-storage)
@@ -34,12 +35,12 @@
    12. [Secure cookies and other IDP data](#secure-cookies-and-other-idp-data)
    13. [Configure Attribute Filter Policy to release attributes to Federated Resources](#configure-attribute-filter-policy-to-release-attributes-to-federated-resources)
    14. [Register the IdP on the IDEM Test Federation](#register-the-idp-on-the-idem-test-federation)
-5. [Appendix A: Enable Consent Module: Attribute Release + Terms of Use Consent](#appendix-a-enable-consent-module-attribute-release-terms-of-use-consent)
-6. [Appendix B: Import persistent-id from a previous database](#appendix-b-import-persistent-id-from-a-previous-database)
-7. [Appendix C: Useful logs to find problems](#appendix-c-useful-logs-to-find-problems)
-8. [Utilities](#utilities)
-9. [Useful Documentation](#useful-documentation)
-10. [Authors](#authors)
+6. [Appendix A: Enable Consent Module: Attribute Release + Terms of Use Consent](#appendix-a-enable-consent-module-attribute-release--terms-of-use-consent)
+7. [Appendix B: Import persistent-id from a previous database](#appendix-b-import-persistent-id-from-a-previous-database)
+8. [Appendix C: Useful logs to find problems](#appendix-c-useful-logs-to-find-problems)
+9. [Utilities](#utilities)
+10. [Useful Documentation](#useful-documentation)
+11. [Authors](#authors)
     * [Original Author](#original-author)
 
 ## Requirements
@@ -76,6 +77,12 @@
  * mysql-connector-java (if JPAStorageService is used)
  * apache-commons-dbcp (if JPAStorageService is used)
 
+## Notes
+
+This HOWTO use `example.org` to provide this guide with example values.
+
+Please, remember to **replace all occurence** of `example.org` domain name, or part of it, with the IdP domain name into the configuration files.
+
 ## Install Instructions
 
 ### Install software requirements
@@ -102,8 +109,9 @@
    * `systemctl enable chronyd`
    * `date`
 
-7. Configure the Timezone to "Europe/Rome":
-   * `timedatectl set-timezone Europe/Rome`
+7. Configure the Timezone:
+   * `timedatectl list-timezones` - List all possible values to use with `set-timezone`.
+   * `timedatectl set-timezone Europe/Rome` - Example for Italy
 
 ### Configure the environment
 
@@ -294,7 +302,7 @@ The Apache HTTP Server will be configured as a reverse proxy and it will be used
    * `systemctl restart httpd.service`
 
 7. Check that IdP metadata is available on:
-   * https://idp.example.org/idp/shibboleth
+   * ht<span>tps://</span>idp.example.org/idp/shibboleth
 
 8. Verify the strength of your IdP's machine on:
    * [**https://www.ssllabs.com/ssltest/analyze.html**](https://www.ssllabs.com/ssltest/analyze.html)
@@ -1180,7 +1188,7 @@ Translate the IdP messages in your language:
 
 ### Configure Attribute Filter Policy to release attributes to Federated Resources
 
-> Follow these steps ONLY IF your IdP is accepted into IDEM Production Federation
+> **Follow these steps ONLY IF your organization is connected with the [GARR Network](https://www.garr.it/en/infrastructures/network-infrastructure/connected-organizations-and-sites?key=all)**
 
 1. Become ROOT:
    * `sudo su -`
@@ -1226,6 +1234,8 @@ Translate the IdP messages in your language:
    * `bash /opt/shibboleth-idp/bin/status.sh`
 
 ### Register the IdP on the IDEM Test Federation
+
+> **Follow these steps ONLY IF your organization is connected with the [GARR Network](https://www.garr.it/en/infrastructures/network-infrastructure/connected-organizations-and-sites?key=all)**
 
 1. Register you IdP metadata on IDEM Entity Registry (your entity have to be approved by an IDEM Federation Operator before become part of IDEM Test Federation):
    * `https://registry.idem.garr.it/`
@@ -1295,7 +1305,9 @@ Translate the IdP messages in your language:
 
 ### Appendix A: Enable Consent Module: Attribute Release + Terms of Use Consent
 
-> For details: https://wiki.shibboleth.net/confluence/display/IDP4/ConsentConfiguration
+> **Shibboleth Documentation reference**: https://wiki.shibboleth.net/confluence/display/IDP4/ConsentConfiguration
+
+The IdP includes the ability to require user consent to attribute release, as well as presenting a "terms of use" message prior to completing a login to a service, a simpler "static" form of consent.
 
 * `bin/module.sh -t idp.intercept.Consent || bin/module.sh -e idp.intercept.Consent`
 
