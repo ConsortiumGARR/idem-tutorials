@@ -40,14 +40,22 @@
 
 ## Other Requirements
 
- * Place the SSL Credentials into the right place:
-   1. SSL Certificate: "`/etc/ssl/certs/sp.example.org.crt`"
-   2. SSL Key: "`/etc/ssl/private/sp.example.org.key`"
-   3. SSL CA: "`/usr/local/share/ca-certificates/TERENA_SSL_CA_3.crt`"
-   4. Run the command: "`update-ca-certificates`"
+ * Put SSL credentials in the right place:
+   * HTTPS Server Certificate (Public Key) inside `/etc/ssl/certs/$(hostname -f).crt`
+   * HTTPS Server Key (Private Key) inside `/etc/ssl/private/$(hostname -f).key`	
+   * Add CA Cert into `/etc/ssl/certs`
+     * If you use GARR TCS (Sectigo CA): 
+       * ```bash
+         wget -O /etc/ssl/certs/GEANT_OV_RSA_CA_4.pem https://crt.sh/?d=2475254782`
+ 
+         wget -O /etc/ssl/certs/SectigoRSAOrganizationValidationSecureServerCA.crt https://crt.sh/?d=924467857 ; update-ca-certificates
+         ```
+     * If you use ACME (Let's Encrypt): 
+       * `ln -s /etc/letsencrypt/live/<SERVER_FQDN>/chain.pem /etc/ssl/certs/ACME-CA.pem`
+
    
- (OPTIONAL) Create a Certificate and a Key self-signed for HTTPS if you don't have yet the official ones provided by the Certificate Authority (DigicertCA):
- * `openssl req -x509 -newkey rsa:4096 -keyout /etc/ssl/private/ssl-sp.key -out /etc/ssl/certs/ssl-sp.crt -nodes -days 1095`
+ (OPTIONAL) Create a Certificate and a Key self-signed for HTTPS if you don't have yet the official ones provided by the Certificate Authority:
+ * `openssl req -x509 -newkey rsa:4096 -keyout /etc/ssl/private/$(hostname -f).key -out /etc/ssl/certs/$(hostname -f).crt -nodes -days 1095`
 
 ## Installation Instructions
 
@@ -85,9 +93,7 @@
    * `sudo su -`
 
 2. Install Shibboleth SP:
-   * ```bash
-     apt install apache2 libapache2-mod-shib ntp --no-install-recommends
-     ```
+   * `apt install apache2 libapache2-mod-shib ntp --no-install-recommends`
 
    From this point the location of the SP directory is: `/etc/shibboleth`
 
@@ -95,50 +101,13 @@
 
 ### Configure SSL on Apache2
 
-1. Modify the file `/etc/apache2/sites-available/sp.example.org.conf` as follows:
-
-   ```apache
-   <VirtualHost *:80>
-      ServerName "sp.example.org"
-      Redirect permanent "/" "https://sp.example.org/"
-   </VirtualHost>
-   
-   <IfModule mod_ssl.c>
-      SSLStaplingCache shmcb:/var/run/ocsp(128000)
-      <VirtualHost _default_:443>
-        ServerName sp.example.org:443
-        ServerAdmin admin@example.org
-        DocumentRoot /var/www/html/sp.example.org
-     
-        SSLEngine On
-     
-        SSLProtocol All -SSLv2 -SSLv3 -TLSv1 -TLSv1.1
-        SSLCipherSuite "EECDH+ECDSA+AESGCM EECDH+aRSA+AESGCM EECDH+ECDSA+SHA384 EECDH+ECDSA+SHA256 EECDH+aRSA+SHA384 EECDH+aRSA+SHA256 EECDH+aRSA+RC4 EECDH EDH+aRSA RC4 !aNULL !eNULL !LOW !3DES !MD5 !EXP !PSK !SRP !DSS !RC4"
-
-        SSLHonorCipherOrder on
-
-        # Disable SSL Compression
-        SSLCompression Off
-     
-        # OCSP Stapling, only in httpd/apache >= 2.3.3
-        SSLUseStapling on
-        SSLStaplingResponderTimeout 5
-        SSLStaplingReturnResponderErrors off
-     
-        # Enable HTTP Strict Transport Security with a 2 year duration
-        Header always set Strict-Transport-Security "max-age=63072000;includeSubDomains;preload"
-     
-        SSLCertificateFile /etc/ssl/certs/sp.example.org.crt
-        SSLCertificateKeyFile /etc/ssl/private/sp.example.org.key
-        SSLCACertificateFile /etc/ssl/certs/TERENA_SSL_CA_3.pem
-      </VirtualHost>
-   </IfModule>
-   ```
+1. Create the Virtualhost file (pay attention and follow the starting comment):
+   * `wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/apache2/sp.example.org.conf -O /etc/apache2/sites-available/000-$(hostname -f).conf`
 
 2. Enable **proxy_http**, **SSL** and **headers** Apache2 modules:
    * `a2enmod ssl headers alias include negotiation`
    * `a2dissite 000-default.conf`
-   * `a2ensite sp.example.org.conf`
+   * `a2ensite 000-$(hostname -f).conf`
    * `systemctl restart apache2.service`
   
 3. Verify the strength of your SP's machine on:
