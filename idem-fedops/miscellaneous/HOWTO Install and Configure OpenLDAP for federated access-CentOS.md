@@ -374,7 +374,7 @@ objectclass: top
 olcmoduleload: unique
 olcmodulepath: /usr/lib/ldap
 
-dn: olcOverlay=unique,olcDatabase={1}{{ ldap_backend }},cn=config
+dn: olcOverlay=unique,olcDatabase={1}hdb,cn=config
 objectClass: olcOverlayConfig
 objectClass: olcUniqueConfig
 olcOverlay: unique
