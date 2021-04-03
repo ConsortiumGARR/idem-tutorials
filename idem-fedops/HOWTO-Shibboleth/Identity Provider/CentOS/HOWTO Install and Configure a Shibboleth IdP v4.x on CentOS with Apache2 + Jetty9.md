@@ -1150,6 +1150,7 @@ These instructions will regularly update the secret key (and increase its versio
 > * https://wiki.shibboleth.net/confluence/display/IDP4/ChainingMetadataProvider
 > * https://wiki.shibboleth.net/confluence/display/IDP4/FileBackedHTTPMetadataProvider
 > * https://wiki.shibboleth.net/confluence/display/IDP4/AttributeFilterConfiguration
+> * https://wiki.shibboleth.net/confluence/display/IDP4/AttributeFilterPolicyConfiguration
 
 Follow these steps **IF** your organization **IS NOT** connected with the [GARR Network](https://www.garr.it/en/infrastructures/network-infrastructure/connected-organizations-and-sites?key=all) or **IF** you need to connect directly a Shibboleth Service Provider.
 
