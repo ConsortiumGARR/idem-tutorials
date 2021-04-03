@@ -290,6 +290,8 @@ Enable attribute support by removing comment from the related content into "`/et
      ```
  
      (*Replace `entityID` with the IdP entityID and `url` with an URL where it can be downloaded its metadata*)
+     
+     (`idp-metadata.xml` will be saved into `/var/cache/shibboleth`)
  
  2. Restart `shibd` and `httpd` daemon:
     * `sudo systemctl restart shibd`
