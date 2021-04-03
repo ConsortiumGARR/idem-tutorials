@@ -4,7 +4,9 @@
 
 ## Table of Contents
 
-1. [Requirements Hardware](#requirements-hardware)
+1. [Requirements](#requirements-hardware)
+   1.[Hardware](#hardware)
+   2.[Other](#other)
 2. [Software that will be installed](#software-that-will-be-installed)
 3. [Notes](#notes)
 4. [Other Requirements](#other-requirements)
@@ -26,11 +28,20 @@
 9. [Authors](#authors)
 
 
-## Requirements Hardware
+## Requirements
+
+### Hardware
 
  * CPU: 2 Core
  * RAM: 4 GB
  * HDD: 20 GB
+
+### Other
+
+ * SSL Credentials: HTTPS Certificate & Key & Certification Authority (CA)
+ * Logo:
+   * size: 80x60 px (or other that respect the aspect-ratio)
+   * format: PNG
 
 ## Software that will be installed
 
@@ -47,13 +58,6 @@
 This HOWTO use `example.org` to provide this guide with example values.
 
 Please, remember to **replace all occurence** of `example.org` domain name, or part of it, with the SP domain name into the configuration files.
-
-## Other Requirements
-
- * SSL Credentials: HTTPS Certificate & Key & Certification Authority (CA)
- * Logo:
-   * size: 80x60 px (or other that respect the aspect-ratio)
-   * format: PNG
 
 ## Installation Instructions
 
