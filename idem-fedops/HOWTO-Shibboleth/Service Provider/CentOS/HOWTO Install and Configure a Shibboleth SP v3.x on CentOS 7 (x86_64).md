@@ -55,18 +55,18 @@ Please, remember to **replace all occurence** of `example.org` domain name, or p
    * HTTPS Server Key (Private Key) inside `/etc/pki/tls/private/$(hostname -f).key`	
    * Add CA Cert into `/etc/pki/tls/certs`
      * If you use GARR TCS (Sectigo CA): 
-       * ```bash
-         wget -O /etc/pki/tls/certs/GEANT_OV_RSA_CA_4.pem https://crt.sh/?d=2475254782
+       ```bash
+       wget -O /etc/pki/tls/certs/GEANT_OV_RSA_CA_4.pem https://crt.sh/?d=2475254782
  
-         wget -O /etc/pki/ca-trust/source/anchors/SectigoRSAOrganizationValidationSecureServerCA.crt https://crt.sh/?d=924467857
+       wget -O /etc/pki/ca-trust/source/anchors/SectigoRSAOrganizationValidationSecureServerCA.crt https://crt.sh/?d=924467857
 
-         cat /etc/pki/tls/certs/SectigoRSAOrganizationValidationSecureServerCA.crt >> /etc/pki/tls/certs/GEANT_OV_RSA_CA_4.pem
+       cat /etc/pki/tls/certs/SectigoRSAOrganizationValidationSecureServerCA.crt >> /etc/pki/tls/certs/GEANT_OV_RSA_CA_4.pem
 
-         rm /etc/pki/tls/certs/SectigoRSAOrganizationValidationSecureServerCA.crt
-         ```
+       rm -f /etc/pki/tls/certs/SectigoRSAOrganizationValidationSecureServerCA.crt
+       ```
+
      * If you use ACME (Let's Encrypt): 
        * `ln -s /etc/letsencrypt/live/<SERVER_FQDN>/chain.pem /etc/pki/tls/certs/ACME-CA.pem`
- 
  
    (OPTIONAL) Create a Certificate and a Key self-signed for HTTPS if you don't have yet the official ones provided by the Certificate Authority:
    * `openssl req -x509 -newkey rsa:4096 -keyout /etc/pki/tls/private/$(hostname -f).key -out /etc/pki/tls/certs/$(hostname -f).crt -nodes -days 1095`
