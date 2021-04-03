@@ -153,7 +153,7 @@ Please, remember to **replace all occurence** of `example.org` domain name, or p
 
    * `sudo ldapadd -W -D "cn=root,dc=example,dc=org" -H ldapi:/// -f /etc/openldap/scratch/add_org.ldif`
 
-5. Create the 3 main branches, 'main', 'groups' and 'system', with:
+5. Create three branches, `peole`, `groups` and `system`, with:
    * `vim /etc/openldap/scratch/add_ou.ldif`
 
      ```bash
@@ -177,8 +177,9 @@ Please, remember to **replace all occurence** of `example.org` domain name, or p
 
    * Verify with: `sudo ldapsearch -x -b dc=example,dc=org`
 
-6. Create the 'idpuser' needed to perform "Bind and Search" operations:
+6. Create the `idpuser` needed to perform "Bind and Search" operations:
    * Generate password: `slappasswd`
+ 
    * `sudo vim /etc/openldap/scratch/add_idpuser.ldif`
 
      ```bash
@@ -231,7 +232,7 @@ Please, remember to **replace all occurence** of `example.org` domain name, or p
    
    * Verify all with: `ldapsearch -Y EXTERNAL -H ldapi:/// -b cn=schema,cn=config dn`
 
-10. Add MemberOf Configuration:
+10. Add `memberof` Configuration:
     
     1. `sudo vim /etc/openldap/scratch/add_memberof.ldif`
 
@@ -337,7 +338,7 @@ Please, remember to **replace all occurence** of `example.org` domain name, or p
 
     * `sudo ldapmodify -Y EXTERNAL -H ldapi:/// -f /etc/openldap/scratch/olcSizeLimit.ldif`
 
-14. Add your first user:
+14. Add an user:
     * `sudo vim /etc/openldap/scratch/user1.ldif`
 
       ```bash
@@ -347,8 +348,6 @@ Please, remember to **replace all occurence** of `example.org` domain name, or p
       changetype: add
       objectClass: inetOrgPerson
       objectClass: eduPerson
-      objectClass: schacPersonalCharacteristics
-      objectClass: schacContactLocation
       uid: user1
       sn: User1
       givenName: Test
@@ -360,8 +359,6 @@ Please, remember to **replace all occurence** of `example.org` domain name, or p
       eduPersonAffiliation: student
       eduPersonAffiliation: staff
       eduPersonAffiliation: member
-      schacHomeOrganization: example.org
-      schacHomeOrganizationType: urn:mace:terena.org:schac:homeOrganizationType:it:university
       ```
 
     * `sudo ldapadd -D "cn=root,dc=example,dc=org" -W -f /etc/openldap/scratch/user1.ldif`
