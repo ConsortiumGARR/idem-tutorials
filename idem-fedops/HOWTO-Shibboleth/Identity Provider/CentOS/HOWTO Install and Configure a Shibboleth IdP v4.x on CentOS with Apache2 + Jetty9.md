@@ -169,7 +169,9 @@ It is a Java Web Application that can be deployed with its WAR file.
      ```
 
      By starting from this point the variable **idp.home** refers to the directory: `/opt/shibboleth-idp`
+     
      Backup the `###PASSWORD-FOR-BACKCHANNEL###` value somewhere to be able to find it when you need it.
+     
      The `###PASSWORD-FOR-COOKIE-ENCRYPTION###` will be saved into `/opt/shibboleth-idp/credentials/secrets.properties` as `idp.sealer.storePassword` and `idp.sealer.keyPassword` value.
 
 ### Install Jetty 9 Web Server
@@ -276,7 +278,7 @@ The Apache HTTP Server will be configured as a reverse proxy and it will be used
      wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/apache2/idp.example.org.conf -O /etc/httpd/conf.d/000-$(hostname -f).conf
      ```
 
-3. Deactivate the 'default' and 'welcome' sites:
+3. Deactivate the `000-default` and `welcome` sites:
    * `mv /etc/httpd/conf.d/000-default.conf /etc/httpd/conf.d/000-default.conf.deactivated`
    * `mv /etc/httpd/conf.d/welcome.conf /etc/httpd/conf.d/welcome.conf.deactivated`
    
@@ -331,7 +333,7 @@ The Apache HTTP Server will be configured as a reverse proxy and it will be used
 > Note that this feature is safe to enable globally. The implementation is written to check for this capability in each client, and to back off to cookies.
 > The default configuration generates encrypted assertions that a large percentage of non-Shibboleth SPs are going to be unable to decrypt, resulting a wide variety of failures and error messages. Some old Shibboleth SPs or software running on old Operating Systems will also fail to work.
 
-If you don't change anything, the IdP stores data in a long-lived browser cookie that can contain an extremely small number of records. This could bring problems in the long term period.
+If you don't change anything, the IdP stores data in a browser session cookie or HTML local storage
 
 See the configuration files and the Shibboleth documentation for details.
 
@@ -499,8 +501,8 @@ This Storage service will memorize User Consent data on persistent database SQL.
           idp.attribute.resolver.LDAP.trustCertificates   = %{idp.authn.LDAP.trustCertificates:undefined}
           # The searchFilter is is used to find user attributes from an LDAP source
           idp.attribute.resolver.LDAP.searchFilter        = (uid=$resolutionContext.principal)
-          # List of attributes produced by the Data Connector that should be directly exported as resolved IdPAttributes without requiring actual Attribute Definitions
-          idp.attribute.resolver.LDAP.exportAttributes    = ### List space-separated of attributes to retrieve from the directory directly ###
+          # List of attributes produced by the Data Connector that should be directly exported as resolved IdPAttributes without requiring any <AttributeDefinition>
+          idp.attribute.resolver.LDAP.exportAttributes    = ### List space-separated of attributes to retrieve directly from the directory ###
           ```
 
      * Solution 2: LDAP + TLS:
@@ -541,8 +543,8 @@ This Storage service will memorize User Consent data on persistent database SQL.
           idp.attribute.resolver.LDAP.trustCertificates   = %{idp.authn.LDAP.trustCertificates:undefined}
           # The searchFilter is is used to find user attributes from an LDAP source
           idp.attribute.resolver.LDAP.searchFilter        = (uid=$resolutionContext.principal)
-          # List of attributes produced by the Data Connector that should be directly exported as resolved IdPAttributes without requiring actual Attribute Definitions
-          idp.attribute.resolver.LDAP.exportAttributes    = ### List space-separated of attributes to retrieve from the directory directly ###
+          # List of attributes produced by the Data Connector that should be directly exported as resolved IdPAttributes without requiring any <AttributeDefinition>
+          idp.attribute.resolver.LDAP.exportAttributes    = ### List space-separated of attributes to retrieve directly from the directory ###
           ```
 
      * Solution 3: plain LDAP
@@ -581,8 +583,8 @@ This Storage service will memorize User Consent data on persistent database SQL.
           idp.attribute.resolver.LDAP.trustCertificates   = %{idp.authn.LDAP.trustCertificates:undefined}
           # The searchFilter is is used to find user attributes from an LDAP source
           idp.attribute.resolver.LDAP.searchFilter        = (uid=$resolutionContext.principal)
-          # List of attributes produced by the Data Connector that should be directly exported as resolved IdPAttributes without requiring actual Attribute Definitions
-          idp.attribute.resolver.LDAP.exportAttributes    = ### List space-separated of attributes to retrieve from the directory directly ###
+          # List of attributes produced by the Data Connector that should be directly exported as resolved IdPAttributes without requiring any <AttributeDefinition>
+          idp.attribute.resolver.LDAP.exportAttributes    = ### List space-separated of attributes to retrieve directly from the directory ###
           ```
 
    * For Active Directory:
@@ -624,8 +626,8 @@ This Storage service will memorize User Consent data on persistent database SQL.
           idp.attribute.resolver.LDAP.trustCertificates   = %{idp.authn.LDAP.trustCertificates:undefined}
           # The searchFilter is is used to find user attributes from an LDAP source
           idp.attribute.resolver.LDAP.searchFilter        = (sAMAccountName=$resolutionContext.principal)
-          # List of attributes produced by the Data Connector that should be directly exported as resolved IdPAttributes without requiring actual Attribute Definitions
-          idp.attribute.resolver.LDAP.exportAttributes    = ### List space-separated of attributes to retrieve from the directory directly ###
+          # List of attributes produced by the Data Connector that should be directly exported as resolved IdPAttributes without requiring any <AttributeDefinition>
+          idp.attribute.resolver.LDAP.exportAttributes    = ### List space-separated of attributes to retrieve directly from the directory ###
           ```
 
      * Solution 2: AD + TLS:
@@ -666,8 +668,8 @@ This Storage service will memorize User Consent data on persistent database SQL.
           idp.attribute.resolver.LDAP.trustCertificates   = %{idp.authn.LDAP.trustCertificates:undefined}
           # The searchFilter is is used to find user attributes from an LDAP source
           idp.attribute.resolver.LDAP.searchFilter        = (sAMAccountName=$resolutionContext.principal)
-          # List of attributes produced by the Data Connector that should be directly exported as resolved IdPAttributes without requiring actual Attribute Definitions
-          idp.attribute.resolver.LDAP.exportAttributes    = ### List space-separated of attributes to retrieve from the directory directly ###
+          # List of attributes produced by the Data Connector that should be directly exported as resolved IdPAttributes without requiring any <AttributeDefinition>
+          idp.attribute.resolver.LDAP.exportAttributes    = ### List space-separated of attributes to retrieve directly from the directory ###
           ```
 
      * Solution 3: plain AD
@@ -706,8 +708,8 @@ This Storage service will memorize User Consent data on persistent database SQL.
           idp.attribute.resolver.LDAP.trustCertificates   = %{idp.authn.LDAP.trustCertificates:undefined}
           # The searchFilter is is used to find user attributes from an LDAP source
           idp.attribute.resolver.LDAP.searchFilter        = (sAMAccountName=$resolutionContext.principal)
-          # List of attributes produced by the Data Connector that should be directly exported as resolved IdPAttributes without requiring actual Attribute Definitions
-          idp.attribute.resolver.LDAP.exportAttributes    = ### List space-separated of attributes to retrieve from the directory directly ###
+          # List of attributes produced by the Data Connector that should be directly exported as resolved IdPAttributes without requiring any <AttributeDefinition>
+          idp.attribute.resolver.LDAP.exportAttributes    = ### List space-separated of attributes to retrieve directly from the directory ###
           ```
 
      **UTILITY FOR OPENLDAP ADMINISTRATOR:**
@@ -881,10 +883,14 @@ This Storage service will memorize User Consent data on persistent database SQL.
          <ref bean="c14n/SAML2Persistent" />
          ```
        
-     * (OPTIONAL) `vim /opt/shibboleth-idp/conf/c14n/simple-subject-c14n-config.xml`
+     * (OPTIONAL) `vim /opt/shibboleth-idp/conf/c14n/subject-c14n.properties`
        * Transform each letter of username, before storing in into the database, to Lowercase or Uppercase by setting the proper constant:
        
-         `<util:constant id="shibboleth.c14n.simple.Lowercase" static-field="java.lang.Boolean.TRUE"/>`
+         ```bash
+         # Simple username -> principal name c14n
+         idp.c14n.simple.lowercase = true
+         #idp.c14n.simple.uppercase = false
+         idp.c14n.simple.trim = true
 
 10. Restart Jetty to apply the changes:
     * `systemctl restart jetty.service`
@@ -919,6 +925,7 @@ This Storage service will memorize User Consent data on persistent database SQL.
 ### Configure Shibboleth Identity Provider to release the eduPersonTargetedID
 
 > eduPersonTargetedID is an abstracted version of the SAML V2.0 Name Identifier format of "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent".
+> 
 > To be able to follow these steps, you need to have followed the previous steps on "persistent" NameID generation.
 
 #### Strategy A - Computed mode - using the computed persistent NameID
@@ -1047,7 +1054,8 @@ Translate the IdP messages in your language:
 ### Disable SAML1 Deprecated Protocol
 
 1. Modify the IdP metadata to enable only the SAML2 protocol:
-   > The `<AttributeAuthorityDescriptor>` role is needed only if you have SPs that use AttributeQuery to request attributes to your IdP.
+   > The `<AttributeAuthorityDescriptor>` role is needed **ONLY IF** you have SPs that use AttributeQuery to request attributes to your IdP.
+   > 
    > Read details on the [Shibboleth Official Documentation](https://wiki.shibboleth.net/confluence/display/IDP4/SecurityAndNetworking#SecurityAndNetworking-AttributeQuery).
 
    * `vim /opt/shibboleth-idp/metadata/idp-metadata.xml`
@@ -1108,88 +1116,25 @@ Translate the IdP messages in your language:
 
 > See the official Shibboleth documentation: https://wiki.shibboleth.net/confluence/display/IDP4/SecretKeyManagement
 
-1. Create the `updateIDPsecret.sh` script:
-   * `sudo vim /opt/shibboleth-idp/bin/updateIDPsecret.sh`
-     
-     ```bash
-     #!/bin/bash
- 
-     set -e
-     set -u
-  
-     # Default IDP_HOME if not already set
-     if [ ! -d "${IDP_HOME:=/opt/shibboleth-idp}" ]
-     then
-         echo "ERROR: Directory does not exist: ${IDP_HOME}" >&2
-         exit 1
-     fi
-
-     function get_config {
-         # Key to lookup (escape . for regex lookup)
-         local KEY=${1:?"No key provided to look up value"}
-         # Passed default value
-         local DEFAULT="${2:-}"
-         # Lookup key, strip spaces, replace idp.home with IDP_HOME value
-         local RESULT=$(sed -rn '/^'"${KEY//./\\.}"'\s*=/ { s|^[^=]*=(.*)\s*$|\1|; s|%\{idp\.home\}|'"${IDP_HOME}"'|g; p}' ${IDP_HOME}/conf/idp.properties)
-         if [ -z "$RESULT" ]
-         then
-            local RESULT=$(sed -rn '/^'"${KEY//./\\.}"'\s*=/ { s|^[^=]*=(.*)\s*$|\1|; s|%\{idp\.home\}|'"${IDP_HOME}"'|g; p}' ${IDP_HOME}/credentials/secrets.properties)
-         fi
-         # Set if no result with default - exit if no default
-         echo ${RESULT:-${DEFAULT:?"No value in config and no default defined for: '${KEY}'"}}
-     }
- 
-     # Get config values
-     ## Official config items ##
-     storefile=$(get_config idp.sealer.storeResource)
-     versionfile=$(get_config idp.sealer.versionResource)
-     storepass=$(get_config idp.sealer.storePassword)
-     alias=$(get_config idp.sealer.aliasBase secret)
-     ## Extended config items ##
-     count=$(get_config idp.sealer._count 30)
-     # default cannot be empty - so "self" is the default (self is skipped for syncing)
-     sync_hosts=$(get_config idp.sealer._sync_hosts ${HOSTNAME})
- 
-     # Run the keygen utility
-     ${0%/*}/runclass.sh net.shibboleth.utilities.java.support.security.BasicKeystoreKeyStrategyTool \
-         --storefile "${storefile}" \
-         --storepass "${storepass}" \
-         --versionfile "${versionfile}" \
-         --alias "${alias}" \
-         --count "${count}"
- 
-     # Display current version
-     echo "INFO: $(tac "${versionfile}" | tr "\n" " ")" >&2
- 
-     for EACH in ${sync_hosts}
-     do
-         if [ "${HOSTNAME}" == "${EACH}" ]
-         then
-             echo "INFO: Host '${EACH}' is myself - skipping" >&2
-         elif ! ping -q -c 1 -W 3 ${EACH} >/dev/null 2>&1
-         then
-             echo "ERROR: Host '${EACH}' not reachable - skipping" >&2
-         else
-             # run scp in the background
-             scp "${storefile}" "${versionfile}" "${EACH}:${IDP_HOME}/credentials/" &
-         fi
-     done
+1. Download `updateIDPsecrets.sh` into the right location:
+   * ```bash
+     wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/updateIDPsecrets.sh -O /opt/shibboleth-idp/bin/updateIDPsecrets.sh
      ```
 
 2. Provide the right privileges to the script:
-   * `sudo chmod +x /opt/shibboleth-idp/bin/updateIDPsecret.sh`
+   * `sudo chmod +x /opt/shibboleth-idp/bin/updateIDPsecrets.sh`
 
 3. Create the CRON script to run it:
-   * `sudo vim /etc/cron.daily/updateIDPsecret`
+   * `sudo vim /etc/cron.daily/updateIDPsecrets`
      
      ```bash
      #!/bin/bash
 
-     /opt/shibboleth-idp/bin/updateIDPsecret.sh
+     /opt/shibboleth-idp/bin/updateIDPsecrets.sh
      ```
 
 4. Provide the right privileges to the script:
-   * `sudo chmod +x /etc/cron.daily/updateIDPsecret`
+   * `sudo chmod +x /etc/cron.daily/updateIDPsecrets`
 
 5. Confirm that the script will be run daily with (you should see your script in the command output):
    * `sudo run-parts --test /etc/cron.daily`
@@ -1200,7 +1145,7 @@ Translate the IdP messages in your language:
 
 ### Configure Attribute Filter Policy to release attributes to Federated Resources
 
-> **Follow these steps ONLY IF your organization is connected with the [GARR Network](https://www.garr.it/en/infrastructures/network-infrastructure/connected-organizations-and-sites?key=all)**
+> Follow these steps **ONLY IF** your organization is connected with the [GARR Network](https://www.garr.it/en/infrastructures/network-infrastructure/connected-organizations-and-sites?key=all)
 
 1. Become ROOT:
    * `sudo su -`
@@ -1247,7 +1192,7 @@ Translate the IdP messages in your language:
 
 ### Register the IdP on the IDEM Test Federation
 
-> **Follow these steps ONLY IF your organization is connected with the [GARR Network](https://www.garr.it/en/infrastructures/network-infrastructure/connected-organizations-and-sites?key=all)**
+> Follow these steps **ONLY IF** your organization is connected with the [GARR Network](https://www.garr.it/en/infrastructures/network-infrastructure/connected-organizations-and-sites?key=all)
 
 1. Register you IdP metadata on IDEM Entity Registry (your entity have to be approved by an IDEM Federation Operator before become part of IDEM Test Federation):
    * `https://registry.idem.garr.it/`
@@ -1330,7 +1275,7 @@ The IdP includes the ability to require user consent to attribute release, as we
 
 ### Appendix B: Import persistent-id from a previous database
 
-> Follow these steps ONLY when your need to import persistent-id from another IdP
+> Follow these steps **ONLY IF** your need to import persistent-id from another IdP
 
 1. Become ROOT:
    * `sudo su -`
