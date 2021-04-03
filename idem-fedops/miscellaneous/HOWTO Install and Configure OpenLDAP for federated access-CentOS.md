@@ -1,5 +1,7 @@
 # HOWTO Install and Configure OpenLDAP for federated access on CentOS
 
+<img width="120px" src="https://wiki.idem.garr.it/IDEM_Approved.png" />
+
 ## Table of Contents
 
 1. [Requirements](#requirements)
@@ -127,7 +129,7 @@ Please, remember to **replace all occurence** of `example.org` domain name, or p
    * `sudo ldapmodify -Y EXTERNAL -H ldapi:/// -f /etc/openldap/olcTLS.ldif`
 
 3. Add openldap binding to LDAPS (optional):
-   > LDAPS use 636 port | LDAP (StartTLS or Plain) use 389 port
+   > LDAPS uses 636 port , LDAP (StartTLS or Plain) uses 389 port
 
    * `sudo vim /etc/sysconfig/slapd`
 
