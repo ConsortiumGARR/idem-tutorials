@@ -341,7 +341,7 @@ Open the `https://sp.example.org/secure` application into your web browser
 
 (*Replace `sp.example.org` with your SP Full Qualified Domain Name*)
 
-### Appendix A - SE Linux
+## Appendix A - SE Linux
 
 If you'll met problem, probably they are related to SE Linux.
 
@@ -355,7 +355,7 @@ If you want to disable it forever do this:
 
 The SE Linux is disabled if you will find `Current mode: permissive` from the command `sestatus`.
 
-### Appendix B - Enable Attribute Checker Support on Shibboleth SP
+## Appendix B - Enable Attribute Checker Support on Shibboleth SP
 
 1. Add a sessionHook for attribute checker: `sessionHook="/Shibboleth.sso/AttrChecker"` and the `metadataAttributePrefix="Meta-"` to `ApplicationDefaults`:
    * `vim /etc/shibboleth/shibboleth2.xml`
@@ -462,9 +462,9 @@ The SE Linux is disabled if you will find `Current mode: permissive` from the co
 Thanks eduGAIN for the original "HOWTO" posted [here](https://wiki.geant.org/display/eduGAIN/How+to+configure+Shibboleth+SP+attribute+checker).
 
 
-### Authors
+## Authors
 
-#### Original Author
+### Original Author
 
  * Marco Malavolti (marco.malavolti@garr.it)
  * Barbara Monticini (barbara.monticini@garr.it)
