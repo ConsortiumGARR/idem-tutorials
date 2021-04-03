@@ -324,7 +324,7 @@ The Apache HTTP Server will be configured as a reverse proxy and it will be used
    
 ### Configure Shibboleth Identity Provider Storage
 
-*Shibboleth Documentation reference* https://wiki.shibboleth.net/confluence/display/IDP4/StorageConfiguration
+> Shibboleth Documentation reference: https://wiki.shibboleth.net/confluence/display/IDP4/StorageConfiguration
 
 > The IdP provides a number of general-purpose storage facilities that can be used by core subsystems like session management and consent. 
 
@@ -726,7 +726,7 @@ This Storage service will memorize User Consent data on persistent database SQL.
 
 ### Configure Shibboleth Identity Provider to release the persistent NameID
 
-**Shibboleth Documentation reference** https://wiki.shibboleth.net/confluence/display/IDP4/PersistentNameIDGenerationConfiguration
+> Shibboleth Documentation reference: https://wiki.shibboleth.net/confluence/display/IDP4/PersistentNameIDGenerationConfiguration
 
 > SAML 2.0 (but not SAML 1.x) defines a kind of NameID called a "persistent" identifier that every SP receives for the IdP users.
 > This part will teach you how to release the "persistent" identifiers with a database (Stored Mode) or without it (Computed Mode).
@@ -1057,7 +1057,7 @@ Translate the IdP messages in your language:
 1. Modify the IdP metadata to enable only the SAML2 protocol:
    > The `<AttributeAuthorityDescriptor>` role is needed **ONLY IF** you have SPs that use AttributeQuery to request attributes to your IdP.
    > 
-   > Read details on the [Shibboleth Official Documentation](https://wiki.shibboleth.net/confluence/display/IDP4/SecurityAndNetworking#SecurityAndNetworking-AttributeQuery).
+   > Shibboleth documentation reference: https://wiki.shibboleth.net/confluence/display/IDP4/SecurityAndNetworking#SecurityAndNetworking-AttributeQuery.
 
    * `vim /opt/shibboleth-idp/metadata/idp-metadata.xml`
 
@@ -1290,7 +1290,7 @@ Translate the IdP messages in your language:
 
 ### Appendix A: Enable Consent Module: Attribute Release + Terms of Use Consent
 
-> **Shibboleth Documentation reference**: https://wiki.shibboleth.net/confluence/display/IDP4/ConsentConfiguration
+> Shibboleth Documentation reference: https://wiki.shibboleth.net/confluence/display/IDP4/ConsentConfiguration
 
 The IdP includes the ability to require user consent to attribute release, as well as presenting a "terms of use" message prior to completing a login to a service, a simpler "static" form of consent.
 
@@ -1303,7 +1303,7 @@ The IdP includes the ability to require user consent to attribute release, as we
 
 ### Appendix B: Import persistent-id from a previous database
 
-> Follow these steps **ONLY IF** your need to import persistent-id from another IdP
+> Follow these steps **ONLY IF** your need to import persistent-id database from another IdP
 
 1. Become ROOT:
    * `sudo su -`
@@ -1316,7 +1316,7 @@ The IdP includes the ability to require user consent to attribute release, as we
 
 3. Move the `/tmp/shibboleth_shibpid.sql` of old IdP into `/tmp/shibboleth_shibpid.sql` on the new IdP.
  
-4. Import the content of `/tmp/shibboleth_shibpid.sql` into the DB of the new IDP:
+4. Import the content of `/tmp/shibboleth_shibpid.sql` into database of the new IDP:
    * `cd /tmp ; mysql -u root -p shibboleth < /tmp/shibboleth_shibpid.sql`
 
 5. Delete `/tmp/shibboleth_shibpid.sql`:
@@ -1324,7 +1324,7 @@ The IdP includes the ability to require user consent to attribute release, as we
    
 ### Appendix C: Useful logs to find problems
 
-> Follow this if do you want to find a problem of your IdP.
+> Follow this if you need to find a problem of your IdP.
 
 1. Jetty Logs:
    * `cd /opt/jetty/logs`
