@@ -244,49 +244,8 @@ Please, remember to **replace all occurence** of `example.org` domain name, or p
 2. Create the "`secure`" application into the DocumentRoot:
    * `mkdir /var/www/html/$(hostname -f)/secure`
 
-   * `vim /var/www/html/$(hostname -f)/secure/index.php`
-
-     ```php
-     <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-      <html>
-       <head>
-        <title>Example PHP Federated Application</title>
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-       </head>
-       <body>
-        <p>
-         <a href="/privacy.html">Privacy Policy</a> - <a href="/Shibboleth.sso/Logout">Logout</a>
-        </p>
-        <?php
-         //The REMOTE_USER variable holds the name of the user authenticated by the web server.
-         $name = getName();
-         print "<h1>Ciao " . $name . "!!!</h1>";
-
-         print "<p>Let see all other attributes:</p>";
-         print "<p>Your REMOTE_USER is <strong>" . $_SERVER["REMOTE_USER"] . "</strong></p>";
-         print "<p>Your email is <strong>" . $_SERVER['mail'] . "</strong></p>";
-         print "<p>Your eduPersonPrincipalName is <strong>" . $_SERVER["eppn"] . "</strong></p>";
-         print "<p>Your eduPersonScopedAffiliation is <strong>" . $_SERVER["affiliation"] . "</strong></p>";
-         print "<p>Your eduPersonTargetedID is <strong>" . $_SERVER["persistent-id"] . "</strong></p>";
-         print "<p>Your schacHomeOrganization is <strong>" . $_SERVER["schacHomeOrganization"] . "</strong></p>";
-         print "<p>Your schacHomeOrganizationType is <strong>" . $_SERVER["schacHomeOrganizationType"] . "</strong></p>";
-
-        ?>
-       </body>
-      </html>
-
-      <?php
-      function getName() {
-       if (array_key_exists("displayName", $_SERVER)) {
-       return implode(" ", explode(";", $_SERVER["displayName"]));
-       } else if (array_key_exists("cn", $_SERVER)) {
-       return implode(" ", explode(";", $_SERVER["cn"]));
-       } else if (array_key_exists("givenName", $_SERVER) && array_key_exists("sn", $_SERVER)) {
-       return implode(" ", explode(";", $_SERVER["givenName"])) . " " . implode(" ", explode(";", $_SERVER["sn"]));
-       }
-       return "Unknown";
-      }
-     ?>
+   * ```bash
+     wget https://registry.idem.garr.it/idem-conf/shibboleth/SP3/secure/index.php.txt -O /var/www/html/$(hostname -f)/secure/index.php
      ```
 
 3. Install PHP 7.x:
