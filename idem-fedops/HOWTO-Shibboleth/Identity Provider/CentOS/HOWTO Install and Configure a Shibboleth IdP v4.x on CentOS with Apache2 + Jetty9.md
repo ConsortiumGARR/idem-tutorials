@@ -275,38 +275,48 @@ The Apache HTTP Server will be configured as a reverse proxy and it will be used
    * ```bash
      wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/apache2/idp.example.org.conf -O /etc/httpd/conf.d/000-$(hostname -f).conf
      ```
+
+3. Deactivate the 'default' and 'welcome' sites:
+   * `mv /etc/httpd/conf.d/000-default.conf /etc/httpd/conf.d/000-default.conf.deactivated`
+   * `mv /etc/httpd/conf.d/welcome.conf /etc/httpd/conf.d/welcome.conf.deactivated`
    
-3. Put SSL credentials in the right place:
+4. Put SSL credentials in the right place:
    * HTTPS Server Certificate (Public Key) inside `/etc/pki/tls/certs`
    * HTTPS Server Key (Private Key) inside `/etc/pki/tls/private`	
    * Add CA Cert into `/etc/pki/tls/certs`
      * If you use GARR TCS (Sectigo CA): 
-       * `wget -O /etc/pki/tls/certs/GEANT_OV_RSA_CA_4.pem https://crt.sh/?d=2475254782`
-       * `wget -O /etc/pki/tls/certs/SectigoRSAOrganizationValidationSecureServerCA.crt https://crt.sh/?d=924467857`
-       * `cat /etc/pki/tls/certs/SectigoRSAOrganizationValidationSecureServerCA.crt >> /etc/pki/tls/certs/GEANT_OV_RSA_CA_4.pem`
-       * `rm /etc/pki/tls/certs/SectigoRSAOrganizationValidationSecureServerCA.crt`
+       ```bash
+       wget -O /etc/pki/tls/certs/GEANT_OV_RSA_CA_4.pem https://crt.sh/?d=2475254782
+       
+       wget -O /etc/pki/tls/certs/SectigoRSAOrganizationValidationSecureServerCA.crt https://crt.sh/?d=924467857
+       
+       cat /etc/pki/tls/certs/SectigoRSAOrganizationValidationSecureServerCA.crt >> /etc/pki/tls/certs/GEANT_OV_RSA_CA_4.pem
+       
+       rm /etc/pki/tls/certs/SectigoRSAOrganizationValidationSecureServerCA.crt
+       ```
+       
      * If you use ACME (Let's Encrypt): 
        * `ln -s /etc/letsencrypt/live/<SERVER_FQDN>/chain.pem /etc/pki/tls/certs/ACME-CA.pem`
 
-4. Configure the right privileges for the SSL Certificate and Key used by HTTPS:
+5. Configure the right privileges for the SSL Certificate and Key used by HTTPS:
    * `chmod 400 /etc/pki/tls/private/$(hostname -f).key`
    * `chmod 644 /etc/pki/tls/certs/$(hostname -f).crt`
    
      (*`$(hostname -f)` will provide your IdP Full Qualified Domain Name*)
 
-5. Configure SELinux to allow `mod_proxy` to initiate outbound connections:
+6. Configure SELinux to allow `mod_proxy` to initiate outbound connections:
    * `sestatus`
 
    If SELinux is enabled:
    * `/usr/sbin/setsebool -P httpd_can_network_connect 1`
 
-6. Restart Apache: 
+7. Restart Apache: 
    * `systemctl restart httpd.service`
 
-7. Check that IdP metadata is available on:
+8. Check that IdP metadata is available on:
    * ht<span>tps://</span>idp.example.org/idp/shibboleth
 
-8. Verify the strength of your IdP's machine on:
+9. Verify the strength of your IdP's machine on:
    * [**https://www.ssllabs.com/ssltest/analyze.html**](https://www.ssllabs.com/ssltest/analyze.html)
    
 ### Configure Shibboleth Identity Provider Storage
