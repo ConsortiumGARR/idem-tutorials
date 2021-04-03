@@ -8,7 +8,7 @@
 2. [Notes](#notes)
 3. [Installation](#installation)
 4. [Configuration](#configuration)
-5. [LDAP IHM](#LDAP-IHM)
+5. [LDAP Administration tools](#ldap-administration-tools)
 
 ## Requirements
 
@@ -390,5 +390,5 @@ olcRequires: authc
 EOF
 ```
 
-## LDAP IHM
-# Apache Directory Studio
+## LDAP Administration tools
+* [Apache Directory Studio](https://directory.apache.org/studio/)
