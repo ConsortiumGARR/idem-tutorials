@@ -3,13 +3,20 @@
 ## Table of Contents
 
 1. [Requirements](#requirements)
-2. [Installation](#installation)
-3. [Configuration](#configuration)
-4. [LDAP IHM](#LDAP-IHM)
+2. [Notes](#notes)
+3. [Installation](#installation)
+4. [Configuration](#configuration)
+5. [LDAP IHM](#LDAP-IHM)
 
 ## Requirements
 
  * Centos 7.x (with SELinux deactivated)
+
+## Notes
+
+This HOWTO use `example.org` to provide this guide with example values.
+
+Please, remember to **replace all occurence** of `example.org` domain name, or part of it, with the domain name into the configuration files.
 
 ## Installation
 
@@ -57,21 +64,23 @@
 
    **NOTES**: From now until the end of this HOWTO, we'll consider that:
     * `<LDAP-ROOT-PW_CHANGEME>` ==> `password`
-    * `<INSTITUTE-DOMAIN_CHANGEME>` ==> `example.org`
-    * `<ORGANIZATION-NAME_CHANGEME>` ==> `Example Org`
 
 4. Create Certificate/Key:
    * Self signed (3072 bit - 3 years before expiration) - **This HOWTO will use Self Signed Certificate for LDAP**:
 
-     * `sudo openssl req -newkey rsa:3072 -x509 -nodes -out /etc/openldap/ldap.example.org.crt -keyout /etc/openldap/ldap.example.org.key -days 1095`
+     ```bash
+     sudo openssl req -newkey rsa:3072 -x509 -nodes -out /etc/openldap/ldap.example.org.crt -keyout /etc/openldap/ldap.example.org.key -days 1095
 
-     * `sudo chown ldap:ldap /etc/openldap/ldap.example.org.crt`
+     sudo chown ldap:ldap /etc/openldap/ldap.example.org.crt
 
-     * `sudo chown ldap:ldap /etc/openldap/ldap.example.org.key`
+     sudo chown ldap:ldap /etc/openldap/ldap.example.org.key
+     ```
 
    * Signed:
 
-     * `sudo openssl req -new -newkey rsa:3072 -nodes -out /etc/ssl/certs/ldap.example.org.csr -keyout /etc/ssl/private/ldap.example.org.key -subj "/C=IT/CN=ldap.example.org"`
+     ```bash
+     sudo openssl req -new -newkey rsa:3072 -nodes -out /etc/ssl/certs/ldap.example.org.csr -keyout /etc/ssl/private/ldap.example.org.key -subj "/C=IT/CN=ldap.example.org"
+     ```
 
      (According to [NSA and NIST](https://www.keylength.com/en/compare/), RSA with 3072 bit-modulus is the minimum to protect up to TOP SECRET over than 2030)
 
