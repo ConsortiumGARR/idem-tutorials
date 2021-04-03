@@ -58,7 +58,11 @@ Please, remember to **replace all occurence** of `example.org` domain name, or p
        * ```bash
          wget -O /etc/pki/tls/certs/GEANT_OV_RSA_CA_4.pem https://crt.sh/?d=2475254782
  
-         wget -O /etc/pki/ca-trust/source/anchors/SectigoRSAOrganizationValidationSecureServerCA.crt https://crt.sh/?d=924467857 ; update-ca-trust
+         wget -O /etc/pki/ca-trust/source/anchors/SectigoRSAOrganizationValidationSecureServerCA.crt https://crt.sh/?d=924467857
+
+         cat /etc/pki/tls/certs/SectigoRSAOrganizationValidationSecureServerCA.crt >> /etc/pki/tls/certs/GEANT_OV_RSA_CA_4.pem
+
+         rm /etc/pki/tls/certs/SectigoRSAOrganizationValidationSecureServerCA.crt
          ```
      * If you use ACME (Let's Encrypt): 
        * `ln -s /etc/letsencrypt/live/<SERVER_FQDN>/chain.pem /etc/pki/tls/certs/ACME-CA.pem`
