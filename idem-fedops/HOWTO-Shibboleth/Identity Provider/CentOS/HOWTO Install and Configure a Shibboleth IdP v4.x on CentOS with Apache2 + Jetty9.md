@@ -325,7 +325,7 @@ The Apache HTTP Server will be configured as a reverse proxy and it will be used
 ### Configure Shibboleth Identity Provider Storage
 
 > Shibboleth Documentation reference: https://wiki.shibboleth.net/confluence/display/IDP4/StorageConfiguration
-
+>
 > The IdP provides a number of general-purpose storage facilities that can be used by core subsystems like session management and consent. 
 
 #### Strategy A - Default (HTML Local Storage, Encryption GCM, No Database) - Recommended
@@ -728,10 +728,10 @@ This Storage service will memorize User Consent data on persistent database SQL.
 
 > Shibboleth Documentation reference: https://wiki.shibboleth.net/confluence/display/IDP4/PersistentNameIDGenerationConfiguration
 
-> SAML 2.0 (but not SAML 1.x) defines a kind of NameID called a "persistent" identifier that every SP receives for the IdP users.
-> This part will teach you how to release the "persistent" identifiers with a database (Stored Mode) or without it (Computed Mode).
+SAML 2.0 (but not SAML 1.x) defines a kind of NameID called a "persistent" identifier that every SP receives for the IdP users.
+This part will teach you how to release the "persistent" identifiers with a database (Stored Mode) or without it (Computed Mode).
 
-> By default, a transient NameID will always be released to the Service Provider if the persistent one is not requested.
+By default, a transient NameID will always be released to the Service Provider if the persistent one is not requested.
 
 #### Strategy A - Computed mode - Default & Recommended
 
@@ -925,8 +925,8 @@ This Storage service will memorize User Consent data on persistent database SQL.
 
 ### Configure Shibboleth Identity Provider to release the eduPersonTargetedID
 
-> eduPersonTargetedID is an abstracted version of the SAML V2.0 Name Identifier format of "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent".
-> 
+eduPersonTargetedID is an abstracted version of the SAML V2.0 Name Identifier format of "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent".
+
 > To be able to follow these steps, you need to have followed the previous steps on "persistent" NameID generation.
 
 #### Strategy A - Computed mode - using the computed persistent NameID
@@ -1057,7 +1057,7 @@ Translate the IdP messages in your language:
 1. Modify the IdP metadata to enable only the SAML2 protocol:
    > The `<AttributeAuthorityDescriptor>` role is needed **ONLY IF** you have SPs that use AttributeQuery to request attributes to your IdP.
    > 
-   > Shibboleth documentation reference: https://wiki.shibboleth.net/confluence/display/IDP4/SecurityAndNetworking#SecurityAndNetworking-AttributeQuery.
+   > Shibboleth documentation reference: https://wiki.shibboleth.net/confluence/display/IDP4/SecurityAndNetworking#SecurityAndNetworking-AttributeQuery
 
    * `vim /opt/shibboleth-idp/metadata/idp-metadata.xml`
 
@@ -1110,12 +1110,12 @@ Translate the IdP messages in your language:
 
 ### Secure cookies and other IDP data
 
-> The default configuration of the IdP relies on a component called a "DataSealer" which in turn uses an AES secret key to secure cookies and certain other data for the IdPs own use. This key must never be shared with anybody else, and must be copied to every server node making up a cluster.
-> The Java "JCEKS" keystore file stores secret keys instead of public/private keys and certificates and a parallel file tracks the key version number.
+> Shibboleth Documentation reference: https://wiki.shibboleth.net/confluence/display/IDP4/SecretKeyManagement
 
-> These instructions will regularly update the secret key (and increase its version) and provide you the capability to push it to cluster nodes and continually maintain the secrecy of the key.
+The default configuration of the IdP relies on a component called a "DataSealer" which in turn uses an AES secret key to secure cookies and certain other data for the IdPs own use. This key must never be shared with anybody else, and must be copied to every server node making up a cluster.
+The Java "JCEKS" keystore file stores secret keys instead of public/private keys and certificates and a parallel file tracks the key version number.
 
-> See the official Shibboleth documentation: https://wiki.shibboleth.net/confluence/display/IDP4/SecretKeyManagement
+These instructions will regularly update the secret key (and increase its version) and provide you the capability to push it to cluster nodes and continually maintain the secrecy of the key.
 
 1. Download `updateIDPsecrets.sh` into the right location:
    * ```bash
@@ -1145,35 +1145,41 @@ Translate the IdP messages in your language:
    * `idp.sealer._sync_hosts` - Space separated list of hosts to scp the sealer files to (default generate locally)
 
 ### Connect an SP with the IdP
-> Follow these steps **IF** your organization **IS NOT** connected with the [GARR Network](https://www.garr.it/en/infrastructures/network-infrastructure/connected-organizations-and-sites?key=all) or **IF** you need to connect directly a Shibboleth Service Provider.
 
-* Connect the SP to the IdP by adding its metadata on the `metadata-providers.xml` configuration file:
+> Shibboleth Documentation Reference: 
+> * https://wiki.shibboleth.net/confluence/display/IDP4/ChainingMetadataProvider
+> * https://wiki.shibboleth.net/confluence/display/IDP4/FileBackedHTTPMetadataProvider
+> * https://wiki.shibboleth.net/confluence/display/IDP4/AttributeFilterConfiguration
 
-  `vim /opt/shibboleth-idp/conf/metadata-providers.xml`
+Follow these steps **IF** your organization **IS NOT** connected with the [GARR Network](https://www.garr.it/en/infrastructures/network-infrastructure/connected-organizations-and-sites?key=all) or **IF** you need to connect directly a Shibboleth Service Provider.
+
+1. Connect the SP to the IdP by adding its metadata on the `metadata-providers.xml` configuration file:
+
+   * `vim /opt/shibboleth-idp/conf/metadata-providers.xml`
   
-  ```bash
-  <MetadataProvider id="HTTPMetadata"
-                    xsi:type="FileBackedHTTPMetadataProvider"
-                    backingFile="%{idp.home}/metadata/sp-metadata.xml"
-                    metadataURL="https://sp.example.org/Shibboleth.sso/Metadata"
-                    failFastInitialization="false"/>
-  ```
+     ```bash
+     <MetadataProvider id="HTTPMetadata"
+                       xsi:type="FileBackedHTTPMetadataProvider"
+                       backingFile="%{idp.home}/metadata/sp-metadata.xml"
+                       metadataURL="https://sp.example.org/Shibboleth.sso/Metadata"
+                       failFastInitialization="false"/>
+     ```
 
-* Adding an `AttributeFilterPolicy` on the `conf/attribute-filter.xml` file:
-  * ```bash
-    wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/idem-example-afp.txt -O /opt/shibboleth-idp/conf/example-afp.txt
+2. Adding an `AttributeFilterPolicy` on the `conf/attribute-filter.xml` file:
+   * ```bash
+     wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/idem-example-afp.txt -O /opt/shibboleth-idp/conf/example-afp.txt
   
-    cat /opt/shibboleth-idp/conf/example-afp.txt
-    ```
+     cat /opt/shibboleth-idp/conf/example-afp.txt
+     ```
 
-  * copy and paste the content into `/opt/shibboleth-idp/conf/attribute-filter.xml` before the last element `</AttributeFilterPolicyGroup>`.
+   * copy and paste the content into `/opt/shibboleth-idp/conf/attribute-filter.xml` before the last element `</AttributeFilterPolicyGroup>`.
   
-* Restart Jetty to apply changes:
-  * `systemctl restart jetty.service`
+3. Restart Jetty to apply changes:
+   * `systemctl restart jetty.service`
 
 ### Configure Attribute Filter Policy to release attributes to Federated Resources
 
-> Follow these steps **ONLY IF** your organization is connected with the [GARR Network](https://www.garr.it/en/infrastructures/network-infrastructure/connected-organizations-and-sites?key=all)
+Follow these steps **ONLY IF** your organization is connected with the [GARR Network](https://www.garr.it/en/infrastructures/network-infrastructure/connected-organizations-and-sites?key=all)
 
 1. Become ROOT:
    * `sudo su -`
@@ -1220,7 +1226,7 @@ Translate the IdP messages in your language:
 
 ### Register the IdP on the IDEM Test Federation
 
-> Follow these steps **ONLY IF** your organization is connected with the [GARR Network](https://www.garr.it/en/infrastructures/network-infrastructure/connected-organizations-and-sites?key=all)
+Follow these steps **ONLY IF** your organization is connected with the [GARR Network](https://www.garr.it/en/infrastructures/network-infrastructure/connected-organizations-and-sites?key=all)
 
 1. Register you IdP metadata on IDEM Entity Registry (your entity have to be approved by an IDEM Federation Operator before become part of IDEM Test Federation):
    * `https://registry.idem.garr.it/`
@@ -1294,16 +1300,16 @@ Translate the IdP messages in your language:
 
 The IdP includes the ability to require user consent to attribute release, as well as presenting a "terms of use" message prior to completing a login to a service, a simpler "static" form of consent.
 
-* `bin/module.sh -t idp.intercept.Consent || bin/module.sh -e idp.intercept.Consent`
+1. Load Consent Module:
+   * `bin/module.sh -t idp.intercept.Consent || bin/module.sh -e idp.intercept.Consent`
 
-* Edit `conf/relying-party.xml` with the right `postAuthenticationFlows`:
-  * `<bean parent="SAML2.SSO" p:postAuthenticationFlows="attribute-release" />` - to enable only Attribute Release Consent
-  * `<bean parent="SAML2.SSO" p:postAuthenticationFlows="#{ {'terms-of-use', 'attribute-release'} }" />` - to enable both
-
+2. Enable Consent Module by editing `conf/relying-party.xml` with the right `postAuthenticationFlows`:
+   * `<bean parent="SAML2.SSO" p:postAuthenticationFlows="attribute-release" />` - to enable only Attribute Release Consent
+   * `<bean parent="SAML2.SSO" p:postAuthenticationFlows="#{ {'terms-of-use', 'attribute-release'} }" />` - to enable both
 
 ### Appendix B: Import persistent-id from a previous database
 
-> Follow these steps **ONLY IF** your need to import persistent-id database from another IdP
+Follow these steps **ONLY IF** your need to import persistent-id database from another IdP
 
 1. Become ROOT:
    * `sudo su -`
@@ -1324,7 +1330,7 @@ The IdP includes the ability to require user consent to attribute release, as we
    
 ### Appendix C: Useful logs to find problems
 
-> Follow this if you need to find a problem of your IdP.
+Follow this if you need to find a problem of your IdP.
 
 1. Jetty Logs:
    * `cd /opt/jetty/logs`
