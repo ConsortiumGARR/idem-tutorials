@@ -33,8 +33,9 @@
    10. [Translate IdP messages into the preferred language](#translate-idp-messages-into-preferred-language)
    11. [Disable SAML1 Deprecated Protocol](#disable-saml1-deprecated-protocol)
    12. [Secure cookies and other IDP data](#secure-cookies-and-other-idp-data)
-   13. [Configure Attribute Filter Policy to release attributes to Federated Resources](#configure-attribute-filter-policy-to-release-attributes-to-federated-resources)
-   14. [Register the IdP on the IDEM Test Federation](#register-the-idp-on-the-idem-test-federation)
+   13. [Connect an SP with the IdP](#connect-an-sp-with-the-idp)
+   14. [Configure Attribute Filter Policy to release attributes to Federated Resources](#configure-attribute-filter-policy-to-release-attributes-to-federated-resources)
+   15. [Register the IdP on the IDEM Test Federation](#register-the-idp-on-the-idem-test-federation)
 6. [Appendix A: Enable Consent Module: Attribute Release + Terms of Use Consent](#appendix-a-enable-consent-module-attribute-release--terms-of-use-consent)
 7. [Appendix B: Import persistent-id from a previous database](#appendix-b-import-persistent-id-from-a-previous-database)
 8. [Appendix C: Useful logs to find problems](#appendix-c-useful-logs-to-find-problems)
@@ -1142,6 +1143,33 @@ Translate the IdP messages in your language:
 6. (OPTIONAL) Add the following properties to `conf/idp.properties` if you need to set different values than defaults:
    * `idp.sealer._count` - Number of earlier keys to keep (default 30)
    * `idp.sealer._sync_hosts` - Space separated list of hosts to scp the sealer files to (default generate locally)
+
+### Connect an SP with the IdP
+> Follow these steps **IF** your organization **IS NOT** connected with the [GARR Network](https://www.garr.it/en/infrastructures/network-infrastructure/connected-organizations-and-sites?key=all) or **IF** you need to connect directly a Shibboleth Service Provider.
+
+* Connect the SP to the IdP by adding its metadata on the `metadata-providers.xml` configuration file:
+
+  `vim /opt/shibboleth-idp/conf/metadata-providers.xml`
+  
+  ```bash
+  <MetadataProvider id="HTTPMetadata"
+                    xsi:type="FileBackedHTTPMetadataProvider"
+                    backingFile="%{idp.home}/metadata/sp-metadata.xml"
+                    metadataURL="https://sp.example.org/Shibboleth.sso/Metadata"
+                    failFastInitialization="false"/>
+  ```
+
+* Adding an `AttributeFilterPolicy` on the `conf/attribute-filter.xml` file:
+  * ```bash
+    wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/idem-example-afp.txt -O /opt/shibboleth-idp/conf/example-afp.txt
+  
+    cat /opt/shibboleth-idp/conf/example-afp.txt
+    ```
+
+  * copy and paste the content into `/opt/shibboleth-idp/conf/attribute-filter.xml` before the last element `</AttributeFilterPolicyGroup>`.
+  
+* Restart Jetty to apply changes:
+  * `systemctl restart jetty.service`
 
 ### Configure Attribute Filter Policy to release attributes to Federated Resources
 
