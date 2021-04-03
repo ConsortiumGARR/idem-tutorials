@@ -117,7 +117,8 @@
 
    * `sudo ldapmodify -Y EXTERNAL -H ldapi:/// -f /etc/openldap/olcTLS.ldif`
 
-3. Bind openldap to LDAPS and LDAPI only (optional):
+3. Add openldap binding to LDAPS (optional):
+   > LDAPS use 636 port | LDAP (StartTLS or Plain) use 389 port
 
    * `sudo vim /etc/sysconfig/slapd`
 
