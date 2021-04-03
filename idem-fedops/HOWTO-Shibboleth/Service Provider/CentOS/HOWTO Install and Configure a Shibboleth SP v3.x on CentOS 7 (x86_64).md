@@ -50,26 +50,10 @@ Please, remember to **replace all occurence** of `example.org` domain name, or p
 
 ## Other Requirements
 
- * Put SSL credentials in the right place:
-   * HTTPS Server Certificate (Public Key) inside `/etc/pki/tls/certs/$(hostname -f).crt`
-   * HTTPS Server Key (Private Key) inside `/etc/pki/tls/private/$(hostname -f).key`	
-   * Add CA Cert into `/etc/pki/tls/certs`
-     * If you use GARR TCS (Sectigo CA): 
-       ```bash
-       wget -O /etc/pki/tls/certs/GEANT_OV_RSA_CA_4.pem https://crt.sh/?d=2475254782
- 
-       wget -O /etc/pki/ca-trust/source/anchors/SectigoRSAOrganizationValidationSecureServerCA.crt https://crt.sh/?d=924467857
-
-       cat /etc/pki/tls/certs/SectigoRSAOrganizationValidationSecureServerCA.crt >> /etc/pki/tls/certs/GEANT_OV_RSA_CA_4.pem
-
-       rm -f /etc/pki/tls/certs/SectigoRSAOrganizationValidationSecureServerCA.crt
-       ```
-
-     * If you use ACME (Let's Encrypt): 
-       * `ln -s /etc/letsencrypt/live/<SERVER_FQDN>/chain.pem /etc/pki/tls/certs/ACME-CA.pem`
- 
-   (OPTIONAL) Create a Certificate and a Key self-signed for HTTPS if you don't have yet the official ones provided by the Certificate Authority:
-   * `openssl req -x509 -newkey rsa:4096 -keyout /etc/pki/tls/private/$(hostname -f).key -out /etc/pki/tls/certs/$(hostname -f).crt -nodes -days 1095`
+ * SSL Credentials: HTTPS Certificate & Key & Certification Authority (CA)
+ * Logo:
+   * size: 80x60 px (or other that respect the aspect-ratio)
+   * format: PNG
 
 ## Installation Instructions
 
@@ -146,15 +130,17 @@ Please, remember to **replace all occurence** of `example.org` domain name, or p
      ```bash
      VV.ZZ.XX.YY sp.example.org sp
      ```
-   (*Replace `VV.ZZ.XX.YY` with your SP's public IP*)
+     (*Replace `VV.ZZ.XX.YY` with your SP's public IP*)
    
-   (*Replace `sp.example.org` with your SP Full Qualified Domain Name*)
+     (*Replace `sp.example.org` with your SP Full Qualified Domain Name*)
    
-   (*Replace `sp` with your SP Hostname*)
+     (*Replace `sp` with your SP Hostname*)
 
 3. Be sure that your firewall **doesn't block** the traffic on port **443** (or you can't access to your SP)
 
 ### Configure SSL on Apache2
+
+> According to [NSA and NIST](https://www.keylength.com/en/compare/), RSA with 3072 bit-modulus is the minimum to protect up to TOP SECRET over than 2030.
 
 1. Become ROOT: 
    * `sudo su -`
@@ -164,20 +150,23 @@ Please, remember to **replace all occurence** of `example.org` domain name, or p
    * HTTPS Server Key (Private Key) inside `/etc/pki/tls/private/$(hostname -f).key`	
    * Add CA Cert into `/etc/pki/tls/certs`
      * If you use GARR TCS (Sectigo CA): 
-       * ```bash
-         wget -O /etc/pki/tls/certs/GEANT_OV_RSA_CA_4.pem https://crt.sh/?d=2475254782
+       ```bash
+       wget -O /etc/pki/tls/certs/GEANT_OV_RSA_CA_4.pem https://crt.sh/?d=2475254782
  
-         wget -O /etc/pki/ca-trust/source/anchors/SectigoRSAOrganizationValidationSecureServerCA.crt https://crt.sh/?d=924467857
+       wget -O /etc/pki/ca-trust/source/anchors/SectigoRSAOrganizationValidationSecureServerCA.crt https://crt.sh/?d=924467857
 
-         cat /etc/pki/tls/certs/SectigoRSAOrganizationValidationSecureServerCA.crt >> /etc/pki/tls/certs/GEANT_OV_RSA_CA_4.pem
+       cat /etc/pki/tls/certs/SectigoRSAOrganizationValidationSecureServerCA.crt >> /etc/pki/tls/certs/GEANT_OV_RSA_CA_4.pem
 
-         rm /etc/pki/tls/certs/SectigoRSAOrganizationValidationSecureServerCA.crt
-         ```
+       rm /etc/pki/tls/certs/SectigoRSAOrganizationValidationSecureServerCA.crt
+       ```
+       
      * If you use ACME (Let's Encrypt): 
        * `ln -s /etc/letsencrypt/live/<SERVER_FQDN>/chain.pem /etc/pki/tls/certs/ACME-CA.pem`
  
-    (OPTIONAL) Create a Certificate and a Key self-signed for HTTPS if you don't have yet the official ones provided by the Certificate Authority:
-   * `openssl req -x509 -newkey rsa:4096 -keyout /etc/pki/tls/private/$(hostname -f).key -out /etc/pki/tls/certs/$(hostname -f).crt -nodes -days 1095`
+     (OPTIONAL) Create a Certificate and a Key self-signed for HTTPS if you don't have yet the official ones provided by the Certificate Authority:
+     * ```bash
+       openssl req -x509 -newkey rsa:3072 -keyout /etc/pki/tls/private/$(hostname -f).key -out /etc/pki/tls/certs/$(hostname -f).crt -nodes -days 1095
+       ```
 
 3. Install "mod_ssl" to enable HTTPS configuration:
    * `yum install mod_ssl -y`
