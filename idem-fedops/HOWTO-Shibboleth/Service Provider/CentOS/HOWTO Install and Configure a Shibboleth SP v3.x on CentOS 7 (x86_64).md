@@ -9,12 +9,11 @@
    2. [Other](#other)
 2. [Software that will be installed](#software-that-will-be-installed)
 3. [Notes](#notes)
-4. [Other Requirements](#other-requirements)
-5. [Installation Instructions](#installation-instructions)
+4. [Installation Instructions](#installation-instructions)
    1. [Install software requirements](#install-software-requirements)
    2. [Install Apache2 Web Server](#install-apache2-web-server)
    3. [Install Shibboleth Service Provider](#install-shibboleth-service-provider)
-6. [Configuration Instructions](#configuration-instructions)
+5. [Configuration Instructions](#configuration-instructions)
    1. [Configure the environment](#configure-the-environment)
    2. [Configure SSL on Apache2](#configure-ssl-on-apache2)
    3. [Configure Shibboleth SP](#configure-shibboleth-sp)
@@ -22,7 +21,7 @@
    5. [Enable attributes on attribute mapping](#enable-attributes-on-attribute-mapping)
    6. [Connect SP directly to an IdP](#connect-sp-directly-to-an-idp)
    7. [Connect SP to the Federation](#connect-sp-to-the-federation)
-   8. [Test](#test)
+6. [Test](#test)
 7. [Appendix A - SE Linux](#appendix-a---se-linux)
 8. [Appendix B - Enable Attribute Checker Support on Shibboleth SP](#appendix-b---enable-attribute-checker-support-on-shibboleth-sp)
 9. [Authors](#authors)
@@ -377,7 +376,7 @@ Enable attribute support by removing comment from the related content into "`/et
    (your entity has to be approved by an IDEM Federation Operator before become part of IDEM Test Federation):
    * Go to `https://registry.idem.garr.it` and follow "Insert a New Service Provider into the IDEM Test Federation"
 
-### Test
+## Test
 
 Open the `https://sp.example.org/secure` application into your web browser
 
