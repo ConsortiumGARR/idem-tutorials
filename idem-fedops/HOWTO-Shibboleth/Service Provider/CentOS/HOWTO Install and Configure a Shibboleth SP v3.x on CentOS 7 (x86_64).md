@@ -68,8 +68,8 @@ Please, remember to **replace all occurence** of `example.org` domain name, or p
        * `ln -s /etc/letsencrypt/live/<SERVER_FQDN>/chain.pem /etc/pki/tls/certs/ACME-CA.pem`
  
  
- (OPTIONAL) Create a Certificate and a Key self-signed for HTTPS if you don't have yet the official ones provided by the Certificate Authority:
- * `openssl req -x509 -newkey rsa:4096 -keyout /etc/pki/tls/private/$(hostname -f).key -out /etc/pki/tls/certs/$(hostname -f).crt -nodes -days 1095`
+   (OPTIONAL) Create a Certificate and a Key self-signed for HTTPS if you don't have yet the official ones provided by the Certificate Authority:
+   * `openssl req -x509 -newkey rsa:4096 -keyout /etc/pki/tls/private/$(hostname -f).key -out /etc/pki/tls/certs/$(hostname -f).crt -nodes -days 1095`
 
 ## Installation Instructions
 
@@ -88,7 +88,7 @@ Please, remember to **replace all occurence** of `example.org` domain name, or p
 2. Create the Shibboleth Repository:
    * `yum install httpd.x86_64`
 
-3. Disable  Apache welcome page
+3. Deactivate the `welcome` sites:
    * `mv /etc/httpd/conf.d/welcome.conf /etc/httpd/conf.d/welcome.conf.deactivated`
    
 4. Prevent Apache from listing web directory files to visitors:
@@ -147,7 +147,9 @@ Please, remember to **replace all occurence** of `example.org` domain name, or p
      VV.ZZ.XX.YY sp.example.org sp
      ```
    (*Replace `VV.ZZ.XX.YY` with your SP's public IP*)
+   
    (*Replace `sp.example.org` with your SP Full Qualified Domain Name*)
+   
    (*Replace `sp` with your SP Hostname*)
 
 3. Be sure that your firewall **doesn't block** the traffic on port **443** (or you can't access to your SP)
@@ -157,23 +159,43 @@ Please, remember to **replace all occurence** of `example.org` domain name, or p
 1. Become ROOT: 
    * `sudo su -`
 
-2. Install "mod_ssl" to enable HTTPS configuration:
+2. Load SSL credentials in the right place:
+   * HTTPS Server Certificate (Public Key) inside `/etc/pki/tls/certs/$(hostname -f).crt`
+   * HTTPS Server Key (Private Key) inside `/etc/pki/tls/private/$(hostname -f).key`	
+   * Add CA Cert into `/etc/pki/tls/certs`
+     * If you use GARR TCS (Sectigo CA): 
+       * ```bash
+         wget -O /etc/pki/tls/certs/GEANT_OV_RSA_CA_4.pem https://crt.sh/?d=2475254782
+ 
+         wget -O /etc/pki/ca-trust/source/anchors/SectigoRSAOrganizationValidationSecureServerCA.crt https://crt.sh/?d=924467857
+
+         cat /etc/pki/tls/certs/SectigoRSAOrganizationValidationSecureServerCA.crt >> /etc/pki/tls/certs/GEANT_OV_RSA_CA_4.pem
+
+         rm /etc/pki/tls/certs/SectigoRSAOrganizationValidationSecureServerCA.crt
+         ```
+     * If you use ACME (Let's Encrypt): 
+       * `ln -s /etc/letsencrypt/live/<SERVER_FQDN>/chain.pem /etc/pki/tls/certs/ACME-CA.pem`
+ 
+    (OPTIONAL) Create a Certificate and a Key self-signed for HTTPS if you don't have yet the official ones provided by the Certificate Authority:
+   * `openssl req -x509 -newkey rsa:4096 -keyout /etc/pki/tls/private/$(hostname -f).key -out /etc/pki/tls/certs/$(hostname -f).crt -nodes -days 1095`
+
+3. Install "mod_ssl" to enable HTTPS configuration:
    * `yum install mod_ssl -y`
 
-3. Create the DocumentRoot:
+4. Create the DocumentRoot:
    * `mkdir /var/www/html/$(hostname -f)`
    * `sudo chown -R apache: /var/www/html/$(hostname -f)`
    * `echo '<h1>It Works!</h1>' > /var/www/html/$(hostname -f)/index.html`
 
-4. Create the Virtualhost file (pay attention and follow the starting comment):
+5. Create the Virtualhost file (pay attention and follow the starting comment):
    * ```bash
      wget https://registry.idem.garr.it/idem-conf/shibboleth/SP3/apache2/sp.example.org.conf -O /etc/httpd/conf.d/000-$(hostname -f).conf
      ```
 
-5. Reload Apache2 web server:
+6. Reload Apache2 web server:
    * `systemctl restart httpd.service`
 
-6. Configure Apache2 to open port **80** only for localhost:
+7. Configure Apache2 to open port **80** only for localhost:
    * `vim /etc/httpd/conf/httpd.conf`
 
      ```apache
@@ -182,13 +204,13 @@ Please, remember to **replace all occurence** of `example.org` domain name, or p
      Listen 127.0.0.1:80
      ```
 
-7. Deactivate the default site:
+8. Deactivate the `000-default` site:
    * `mv /etc/httpd/conf.d/000-default.conf /etc/httpd/conf.d/000-default.conf.deactivated`
 
-8. Restart Apache to apply changes
+9. Restart Apache to apply changes
    * `systemctl restart httpd.service`
   
-9. Verify the strength of your SP's machine on:
+10. Verify the strength of your server on:
    * [**https://www.ssllabs.com/ssltest/analyze.html**](https://www.ssllabs.com/ssltest/analyze.html)
 
 ### Configure Shibboleth SP
@@ -212,7 +234,6 @@ Please, remember to **replace all occurence** of `example.org` domain name, or p
    * `https://sp.example.org/Shibboleth.sso/Metadata`
 
    (*Replace `sp.example.org` with your SP Full Qualified Domain Name*)
-
 
 ### Configure an example federated resource "secure"
 
@@ -297,7 +318,7 @@ Enable attribute support by removing comment from the related content into "`/et
 
 ### Connect SP directly to an IdP
 
-> **Follow these steps if your organization IS NOT connected to the [GARR Network](https://www.garr.it/en/infrastructures/network-infrastructure/connected-organizations-and-sites?key=all) or if you want to connect your SP with only one IdP**
+> Follow these steps if your organization **IS NOT** connected to the [GARR Network](https://www.garr.it/en/infrastructures/network-infrastructure/connected-organizations-and-sites?key=all) or **IF** you need to connect your SP with only one IdP
 
 1. Edit `shibboleth2.xml` opportunely:
    * `vim /etc/shibboleth/shibboleth2.xml`
@@ -325,7 +346,7 @@ Enable attribute support by removing comment from the related content into "`/et
 
 ### Connect SP to the Federation
 
-> **Follow these steps IF AND ONLY IF your organization is connected to the [GARR Network](https://www.garr.it/en/infrastructures/network-infrastructure/connected-organizations-and-sites?key=all)**
+> Follow these steps **IF AND ONLY IF** your organization is connected to the [GARR Network](https://www.garr.it/en/infrastructures/network-infrastructure/connected-organizations-and-sites?key=all)
 
 1. Retrieve the IDEM GARR Federation Certificate needed to verify the signed metadata:
    * `cd /etc/shibboleth/`
