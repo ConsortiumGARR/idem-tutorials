@@ -82,6 +82,9 @@ The EDS is a set of Javascript and CSS files, so installing it and using it is s
 
 The behaviour of Shibboleth Embedded Discovery Service is controlled by `IdPSelectUIParms` class contained. `idpselect_config.js`.
 In the most of cases you have to modify only this file to change the behaviour of Discovery Service.
+
+Make sure to amend `this.returnWhiteList` to reflect your server name.
+
 Find here the EDS Configuration Options: https://wiki.shibboleth.net/confluence/display/EDS10/3.+Configuration
 
 ## Whitelist - How to allow IdPs to access the federated resource
