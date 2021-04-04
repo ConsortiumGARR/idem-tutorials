@@ -31,6 +31,7 @@ The EDS is a set of Javascript and CSS files, so installing it and using it is s
 ## Installation
 
 ### Debian
+
 1. `sudo su -`
 
 2. `cd /usr/local/src`
@@ -53,17 +54,18 @@ The EDS is a set of Javascript and CSS files, so installing it and using it is s
    * `systemctl restart apache2.service`
 
 ### CentOS
+
 1. `sudo su -`
 2. `yum install shibboleth-embedded-ds`
 
 ## Enable EDS on Shibboleth SP
+
 1. Update "`shibboleth2.xml`" file to the new Discovery Service page:
    * `vim /etc/shibboleth/shibboleth2.xml `
  
      ```xml
      <SSO discoveryProtocol="SAMLDS" 
-          discoveryURL="https://###YOUR.SP.FQDN###/shibboleth-ds/index.html"
-          isDefault="true">
+          discoveryURL="https://###YOUR.SP.FQDN###/shibboleth-ds/index.html">
         SAML2
      </SSO>
      <!-- SAML and local-only logout. -->
@@ -73,13 +75,19 @@ The EDS is a set of Javascript and CSS files, so installing it and using it is s
      <Handler type="DiscoveryFeed" Location="/DiscoFeed"/>
      ```
 
+2. Restart "**shibd**" service:
+  * `systemctl restart shibd.service`
+
 ## Configuration
+
 The behaviour of Shibboleth Embedded Discovery Service is controlled by `IdPSelectUIParms` class contained. `idpselect_config.js`.
 In the most of cases you have to modify only this file to change the behaviour of Discovery Service.
 Find here the EDS Configuration Options: https://wiki.shibboleth.net/confluence/display/EDS10/3.+Configuration
 
 ## Whitelist - How to allow IdPs to access the federated resource
+
 ### How to allow the access to IdPs by specifying their entityID
+
 1. Modify "**shibboleth2.xml**":
   * `vim /etc/shibboleth/shibboleth2.xml`
 
@@ -90,16 +98,18 @@ Find here the EDS Configuration Options: https://wiki.shibboleth.net/confluence/
        <MetadataFilter type="Signature" certificate="/etc/shibboleth/idem_signer_2019.pem"/>
        <MetadataFilter type="RequireValidUntil" maxValidityInterval="864000" />
        <MetadataFilter type="Whitelist">
-           <Include>https://entityid.idp1.permesso.it/shibboleth</Include>
-           <Include>https://entityid.idp2.permesso.it/shibboleth</Include>
-           <Include>https://entityid.idp3.permesso.it/shibboleth</Include>
+           <Include>https://entityid.idp1.allowed.it/shibboleth</Include>
+           <Include>https://entityid.idp2.allowed.it/shibboleth</Include>
+           <Include>https://entityid.idp3.allowed.it/shibboleth</Include>
        </MetadataFilter>
     </MetadataProvider>
     ```
+
 2. Restart "**shibd**" service:
   * `systemctl restart shibd.service`
 
 ### How to allow the access to IdPs that support a specific Entity Category
+
 1. Modify "**shibboleth2.xml**":
   * `vim /etc/shibboleth/shibboleth2.xml`
    
@@ -117,10 +127,12 @@ Find here the EDS Configuration Options: https://wiki.shibboleth.net/confluence/
        </MetadataFilter>
     </MetadataProvider>
     ```
+
 2. Restart "**shibd**" service:
   * `systemctl restart shibd.service`
 
 ### How to allow the access to IdPs that support SIRTFI
+
 1. Modify "**shibboleth2.xml**":
   * `vim /etc/shibboleth/shibboleth2.xml`
   
@@ -138,11 +150,14 @@ Find here the EDS Configuration Options: https://wiki.shibboleth.net/confluence/
        </MetadataFilter>
     </MetadataProvider>
     ```
+
 2. Restart "**shibd**" service:
   * `systemctl restart shibd.service`
 
 ## Blacklist - How to disallow IdPs to access the federated resource
+
 ### How to disallow the access to IdPs by specifying their entityID
+
 1. Modify "**shibboleth2.xml**":
   * `vim /etc/shibboleth/shibboleth2.xml`
   
@@ -153,16 +168,18 @@ Find here the EDS Configuration Options: https://wiki.shibboleth.net/confluence/
        <MetadataFilter type="Signature" certificate="/etc/shibboleth/idem_signer_2019.pem"/>
        <MetadataFilter type="RequireValidUntil" maxValidityInterval="864000" />
        <MetadataFilter type="Blacklist">
-           <Include>https://entityid.idp1.permesso.it/shibboleth</Include>
-           <Include>https://entityid.idp2.permesso.it/shibboleth</Include>
-           <Include>https://entityid.idp3.permesso.it/shibboleth</Include>
+           <Include>https://entityid.idp1.denied.it/shibboleth</Include>
+           <Include>https://entityid.idp2.denied.it/shibboleth</Include>
+           <Include>https://entityid.idp3.denied.it/shibboleth</Include>
        </MetadataFilter>
     </MetadataProvider>
     ```
+
 2. Restart "**shibd**" service:
   * `systemctl restart shibd.service`
 
 ### How to disallow the access to IdPs that support a specific Entity Category
+
 1. Modify "**shibboleth2.xml**":
   * `vim /etc/shibboleth/shibboleth2.xml`
 
@@ -180,17 +197,22 @@ Find here the EDS Configuration Options: https://wiki.shibboleth.net/confluence/
        </MetadataFilter>
     </MetadataProvider>
     ```
+
 2. Restart "**shibd**" service:
   * `systemctl restart shibd.service`
 
 ## Best Practices to follow to maximize the access to the resource
+
 * [REFEDS Discovery Guide](https://discovery.refeds.org/)
 
 ## Authors
+
 ### Original Author
- * Marco Malavolti (marco.malavolti@garr.it)
+
+* Marco Malavolti (marco.malavolti@garr.it)
  
 ## Credits
+
 * [Consortium Shibboleth](https://shibboleth.net/)
 * [REFEDS Discovery Guide](https://discovery.refeds.org/)
 
