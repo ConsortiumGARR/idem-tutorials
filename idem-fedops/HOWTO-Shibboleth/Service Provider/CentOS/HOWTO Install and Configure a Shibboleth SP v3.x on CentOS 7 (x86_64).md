@@ -278,7 +278,7 @@ Enable attribute support by removing comment from the related content into "`/et
 
      <!-- If it is needed to manage the authentication on several IdPs
           install and configure the Shibboleth Embedded Discovery Service
-          by following this HOWTO: http://tiny.cc/howto-idem-shib-eds 
+          by following this HOWTO: https://url.garrlab.it/nakt7 
      -->
      <SSO entityID="https://idp.example.org/idp/shibboleth">
         SAML2
@@ -320,7 +320,7 @@ Enable attribute support by removing comment from the related content into "`/et
 
      <!-- If it is needed to manage the authentication on several IdPs
           install and configure the Shibboleth Embedded Discovery Service
-          by following this HOWTO: http://tiny.cc/howto-idem-shib-eds 
+          by following this HOWTO: https://url.garrlab.it/nakt7s 
      -->
      <SSO discoveryProtocol="SAMLDS" discoveryURL="https://wayf.idem-test.garr.it/WAYF">
         SAML2
