@@ -71,17 +71,17 @@ Please, remember to **replace all occurence** of `example.org` domain name, or p
    * Self signed (3072 bit - 3 years before expiration) - **This HOWTO will use Self Signed Certificate for LDAP**:
 
      ```bash
-     sudo openssl req -newkey rsa:3072 -x509 -nodes -out /etc/openldap/ldap.example.org.crt -keyout /etc/openldap/ldap.example.org.key -days 1095
+     sudo openssl req -newkey rsa:3072 -x509 -nodes -out /etc/openldap/$(hostname -f).crt -keyout /etc/openldap/$(hostname -f).key -days 1095 -subj "/CN=$(hostname -f)"
 
-     sudo chown ldap:ldap /etc/openldap/ldap.example.org.crt
+     sudo chown ldap:ldap /etc/openldap/$(hostname -f).crt
 
-     sudo chown ldap:ldap /etc/openldap/ldap.example.org.key
+     sudo chown ldap:ldap /etc/openldap/$(hostname -f).key
      ```
 
    * Signed:
 
      ```bash
-     sudo openssl req -new -newkey rsa:3072 -nodes -out /etc/ssl/certs/ldap.example.org.csr -keyout /etc/ssl/private/ldap.example.org.key -subj "/C=IT/CN=ldap.example.org"
+     sudo openssl req -new -newkey rsa:3072 -nodes -out /etc/pki/tls/$(hostname -f).csr -keyout /etc/pki/tls/private/$(hostname -f).key -subj "/C=IT/CN=$(hostname -f)"
      ```
 
      (According to [NSA and NIST](https://www.keylength.com/en/compare/), RSA with 3072 bit-modulus is the minimum to protect up to TOP SECRET over than 2030)
