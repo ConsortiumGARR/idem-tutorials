@@ -388,4 +388,7 @@ EOF
 ```
 
 ## LDAP Administration tools
+
+Apache Directory Studio is a complete directory tooling platform intended to be used with any LDAP server.
+
 * [Apache Directory Studio](https://directory.apache.org/studio/)
