@@ -368,25 +368,46 @@ Please, remember to **replace all occurence** of `example.org` domain name, or p
       sudo ldapsearch -x -D 'cn=idpuser,ou=system,dc=example,dc=org' -W -b "uid=user1,ou=people,dc=example,dc=org"
       ```
 
-16. Check that LDAP has TLS ('anonymous' MUST BE returned):
+16. Check that LDAP anonymous binding work with StartTLS:
+    * `sudo ldapwhoami -H ldap:// -x -ZZ`
+   
+      ```bash
+      anonymous
+      ```
+
+17. Disable Anonymous binding:
+
+    ```
+    ldapmodify -Y EXTERNAL -H ldapi:/// <<EOF
+    dn: cn=config
+    changetype: modify
+    add: olcDisallows
+    olcDisallows: bind_anon
+
+    dn: olcDatabase={-1}frontend,cn=config
+    changetype: modify
+    add: olcRequires
+    olcRequires: authc
+    EOF
+    ```
+
+18. Check that LDAP StartTLS is working for `idpuser` and not anymore for `anonymous` user:
+    * `sudo ldapwhoami -x -D 'cn=idpuser,ou=system,dc=example,dc=org' -W -ZZ -v`
+
+      ```bash
+      ldap_initialize( <DEFAULT> )
+      Enter LDAP Password:
+      dn:cn=idpuser,ou=system,dc=example,dc=org
+      Result: Success (0)
+      ```
+
     * `sudo ldapwhoami -H ldap:// -x -ZZ`
 
-17. Disable Anonymous bind
-
-```
-ldapmodify -Y EXTERNAL -H ldapi:/// <<EOF
-dn: cn=config
-changetype: modify
-add: olcDisallows
-olcDisallows: bind_anon
-
-dn: olcDatabase={-1}frontend,cn=config
-changetype: modify
-add: olcRequires
-olcRequires: authc
-EOF
-```
-
+      ```bash
+      ldap_bind: Inappropriate authentication (48)
+	            additional info: anonymous bind disallowed
+      ```
+    
 ## LDAP Administration tools
 
 * [Apache Directory Studio](https://directory.apache.org/studio/): Apache Directory Studio is a complete directory tooling platform intended to be used with any LDAP server.
