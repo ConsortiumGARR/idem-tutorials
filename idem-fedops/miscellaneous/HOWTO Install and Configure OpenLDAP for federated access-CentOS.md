@@ -21,6 +21,12 @@ This HOWTO use `example.org` to provide this guide with example values.
 
 Please, remember to **replace all occurence** of `example.org` domain name, or part of it, with the domain name into the configuration files.
 
+## Documentation
+
+OpenLDAP References:
+ * https://www.openldap.org/
+ * https://www.openldap.org/doc/admin24/quickstart.html
+
 ## Installation
 
 1. System Update:
@@ -146,10 +152,10 @@ Please, remember to **replace all occurence** of `example.org` domain name, or p
 
      ```bash
      dn: dc=example,dc=org
+     dc: example
+     o: Example Organization
      objectClass: dcObject
      objectClass: organization
-     o: example.org
-     dc: example
      ```
 
    * `sudo ldapadd -W -D "cn=root,dc=example,dc=org" -H ldapi:/// -f /etc/openldap/scratch/add_org.ldif`
