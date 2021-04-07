@@ -280,7 +280,6 @@ The Apache HTTP Server will be configured as a reverse proxy and it will be used
      ```
 
 3. Deactivate the `000-default` and `welcome` sites:
-   * `mv /etc/httpd/conf.d/000-default.conf /etc/httpd/conf.d/000-default.conf.deactivated`
    * `mv /etc/httpd/conf.d/welcome.conf /etc/httpd/conf.d/welcome.conf.deactivated`
    
 4. Put SSL credentials in the right place:
