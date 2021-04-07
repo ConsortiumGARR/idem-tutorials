@@ -152,10 +152,10 @@ OpenLDAP References:
 
      ```bash
      dn: dc=example,dc=org
-     dc: example
-     o: Example Organization
      objectClass: dcObject
      objectClass: organization
+     o: Example Organization
+     dc: example
      ```
 
    * `sudo ldapadd -W -D "cn=root,dc=example,dc=org" -H ldapi:/// -f /etc/openldap/scratch/add_org.ldif`
