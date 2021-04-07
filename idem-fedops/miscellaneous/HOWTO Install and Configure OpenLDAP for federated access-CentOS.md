@@ -419,7 +419,7 @@ OpenLDAP References:
 
 ### Bash scripts
 
-* [domain2dn](./domain2dn.sh): An useful script to convert a domain name (e.g.: `example.org`) into its corresponding LDAP distinguish name (e.g.: `dc=example,dc=org`).
+* [domain2dn](./domain2dn.sh): An useful script to convert a domain name (e.g.: `example.org`) into its corresponding LDAP distinguish name (e.g.: `dc=example,dc=org`). The generated string has to be compliant with [RFC2253](https://tools.ietf.org/html/rfc2253).
 
 ## LDAP Administration tools
 
