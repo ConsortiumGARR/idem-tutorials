@@ -9,6 +9,7 @@
 3. [Installation](#installation)
 4. [Configuration](#configuration)
 5. [LDAP Administration tools](#ldap-administration-tools)
+6. [Utilities](#utilities)
 
 ## Requirements
 
@@ -411,3 +412,9 @@ Please, remember to **replace all occurence** of `example.org` domain name, or p
 ## LDAP Administration tools
 
 * [Apache Directory Studio](https://directory.apache.org/studio/): Apache Directory Studio is a complete directory tooling platform intended to be used with any LDAP server.
+
+## Utilities
+
+### Bash scripts
+
+* [domain2dn](./domain2dn.sh): An useful script to convert a domain name (e.g.: `example.org`) into its corresponding LDAP distinguish name (e.g.: `dc=example,dc=org`).
