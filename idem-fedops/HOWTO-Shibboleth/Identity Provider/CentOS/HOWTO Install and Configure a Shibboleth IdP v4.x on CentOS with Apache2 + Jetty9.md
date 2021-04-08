@@ -1167,7 +1167,7 @@ Follow these steps **IF** your organization **IS NOT** connected with the [GARR 
 
 2. Adding an `AttributeFilterPolicy` on the `conf/attribute-filter.xml` file:
    * ```bash
-     wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/idem-example-afp.txt -O /opt/shibboleth-idp/conf/example-afp.txt
+     wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/idem-example-arp.txt -O /opt/shibboleth-idp/conf/example-afp.txt
   
      cat /opt/shibboleth-idp/conf/example-afp.txt
      ```
