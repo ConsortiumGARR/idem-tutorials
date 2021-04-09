@@ -1346,9 +1346,19 @@ Follow this if you need to find a problem of your IdP.
    * **Process Log:** `vim idp-process.log`
 
 ### Utilities
+
 * AACLI: Useful to understand which attributes will be released to the federated resources
   * `export JAVA_HOME=/usr/lib/jvm/java-11-amazon-corretto`
   * `bash /opt/shibboleth-idp/bin/aacli.sh -n <USERNAME> -r <ENTITYID-SP> --saml2`
+
+* Customize IdP Login page with the institutional logo:
+  1. Replace the images found inside `/opt/shibboleth-idp/edit-webapp/images` without renaming them.
+
+  2. Rebuild IdP war file:
+     * `cd /opt/shibboleth-idp/bin ; ./build.sh`
+
+  3. Restart Jetty:
+     * `sudo systemctl restart jetty.service`
 
 ### Useful Documentation
 * https://wiki.shibboleth.net/confluence/display/IDP4/SpringConfiguration
