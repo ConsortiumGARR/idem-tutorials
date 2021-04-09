@@ -1173,6 +1173,8 @@ Follow these steps **IF** your organization **IS NOT** connected with the [GARR 
      ```
 
    * copy and paste the content into `/opt/shibboleth-idp/conf/attribute-filter.xml` before the last element `</AttributeFilterPolicyGroup>`.
+   
+   * Make sure to change "### SP-ENTITYID ###" of the text pasted with the entityID of the Service Provider to connect with the Identity Provider installed.
   
 3. Restart Jetty to apply changes:
    * `systemctl restart jetty.service`
