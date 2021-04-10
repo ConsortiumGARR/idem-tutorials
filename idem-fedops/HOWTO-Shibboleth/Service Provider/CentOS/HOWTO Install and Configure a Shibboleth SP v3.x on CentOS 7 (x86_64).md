@@ -57,7 +57,6 @@
 This HOWTO use `example.org` to provide this guide with example values.
 
 Please, remember to **replace all occurence** of `example.org` domain name, or part of it, with the SP domain name into the configuration files.
-
 ## Installation Instructions
 
 ### Install software requirements
@@ -75,7 +74,6 @@ Please, remember to **replace all occurence** of `example.org` domain name, or p
 2. Create the Shibboleth Repository:
    * `yum install httpd.x86_64`
 
-3. Deactivate the `welcome` sites:
    * `mv /etc/httpd/conf.d/welcome.conf /etc/httpd/conf.d/welcome.conf.deactivated`
    
 4. Prevent Apache from listing web directory files to visitors:
@@ -196,13 +194,10 @@ Please, remember to **replace all occurence** of `example.org` domain name, or p
      Listen 127.0.0.1:80
      ```
 
-8. Deactivate the `000-default` site:
-   * `mv /etc/httpd/conf.d/000-default.conf /etc/httpd/conf.d/000-default.conf.deactivated`
-
-9. Restart Apache to apply changes
+8. Restart Apache to apply changes
    * `systemctl restart httpd.service`
   
-10. Verify the strength of your server on:
+9. Verify the strength of your server on:
    * [**https://www.ssllabs.com/ssltest/analyze.html**](https://www.ssllabs.com/ssltest/analyze.html)
 
 ### Configure Shibboleth SP
