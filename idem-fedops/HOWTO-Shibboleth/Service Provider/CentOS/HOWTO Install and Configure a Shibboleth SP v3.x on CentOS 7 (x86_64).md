@@ -278,7 +278,7 @@ Enable attribute support by removing comment from the related content into "`/et
      <SSO entityID="https://idp.example.org/idp/shibboleth">
         SAML2
      </SSO>
-
+     <!-- ... other things ... -->
      <MetadataProvider type="XML" validate="true"
                        url="https://idp.example.org/idp/shibboleth"
                        backingFilePath="idp-metadata.xml" maxRefreshDelay="7200" />
