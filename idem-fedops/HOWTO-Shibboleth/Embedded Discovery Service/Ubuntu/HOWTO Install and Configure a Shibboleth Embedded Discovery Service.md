@@ -68,6 +68,7 @@ The EDS is a set of Javascript and CSS files, so installing it and using it is s
           discoveryURL="https://###YOUR.SP.FQDN###/shibboleth-ds/index.html">
         SAML2
      </SSO>
+
      <!-- SAML and local-only logout. -->
      <Logout>SAML2 Local</Logout>
 
