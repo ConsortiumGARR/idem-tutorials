@@ -70,7 +70,9 @@ The EDS is a set of Javascript and CSS files, so installing it and using it is s
      </SSO>
      <!-- SAML and local-only logout. -->
      <Logout>SAML2 Local</Logout>
-     ...
+
+     <!-- ...other things ... -->
+
      <!-- JSON feed of discovery information. -->
      <Handler type="DiscoveryFeed" Location="/DiscoFeed"/>
      ```
