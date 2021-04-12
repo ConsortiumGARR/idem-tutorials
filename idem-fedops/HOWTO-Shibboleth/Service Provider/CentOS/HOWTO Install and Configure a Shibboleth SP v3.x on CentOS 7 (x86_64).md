@@ -292,6 +292,9 @@ Enable attribute support by removing comment from the related content into "`/et
     * `sudo systemctl restart shibd`
     * `sudo systemctl restart httpd`
 
+ 3. Authenticate on the "secure" application:
+    * `https://sp.example.org/secure`
+
 ### Connect SP to the Federation
 
 > Follow these steps **IF AND ONLY IF** your organization is connected to the [GARR Network](https://www.garr.it/en/infrastructures/network-infrastructure/connected-organizations-and-sites?key=all)
