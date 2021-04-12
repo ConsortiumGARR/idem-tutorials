@@ -292,8 +292,7 @@ Enable attribute support by removing comment from the related content into "`/et
     * `sudo systemctl restart shibd`
     * `sudo systemctl restart httpd`
 
- 3. Authenticate on the "secure" application:
-    * `https://sp.example.org/secure`
+ 3. Jump to [Test](#test)
 
 ### Connect SP to the Federation
 
