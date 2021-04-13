@@ -54,9 +54,10 @@
 
 ## Notes
 
-This HOWTO use `example.org` to provide this guide with example values.
+This HOWTO use `example.org` as domain name and `sp.example.org` as FQDN (Full Qualified Domain Name) to provide example values to this guide.
 
-Please, remember to **replace all occurence** of `example.org` domain name, or part of it, with the SP domain name into the configuration files.
+Please, remember to **replace all occurence** of `example.org` domain name, or part of it, with the SP domain name into the configuration files and also `sp.example.org` with the FQDN of your SP server.
+
 ## Installation Instructions
 
 ### Install software requirements
@@ -259,8 +260,9 @@ Please, remember to **replace all occurence** of `example.org` domain name, or p
       * `systemctl restart httpd.service`
 
 ### Enable attributes on attribute mapping
+> The Attribute Map file is used by the Service Provider to recognize and support new attributes released by an Identity Provider
 
-Enable attribute support by removing comment from the related content into "`/etc/shibboleth/attribute-map.xml`"
+Enable attribute support by removing comment from the related content into `/etc/shibboleth/attribute-map.xml`.
 
 ### Connect SP directly to an IdP
 
