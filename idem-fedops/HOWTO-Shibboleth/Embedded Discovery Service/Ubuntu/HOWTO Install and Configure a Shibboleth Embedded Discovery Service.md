@@ -1,5 +1,7 @@
 # HOWTO Install and Configure a Shibboleth Embedded Discovery Service
 
+<img width="120px" src="https://wiki.idem.garr.it/IDEM_Approved.png" />
+
 The Embedded Discovery Service (EDS) allows a Service Provider to run a discovery service within their own site. As such the discovery service can look like any other page on the site and thus not be as jarring to a user as being redirected to a totally different, third-party, discovery service site.
 The EDS is a set of Javascript and CSS files, so installing it and using it is straight forward and does not require any additional software. Note: you must already have an installed and configured Shibboleth Service Provider, V2.4+, in order to use the EDS.
 
