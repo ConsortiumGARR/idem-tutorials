@@ -155,6 +155,8 @@ OpenLDAP References:
    > must match with the `dc: example` provided by the LDIF.  
    >   
    > In a few words: `dc=example` must match with `dc: example`
+   > 
+   > Useful tool: [domain2dn](./domain2dn.sh)
 
    * `sudo vim /etc/openldap/scratch/add_org.ldif`
 
