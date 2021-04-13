@@ -147,6 +147,14 @@ OpenLDAP References:
    * `sudo systemctl restart slapd`
 
 4. Create organization and root user in LDAP (example.org):
+   > Pay great attention on LDIFs that will change part of the distinguished name (dn).  
+   > The `dn` must be globally unique, because it is used to refer to an entry unambiguously. 
+   > The DN will be always lowercase.  
+   >   
+   > On the following example, the first part of the DN, `dc=example`,  
+   > must match with the `dc: example` provided by the LDIF.  
+   >   
+   > In a few words: `dc=example` must match with `dc: example`
 
    * `sudo vim /etc/openldap/scratch/add_org.ldif`
 
@@ -161,6 +169,17 @@ OpenLDAP References:
    * `sudo ldapadd -W -D "cn=root,dc=example,dc=org" -H ldapi:/// -f /etc/openldap/scratch/add_org.ldif`
 
 5. Create three branches, `peole`, `groups` and `system`, with:
+   > Pay great attention on LDIFs that will change part of the distinguished name (dn).  
+   > The `dn` must be globally unique, because it is used to refer to an entry unambiguously.  
+   > The DN will be always lowercase
+   >   
+   > On the following example, the first part of the DN, `ou=people`,  
+   > must match with the `dc: People` provided by the LDIF.  
+   >   
+   > In a few words: `dc=people` must match with `dc: People`  
+   > 
+   > Same behaviour for `Groups` and `Systems`
+
    * `vim /etc/openldap/scratch/add_ou.ldif`
 
      ```bash
@@ -185,6 +204,15 @@ OpenLDAP References:
    * Verify with: `sudo ldapsearch -x -b dc=example,dc=org`
 
 6. Create the `idpuser` needed to perform "Bind and Search" operations:
+   > Pay great attention on LDIFs that will change part of the distinguished name (dn).  
+   > The `dn` must be globally unique, because it is used to refer to an entry unambiguously.  
+   > The DN will be always lowercase
+   >   
+   > On the following example, the first part of the DN, `cn=idpuser`,  
+   > must match with the `cn: idpuser` provided by the LDIF.  
+   >   
+   > In a few words: `cn=idpuser` must match with `cn: idpuser`
+
    * Generate password: `slappasswd`
  
    * `sudo vim /etc/openldap/scratch/add_idpuser.ldif`
@@ -346,6 +374,15 @@ OpenLDAP References:
     * `sudo ldapmodify -Y EXTERNAL -H ldapi:/// -f /etc/openldap/scratch/olcSizeLimit.ldif`
 
 14. Add an user:
+    > Pay great attention on LDIFs that will change part of the distinguished name (dn).  
+    > The `dn` must be globally unique, because it is used to refer to an entry unambiguously.  
+    > The DN will be always lowercase
+    >   
+    > On the following example, the first part of the DN, `uid=user1`,  
+    > must match with the `uid: user1` provided by the LDIF.  
+    >   
+    > In a few words: `uid=user1` must match with `uid: user1`
+
     * `sudo vim /etc/openldap/scratch/user1.ldif`
 
       ```bash
