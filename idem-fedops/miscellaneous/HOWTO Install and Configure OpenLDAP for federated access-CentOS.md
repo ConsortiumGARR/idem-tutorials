@@ -423,19 +423,21 @@ OpenLDAP References:
 
 17. Disable Anonymous binding:
 
-    ```
-    ldapmodify -Y EXTERNAL -H ldapi:/// <<EOF
-    dn: cn=config
-    changetype: modify
-    add: olcDisallows
-    olcDisallows: bind_anon
+    * `sudo vim /etc/openldap/scratch/disableAnonymousBind.ldif`:
 
-    dn: olcDatabase={-1}frontend,cn=config
-    changetype: modify
-    add: olcRequires
-    olcRequires: authc
-    EOF
-    ```
+      ```
+      dn: cn=config
+      changetype: modify
+      add: olcDisallows
+      olcDisallows: bind_anon
+
+      dn: olcDatabase={-1}frontend,cn=config
+      changetype: modify
+      add: olcRequires
+      olcRequires: authc
+      ```
+
+    * `sudo ldapmodify -Y EXTERNAL -H ldapi:/// -f /etc/openldap/scratch/disableAnonymousBind.ldif`
 
 18. Check that LDAP StartTLS is working for `idpuser` and not anymore for `anonymous` user:
     * `sudo ldapwhoami -x -D 'cn=idpuser,ou=system,dc=example,dc=org' -W -ZZ -v`
