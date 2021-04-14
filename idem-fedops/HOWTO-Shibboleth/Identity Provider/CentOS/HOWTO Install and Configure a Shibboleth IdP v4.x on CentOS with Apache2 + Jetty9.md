@@ -1087,7 +1087,7 @@ Translate the IdP messages in your language:
 
         - Remove all ":8443" from the existing URL (such port is not used anymore)
 
-      <AttributeAuthorityDescriptor> Section (Needed ONLY if AttributeQuery is used by specific SPs. Otherwise, remove entirely):
+      <AttributeAuthorityDescriptor> Section (Remember what was said at the beginning of this step):
         - From the list "protocolSupportEnumeration" replace the value:
           - urn:oasis:names:tc:SAML:1.1:protocol
           with:
