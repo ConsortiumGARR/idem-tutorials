@@ -274,7 +274,7 @@ The Apache HTTP Server will be configured as a reverse proxy and it will be used
    * `sudo chown -R apache: /var/www/html/$(hostname -f)`
    * `echo '<h1>It Works!</h1>' > /var/www/html/$(hostname -f)/index.html`
 
-2. Create the Virtualhost file (**pay attention and follow the starting comment**):
+2. Create the Virtualhost file (**please pay attention: you need to edit this file and customize it, check the initial comment inside of it**):
    * ```bash
      wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/apache2/idp.example.org.conf -O /etc/httpd/conf.d/000-$(hostname -f).conf
      ```
