@@ -80,9 +80,9 @@
 
 ## Notes
 
-This HOWTO use `example.org` to provide this guide with example values.
+This HOWTO uses `example.org` to provide this guide with example values.
 
-Please, remember to **replace all occurence** of `example.org` domain name, or part of it, with the IdP domain name into the configuration files.
+Please remember to **replace all occurencences** of the `example.org` domain name with the IdP domain name in the configuration files.
 
 ## Install Instructions
 
