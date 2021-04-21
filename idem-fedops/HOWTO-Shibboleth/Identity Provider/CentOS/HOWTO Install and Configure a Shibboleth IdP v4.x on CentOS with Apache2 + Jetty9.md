@@ -1181,7 +1181,7 @@ Follow these steps **IF** your organization **IS NOT** connected with the [GARR 
 
 ### Configure Attribute Filter Policy to release attributes to Federated Resources
 
-Follow these steps **ONLY IF** your organization is connected with the [GARR Network](https://www.garr.it/en/infrastructures/network-infrastructure/connected-organizations-and-sites?key=all)
+> Follow these steps **ONLY IF** your organization is connected with the [GARR Network](https://www.garr.it/en/infrastructures/network-infrastructure/connected-organizations-and-sites)
 
 1. Become ROOT:
    * `sudo su -`
