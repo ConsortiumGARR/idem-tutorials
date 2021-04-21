@@ -1205,7 +1205,7 @@ Translate the IdP messages in your language:
 
 ### Configure Attribute Filter Policy to release attributes to Federated Resources
 
-> Follow these steps ONLY IF your IdP is accepted into IDEM Production Federation
+> Follow these steps ONLY IF your Organization is member of [GARR community](https://www.garr.it/it/infrastrutture/rete-nazionale/enti-e-sedi-collegate).
 
 1. Become ROOT:
    * `sudo su -`
