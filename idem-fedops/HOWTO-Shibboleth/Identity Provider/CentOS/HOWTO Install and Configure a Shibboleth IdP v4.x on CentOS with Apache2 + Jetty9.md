@@ -1151,7 +1151,7 @@ These instructions will regularly update the secret key (and increase its versio
 > * https://wiki.shibboleth.net/confluence/display/IDP4/AttributeFilterConfiguration
 > * https://wiki.shibboleth.net/confluence/display/IDP4/AttributeFilterPolicyConfiguration
 
-Follow these steps **IF** your organization **IS NOT** connected with the [GARR Network](https://www.garr.it/en/infrastructures/network-infrastructure/connected-organizations-and-sites?key=all) or **IF** you need to connect directly a Shibboleth Service Provider.
+Follow these steps **IF** your organization **IS NOT** connected to the [GARR Network](https://www.garr.it/en/infrastructures/network-infrastructure/connected-organizations-and-sites) or **IF** you need to connect directly a Shibboleth Service Provider.
 
 1. Connect the SP to the IdP by adding its metadata on the `metadata-providers.xml` configuration file:
 
@@ -1181,7 +1181,7 @@ Follow these steps **IF** your organization **IS NOT** connected with the [GARR 
 
 ### Configure Attribute Filter Policy to release attributes to Federated Resources
 
-> Follow these steps **ONLY IF** your organization is connected with the [GARR Network](https://www.garr.it/en/infrastructures/network-infrastructure/connected-organizations-and-sites)
+> Follow these steps **ONLY IF** your organization is connected to the [GARR Network](https://www.garr.it/en/infrastructures/network-infrastructure/connected-organizations-and-sites)
 
 1. Become ROOT:
    * `sudo su -`
@@ -1228,7 +1228,7 @@ Follow these steps **IF** your organization **IS NOT** connected with the [GARR 
 
 ### Register the IdP on the IDEM Test Federation
 
-Follow these steps **ONLY IF** your organization is connected with the [GARR Network](https://www.garr.it/en/infrastructures/network-infrastructure/connected-organizations-and-sites?key=all)
+Follow these steps **ONLY IF** your organization is connected to the [GARR Network](https://www.garr.it/en/infrastructures/network-infrastructure/connected-organizations-and-sites?key=all)
 
 1. Register you IdP metadata on IDEM Entity Registry (your entity have to be approved by an IDEM Federation Operator before become part of IDEM Test Federation):
    * `https://registry.idem.garr.it/`
