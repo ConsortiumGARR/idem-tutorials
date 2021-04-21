@@ -1205,7 +1205,7 @@ Translate the IdP messages in your language:
 
 ### Configure Attribute Filter Policy to release attributes to Federated Resources
 
-> Follow these steps ONLY IF your Organization is member of [GARR community](https://www.garr.it/it/infrastrutture/rete-nazionale/enti-e-sedi-collegate).
+> Follow these steps ONLY IF your Organization is connected to the [GARR Network](https://www.garr.it/en/infrastructures/network-infrastructure/connected-organizations-and-sites).
 
 1. Become ROOT:
    * `sudo su -`
