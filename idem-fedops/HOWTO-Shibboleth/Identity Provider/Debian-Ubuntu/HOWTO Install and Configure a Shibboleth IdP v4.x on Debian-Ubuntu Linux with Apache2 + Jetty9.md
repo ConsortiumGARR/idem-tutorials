@@ -1252,6 +1252,8 @@ Translate the IdP messages in your language:
 
 ### Register the IdP on the IDEM Test Federation
 
+> Follow these steps ONLY IF your Organization is connected to the [GARR Network](https://www.garr.it/en/infrastructures/network-infrastructure/connected-organizations-and-sites).
+
 1. Register you IdP metadata on IDEM Entity Registry (your entity have to be approved by an IDEM Federation Operator before become part of IDEM Test Federation):
    * `https://registry.idem.garr.it/`
 
