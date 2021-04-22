@@ -19,12 +19,12 @@
    3. [Configure Shibboleth SP](#configure-shibboleth-sp)
    4. [Configure an example federated resource "secure"](#configure-an-example-federated-resource-secure)
    5. [Enable attributes on attribute mapping](#enable-attributes-on-attribute-mapping)
-   6. [Connect SP directly to an IdP](#connect-sp-directly-to-an-idp)
-   7. [Connect SP to the Federation](#connect-sp-to-the-federation)
+   6. [Connect SP to the Federation](#connect-sp-to-the-federation)
 6. [Test](#test)
 7. [Appendix A - SE Linux](#appendix-a---se-linux)
 8. [Appendix B - Enable Attribute Checker Support on Shibboleth SP](#appendix-b---enable-attribute-checker-support-on-shibboleth-sp)
-9. [Authors](#authors)
+9. [Appendix C - Connect SP directly to an IdP](#appendix-c---connect-sp-directly-to-an-idp)
+10. [Authors](#authors)
 
 
 ## Requirements
@@ -264,41 +264,11 @@ Please, remember to **replace all occurence** of `example.org` domain name, or p
 
 Enable attribute support by removing comment from the related content into `/etc/shibboleth/attribute-map.xml`.
 
-### Connect SP directly to an IdP
 
-> Follow these steps if your organization **IS NOT** connected to the [GARR Network](https://www.garr.it/en/infrastructures/network-infrastructure/connected-organizations-and-sites?key=all) or **IF** you need to connect your SP with only one IdP
-
-1. Edit `shibboleth2.xml` opportunely:
-   * `vim /etc/shibboleth/shibboleth2.xml`
-
-     ```bash
-
-     <!-- If it is needed to manage the authentication on several IdPs
-          install and configure the Shibboleth Embedded Discovery Service
-          by following this HOWTO: https://url.garrlab.it/nakt7 
-     -->
-     <SSO entityID="https://idp.example.org/idp/shibboleth">
-        SAML2
-     </SSO>
-     <!-- ... other things ... -->
-     <MetadataProvider type="XML" validate="true"
-                       url="https://idp.example.org/idp/shibboleth"
-                       backingFilePath="idp-metadata.xml" maxRefreshDelay="7200" />
-     ```
- 
-     (*Replace `entityID` with the IdP entityID and `url` with an URL where it can be downloaded its metadata*)
-     
-     (`idp-metadata.xml` will be saved into `/var/cache/shibboleth`)
- 
- 2. Restart `shibd` and `httpd` daemon:
-    * `sudo systemctl restart shibd`
-    * `sudo systemctl restart httpd`
-
- 3. Jump to [Test](#test)
 
 ### Connect SP to the Federation
 
-> Follow these steps **IF AND ONLY IF** your organization is connected to the [GARR Network](https://www.garr.it/en/infrastructures/network-infrastructure/connected-organizations-and-sites?key=all)
+> Follow these steps **IF AND ONLY IF** your organization will be a Partner or a Member of te [IDEM Federation](https://idem.garr.it/en/join/join-idem)
 
 1. Retrieve the IDEM GARR Federation Certificate needed to verify the signed metadata:
    * `cd /etc/shibboleth/`
@@ -462,6 +432,37 @@ The SE Linux is disabled if you will find `Current mode: permissive` from the co
 
 Thanks eduGAIN for the original "HOWTO" posted [here](https://wiki.geant.org/display/eduGAIN/How+to+configure+Shibboleth+SP+attribute+checker).
 
+### Appendix C - Connect SP directly to an IdP
+
+> Follow these steps **IF** you need to connect one SP with only one IdP. It is useful for test purposes.
+
+1. Edit `shibboleth2.xml` opportunely:
+   * `vim /etc/shibboleth/shibboleth2.xml`
+
+     ```bash
+
+     <!-- If it is needed to manage the authentication on several IdPs
+          install and configure the Shibboleth Embedded Discovery Service
+          by following this HOWTO: https://url.garrlab.it/nakt7 
+     -->
+     <SSO entityID="https://idp.example.org/idp/shibboleth">
+        SAML2
+     </SSO>
+     <!-- ... other things ... -->
+     <MetadataProvider type="XML" validate="true"
+                       url="https://idp.example.org/idp/shibboleth"
+                       backingFilePath="idp-metadata.xml" maxRefreshDelay="7200" />
+     ```
+ 
+     (*Replace `entityID` with the IdP entityID and `url` with an URL where it can be downloaded its metadata*)
+     
+     (`idp-metadata.xml` will be saved into `/var/cache/shibboleth`)
+ 
+ 2. Restart `shibd` and `httpd` daemon:
+    * `sudo systemctl restart shibd`
+    * `sudo systemctl restart httpd`
+
+ 3. Jump to [Test](#test)
 
 ## Authors
 
