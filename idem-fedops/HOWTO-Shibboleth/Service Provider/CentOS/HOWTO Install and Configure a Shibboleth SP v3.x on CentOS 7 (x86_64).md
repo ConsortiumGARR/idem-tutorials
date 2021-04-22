@@ -268,7 +268,7 @@ Enable attribute support by removing comment from the related content into `/etc
 
 ### Connect SP to the Federation
 
-> Follow these steps **IF AND ONLY IF** your organization will be a Partner or a Member of te [IDEM Federation](https://idem.garr.it/en/join/join-idem)
+> Follow these steps **IF AND ONLY IF** your organization will join as a Partner or a Member into [IDEM Federation](https://idem.garr.it/en/federazione-idem-en/idem-federation)
 
 1. Retrieve the IDEM GARR Federation Certificate needed to verify the signed metadata:
    * `cd /etc/shibboleth/`
