@@ -33,15 +33,15 @@
    10. [Translate IdP messages into the preferred language](#translate-idp-messages-into-preferred-language)
    11. [Disable SAML1 Deprecated Protocol](#disable-saml1-deprecated-protocol)
    12. [Secure cookies and other IDP data](#secure-cookies-and-other-idp-data)
-   13. [Connect an SP with the IdP](#connect-an-sp-with-the-idp)
-   14. [Configure Attribute Filter Policy to release attributes to Federated Resources](#configure-attribute-filter-policy-to-release-attributes-to-federated-resources)
-   15. [Register the IdP on the IDEM Test Federation](#register-the-idp-on-the-idem-test-federation)
+   13. [Configure Attribute Filter Policy to release attributes to Federated Resources](#configure-attribute-filter-policy-to-release-attributes-to-federated-resources)
+   14. [Register the IdP on the IDEM Test Federation](#register-the-idp-on-the-idem-test-federation)
 6. [Appendix A: Enable Consent Module: Attribute Release + Terms of Use Consent](#appendix-a-enable-consent-module-attribute-release--terms-of-use-consent)
 7. [Appendix B: Import persistent-id from a previous database](#appendix-b-import-persistent-id-from-a-previous-database)
 8. [Appendix C: Useful logs to find problems](#appendix-c-useful-logs-to-find-problems)
-9. [Utilities](#utilities)
-10. [Useful Documentation](#useful-documentation)
-11. [Authors](#authors)
+9. [Appendix D: Connect an SP with the IdP](#appendix-d-connect-an-sp-with-the-idp)
+10. [Utilities](#utilities)
+11. [Useful Documentation](#useful-documentation)
+12. [Authors](#authors)
     * [Original Author](#original-author)
 
 ## Requirements
@@ -1143,42 +1143,6 @@ These instructions will regularly update the secret key (and increase its versio
    * `idp.sealer._count` - Number of earlier keys to keep (default 30)
    * `idp.sealer._sync_hosts` - Space separated list of hosts to scp the sealer files to (default generate locally)
 
-### Connect an SP with the IdP
-
-> Shibboleth Documentation Reference: 
-> * https://wiki.shibboleth.net/confluence/display/IDP4/ChainingMetadataProvider
-> * https://wiki.shibboleth.net/confluence/display/IDP4/FileBackedHTTPMetadataProvider
-> * https://wiki.shibboleth.net/confluence/display/IDP4/AttributeFilterConfiguration
-> * https://wiki.shibboleth.net/confluence/display/IDP4/AttributeFilterPolicyConfiguration
-
-Follow these steps **IF** your organization **IS NOT** connected to the [GARR Network](https://www.garr.it/en/infrastructures/network-infrastructure/connected-organizations-and-sites) or **IF** you need to connect directly a Shibboleth Service Provider.
-
-1. Connect the SP to the IdP by adding its metadata on the `metadata-providers.xml` configuration file:
-
-   * `vim /opt/shibboleth-idp/conf/metadata-providers.xml`
-  
-     ```bash
-     <MetadataProvider id="HTTPMetadata"
-                       xsi:type="FileBackedHTTPMetadataProvider"
-                       backingFile="%{idp.home}/metadata/sp-metadata.xml"
-                       metadataURL="https://sp.example.org/Shibboleth.sso/Metadata"
-                       failFastInitialization="false"/>
-     ```
-
-2. Adding an `AttributeFilterPolicy` on the `conf/attribute-filter.xml` file:
-   * ```bash
-     wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/idem-example-arp.txt -O /opt/shibboleth-idp/conf/example-arp.txt
-  
-     cat /opt/shibboleth-idp/conf/example-arp.txt
-     ```
-
-   * copy and paste the content into `/opt/shibboleth-idp/conf/attribute-filter.xml` before the last element `</AttributeFilterPolicyGroup>`.
-   
-   * Make sure to change "### SP-ENTITYID ###" of the text pasted with the entityID of the Service Provider to connect with the Identity Provider installed.
-  
-3. Restart Jetty to apply changes:
-   * `systemctl restart jetty.service`
-
 ### Configure Attribute Filter Policy to release attributes to Federated Resources
 
 > Follow these steps **ONLY IF** your organization is connected to the [GARR Network](https://www.garr.it/en/infrastructures/network-infrastructure/connected-organizations-and-sites)
@@ -1344,6 +1308,42 @@ Follow this if you need to find a problem of your IdP.
    * **Consent Log:** `vim idp-consent-audit.log`
    * **Warn Log:** `vim idp-warn.log`
    * **Process Log:** `vim idp-process.log`
+
+### Appendix D: Connect an SP with the IdP
+
+> Shibboleth Documentation Reference: 
+> * https://wiki.shibboleth.net/confluence/display/IDP4/ChainingMetadataProvider
+> * https://wiki.shibboleth.net/confluence/display/IDP4/FileBackedHTTPMetadataProvider
+> * https://wiki.shibboleth.net/confluence/display/IDP4/AttributeFilterConfiguration
+> * https://wiki.shibboleth.net/confluence/display/IDP4/AttributeFilterPolicyConfiguration
+
+Follow these steps **IF** your organization **IS NOT** connected to the [GARR Network](https://www.garr.it/en/infrastructures/network-infrastructure/connected-organizations-and-sites) or **IF** you need to connect directly a Shibboleth Service Provider.
+
+1. Connect the SP to the IdP by adding its metadata on the `metadata-providers.xml` configuration file:
+
+   * `vim /opt/shibboleth-idp/conf/metadata-providers.xml`
+  
+     ```bash
+     <MetadataProvider id="HTTPMetadata"
+                       xsi:type="FileBackedHTTPMetadataProvider"
+                       backingFile="%{idp.home}/metadata/sp-metadata.xml"
+                       metadataURL="https://sp.example.org/Shibboleth.sso/Metadata"
+                       failFastInitialization="false"/>
+     ```
+
+2. Adding an `AttributeFilterPolicy` on the `conf/attribute-filter.xml` file:
+   * ```bash
+     wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/idem-example-arp.txt -O /opt/shibboleth-idp/conf/example-arp.txt
+  
+     cat /opt/shibboleth-idp/conf/example-arp.txt
+     ```
+
+   * copy and paste the content into `/opt/shibboleth-idp/conf/attribute-filter.xml` before the last element `</AttributeFilterPolicyGroup>`.
+   
+   * Make sure to change "### SP-ENTITYID ###" of the text pasted with the entityID of the Service Provider to connect with the Identity Provider installed.
+  
+3. Restart Jetty to apply changes:
+   * `systemctl restart jetty.service`
 
 ### Utilities
 
