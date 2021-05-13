@@ -151,7 +151,7 @@ It is a Java Web Application that can be deployed with its WAR file.
 
 3. Run the installer `install.sh`:
    > According to [NSA and NIST](https://www.keylength.com/en/compare/), RSA with 3072 bit-modulus is the minimum to protect up to TOP SECRET over than 2030.
-   
+
    * `cd /usr/local/src/shibboleth-identity-provider-4.x.y/bin`
    * `bash install.sh -Didp.host.name=$(hostname -f) -Didp.keysize=3072`
 
@@ -169,7 +169,7 @@ It is a Java Web Application that can be deployed with its WAR file.
      Attribute Scope: [example.org] ?
      ```
 
-     By starting from this point the variable **idp.home** refers to the directory: `/opt/shibboleth-idp`
+     By starting from this point, the variable **idp.home** refers to the directory: `/opt/shibboleth-idp`
      
      Backup the `###PASSWORD-FOR-BACKCHANNEL###` value somewhere to be able to find it when you need it.
      
@@ -232,9 +232,9 @@ Jetty is a Web server and a Java Servlet container. It will be used to run the I
     * `systemctl start jetty`
     * `systemctl check jetty` (active)
 
-    (If you receive an error likes "*Job for jetty.service failed because the control process exited with error code. See "systemctl status jetty.service" and "journalctl -xe" for details.*", try this:
+    If you receive an error likes "*Job for jetty.service failed because the control process exited with error code. See "systemctl status jetty.service" and "journalctl -xe" for details.*", try this:
       * `rm /var/run/jetty/jetty.pid`
-      * `service jetty start`
+      * `systemctl start jetty.service`
 
 ## Configuration Instructions
 
@@ -243,11 +243,11 @@ Jetty is a Web server and a Java Servlet container. It will be used to run the I
 1. Become ROOT:
    * `sudo su -`
 
-2. Configure IdP Context Descriptor
+2. Configure the IdP Context Descriptor:
    * `mkdir /opt/jetty/webapps`
    * `vim /opt/jetty/webapps/idp.xml`
 
-     ```bash
+     ```xml
      <Configure class="org.eclipse.jetty.webapp.WebAppContext">
        <Set name="war"><SystemProperty name="idp.home"/>/war/idp.war</Set>
        <Set name="contextPath">/idp</Set>
@@ -269,24 +269,27 @@ Jetty is a Web server and a Java Servlet container. It will be used to run the I
 
 The Apache HTTP Server will be configured as a reverse proxy and it will be used for SSL offloading.
 
-1. Create the DocumentRoot:
+1. Become ROOT:
+   * `sudo su -`
+
+2. Create the DocumentRoot:
    * `mkdir /var/www/html/$(hostname -f)`
    * `sudo chown -R apache: /var/www/html/$(hostname -f)`
    * `echo '<h1>It Works!</h1>' > /var/www/html/$(hostname -f)/index.html`
 
-2. Create the Virtualhost file (**please pay attention: you need to edit this file and customize it, check the initial comment inside of it**):
+3. Create the Virtualhost file (**please pay attention: you need to edit this file and customize it, check the initial comment inside of it**):
    * ```bash
      wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/apache2/idp.example.org.conf -O /etc/httpd/conf.d/000-$(hostname -f).conf
      ```
 
-3. Deactivate the `000-default` and `welcome` sites:
+4. Deactivate the `welcome` site:
    * `mv /etc/httpd/conf.d/welcome.conf /etc/httpd/conf.d/welcome.conf.deactivated`
    
-4. Put SSL credentials in the right place:
+5. Put SSL credentials in the right place:
    * HTTPS Server Certificate (Public Key) inside `/etc/pki/tls/certs`
-   * HTTPS Server Key (Private Key) inside `/etc/pki/tls/private`	
+   * HTTPS Server Key (Private Key) inside `/etc/pki/tls/private`
    * Add CA Cert into `/etc/pki/tls/certs`
-     * If you use GARR TCS (Sectigo CA): 
+     * If you use GARR TCS (Sectigo CA):
        ```bash
        wget -O /etc/pki/tls/certs/GEANT_OV_RSA_CA_4.pem https://crt.sh/?d=2475254782
        
@@ -296,30 +299,30 @@ The Apache HTTP Server will be configured as a reverse proxy and it will be used
        
        rm /etc/pki/tls/certs/SectigoRSAOrganizationValidationSecureServerCA.crt
        ```
-       
-     * If you use ACME (Let's Encrypt): 
+
+     * If you use ACME (Let's Encrypt):
        * `ln -s /etc/letsencrypt/live/<SERVER_FQDN>/chain.pem /etc/pki/tls/certs/ACME-CA.pem`
 
-5. Configure the right privileges for the SSL Certificate and Key used by HTTPS:
+6. Configure the right privileges for the SSL Certificate and Key used by HTTPS:
    * `chmod 400 /etc/pki/tls/private/$(hostname -f).key`
    * `chmod 644 /etc/pki/tls/certs/$(hostname -f).crt`
    
      (*`$(hostname -f)` will provide your IdP Full Qualified Domain Name*)
 
-6. Configure SELinux to allow `mod_proxy` to initiate outbound connections:
+7. Configure SELinux to allow `mod_proxy` to initiate outbound connections:
    * `sestatus`
 
    If SELinux is enabled:
    * `/usr/sbin/setsebool -P httpd_can_network_connect 1`
 
-7. Restart Apache: 
+8. Restart Apache: 
    * `systemctl restart httpd.service`
 
-8. Check that IdP metadata is available on:
+9. Check that IdP metadata is available on:
    * ht<span>tps://</span>idp.example.org/idp/shibboleth
 
-9. Verify the strength of your IdP's machine on:
-   * [**https://www.ssllabs.com/ssltest/analyze.html**](https://www.ssllabs.com/ssltest/analyze.html)
+10. Verify the strength of your IdP's machine on:
+    * [**https://www.ssllabs.com/ssltest/analyze.html**](https://www.ssllabs.com/ssltest/analyze.html)
    
 ### Configure Shibboleth Identity Provider Storage
 
@@ -341,10 +344,10 @@ Check IdP Status:
    * `bash /opt/shibboleth-idp/bin/status.sh`
 
 #### Strategy B - JPA Storage Service - using a database
- 
+
 This Storage service will memorize User Consent data on persistent database SQL.
 
-1. Become ROOT of the machine:
+1. Become ROOT: 
    * `sudo su -`
 
 2. Install required packages:
@@ -358,8 +361,8 @@ This Storage service will memorize User Consent data on persistent database SQL.
  
 5. (OPTIONAL) MySQL DB Access without password:
    * `vim /root/.my.cnf`
-     
-     ```bash
+
+     ```cnf
      [client]
      user=root
      password=##ROOT-DB-PASSWORD-CHANGEME##
@@ -541,7 +544,7 @@ This Storage service will memorize User Consent data on persistent database SQL.
           idp.attribute.resolver.LDAP.bindDN              = %{idp.authn.LDAP.bindDN:undefined}
           idp.attribute.resolver.LDAP.useStartTLS         = %{idp.authn.LDAP.useStartTLS:true}
           idp.attribute.resolver.LDAP.trustCertificates   = %{idp.authn.LDAP.trustCertificates:undefined}
-          # The searchFilter is is used to find user attributes from an LDAP source
+          # The searchFilter is used to find user attributes from an LDAP source
           idp.attribute.resolver.LDAP.searchFilter        = (uid=$resolutionContext.principal)
           # List of attributes produced by the Data Connector that should be directly exported as resolved IdPAttributes without requiring any <AttributeDefinition>
           idp.attribute.resolver.LDAP.exportAttributes    = ### List space-separated of attributes to retrieve directly from the directory ###
@@ -779,7 +782,7 @@ By default, a transient NameID will always be released to the Service Provider i
 
 #### Strategy B - Stored mode - using a database
 
-1. Become ROOT of the machine:
+1. Become ROOT:
    * `sudo su -`
 
 2. Install required packages:
@@ -818,7 +821,7 @@ By default, a transient NameID will always be released to the Service Provider i
      
      and add the following directives to the tail, just before the last **`</beans>`** tag:
 
-     ```bash
+     ```xml
      <!-- Bean to store persistent-id on 'shibboleth' database -->
 
      <bean id="MyDataSource"
@@ -1043,7 +1046,7 @@ Enrich IDP logs with the authentication error occurred on LDAP:
    * ```bash
      sed -i '/^    <!-- Logs on LDAP user authentication - ADDED BY IDEM HOWTO -->/a \ \ \ \ \<logger name="org.ldaptive.auth.Authenticator" level="INFO" />' /opt/shibboleth-idp/conf/logback.xml
      ```
-   
+
 ### Translate IdP messages into preferred language
 
 Translate the IdP messages in your language:
@@ -1243,7 +1246,7 @@ Follow these steps **ONLY IF** your organization is connected to the [GARR Netwo
         </MetadataFilter>
      </MetadataProvider>
      ```
-  
+
 3. Reload service with id `shibboleth.MetadataResolverService` to retrieve the Federation Metadata:
    *  `bash /opt/shibboleth-idp/bin/reload-service.sh -id shibboleth.MetadataResolverService`
     
