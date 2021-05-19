@@ -102,7 +102,7 @@
 ### Configure SSL on Apache2
 
 1. Create the Virtualhost file (pay attention and follow the starting comment):
-   * `wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/apache2/sp.example.org.conf -O /etc/apache2/sites-available/000-$(hostname -f).conf`
+   * `wget https://registry.idem.garr.it/idem-conf/shibboleth/SP3/apache2/sp.example.org.conf -O /etc/apache2/sites-available/000-$(hostname -f).conf`
 
 2. Enable **proxy_http**, **SSL** and **headers** Apache2 modules:
    * `a2enmod ssl headers alias include negotiation`
