@@ -336,7 +336,9 @@ The Apache HTTP Server will be configured as a reverse proxy and it will be used
 > Note that this feature is safe to enable globally. The implementation is written to check for this capability in each client, and to back off to cookies.
 > The default configuration generates encrypted assertions that a large percentage of non-Shibboleth SPs are going to be unable to decrypt, resulting a wide variety of failures and error messages. Some old Shibboleth SPs or software running on old Operating Systems will also fail to work.
 
-If you don't change anything, the IdP stores data in a browser session cookie or HTML local storage
+If you don't change anything, the IdP stores data in a browser session cookie or HTML local storage and encrypt his assertions with AES-GCM encryption algorithm.
+
+The IDEM Federation Operators collect a list of Service Providers that don't support the new default encryption algorithm and provide a solution [**here**](https://wiki.idem.garr.it/wiki/Idp4noGCMsps) (Italian only). 
 
 See the configuration files and the Shibboleth documentation for details.
 
