@@ -40,6 +40,7 @@
                 <Rule xsi:type="Value" value="urn:mace:dir:entitlement:common-lib-terms" />
              </DenyValueRule>
           </AttributeRule>
+        </AttributeFilterPolicy>
 
    </AttributeFilterPolicyGroup>
    ```
