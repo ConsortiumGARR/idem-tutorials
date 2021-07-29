@@ -697,7 +697,7 @@
                 Require a validUntil XML attribute on the root element and
                 make sure its value is no more than 10 days into the future.
             -->
-            <MetadataFilter xsi:type="RequiredValidUntil" maxValidityInterval="P10D"/>
+            <MetadataFilter xsi:type="RequiredValidUntil" maxValidityInterval="P6D"/>
    
             <!-- Consume all SP metadata in the aggregate -->
             <MetadataFilter xsi:type="EntityRoleWhiteList">
