@@ -37,41 +37,41 @@
 ## Other Requirements
 
  * Place the SSL Credentials into the right place:
-   * SSL Certificate: "```/etc/ssl/certs/ssl-sp.crt```"
-   * SSL Key: "```/etc/ssl/private/ssl-sp.key```"
-   * SSL CA: "```/usr/local/share/ca-certificates/ssl-ca.crt```"
-   * Run the command: "```update-ca-certificates```"
+   * SSL Certificate: "`/etc/ssl/certs/ssl-sp.crt`"
+   * SSL Key: "`/etc/ssl/private/ssl-sp.key`"
+   * SSL CA: "`/usr/local/share/ca-certificates/ssl-ca.crt`"
+   * Run the command: "`update-ca-certificates`"
 
 ## Installation Instructions
 
 ### Install software requirements
 
 1. Become ROOT:
-   * ```sudo su -```
+   * `sudo su -`
 
 2. Change the default mirror with the GARR ones:
-   * ```sed -i 's/deb.debian.org/debian.mirror.garr.it/g' /etc/apt/sources.list```
-   * ```apt update && apt upgrade```
+   * `sed -i 's/deb.debian.org/debian.mirror.garr.it/g' /etc/apt/sources.list`
+   * `apt update && apt upgrade`
   
-3. Install the packages required: 
-   * ```apt install ca-certificates vim openssl```
+3. Install the packages required:
+   * `apt install ca-certificates vim openssl`
 
 ### Configure the environment
 
-1. Modify your ```/etc/hosts```:
-   * ```vim /etc/hosts```
+1. Modify your `/etc/hosts`:
+   * `vim /etc/hosts```
   
      ```bash
      127.0.1.1 sp.example.org sp
      ```
-   (*Replace ```sp.example.org``` with your SP Full Qualified Domain Name*)
+   (*Replace `sp.example.org` with your SP Full Qualified Domain Name*)
 
 2. Be sure that your firewall **doesn't block** the traffic on port **443** (or you can't access to your SP)
 
 ### Install SimpleSAMLphp Service Provider
 
 1. Become ROOT: 
-   * ```sudo su -```
+   * `sudo su -`
 
 2. Install required packages SP:
    * ```bash
@@ -79,16 +79,16 @@
      ```
 
 3. Install the SimpleSAMLphp SP:
-   * ```cd /opt/```
-   * ```wget https://github.com/simplesamlphp/simplesamlphp/releases/download/v1.16.3/simplesamlphp-1.16.3.tar.gz```
-   * ```tar xzf simplesamlphp-1.16.3.tar.gz```
-   * ```mv simplesamlphp-1.16.3 simplesamlphp```
+   * `cd /opt/`
+   * `wget https://github.com/simplesamlphp/simplesamlphp/releases/download/v1.19.1/simplesamlphp-1.19.1.tar.gz`
+   * `tar xzf simplesamlphp-1.19.1.tar.gz`
+   * `mv simplesamlphp-1.19.1 simplesamlphp`
 
 ## Configuration Instructions
 
 ### Configure SSL on Apache2
 
-1. Complete the file ```/etc/apache2/sites-available/default-ssl.conf``` as follows:
+1. Complete the file `/etc/apache2/sites-available/default-ssl.conf` as follows:
 
    ```apache
    <IfModule mod_ssl.c>
@@ -135,12 +135,12 @@
    ```
 
 2. Enable **proxy_http**, **SSL** and **headers** Apache2 modules:
-   * ```a2enmod ssl headers alias include negotiation```
-   * ```a2ensite default-ssl.conf```
-   * ```systemctl restart apache2```
+   * `a2enmod ssl headers alias include negotiation`
+   * `a2ensite default-ssl.conf`
+   * `systemctl restart apache2`
 
 3. Configure Apache2 to open port **80** only for localhost:
-   * ```vim /etc/apache2/ports.conf```
+   * `vim /etc/apache2/ports.conf`
 
      ```apache
      # If you just change the port or add more ports here, you will likely also
@@ -159,7 +159,7 @@
      ```
      
 5. Configure Apache2 to redirect all on HTTPS:
-   * ```vim /etc/apache2/sites-enabled/000-default.conf```
+   * `vim /etc/apache2/sites-enabled/000-default.conf`
    
      ```apache
      <VirtualHost *:80>
@@ -175,11 +175,11 @@
 ### Configure SimpleSAMLphp SP
 
 1. Become ROOT: 
-   * ```sudo su -```
+   * `sudo su -`
 
 2. Create the Apache2 configuration for the application: 
 
-   * ```vim /etc/apache2/conf-available/simplesaml.conf```
+   * `vim /etc/apache2/conf-available/simplesaml.conf`
   
      ```bash
      Alias /simplesaml /opt/simplesamlphp/www
@@ -193,28 +193,28 @@
 
 3. Enable the simplesaml Apache2 configuration:
 
-   * ```a2enconf simplesaml.conf```
+   * ```a2enconf simplesaml.conf`
 
-   * ```systemctl reload apache2.service```
+   * `systemctl reload apache2.service```
 
 4. Change the permission for SimpleSAMLphp logs:
 
-   * ```chown www-data /opt/simplesamlphp/log```
+   * `chown www-data /opt/simplesamlphp/log`
 
 5. Configure the SimpleSAMLphp SP:
 
    * Generate some useful opaque strings:
-      * User Admin Password (```auth.adminpassword```):
-        ```php /opt/simplesamlphp/bin/pwgen.php```
+      * User Admin Password (`auth.adminpassword`):
+        `php /opt/simplesamlphp/bin/pwgen.php`
         
-      * Secret Salt (```secretsalt```):
-        ```tr -c -d '0123456789abcdefghijklmnopqrstuvwxyz' </dev/urandom | dd bs=32 count=1 2>/dev/null ; echo```
+      * Secret Salt (`secretsalt`):
+        `tr -c -d '0123456789abcdefghijklmnopqrstuvwxyz' </dev/urandom | dd bs=32 count=1 2>/dev/null ; echo`
         
-      * Cron Key (```key```):
-        ```tr -c -d '0123456789abcdefghijklmnopqrstuvwxyz' </dev/urandom | dd bs=32 count=1 2>/dev/null ; echo```
+      * Cron Key (`key`):
+        `tr -c -d '0123456789abcdefghijklmnopqrstuvwxyz' </dev/urandom | dd bs=32 count=1 2>/dev/null ; echo`
 
    * Change SimpleSAMLphp configuration:
-      ```vim /opt/simplesamlphp/config/config.php```
+      `vim /opt/simplesamlphp/config/config.php`
    
       ```bash
       ...
@@ -233,7 +233,7 @@
 6. Generate SAML Credentials:
 
    * Move on the SAML credentials directory:
-     ```cd /opt/simplesamlphp/cert```
+     * `cd /opt/simplesamlphp/cert`
 
    * Follow [Appendix A: Sample SAML2 Metadata embedded certificate](https://www.switch.ch/aai/support/certificates/embeddedcerts-requirements-appendix-a/) and generate the right SAML Credentials.
 
@@ -269,7 +269,7 @@
 
    * Change the CRON configuration file:
 
-     ```vim /opt/simplesamlphp/config/module_cron.php```
+     `vim /opt/simplesamlphp/config/module_cron.php`
 
      ```php
      <?php
@@ -297,7 +297,7 @@
 
    * Configure METAREFRESH:
 
-     ```vim /opt/simplesamlphp/config/config-metarefresh.php```
+     `vim /opt/simplesamlphp/config/config-metarefresh.php`
 
      ```bash
      <?php
@@ -394,11 +394,11 @@
 
      ```
 
-   * ```mkdir /opt/simplesamlphp/metadata/idem-federation ; chown www-data /opt/simplesamlphp/metadata/idem-federation```
+   * `mkdir /opt/simplesamlphp/metadata/idem-federation ; chown www-data /opt/simplesamlphp/metadata/idem-federation`
 
    * Change the SimpleSAMLphp configuration file:
 
-     ```vim /opt/simplesamlphp/config/config.php```
+     `vim /opt/simplesamlphp/config/config.php`
 
      ```bash
      ...
@@ -413,7 +413,7 @@
 
    * Remove/Rename all PHP files under:
    
-     ```cd /opt/simplesamlphp/metadata ; rm *.php```
+     `cd /opt/simplesamlphp/metadata ; rm *.php`
 
      ```
      adfs-idp-hosted.php
@@ -429,24 +429,24 @@
      wsfed-sp-hosted.php
      ```
 
-   * Download the Federation signing certificate: 
-   
-     ```wget https://md.idem.garr.it/certs/idem-signer-20220121.pem -O /opt/simplesamlphp/cert/federation-cert.pem```
+   * Download the Federation signing certificate:
+
+     `wget https://md.idem.garr.it/certs/idem-signer-20220121.pem -O /opt/simplesamlphp/cert/federation-cert.pem`
 
    * Check the validity:
-     * ```cd /opt/simplesamlphp/cert/```
-     * ```openssl x509 -in federation-cert.pem -fingerprint -sha1 -noout```
+     * `cd /opt/simplesamlphp/cert/`
+     * `openssl x509 -in federation-cert.pem -fingerprint -sha1 -noout`
        
        (sha1: D1:68:6C:32:A4:E3:D4:FE:47:17:58:E7:15:FC:77:A8:44:D8:40:4D)
-     * ```openssl x509 -in federation-cert.pem -fingerprint -md5 -noout```
+     * `openssl x509 -in federation-cert.pem -fingerprint -md5 -noout`
 
        (md5: 48:3B:EE:27:0C:88:5D:A3:E7:0B:7C:74:9D:24:24:E0)
 
-   * Go to 'https://sp.example.org/simplesaml/module.php/core/frontpage_federation.php' and forcing download of the Federation metadata by pressing on ```Metarefresh: fetch metadata``` or wait 1 day
+   * Go to 'https://sp.example.org/simplesaml/module.php/core/frontpage_federation.php' and forcing download of the Federation metadata by pressing on `Metarefresh: fetch metadata` or wait 1 day
 
 8. Set PHP 'memory_limit' to '1024M' or more to allow the download of huge metadata files (like eduGAIN):
 
-   * ```vim /etc/php/7.0/apache2/php.ini```
+   * `vim /etc/php/7.0/apache2/php.ini`
 
      ```bash
      memory_limit = 1024M
@@ -454,7 +454,7 @@
 
 9. Choose and modify your authsources:
 
-   * ```vim /opt/simplesamlphp/config/authsources.php```
+   * `vim /opt/simplesamlphp/config/authsources.php`
 
      ```bash
      <?php
@@ -567,7 +567,7 @@
 
 10. OPTIONAL: Enable UTF-8 for SP metadata:
 
-   * ```vim /opt/simplesamlphp/vendor/simplesamlphp/saml2/src/SAML2/DOMDocumentFactory.php```
+   * `vim /opt/simplesamlphp/vendor/simplesamlphp/saml2/src/SAML2/DOMDocumentFactory.php`
 
      ```bash
      ...
@@ -580,20 +580,20 @@
 
 11. Now you are able to reach your Shibboleth SP Metadata on:
 
-   * ```https://sp.example.org/simplesaml/module.php/saml/sp/metadata.php/default-sp```
+   * `https://sp.example.org/simplesaml/module.php/saml/sp/metadata.php/default-sp`
 
    (change ```sp.example.org``` to you SP full qualified domain name)
 
 12. Register you SP on IDEM Entity Registry (your entity have to be approved by an IDEM Federation Operator before become part of IDEM Test Federation):
-   * Go to ```https://registry.idem.garr.it/``` and follow "**Insert a New Service Provider into the IDEM Test Federation**"
+   * Go to `https://registry.idem.garr.it/` and follow "**Insert a New Service Provider into the IDEM Test Federation**"
 
 
 ### Configure an example federated resouce "secure"
 
-1. Create the "```secure```" application into the DocumentRoot:
-   * ```mkdir /var/www/html/secure```
+1. Create the "`secure`" application into the DocumentRoot:
+   * `mkdir /var/www/html/secure`
 
-   * ```vim /var/www/html/secure/index.php```
+   * `vim /var/www/html/secure/index.php`
 
      ```html
      <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
