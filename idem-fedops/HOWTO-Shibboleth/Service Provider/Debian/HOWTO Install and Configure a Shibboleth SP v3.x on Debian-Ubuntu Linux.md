@@ -40,22 +40,7 @@
 
 ## Other Requirements
 
- * Put SSL credentials in the right place:
-   * HTTPS Server Certificate (Public Key) inside `/etc/ssl/certs/$(hostname -f).crt`
-   * HTTPS Server Key (Private Key) inside `/etc/ssl/private/$(hostname -f).key`	
-   * Add CA Cert into `/etc/ssl/certs`
-     * If you use GARR TCS (Sectigo CA): 
-       * ```bash
-         wget -O /etc/ssl/certs/GEANT_OV_RSA_CA_4.pem https://crt.sh/?d=2475254782`
- 
-         wget -O /etc/ssl/certs/SectigoRSAOrganizationValidationSecureServerCA.crt https://crt.sh/?d=924467857 ; update-ca-certificates
-         ```
-     * If you use ACME (Let's Encrypt): 
-       * `ln -s /etc/letsencrypt/live/<SERVER_FQDN>/chain.pem /etc/ssl/certs/ACME-CA.pem`
-
-   
- (OPTIONAL) Create a Certificate and a Key self-signed for HTTPS if you don't have yet the official ones provided by the Certificate Authority:
- * `openssl req -x509 -newkey rsa:4096 -keyout /etc/ssl/private/$(hostname -f).key -out /etc/ssl/certs/$(hostname -f).crt -nodes -days 1095`
+ * SSL Credentials: HTTPS Certificate & Key
 
 ## Installation Instructions
 
@@ -101,16 +86,48 @@
 
 ### Configure SSL on Apache2
 
-1. Create the Virtualhost file (pay attention and follow the starting comment):
+1. Become ROOT:
+   * `sudo su -`
+
+2. Create the DocumentRoot:
+   * `mkdir /var/www/html/$(hostname -f)`
+   * `sudo chown -R www-data: /var/www/html/$(hostname -f)`
+   * `echo '<h1>It Works!</h1>' > /var/www/html/$(hostname -f)/index.html`
+
+3. Create the Virtualhost file (**please pay attention: you need to edit this file and customize it, check the initial comment inside of it**):
    * `wget https://registry.idem.garr.it/idem-conf/shibboleth/SP3/apache2/sp.example.org.conf -O /etc/apache2/sites-available/000-$(hostname -f).conf`
 
-2. Enable **proxy_http**, **SSL** and **headers** Apache2 modules:
+4. Put SSL credentials in the right place:
+   * HTTPS Server Certificate (Public Key) inside `/etc/ssl/certs` 
+   * HTTPS Server Key (Private Key) inside `/etc/ssl/private`
+   * Add CA Cert into `/etc/ssl/certs`
+     * If you use GARR TCS (Sectigo CA):
+       ```bash
+       wget -O /etc/ssl/certs/GEANT_OV_RSA_CA_4.pem https://crt.sh/?d=2475254782
+       
+       wget -O /etc/ssl/certs/SectigoRSAOrganizationValidationSecureServerCA.crt https://crt.sh/?d=924467857
+       
+       cat /etc/ssl/certs/SectigoRSAOrganizationValidationSecureServerCA.crt >> /etc/ssl/certs/GEANT_OV_RSA_CA_4.pem
+       
+       rm /etc/ssl/certs/SectigoRSAOrganizationValidationSecureServerCA.crt
+       ```
+
+     * If you use ACME (Let's Encrypt):
+       * `ln -s /etc/letsencrypt/live/<SERVER_FQDN>/chain.pem /etc/ssl/certs/ACME-CA.pem`
+
+5. Configure the right privileges for the SSL Certificate and Key used by HTTPS:
+   * `chmod 400 /etc/ssl/private/$(hostname -f).key`
+   * `chmod 644 /etc/ssl/certs/$(hostname -f).crt`
+
+     (*`$(hostname -f)` will provide your IdP Full Qualified Domain Name*)
+
+6. Enable **proxy_http**, **SSL** and **headers** Apache2 modules:
    * `a2enmod ssl headers alias include negotiation`
    * `a2dissite 000-default.conf`
-   * `a2ensite 000-$(hostname -f).conf`
+   * `a2ensite 000-$(hostname -f).conf default-ssl`
    * `systemctl restart apache2.service`
   
-3. Verify the strength of your SP's machine on:
+7. Verify the strength of your SP's machine on:
    * [**https://www.ssllabs.com/ssltest/analyze.html**](https://www.ssllabs.com/ssltest/analyze.html)
 
 ### Configure Shibboleth SP
