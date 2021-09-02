@@ -10,7 +10,7 @@
    2. [PLA Configuration](#pla-configuration)
 
 ## Requirements
-* Debian 9 (Stretch) or Ubuntu 18.04 (Bionic Beaver)
+* Debian 9 (Stretch) or Ubuntu 18.04 (Bionic Beaver) or Ubuntu 20.04
 
 ## Installation
 
@@ -33,7 +33,7 @@
     slapd slapd/backend select MDB
     ```
 
-   * `sudo cat /root/debconf-slapd.conf | debconf-set-selections`
+   * `sudo cat /root/debconf-slapd.conf | sudo debconf-set-selections`
 
    **NOTES**: From now until the end of this HOWTO, we'll consider that:
       * `<LDAP-ROOT-PW_CHANGEME>` ==> `ciaoldap`
@@ -43,127 +43,148 @@
 3. Install required package:
    * `sudo apt install slapd ldap-utils ldapscripts`
 
-4. Create Certificate/Key:
-   * Self signed (2048 bit - 3 years before expiration):
+4. Create Certificate/Key (**This HOWTO will use Self Signed Certificate for LDAP**):
+   * Self Signed (4096 bit - 3 years before expiration):
 
-      * `openssl req -newkey rsa:2048 -x509 -nodes -out /etc/ldap/ldap.example.org.crt -keyout /etc/ldap/ldap.example.org.key -days 1095`
+      * ```bash
+        sudo openssl req -newkey rsa:4096 -x509 -nodes -out /etc/ldap/$(hostname -f).crt -keyout /etc/ldap/$(hostname -f).key -days 1095 -subj '/CN=$(hostname -f)'`
+        sudo chown openldap:openldap /etc/ldap/$(hostname -f).crt
+        sudo chown openldap:openldap /etc/ldap/$(hostname -f).key
+        sudo chown openldap:openldap /etc/ldap/$(hostname -f).crt /etc/ldap/$(hostname -f).key
+        ```
 
-      * `chown openldap:openldap /etc/ldap/ldap.example.org.crt`
+   * Signed (**Do not use if you are not a NREN GARR Member**):
 
-      * `chown openldap:openldap /etc/ldap/ldap.example.org.key`
+      * ```bash
+        sudo openssl req -new -newkey rsa:4096 -nodes -out /etc/ssl/certs/$(hostname -f).csr -keyout /etc/ssl/private/$(hostname -f).key -subj "/C=IT/ST=/L=Rome/O=Consortium GARR/CN=$(hostname -f)"
+        
+        # Obtain the server certificate from Certification Authority (CA)
+        # and put it into /etc/ssl/certs/<FQDN-SERVER>.crt
+        
+        sudo cp /etc/ssl/certs/$(hostname -f).crt /etc/ldap/$(hostname -f).crt
+        sudo cp /etc/ssl/private/$(hostname -f).key /etc/ldap/$(hostname -f).key
+        sudo chown openldap:openldap /etc/ldap/$(hostname -f).crt /etc/ldap/$(hostname -f).key
+        ```
 
-   * Signed:
-
-      * `openssl req -new -newkey rsa:2048 -nodes -out /etc/ssl/certs/ldap.example.org.csr -keyout /etc/ssl/private/ldap.example.org.key -subj "/C=IT/ST=/L=Rome/O=Consortium GARR/CN=ldap.example.org"`
-
-   **NOTES**: This HOWTO will use Self Signed Certificate for LDAP
-
-5. Enable SSL for LDAP:
-   * `sudo vim /etc/ldap/ldap.conf`
-
-       ```bash
-       TLS_CACERT      /etc/ldap/ldap.example.org.crt
-       ```
+5. Enable SSL for LDAP (**Be sure to have set the correct FQDN on your `/etc/hosts` file**):
+   * `sudo sed -i "s/TLS_CACERT.*/TLS_CACERT\t\/etc\/ldap\/$(hostname -f).crt/g" /etc/ldap/ldap.conf`
    * `sudo chown openldap:openldap /etc/ldap/ldap.conf`
-
-   **NOTES**: Be sure to have set the correct FQDN on your `/etc/hosts` file
 
 6. Restart OpenLDAP:
    * `sudo service slapd restart`
 
 ## Configuration
 
-1. Configure LDAP for SSL:
-   * `sudo vim /etc/ldap/olcTLS.ldif`
-
-      ```bash
-      dn: cn=config
-      changetype: modify
-      replace: olcTLSCACertificateFile
-      olcTLSCACertificateFile: /etc/ldap/ldap.example.org.crt
-      -
-      replace: olcTLSCertificateFile
-      olcTLSCertificateFile: /etc/ldap/ldap.example.org.crt
-      -
-      replace: olcTLSCertificateKeyFile
-      olcTLSCertificateKeyFile: /etc/ldap/ldap.example.org.key
-      ```
-   * `sudo ldapmodify -Y EXTERNAL -H ldapi:/// -f /etc/ldap/olcTLS.ldif`
-
-2. Create the 3 main _Organizational Unit_ (OU), 'people', 'groups' and 'system', with:
+1. Create 'scratch' directory:
    * `sudo mkdir /etc/ldap/scratch`
-   * `sudo vim /etc/ldap/scratch/add_ou.ldif`
 
-      ```bash
-      dn: ou=people,dc=example,dc=org
-      objectClass: organizationalUnit
-      objectClass: top
-      ou: People
+2. Configure LDAP for SSL:
+   * ```bash
+     sudo bash -c 'cat > /etc/ldap/scratch/olcTLS.ldif <<EOF
+     dn: cn=config
+     changetype: modify
+     replace: olcTLSCACertificateFile
+     olcTLSCACertificateFile: /etc/ldap/$(hostname -f).crt
+     -
+     replace: olcTLSCertificateFile
+     olcTLSCertificateFile: /etc/ldap/$(hostname -f).crt
+     -
+     replace: olcTLSCertificateKeyFile
+     olcTLSCertificateKeyFile: /etc/ldap/$(hostname -f).key
+     EOF'
+     ```
 
-      dn: ou=groups,dc=example,dc=org
-      objectClass: organizationalUnit
-      objectClass: top
-      ou: Groups
+   * `sudo ldapmodify -Y EXTERNAL -H ldapi:/// -f /etc/ldap/scratch/olcTLS.ldif`
 
-      dn: ou=system,dc=example,dc=org
-      objectClass: organizationalUnit
-      objectClass: top
-      ou: System
-      ```
+3. Create the 3 main _Organizational Unit_ (OU), `people`, `groups` and `system`.
 
-    * `sudo ldapadd -x -D 'cn=admin,dc=example,dc=org' -w <LDAP-ROOT-PW_CHANGEME> -H ldapi:/// -f /etc/ldap/scratch/add_ou.ldif`
+   *Example:* if the domain name is `example.org` than  the distinguish name will be `dc=example,dc=org`:
+   
+   **Be carefull!** Replace `dc=example,dc=org` with distinguish name ([DN](https://ldap.com/ldap-dns-and-rdns/)) of your domain name!
+
+   * ```bash
+     sudo bash -c 'cat > /etc/ldap/scratch/add_ou.ldif <<EOF
+     dn: ou=people,dc=example,dc=org
+     objectClass: organizationalUnit
+     objectClass: top
+     ou: People
+
+     dn: ou=groups,dc=example,dc=org
+     objectClass: organizationalUnit
+     objectClass: top
+     ou: Groups
+
+     dn: ou=system,dc=example,dc=org
+     objectClass: organizationalUnit
+     objectClass: top
+     ou: System
+     EOF'
+     ```
+
+    * `sudo ldapadd -x -D 'cn=admin,dc=example,dc=org' -w '<LDAP-ROOT-PW_CHANGEME>' -H ldapi:/// -f /etc/ldap/scratch/add_ou.ldif`
 
     * Verify with: `sudo ldapsearch -x -b dc=example,dc=org`
 
-3. Create the 'idpuser' needed to perform "Bind and Search" operations:
-    * `sudo vim /etc/ldap/scratch/add_idpuser.ldif`
+4. Create the `idpuser` needed to perform "*Bind and Search*" operations:
+   
+   **Be carefull!** Replace `dc=example,dc=org` with distinguish name ([DN](https://ldap.com/ldap-dns-and-rdns/)) of your domain name!
 
-      ```bash
+    * ```bash
+      sudo bash -c 'cat > /etc/ldap/scratch/add_idpuser.ldif <<EOF
       dn: cn=idpuser,ou=system,dc=example,dc=org
       objectClass: inetOrgPerson
       cn: idpuser
       sn: idpuser
       givenName: idpuser
       userPassword: <INSERT-HERE-IDPUSER-PW>
-      ```
-    * `sudo ldapadd -x -D 'cn=admin,dc=example,dc=org' -w <LDAP-ROOT-PW_CHANGEME> -H ldapi:/// -f /etc/ldap/scratch/add_idpuser.ldif`
-
-4. Configure OpenLDAP ACL to allow 'idpuser' to perform 'search' on the directory:
-    * Check which configuration your directory has with:
-      `sudo ldapsearch  -Y EXTERNAL -H ldapi:/// -b cn=config 'olcDatabase={1}mdb'`
-
-    * Configure ACL for 'idpuser' with:
-      `sudo vim /etc/ldap/scratch/olcAcl.ldif`
-
-      ```bash
-      dn: olcDatabase={1}mdb,cn=config
-      changeType: modify
-      replace: olcAccess
-      olcAccess: {0}to * by dn.exact=gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth manage by * break
-      olcAccess: {1}to attrs=userPassword by self write by anonymous auth by dn="cn=admin,dc=example,dc=org" write by * none
-      olcAccess: {2}to dn.base="" by anonymous auth by * read
-      olcAccess: {3}to dn.base="cn=Subschema" by * read
-      olcAccess: {4}to * by dn.exact="cn=idpuser,ou=system,dc=example,dc=org" read by anonymous auth by self read
+      EOF'
       ```
 
-    * `sudo ldapadd  -Y EXTERNAL -H ldapi:/// -f /etc/ldap/scratch/olcAcl.ldif`
+    * `sudo ldapadd -x -D 'cn=admin,dc=example,dc=org' -w '<LDAP-ROOT-PW_CHANGEME>' -H ldapi:/// -f /etc/ldap/scratch/add_idpuser.ldif`
 
-5. Check that 'idpuser' can search other users (when users exist):
-    * `sudo ldapsearch -x -D 'cn=idpuser,ou=system,dc=example,dc=org' -w <INSERT-HERE-IDPUSER-PW> -b "ou=people,dc=example,dc=org"`
+5. Configure OpenLDAP ACL to allow `idpuser` to perform *search* operation on the directory:
 
-6. Install needed schemas (eduPerson, SCHAC, Password Policy):
-   * `sudo cd /etc/ldap/schema`
-   * `sudo wget https://raw.githubusercontent.com/malavolti/ansible-shibboleth/master/roles/openldap/files/eduperson-201602.ldif -O eduperson.ldif`
-   * `sudo wget https://raw.githubusercontent.com/malavolti/ansible-shibboleth/master/roles/openldap/files/schac-20150413.ldif -O schac.ldif`
-   * `sudo ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/ldap/schema/eduperson.ldif`
-   * `sudo ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/ldap/schema/schac.ldif`
-   * `sudo ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/ldap/schema/ppolicy.ldif`
-   * Verify with: `ldapsearch -Q -LLL -Y EXTERNAL -H ldapi:/// -b cn=schema,cn=config dn`
+   **Be carefull!** Replace `dc=example,dc=org` with distinguish name ([DN](https://ldap.com/ldap-dns-and-rdns/)) of your domain name!
+   
+   * Check which configuration your directory has with:
+     `sudo ldapsearch  -Y EXTERNAL -H ldapi:/// -b cn=config 'olcDatabase={1}mdb'`
 
-7. Add MemberOf Configuration:
-   1. `sudo vim /etc/ldap/scratch/add_memberof.ldif`
+   * Configure ACL for `idpuser` with:
 
-      ```bash
+     ```bash
+     sudo bash -c 'cat > /etc/ldap/scratch/olcAcl.ldif <<EOF
+     dn: olcDatabase={1}mdb,cn=config
+     changeType: modify
+     replace: olcAccess
+     olcAccess: {0}to * by dn.exact=gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth manage by * break
+     olcAccess: {1}to attrs=userPassword by self write by anonymous auth by dn="cn=admin,dc=example,dc=org" write by * none
+     olcAccess: {2}to dn.base="" by anonymous auth by * read
+     olcAccess: {3}to dn.base="cn=Subschema" by * read
+     olcAccess: {4}to * by dn.exact="cn=idpuser,ou=system,dc=example,dc=org" read by anonymous auth by self read
+     EOF'
+     ```
+
+   * `sudo ldapadd  -Y EXTERNAL -H ldapi:/// -f /etc/ldap/scratch/olcAcl.ldif`
+
+6. Check that 'idpuser' can search other users (when users exist):
+
+   **Be carefull!** Replace `dc=example,dc=org` with distinguish name ([DN](https://ldap.com/ldap-dns-and-rdns/)) of your domain name!
+
+   * `sudo ldapsearch -x -D 'cn=idpuser,ou=system,dc=example,dc=org' -w <INSERT-HERE-IDPUSER-PW> -b "ou=people,dc=example,dc=org"`
+
+7. Install needed schemas (eduPerson, SCHAC, Password Policy):
+   * ```bash
+     sudo wget https://raw.githubusercontent.com/malavolti/ansible-shibboleth/master/roles/openldap/files/eduperson-201602.ldif -O /etc/ldap/schema/eduperson.ldif
+     sudo wget https://raw.githubusercontent.com/malavolti/ansible-shibboleth/master/roles/openldap/files/schac-20150413.ldif -O /etc/ldap/schema/schac.ldif
+     sudo ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/ldap/schema/eduperson.ldif
+     sudo ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/ldap/schema/schac.ldif
+     sudo ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/ldap/schema/ppolicy.ldif
+     ```
+   * Verify with: `sudo ldapsearch -Q -LLL -Y EXTERNAL -H ldapi:/// -b cn=schema,cn=config dn`
+
+8. Add MemberOf Configuration:
+   1. ```bash
+      sudo bash -c 'cat > /etc/ldap/scratch/add_memberof.ldif <<EOF
       dn: cn=module,cn=config
       cn: module
       objectClass: olcModuleList
@@ -181,14 +202,14 @@
       olcMemberOfGroupOC: groupOfNames
       olcMemberOfMemberAD: member
       olcMemberOfMemberOfAD: memberOf
+      EOF'
       ```
 
    2. `sudo ldapadd -Q -Y EXTERNAL -H ldapi:/// -f /etc/ldap/scratch/add_memberof.ldif`
 
-8. Improve performance:
-   * `sudo vim /etc/ldap/scratch/olcDbIndex.ldif`
-
-     ```bash
+9. Improve performance:
+   * ```bash
+     sudo bash -c 'cat > /etc/ldap/scratch/olcDbIndex.ldif <<EOF
      dn: olcDatabase={1}mdb,cn=config
      changetype: modify
      replace: olcDbIndex
@@ -200,25 +221,25 @@
      olcDbIndex: entryUUID eq
      olcDbIndex: sn pres,eq,sub
      olcDbIndex: mail pres,eq,sub
+     EOF'
      ```
 
    * `sudo ldapmodify -Y EXTERNAL -H ldapi:/// -f /etc/ldap/scratch/olcDbIndex.ldif`
 
-9. Configure Logging:
-   * `sudo mkdir /var/log/slapd`
-   * `sudo vim /etc/rsyslog.d/99-slapd.conf`
+10. Configure Logging:
+   * ```bash
+     sudo mkdir /var/log/slapd
 
-      ```bash
-      local4.* /var/log/slapd/slapd.log
-      ```
+     sudo bash -c 'cat > /etc/rsyslog.d/99-slapd.conf <<EOF
+     local4.* /var/log/slapd/slapd.log
+     EOF'
 
-   * `sudo vim /etc/ldap/scratch/olcLogLevelStats.ldif`
-
-     ```bash
+     sudo bash -c 'cat > /etc/ldap/scratch/olcLogLevelStats.ldif <<EOF
      dn: cn=config
      changeType: modify
      replace: olcLogLevel
      olcLogLevel: stats
+     EOF'
      ```
 
    * `sudo ldapmodify -Y EXTERNAL -H ldapi:/// -f /etc/ldap/scratch/olcLogLevelStats.ldif`
@@ -226,10 +247,9 @@
    * `sudo service slapd restart`
 
 
-10. Configure openLDAP olcSizeLimit:
-   * `sudo vim /etc/ldap/scratch/olcSizeLimit.ldif`
-
-     ```bash
+11. Configure openLDAP olcSizeLimit:
+   * ```bash
+     sudo bash -c 'cat > /etc/ldap/scratch/olcSizeLimit.ldif <<EOF
      dn: cn=config
      changetype: modify
      replace: olcSizeLimit
@@ -239,14 +259,14 @@
      changetype: modify
      replace: olcSizeLimit
      olcSizeLimit: unlimited
+     EOF'
      ```
 
    * `sudo ldapmodify -Y EXTERNAL -H ldapi:/// -f /etc/ldap/scratch/olcSizeLimit.ldif`
 
-11. Add your first user:
-   * `sudo vim /etc/ldap/scratch/user1.ldif`
-
-     ```bash
+12. Add your first user:
+   * ```bash
+     sudo bash -c 'cat > /etc/ldap/scratch/user1.ldif <<EOF
      # USERNAME: user1 , PASSWORD: ciaouser1
      # Generate a new password with: sudo slappasswd -s <newPassword>
      dn: uid=user1,ou=people,dc=example,dc=org
@@ -266,53 +286,52 @@
      eduPersonAffiliation: member
      eduPersonEntitlement: urn:mace:terena.org:tcs:escience-user
      eduPersonEntitlement: urn:mace:terena.org:tcs:personal-user
+     EOF'
      ```
 
    * `sudo ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/ldap/scratch/user1.ldif`
 
-12. Check that 'idpuser' can find user1:
+13. Check that 'idpuser' can find user1:
     * `sudo ldapsearch -x -D 'cn=idpuser,ou=system,dc=example,dc=org' -W -b "uid=user1,ou=people,dc=example,dc=org"`
 
-13. Check that LDAP has TLS ('anonymous' MUST BE returned):
+14. Check that LDAP has TLS ('anonymous' MUST BE returned):
     * `sudo ldapwhoami -H ldap:// -x -ZZ`
 
-14. Make mail, eduPersonPrincipalName and schacPersonalUniqueID as unique
+15. Make mail, eduPersonPrincipalName and schacPersonalUniqueID as unique
+    * ```bash
+      sudo ldapmodify -Y EXTERNAL -H ldapi:/// <<EOF
+      dn: cn=module,cn=config
+      changetype: modify
+      cn: module
+      objectclass: olcModuleList
+      objectclass: top
+      olcmoduleload: unique
+      olcmodulepath: /usr/lib/ldap
 
-````
-ldapmodify -Y EXTERNAL -H ldapi:/// <<EOF
-dn: cn=module,cn=config
-changetype: modify
-cn: module
-objectclass: olcModuleList
-objectclass: top
-olcmoduleload: unique
-olcmodulepath: /usr/lib/ldap
+      dn: olcOverlay=unique,olcDatabase={1}{{ ldap_backend }},cn=config
+      objectClass: olcOverlayConfig
+      objectClass: olcUniqueConfig
+      olcOverlay: unique
+      olcUniqueAttribute: mail
+      olcUniqueAttribute: schacPersonalUniqueID
+      olcUniqueAttribute: eduPersonPrincipalName
+      EOF
+      ```
 
-dn: olcOverlay=unique,olcDatabase={1}{{ ldap_backend }},cn=config
-objectClass: olcOverlayConfig
-objectClass: olcUniqueConfig
-olcOverlay: unique
-olcUniqueAttribute: mail
-olcUniqueAttribute: schacPersonalUniqueID
-olcUniqueAttribute: eduPersonPrincipalName
-EOF
-````
+16. Disable Anonymous bind
+    * ```bash
+      sudo ldapmodify -Y EXTERNAL -H ldapi:/// <<EOF
+      dn: cn=config
+      changetype: modify
+      add: olcDisallows
+      olcDisallows: bind_anon
 
-15. Disable Anonymous bind
-
-````
-ldapmodify -Y EXTERNAL -H ldapi:/// <<EOF
-dn: cn=config
-changetype: modify
-add: olcDisallows
-olcDisallows: bind_anon
-
-dn: olcDatabase={-1}frontend,cn=config
-changetype: modify
-add: olcRequires
-olcRequires: authc
-EOF
-````
+      dn: olcDatabase={-1}frontend,cn=config
+      changetype: modify
+      add: olcRequires
+      olcRequires: authc
+      EOF
+      ```
 
 # PhpLdapAdmin (PLA) - optional
 
