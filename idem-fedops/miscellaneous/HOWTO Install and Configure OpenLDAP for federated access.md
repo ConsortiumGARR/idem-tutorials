@@ -197,91 +197,96 @@
      sudo ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/ldap/schema/schac.ldif
      sudo ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/ldap/schema/ppolicy.ldif
      ```
-   * Verify with: `sudo ldapsearch -Q -LLL -Y EXTERNAL -H ldapi:/// -b cn=schema,cn=config dn`
+   * Verify with:
+     * `sudo ldapsearch -Q -LLL -Y EXTERNAL -H ldapi:/// -b cn=schema,cn=config dn`
 
 8. Add MemberOf Configuration:
-   1. ```bash
-      sudo bash -c 'cat > /etc/ldap/scratch/add_memberof.ldif <<EOF
-      dn: cn=module,cn=config
-      cn: module
-      objectClass: olcModuleList
-      olcModuleLoad: memberof
-      olcModulePath: /usr/lib/ldap
+   ```bash
+   sudo bash -c 'cat > /etc/ldap/scratch/add_memberof.ldif <<EOF
+   dn: cn=module,cn=config
+   cn: module
+   objectClass: olcModuleList
+   olcModuleLoad: memberof
+   olcModulePath: /usr/lib/ldap
 
-      dn: olcOverlay={0}memberof,olcDatabase={1}mdb,cn=config
-      objectClass: olcConfig
-      objectClass: olcMemberOf
-      objectClass: olcOverlayConfig
-      objectClass: top
-      olcOverlay: memberof
-      olcMemberOfDangling: ignore
-      olcMemberOfRefInt: TRUE
-      olcMemberOfGroupOC: groupOfNames
-      olcMemberOfMemberAD: member
-      olcMemberOfMemberOfAD: memberOf
-      EOF'
-      ```
-
-   2. `sudo ldapadd -Q -Y EXTERNAL -H ldapi:/// -f /etc/ldap/scratch/add_memberof.ldif`
+   dn: olcOverlay={0}memberof,olcDatabase={1}mdb,cn=config
+   objectClass: olcConfig
+   objectClass: olcMemberOf
+   objectClass: olcOverlayConfig
+   objectClass: top
+   olcOverlay: memberof
+   olcMemberOfDangling: ignore
+   olcMemberOfRefInt: TRUE
+   olcMemberOfGroupOC: groupOfNames
+   olcMemberOfMemberAD: member
+   olcMemberOfMemberOfAD: memberOf
+   EOF'
+      
+   sudo ldapadd -Q -Y EXTERNAL -H ldapi:/// -f /etc/ldap/scratch/add_memberof.ldif
+   ```
 
 9. Improve performance:
-   * ```bash
-     sudo bash -c 'cat > /etc/ldap/scratch/olcDbIndex.ldif <<EOF
-     dn: olcDatabase={1}mdb,cn=config
-     changetype: modify
-     replace: olcDbIndex
-     olcDbIndex: objectClass eq
-     olcDbIndex: member eq
-     olcDbIndex: cn pres,eq,sub
-     olcDbIndex: ou pres,eq,sub
-     olcDbIndex: uid pres,eq
-     olcDbIndex: entryUUID eq
-     olcDbIndex: sn pres,eq,sub
-     olcDbIndex: mail pres,eq,sub
-     EOF'
-     ```
-
-   * `sudo ldapmodify -Y EXTERNAL -H ldapi:/// -f /etc/ldap/scratch/olcDbIndex.ldif`
+   ```bash
+   sudo bash -c 'cat > /etc/ldap/scratch/olcDbIndex.ldif <<EOF
+   dn: olcDatabase={1}mdb,cn=config
+   changetype: modify
+   replace: olcDbIndex
+   olcDbIndex: objectClass eq
+   olcDbIndex: member eq
+   olcDbIndex: cn pres,eq,sub
+   olcDbIndex: ou pres,eq,sub
+   olcDbIndex: uid pres,eq
+   olcDbIndex: entryUUID eq
+   olcDbIndex: sn pres,eq,sub
+   olcDbIndex: mail pres,eq,sub
+   EOF'
+     
+   sudo ldapmodify -Y EXTERNAL -H ldapi:/// -f /etc/ldap/scratch/olcDbIndex.ldif
+   ```
 
 10. Configure Logging:
-   * ```bash
-     sudo mkdir /var/log/slapd
+    ```bash
+    sudo mkdir /var/log/slapd
 
-     sudo bash -c 'cat > /etc/rsyslog.d/99-slapd.conf <<EOF
-     local4.* /var/log/slapd/slapd.log
-     EOF'
+    sudo bash -c 'cat > /etc/rsyslog.d/99-slapd.conf <<EOF
+    local4.* /var/log/slapd/slapd.log
+    EOF'
 
-     sudo bash -c 'cat > /etc/ldap/scratch/olcLogLevelStats.ldif <<EOF
-     dn: cn=config
-     changeType: modify
-     replace: olcLogLevel
-     olcLogLevel: stats
-     EOF'
-     ```
+    sudo bash -c 'cat > /etc/ldap/scratch/olcLogLevelStats.ldif <<EOF
+    dn: cn=config
+    changeType: modify
+    replace: olcLogLevel
+    olcLogLevel: stats
+    EOF'
 
-   * `sudo ldapmodify -Y EXTERNAL -H ldapi:/// -f /etc/ldap/scratch/olcLogLevelStats.ldif`
-   * `sudo service rsyslog restart`
-   * `sudo service slapd restart`
+    sudo ldapmodify -Y EXTERNAL -H ldapi:/// -f /etc/ldap/scratch/olcLogLevelStats.ldif
+ 
+    sudo service rsyslog restart
 
+    sudo service slapd restart
+    ```
 
 11. Configure openLDAP olcSizeLimit:
-   * ```bash
-     sudo bash -c 'cat > /etc/ldap/scratch/olcSizeLimit.ldif <<EOF
-     dn: cn=config
-     changetype: modify
-     replace: olcSizeLimit
-     olcSizeLimit: unlimited
+    ```bash
+    sudo bash -c 'cat > /etc/ldap/scratch/olcSizeLimit.ldif <<EOF
+    dn: cn=config
+    changetype: modify
+    replace: olcSizeLimit
+    olcSizeLimit: unlimited
 
-     dn: olcDatabase={-1}frontend,cn=config
-     changetype: modify
-     replace: olcSizeLimit
-     olcSizeLimit: unlimited
-     EOF'
-     ```
-
-   * `sudo ldapmodify -Y EXTERNAL -H ldapi:/// -f /etc/ldap/scratch/olcSizeLimit.ldif`
+    dn: olcDatabase={-1}frontend,cn=config
+    changetype: modify
+    replace: olcSizeLimit
+    olcSizeLimit: unlimited
+    EOF'
+     
+    sudo ldapmodify -Y EXTERNAL -H ldapi:/// -f /etc/ldap/scratch/olcSizeLimit.ldif
+    ```
 
 12. Add your first user:
+
+    **Be carefull!** Replace `dc=example,dc=org` with distinguish name ([DN](https://ldap.com/ldap-dns-and-rdns/)) of your domain name!
+
     ```bash
     sudo bash -c 'cat > /etc/ldap/scratch/user1.ldif <<EOF
     # USERNAME: user1 , PASSWORD: ciaouser1
@@ -309,6 +314,9 @@
     ```
 
 13. Check that `idpuser` can find `user1`:
+
+    **Be carefull!** Replace `dc=example,dc=org` with distinguish name ([DN](https://ldap.com/ldap-dns-and-rdns/)) of your domain name!
+
     * `sudo ldapsearch -x -D 'cn=idpuser,ou=system,dc=example,dc=org' -W -b "uid=user1,ou=people,dc=example,dc=org"`
 
 14. Check that LDAP has TLS ('anonymous' MUST BE returned):
@@ -325,7 +333,7 @@
     olcmoduleload: unique
     olcmodulepath: /usr/lib/ldap
 
-    dn: olcOverlay=unique,olcDatabase={1}{{ ldap_backend }},cn=config
+    dn: olcOverlay=unique,olcDatabase={1}mdb,cn=config
     objectClass: olcOverlayConfig
     objectClass: olcUniqueConfig
     olcOverlay: unique
@@ -338,21 +346,21 @@
     ```
 
 16. Disable Anonymous bind
-    * ```bash
-      sudo bash -c 'cat > /etc/ldap/scratch/disableAnonymoysBind.ldif <<EOF
-      dn: cn=config
-      changetype: modify
-      add: olcDisallows
-      olcDisallows: bind_anon
+    ```bash
+    sudo bash -c 'cat > /etc/ldap/scratch/disableAnonymoysBind.ldif <<EOF
+    dn: cn=config
+    changetype: modify
+    add: olcDisallows
+    olcDisallows: bind_anon
 
-      dn: olcDatabase={-1}frontend,cn=config
-      changetype: modify
-      add: olcRequires
-      olcRequires: authc
-      EOF'
+    dn: olcDatabase={-1}frontend,cn=config
+    changetype: modify
+    add: olcRequires
+    olcRequires: authc
+    EOF'
       
-      sudo ldapmodify -Y EXTERNAL -H ldapi:/// -f /etc/ldap/scratch/disableAnonymoysBind.ldif
-      ```
+    sudo ldapmodify -Y EXTERNAL -H ldapi:/// -f /etc/ldap/scratch/disableAnonymoysBind.ldif
+    ```
 
 # PhpLdapAdmin (PLA) - optional
 
