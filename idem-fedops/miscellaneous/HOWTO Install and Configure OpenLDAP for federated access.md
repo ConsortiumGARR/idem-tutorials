@@ -1,5 +1,7 @@
 # HOWTO Install and Configure OpenLDAP for federated access (Debian/Ubuntu)
 
+<img width="120px" src="https://wiki.idem.garr.it/IDEM_Approved.png" />
+
 ## Table of Contents
 
 1. [Requirements](#requirements)
@@ -10,7 +12,7 @@
    2. [PLA Configuration](#pla-configuration)
 
 ## Requirements
-* Debian 9 (Stretch) or Ubuntu 18.04 (Bionic Beaver) or Ubuntu 20.04
+* Debian 11 (Buster) or Ubuntu 20.04 (Local Fossa)
 
 ## Installation
 
