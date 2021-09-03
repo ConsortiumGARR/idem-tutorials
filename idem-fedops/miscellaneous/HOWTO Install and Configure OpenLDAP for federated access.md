@@ -183,7 +183,7 @@
 
    * `sudo ldapadd  -Y EXTERNAL -H ldapi:/// -f /etc/ldap/scratch/olcAcl.ldif`
 
-6. Check that 'idpuser' can search other users (when users exist):
+6. Check that `idpuser` can search other users (when users exist):
 
    **Be carefull!** Replace `dc=example,dc=org` with distinguish name ([DN](https://ldap.com/ldap-dns-and-rdns/)) of your domain name!
 
@@ -308,7 +308,7 @@
     sudo ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/ldap/scratch/user1.ldif
     ```
 
-13. Check that 'idpuser' can find user1:
+13. Check that `idpuser` can find `user1`:
     * `sudo ldapsearch -x -D 'cn=idpuser,ou=system,dc=example,dc=org' -W -b "uid=user1,ou=people,dc=example,dc=org"`
 
 14. Check that LDAP has TLS ('anonymous' MUST BE returned):
