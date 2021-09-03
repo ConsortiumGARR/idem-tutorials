@@ -282,31 +282,31 @@
    * `sudo ldapmodify -Y EXTERNAL -H ldapi:/// -f /etc/ldap/scratch/olcSizeLimit.ldif`
 
 12. Add your first user:
-   * ```bash
-     sudo bash -c 'cat > /etc/ldap/scratch/user1.ldif <<EOF
-     # USERNAME: user1 , PASSWORD: ciaouser1
-     # Generate a new password with: sudo slappasswd -s <newPassword>
-     dn: uid=user1,ou=people,dc=example,dc=org
-     changetype: add
-     objectClass: inetOrgPerson
-     objectClass: eduPerson
-     uid: user1
-     sn: User1
-     givenName: Test
-     cn: Test User1
-     displayName: Test User1
-     preferredLanguage: it
-     userPassword: {SSHA}u5tYgO6iVerMuuMJBsYnPHM+70ammhnj
-     mail: test.user1@example.org
-     eduPersonAffiliation: student
-     eduPersonAffiliation: staff
-     eduPersonAffiliation: member
-     eduPersonEntitlement: urn:mace:terena.org:tcs:escience-user
-     eduPersonEntitlement: urn:mace:terena.org:tcs:personal-user
-     EOF'
-     ```
-
-   * `sudo ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/ldap/scratch/user1.ldif`
+    ```bash
+    sudo bash -c 'cat > /etc/ldap/scratch/user1.ldif <<EOF
+    # USERNAME: user1 , PASSWORD: ciaouser1
+    # Generate a new password with: sudo slappasswd -s <newPassword>
+    dn: uid=user1,ou=people,dc=example,dc=org
+    changetype: add
+    objectClass: inetOrgPerson
+    objectClass: eduPerson
+    uid: user1
+    sn: User1
+    givenName: Test
+    cn: Test User1
+    displayName: Test User1
+    preferredLanguage: it
+    userPassword: {SSHA}u5tYgO6iVerMuuMJBsYnPHM+70ammhnj
+    mail: test.user1@example.org
+    eduPersonAffiliation: student
+    eduPersonAffiliation: staff
+    eduPersonAffiliation: member
+    eduPersonEntitlement: urn:mace:terena.org:tcs:escience-user
+    eduPersonEntitlement: urn:mace:terena.org:tcs:personal-user
+    EOF'
+    
+    sudo ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/ldap/scratch/user1.ldif
+    ```
 
 13. Check that 'idpuser' can find user1:
     * `sudo ldapsearch -x -D 'cn=idpuser,ou=system,dc=example,dc=org' -W -b "uid=user1,ou=people,dc=example,dc=org"`
@@ -315,29 +315,31 @@
     * `sudo ldapwhoami -H ldap:// -x -ZZ`
 
 15. Make mail, eduPersonPrincipalName and schacPersonalUniqueID as unique
-    * ```bash
-      sudo ldapmodify -Y EXTERNAL -H ldapi:/// <<EOF
-      dn: cn=module,cn=config
-      changetype: modify
-      cn: module
-      objectclass: olcModuleList
-      objectclass: top
-      olcmoduleload: unique
-      olcmodulepath: /usr/lib/ldap
+    ```bash
+    sudo bash -c 'cat > /etc/ldap/scratch/mail_ePPN_sPUI_unique.ldif <<EOF
+    dn: cn=module,cn=config
+    changetype: modify
+    cn: module
+    objectclass: olcModuleList
+    objectclass: top
+    olcmoduleload: unique
+    olcmodulepath: /usr/lib/ldap
 
-      dn: olcOverlay=unique,olcDatabase={1}{{ ldap_backend }},cn=config
-      objectClass: olcOverlayConfig
-      objectClass: olcUniqueConfig
-      olcOverlay: unique
-      olcUniqueAttribute: mail
-      olcUniqueAttribute: schacPersonalUniqueID
-      olcUniqueAttribute: eduPersonPrincipalName
-      EOF
-      ```
+    dn: olcOverlay=unique,olcDatabase={1}{{ ldap_backend }},cn=config
+    objectClass: olcOverlayConfig
+    objectClass: olcUniqueConfig
+    olcOverlay: unique
+    olcUniqueAttribute: mail
+    olcUniqueAttribute: schacPersonalUniqueID
+    olcUniqueAttribute: eduPersonPrincipalName
+    EOF'
+    
+    sudo ldapmodify -Y EXTERNAL -H ldapi:/// -f /etc/ldap/scratch/mail_ePPN_sPUI_unique.ldif
+    ```
 
 16. Disable Anonymous bind
     * ```bash
-      sudo ldapmodify -Y EXTERNAL -H ldapi:/// <<EOF
+      sudo bash -c 'cat > /etc/ldap/scratch/disableAnonymoysBind.ldif <<EOF
       dn: cn=config
       changetype: modify
       add: olcDisallows
@@ -347,7 +349,9 @@
       changetype: modify
       add: olcRequires
       olcRequires: authc
-      EOF
+      EOF'
+      
+      sudo ldapmodify -Y EXTERNAL -H ldapi:/// -f /etc/ldap/scratch/disableAnonymoysBind.ldif
       ```
 
 # PhpLdapAdmin (PLA) - optional
@@ -355,11 +359,13 @@
 ## PLA Installation
 
 1. Install requirements:
-   * `sudo apt install apache2-utils python-passlib gettext php php-ldap php-xml`
+   * `sudo apt install apache2-utils python3-passlib gettext php php-ldap php-xml`
 
-2. Download and extract PLA into `/opt` directory:
-   * `cd /var/www/html ; wget https://github.com/FST777/phpLDAPadmin/archive/v2.0.0-alpha.tar.gz -O phpldapadmin.tar.gz`
-   * `tar -xzf phpldapadmin.tar.gz ; mv phpLDAPadmin-2.0.0-alpha pla`
+2. Download and extract PLA into the Apache2 DocumentRoot directory:
+   * `cd /var/www/html`
+   * `wget https://github.com/leenooks/phpLDAPadmin/archive/refs/tags/1.2.6.2.tar.gz -O phpldapadmin.tar.gz`
+   * `tar -xzf phpldapadmin.tar.gz`
+   * `mv phpLDAPadmin-1.2.6.2 pla`
 
 3. Create PLA configuration file:
    * `cd /var/www/html/pla/config`
