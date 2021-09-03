@@ -21,17 +21,17 @@
    * `sudo apt install debconf-utils`
    * `sudo vim /root/debconf-slapd.conf`
 
-    ```bash
-    slapd slapd/password1 password <LDAP-ROOT-PW_CHANGEME>
-    slapd slapd/password2 password <LDAP-ROOT-PW_CHANGEME>
-    slapd slapd/move_old_database boolean true
-    slapd slapd/domain string <INSTITUTE-DOMAIN_CHANGEME>
-    slapd shared/organization string <ORGANIZATION-NAME_CHANGE>
-    slapd slapd/no_configuration boolean false
-    slapd slapd/purge_database boolean false
-    slapd slapd/allow_ldap_v2 boolean false
-    slapd slapd/backend select MDB
-    ```
+     ```bash
+     slapd slapd/password1 password <LDAP-ROOT-PW_CHANGEME>
+     slapd slapd/password2 password <LDAP-ROOT-PW_CHANGEME>
+     slapd slapd/move_old_database boolean true
+     slapd slapd/domain string <INSTITUTE-DOMAIN_CHANGEME>
+     slapd shared/organization string <ORGANIZATION-NAME_CHANGE>
+     slapd slapd/no_configuration boolean false
+     slapd slapd/purge_database boolean false
+     slapd slapd/allow_ldap_v2 boolean false
+     slapd slapd/backend select MDB
+     ```
 
    * `sudo cat /root/debconf-slapd.conf | sudo debconf-set-selections`
 
@@ -47,30 +47,47 @@
    * Self Signed (4096 bit - 3 years before expiration):
 
       * ```bash
-        sudo openssl req -newkey rsa:4096 -x509 -nodes -out /etc/ldap/$(hostname -f).crt -keyout /etc/ldap/$(hostname -f).key -days 1095 -subj '/CN=$(hostname -f)'`
+        sudo openssl req -newkey rsa:4096 -x509 -nodes -out /etc/ldap/$(hostname -f).crt -keyout /etc/ldap/$(hostname -f).key -days 1095 -subj "/CN=$(hostname -f)"
         sudo chown openldap:openldap /etc/ldap/$(hostname -f).crt
         sudo chown openldap:openldap /etc/ldap/$(hostname -f).key
         sudo chown openldap:openldap /etc/ldap/$(hostname -f).crt /etc/ldap/$(hostname -f).key
         ```
 
    * Signed (**Do not use if you are not a NREN GARR Member**):
+     * Add CA Cert into `/etc/ssl/certs`
+       * If you use GARR TCS (Sectigo CA):
+         ```bash
+         sudo wget -O /etc/ssl/certs/GEANT_OV_RSA_CA_4.pem https://crt.sh/?d=2475254782
 
-      * ```bash
-        sudo openssl req -new -newkey rsa:4096 -nodes -out /etc/ssl/certs/$(hostname -f).csr -keyout /etc/ssl/private/$(hostname -f).key -subj "/C=IT/ST=/L=Rome/O=Consortium GARR/CN=$(hostname -f)"
+         sudo wget -O /etc/ssl/certs/SectigoRSAOrganizationValidationSecureServerCA.crt https://crt.sh/?d=924467857
+
+         sudo cat /etc/ssl/certs/SectigoRSAOrganizationValidationSecureServerCA.crt >> /etc/ssl/certs/GEANT_OV_RSA_CA_4.pem
+
+         sudo rm /etc/ssl/certs/SectigoRSAOrganizationValidationSecureServerCA.crt
+         ```
+
+       * If you use ACME (Let's Encrypt):
+         * `sudo ln -s /etc/letsencrypt/live/<SERVER_FQDN>/chain.pem /etc/ssl/certs/ACME-CA.pem`
+
+     * Generate CSR(Certificate Signing Request) and the KEY:
+       ```bash
+       sudo openssl req -new -newkey rsa:4096 -nodes -out /etc/ssl/certs/$(hostname -f).csr -keyout /etc/ssl/private/$(hostname -f).key -subj "/C=IT/ST=/L=Rome/O=Consortium GARR/CN=$(hostname -f)"
         
-        # Obtain the server certificate from Certification Authority (CA)
-        # and put it into /etc/ssl/certs/<FQDN-SERVER>.crt
-        
-        sudo cp /etc/ssl/certs/$(hostname -f).crt /etc/ldap/$(hostname -f).crt
-        sudo cp /etc/ssl/private/$(hostname -f).key /etc/ldap/$(hostname -f).key
-        sudo chown openldap:openldap /etc/ldap/$(hostname -f).crt /etc/ldap/$(hostname -f).key
-        ```
+       sudo cp /etc/ssl/certs/$(hostname -f).crt /etc/ldap/$(hostname -f).crt
+       sudo cp /etc/ssl/private/$(hostname -f).key /etc/ldap/$(hostname -f).key
+       sudo chown openldap:openldap /etc/ldap/$(hostname -f).crt /etc/ldap/$(hostname -f).key
+       ```
 
-5. Enable SSL for LDAP (**Be sure to have set the correct FQDN on your `/etc/hosts` file**):
-   * `sudo sed -i "s/TLS_CACERT.*/TLS_CACERT\t\/etc\/ldap\/$(hostname -f).crt/g" /etc/ldap/ldap.conf`
-   * `sudo chown openldap:openldap /etc/ldap/ldap.conf`
+5. Check `/etc/hosts` to be sure to have the correct FQDN for OpenLDAP server
 
-6. Restart OpenLDAP:
+6. Enable SSL for LDAP:
+   ```bash
+   sudo sed -i "s/TLS_CACERT.*/TLS_CACERT\t\/etc\/ldap\/$(hostname -f).crt/g" /etc/ldap/ldap.conf`
+   
+   sudo chown openldap:openldap /etc/ldap/ldap.conf
+   ```
+
+7. Restart OpenLDAP:
    * `sudo service slapd restart`
 
 ## Configuration
