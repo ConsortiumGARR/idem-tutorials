@@ -35,7 +35,7 @@
 
    * `sudo cat /root/debconf-slapd.conf | sudo debconf-set-selections`
 
-   **NOTES**: From now until the end of this HOWTO, we'll consider that:
+   **NOTES**: The HOWTO considers the following values:
       * `<LDAP-ROOT-PW_CHANGEME>` ==> `ciaoldap`
       * `<INSTITUTE-DOMAIN_CHANGEME>` ==> `example.org`
       * `<ORGANIZATION-NAME_CHANGEME>` ==> `Example Org`
@@ -82,7 +82,7 @@
 
 6. Enable SSL for LDAP:
    ```bash
-   sudo sed -i "s/TLS_CACERT.*/TLS_CACERT\t\/etc\/ldap\/$(hostname -f).crt/g" /etc/ldap/ldap.conf`
+   sudo sed -i "s/TLS_CACERT.*/TLS_CACERT\t\/etc\/ldap\/$(hostname -f).crt/g" /etc/ldap/ldap.conf
    
    sudo chown openldap:openldap /etc/ldap/ldap.conf
    ```
@@ -92,32 +92,32 @@
 
 ## Configuration
 
-1. Create 'scratch' directory:
+1. Create `scratch` directory:
    * `sudo mkdir /etc/ldap/scratch`
 
 2. Configure LDAP for SSL:
-   * ```bash
-     sudo bash -c 'cat > /etc/ldap/scratch/olcTLS.ldif <<EOF
-     dn: cn=config
-     changetype: modify
-     replace: olcTLSCACertificateFile
-     olcTLSCACertificateFile: /etc/ldap/$(hostname -f).crt
-     -
-     replace: olcTLSCertificateFile
-     olcTLSCertificateFile: /etc/ldap/$(hostname -f).crt
-     -
-     replace: olcTLSCertificateKeyFile
-     olcTLSCertificateKeyFile: /etc/ldap/$(hostname -f).key
-     EOF'
-     ```
-
-   * `sudo ldapmodify -Y EXTERNAL -H ldapi:/// -f /etc/ldap/scratch/olcTLS.ldif`
+   ```bash
+   sudo bash -c 'cat > /etc/ldap/scratch/olcTLS.ldif <<EOF
+   dn: cn=config
+   changetype: modify
+   replace: olcTLSCACertificateFile
+   olcTLSCACertificateFile: /etc/ldap/$(hostname -f).crt
+   -
+   replace: olcTLSCertificateFile
+   olcTLSCertificateFile: /etc/ldap/$(hostname -f).crt
+   -
+   replace: olcTLSCertificateKeyFile
+   olcTLSCertificateKeyFile: /etc/ldap/$(hostname -f).key
+   EOF'
+  
+   sudo ldapmodify -Y EXTERNAL -H ldapi:/// -f /etc/ldap/scratch/olcTLS.ldif
+   ```
 
 3. Create the 3 main _Organizational Unit_ (OU), `people`, `groups` and `system`.
 
    *Example:* if the domain name is `example.org` than  the distinguish name will be `dc=example,dc=org`:
    
-   **Be carefull!** Replace `dc=example,dc=org` with distinguish name ([DN](https://ldap.com/ldap-dns-and-rdns/)) of your domain name!
+   **Be carefull!** Replace `dc=example,dc=org` with distinguish name ([DN](https://ldap.com/ldap-dns-and-rdns/)) of your domain name and `<LDAP-ROOT-PW_CHANGEME>` with the LDAP ROOT password!
 
    * ```bash
      sudo bash -c 'cat > /etc/ldap/scratch/add_ou.ldif <<EOF
@@ -136,35 +136,35 @@
      objectClass: top
      ou: System
      EOF'
+   
+     sudo ldapadd -x -D 'cn=admin,dc=example,dc=org' -w '<LDAP-ROOT-PW_CHANGEME>' -H ldapi:/// -f /etc/ldap/scratch/add_ou.ldif
      ```
 
-    * `sudo ldapadd -x -D 'cn=admin,dc=example,dc=org' -w '<LDAP-ROOT-PW_CHANGEME>' -H ldapi:/// -f /etc/ldap/scratch/add_ou.ldif`
-
-    * Verify with: `sudo ldapsearch -x -b dc=example,dc=org`
+   * Verify with: `sudo ldapsearch -x -b dc=example,dc=org`
 
 4. Create the `idpuser` needed to perform "*Bind and Search*" operations:
    
-   **Be carefull!** Replace `dc=example,dc=org` with distinguish name ([DN](https://ldap.com/ldap-dns-and-rdns/)) of your domain name!
+   **Be carefull!** Replace `dc=example,dc=org` with distinguish name ([DN](https://ldap.com/ldap-dns-and-rdns/)) of your domain name, `<LDAP-ROOT-PW_CHANGEME>` with the LDAP ROOT password and `<INSERT-HERE-IDPUSER-PW>` with password for the `idpuser` user!
 
-    * ```bash
-      sudo bash -c 'cat > /etc/ldap/scratch/add_idpuser.ldif <<EOF
-      dn: cn=idpuser,ou=system,dc=example,dc=org
-      objectClass: inetOrgPerson
-      cn: idpuser
-      sn: idpuser
-      givenName: idpuser
-      userPassword: <INSERT-HERE-IDPUSER-PW>
-      EOF'
-      ```
-
-    * `sudo ldapadd -x -D 'cn=admin,dc=example,dc=org' -w '<LDAP-ROOT-PW_CHANGEME>' -H ldapi:/// -f /etc/ldap/scratch/add_idpuser.ldif`
+   ```bash
+   sudo bash -c 'cat > /etc/ldap/scratch/add_idpuser.ldif <<EOF
+   dn: cn=idpuser,ou=system,dc=example,dc=org
+   objectClass: inetOrgPerson
+   cn: idpuser
+   sn: idpuser
+   givenName: idpuser
+   userPassword: <INSERT-HERE-IDPUSER-PW>
+   EOF'
+     
+   sudo ldapadd -x -D 'cn=admin,dc=example,dc=org' -w '<LDAP-ROOT-PW_CHANGEME>' -H ldapi:/// -f /etc/ldap/scratch/add_idpuser.ldif
+   ```
 
 5. Configure OpenLDAP ACL to allow `idpuser` to perform *search* operation on the directory:
 
    **Be carefull!** Replace `dc=example,dc=org` with distinguish name ([DN](https://ldap.com/ldap-dns-and-rdns/)) of your domain name!
    
    * Check which configuration your directory has with:
-     `sudo ldapsearch  -Y EXTERNAL -H ldapi:/// -b cn=config 'olcDatabase={1}mdb'`
+     * `sudo ldapsearch  -Y EXTERNAL -H ldapi:/// -b cn=config 'olcDatabase={1}mdb'`
 
    * Configure ACL for `idpuser` with:
 
@@ -179,26 +179,30 @@
      olcAccess: {3}to dn.base="cn=Subschema" by * read
      olcAccess: {4}to * by dn.exact="cn=idpuser,ou=system,dc=example,dc=org" read by anonymous auth by self read
      EOF'
+   
+     sudo ldapadd  -Y EXTERNAL -H ldapi:/// -f /etc/ldap/scratch/olcAcl.ldif
      ```
-
-   * `sudo ldapadd  -Y EXTERNAL -H ldapi:/// -f /etc/ldap/scratch/olcAcl.ldif`
 
 6. Check that `idpuser` can search other users (when users exist):
 
    **Be carefull!** Replace `dc=example,dc=org` with distinguish name ([DN](https://ldap.com/ldap-dns-and-rdns/)) of your domain name!
 
-   * `sudo ldapsearch -x -D 'cn=idpuser,ou=system,dc=example,dc=org' -w <INSERT-HERE-IDPUSER-PW> -b "ou=people,dc=example,dc=org"`
+   ```bash
+   sudo ldapsearch -x -D 'cn=idpuser,ou=system,dc=example,dc=org' -w <INSERT-HERE-IDPUSER-PW> -b "ou=people,dc=example,dc=org"
+   ```
 
 7. Install needed schemas (eduPerson, SCHAC, Password Policy):
-   * ```bash
-     sudo wget https://raw.githubusercontent.com/malavolti/ansible-shibboleth/master/roles/openldap/files/eduperson-201602.ldif -O /etc/ldap/schema/eduperson.ldif
-     sudo wget https://raw.githubusercontent.com/malavolti/ansible-shibboleth/master/roles/openldap/files/schac-20150413.ldif -O /etc/ldap/schema/schac.ldif
-     sudo ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/ldap/schema/eduperson.ldif
-     sudo ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/ldap/schema/schac.ldif
-     sudo ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/ldap/schema/ppolicy.ldif
-     ```
-   * Verify with:
-     * `sudo ldapsearch -Q -LLL -Y EXTERNAL -H ldapi:/// -b cn=schema,cn=config dn`
+   ```bash
+   sudo wget https://raw.githubusercontent.com/malavolti/ansible-shibboleth/master/roles/openldap/files/eduperson-201602.ldif -O /etc/ldap/schema/eduperson.ldif
+   sudo wget https://raw.githubusercontent.com/malavolti/ansible-shibboleth/master/roles/openldap/files/schac-20150413.ldif -O /etc/ldap/schema/schac.ldif
+   sudo ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/ldap/schema/eduperson.ldif
+   sudo ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/ldap/schema/schac.ldif
+   sudo ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/ldap/schema/ppolicy.ldif
+  
+   sudo ldapsearch -Q -LLL -Y EXTERNAL -H ldapi:/// -b cn=schema,cn=config dn
+   ```
+
+   and verify presence of the new `schac` and `eduPerson` schemas.
 
 8. Add MemberOf Configuration:
    ```bash
