@@ -51,7 +51,7 @@
  * CPU: 2 Core (64 bit)
  * RAM: 4 GB
  * HDD: 20 GB
- * OS: Debian 10 / Ubuntu 18.04
+ * OS: Debian 10 / Ubuntu 18.04 / Ubuntu 20.04
  
 ### Other
 
@@ -98,7 +98,9 @@ Please remember to **replace all occurencences** of the `example.org` domain nam
    * `ubuntu.mirror.garr.it` (Ubuntu)
    
 3. Update packages:
-   * `apt update && apt-get upgrade -y --no-install-recommends`
+   ```bash
+   apt update && apt-get upgrade -y --no-install-recommends
+   ```
   
 4. Install the required packages:
    ```bash
@@ -106,14 +108,22 @@ Please remember to **replace all occurencences** of the `example.org` domain nam
    ```
 
 5. Install Amazon Corretto JDK:
-   * `wget -O- https://apt.corretto.aws/corretto.key | sudo apt-key add -`
-   * `apt-get install software-properties-common`
-   * `add-apt-repository 'deb https://apt.corretto.aws stable main'`
-   * `apt-get update; sudo apt-get install -y java-11-amazon-corretto-jdk`
-   * `java -version`
+   ```bash
+   wget -O- https://apt.corretto.aws/corretto.key | sudo apt-key add -
+
+   apt-get install software-properties-common
+
+   add-apt-repository 'deb https://apt.corretto.aws stable main'
+
+   apt-get update; sudo apt-get install -y java-11-amazon-corretto-jdk
+
+   java -version
+   ```
 
 6. Check that Java is working:
-   * `update-alternatives --config java` 
+   ```bash
+   update-alternatives --config java
+   ```
    
    (It will return something like this "`There is only one alternative in link group java (providing /usr/bin/java):`" )
 
@@ -125,6 +135,9 @@ Please remember to **replace all occurencences** of the `example.org` domain nam
 2. Be sure that your firewall **is not blocking** the traffic on port **443** and **80** for the IdP server.
 
 3. Set the IdP hostname:
+
+   (**ATTENTION**: *Replace `idp.example.org` with your IdP Full Qualified Domain Name and `<HOSTNAME>` with the IdP hostname*)
+
    * `vim /etc/hosts`
 
      ```bash
@@ -133,19 +146,17 @@ Please remember to **replace all occurencences** of the `example.org` domain nam
 
    * `hostnamectl set-hostname <HOSTNAME>`
    
-     (*Replace `idp.example.org` with your IdP Full Qualified Domain Name and `<HOSTNAME>` with the IdP hostname*)
-
 4. Set the variable `JAVA_HOME` in `/etc/environment`:
    * Set JAVA_HOME:
-     * `vim /etc/environment`
+     ```bash
+     echo 'JAVA_HOME=/usr/lib/jvm/java-11-amazon-corretto' > /etc/environment
 
-       ```bash
-       JAVA_HOME=/usr/lib/jvm/java-11-amazon-corretto
-       ```
+     source /etc/environment
 
-     * `source /etc/environment`
-     * `export JAVA_HOME=/usr/lib/jvm/java-11-amazon-corretto`
-     * `echo $JAVA_HOME`
+     export JAVA_HOME=/usr/lib/jvm/java-11-amazon-corretto
+
+     echo $JAVA_HOME
+     ```
 
 ### Install Shibboleth Identity Provider v4.x
 
@@ -158,13 +169,15 @@ It is a Java Web Application that can be deployed with its WAR file.
 2. Download the Shibboleth Identity Provider v4.x.y (replace '4.x.y' with the latest version found [here](https://shibboleth.net/downloads/identity-provider/)):
    * `cd /usr/local/src`
    * `wget http://shibboleth.net/downloads/identity-provider/4.x.y/shibboleth-identity-provider-4.x.y.tar.gz`
-   * `tar -xzf shibboleth-identity-provider-4.x.y.tar.gz`
+   * `tar -xzf shibboleth-identity-provider-4.*.tar.gz`
 
 3. Run the installer `install.sh`:
    > According to [NSA and NIST](https://www.keylength.com/en/compare/), RSA with 3072 bit-modulus is the minimum to protect up to TOP SECRET over than 2030.
 
-   * `cd /usr/local/src/shibboleth-identity-provider-4.x.y/bin`
+   * `cd /usr/local/src/shibboleth-identity-provider-4.*/bin`
    * `bash install.sh -Didp.host.name=$(hostname -f) -Didp.keysize=3072`
+
+     **ATTENTION:** Replace the default value of 'Attribute Scope' with the domain name of your institution.
 
      ```bash
      Buildfile: /usr/local/src/shibboleth-identity-provider-4.x.y/bin/build.xml
@@ -182,7 +195,7 @@ It is a Java Web Application that can be deployed with its WAR file.
 
      By starting from this point, the variable **idp.home** refers to the directory: `/opt/shibboleth-idp`
      
-     Backup the `###PASSWORD-FOR-BACKCHANNEL###` value somewhere to be able to find it when you need it.
+     Save the `###PASSWORD-FOR-BACKCHANNEL###` value somewhere to be able to find it when you need it.
      
      The `###PASSWORD-FOR-COOKIE-ENCRYPTION###` will be saved into `/opt/shibboleth-idp/credentials/secrets.properties` as `idp.sealer.storePassword` and `idp.sealer.keyPassword` value.
 
@@ -197,45 +210,63 @@ Jetty is a Web server and a Java Servlet container. It will be used to run the I
    ```bash
    cd /usr/local/src
    
-   wget https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-distribution/9.4.39.v20210325/jetty-distribution-9.4.39.v20210325.tar.gz
+   wget https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-distribution/9.4.43.v20210629/jetty-distribution-9.4.43.v20210629.tar.gz
    
-   tar xzvf jetty-distribution-9.4.39.v20210325.tar.gz
+   tar xzvf jetty-distribution-9.4.43.v20210629.tar.gz
    ```
 
 3. Create the `jetty-src` folder as a symbolic link. It will be useful for future Jetty updates:
-   * `ln -nsf jetty-distribution-9.4.39.v20210325 jetty-src`
+   ```bash
+   ln -nsf jetty-distribution-9.4.43.v20210629 jetty-src
+   ```
 
 4. Create the system user `jetty` that can run the web server (without home directory):
-   * `useradd -r -M jetty`
+   ```bash
+   useradd -r -M jetty
+   ```
 
 5. Create your custom Jetty configuration that overrides the default one and will survive upgrades:
-   * `mkdir /opt/jetty`
-   * `wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/jetty/start.ini -O /opt/jetty/start.ini`
+   ```bash
+   mkdir /opt/jetty
+   
+   wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/jetty/start.ini -O /opt/jetty/start.ini
+   ```
 
 6. Create the TMPDIR directory used by Jetty:
-   * `mkdir /opt/jetty/tmp ; chown jetty:jetty /opt/jetty/tmp`
-   * `chown -R jetty:jetty /opt/jetty /usr/local/src/jetty-src`
+   ```bash
+   mkdir /opt/jetty/tmp ; chown jetty:jetty /opt/jetty/tmp
+   
+   chown -R jetty:jetty /opt/jetty /usr/local/src/jetty-src
+   ```
 
 7. Create the Jetty Log's folder:
-   * `mkdir /var/log/jetty`
-   * `mkdir /opt/jetty/logs`
-   * `chown jetty:jetty /var/log/jetty /opt/jetty/logs`
+   ```bash
+   mkdir /var/log/jetty
+   
+   mkdir /opt/jetty/logs
+   
+   chown jetty:jetty /var/log/jetty /opt/jetty/logs
+   ```
 
 8. Configure **/etc/default/jetty**:
-   * `vim /etc/default/jetty`
-
-     ```bash
-     JETTY_HOME=/usr/local/src/jetty-src
-     JETTY_BASE=/opt/jetty
-     JETTY_USER=jetty
-     JETTY_START_LOG=/var/log/jetty/start.log
-     TMPDIR=/opt/jetty/tmp
-     ```
+   ```bash
+   sudo bash -c 'cat > /etc/default/jetty <<EOF
+   JETTY_HOME=/usr/local/src/jetty-src
+   JETTY_BASE=/opt/jetty
+   JETTY_USER=jetty
+   JETTY_START_LOG=/var/log/jetty/start.log
+   TMPDIR=/opt/jetty/tmp
+   EOF'
+   ```
 
 9. Create the service loadable from command line:
-   * `cd /etc/init.d`
-   * `ln -s /usr/local/src/jetty-src/bin/jetty.sh jetty`
-   * `update-rc.d jetty defaults`
+   ```bash
+   cd /etc/init.d
+   
+   ln -s /usr/local/src/jetty-src/bin/jetty.sh jetty
+   
+   update-rc.d jetty defaults
+   ```
 
 10. Check if all settings are OK:
     * `service jetty check`   (Jetty NOT running)
@@ -254,23 +285,27 @@ Jetty is a Web server and a Java Servlet container. It will be used to run the I
    * `sudo su -`
 
 2. Configure the IdP Context Descriptor:
-   * `mkdir /opt/jetty/webapps`
-   * `vim /opt/jetty/webapps/idp.xml`
-
-     ```xml
-     <Configure class="org.eclipse.jetty.webapp.WebAppContext">
-       <Set name="war"><SystemProperty name="idp.home"/>/war/idp.war</Set>
-       <Set name="contextPath">/idp</Set>
-       <Set name="extractWAR">false</Set>
-       <Set name="copyWebDir">false</Set>
-       <Set name="copyWebInf">true</Set>
-       <Set name="persistTempDirectory">false</Set>
-     </Configure>
-     ```
+   ```bash
+   mkdir /opt/jetty/webapps
+   
+   sudo bash -c 'cat > /opt/jetty/webapps/idp.xml <<EOF
+   <Configure class="org.eclipse.jetty.webapp.WebAppContext">
+     <Set name="war"><SystemProperty name="idp.home"/>/war/idp.war</Set>
+     <Set name="contextPath">/idp</Set>
+     <Set name="extractWAR">false</Set>
+     <Set name="copyWebDir">false</Set>
+     <Set name="copyWebInf">true</Set>
+     <Set name="persistTempDirectory">false</Set>
+   </Configure>
+   EOF'
+   ```
 
 3. Make the **jetty** user owner of IdP main directories:
-   * `cd /opt/shibboleth-idp`
-   * `chown -R jetty logs/ metadata/ credentials/ conf/ war/`
+   ```bash
+   cd /opt/shibboleth-idp
+
+   chown -R jetty logs/ metadata/ credentials/ conf/ war/
+   ```
 
 4. Restart Jetty:
    * `systemctl restart jetty.service`
@@ -283,14 +318,18 @@ The Apache HTTP Server will be configured as a reverse proxy and it will be used
    * `sudo su -`
 
 2. Create the DocumentRoot:
-   * `mkdir /var/www/html/$(hostname -f)`
-   * `sudo chown -R www-data: /var/www/html/$(hostname -f)`
-   * `echo '<h1>It Works!</h1>' > /var/www/html/$(hostname -f)/index.html`
+   ```bash
+   mkdir /var/www/html/$(hostname -f)
+
+   sudo chown -R www-data: /var/www/html/$(hostname -f)
+
+   echo '<h1>It Works!</h1>' > /var/www/html/$(hostname -f)/index.html
+   ```
 
 3. Create the Virtualhost file (**please pay attention: you need to edit this file and customize it, check the initial comment inside of it**):
-   * ```bash
-     wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/apache2/idp.example.org.conf -O /etc/apache2/sites-available/$(hostname -f).conf
-     ```
+   ```bash
+   wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/apache2/idp.example.org.conf -O /etc/apache2/sites-available/$(hostname -f).conf
+   ```
 
 4. Put SSL credentials in the right place:
    * HTTPS Server Certificate (Public Key) inside `/etc/ssl/certs` 
@@ -311,16 +350,24 @@ The Apache HTTP Server will be configured as a reverse proxy and it will be used
        * `ln -s /etc/letsencrypt/live/<SERVER_FQDN>/chain.pem /etc/ssl/certs/ACME-CA.pem`
 
 5. Configure the right privileges for the SSL Certificate and Key used by HTTPS:
-   * `chmod 400 /etc/ssl/private/$(hostname -f).key`
-   * `chmod 644 /etc/ssl/certs/$(hostname -f).crt`
+   ```bash
+   chmod 400 /etc/ssl/private/$(hostname -f).key
 
-     (*`$(hostname -f)` will provide your IdP Full Qualified Domain Name*)
+   chmod 644 /etc/ssl/certs/$(hostname -f).crt
+   ```
+
+   (*`$(hostname -f)` will provide your IdP Full Qualified Domain Name*)
 
 6. Enable the required Apache2 modules and the virtual hosts:
-   * `a2enmod proxy_http ssl headers alias include negotiation`
-   * `a2ensite $(hostname -f).conf`
-   * `a2dissite 000-default.conf default-ssl`
-   * `systemctl restart apache2.service`
+   ```bash
+   a2enmod proxy_http ssl headers alias include negotiation
+   
+   a2ensite $(hostname -f).conf
+   
+   a2dissite 000-default.conf default-ssl
+   
+   systemctl restart apache2.service
+   ```
 
 7. Check that IdP metadata is available on:
    * ht<span>tps://</span>idp.example.org/idp/shibboleth
