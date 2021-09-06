@@ -809,10 +809,10 @@ This Storage service will memorize User Consent data on persistent database SQL.
          * the baseDN ==> `ou=people,dc=example,dc=org` (branch containing the registered users)
          * the bindDN ==> `cn=idpuser,ou=system,dc=example,dc=org` (distinguished name for the user that can made queries on the LDAP)
 
-4. Restart Jetty to apply the changes:
+5. Restart Jetty to apply the changes:
    * `systemctl restart jetty.service`
 
-5. Check IdP Status:
+6. Check IdP Status:
    * `bash /opt/shibboleth-idp/bin/status.sh`
 
 ### Configure Shibboleth Identity Provider to release the persistent NameID
