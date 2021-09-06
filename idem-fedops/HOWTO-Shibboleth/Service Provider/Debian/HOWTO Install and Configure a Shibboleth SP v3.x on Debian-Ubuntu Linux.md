@@ -90,12 +90,18 @@
    * `sudo su -`
 
 2. Create the DocumentRoot:
-   * `mkdir /var/www/html/$(hostname -f)`
-   * `sudo chown -R www-data: /var/www/html/$(hostname -f)`
-   * `echo '<h1>It Works!</h1>' > /var/www/html/$(hostname -f)/index.html`
+   ```bash
+   mkdir /var/www/html/$(hostname -f)
+   
+   sudo chown -R www-data: /var/www/html/$(hostname -f)
+   
+   echo '<h1>It Works!</h1>' > /var/www/html/$(hostname -f)/index.html
+   ```
 
 3. Create the Virtualhost file (**please pay attention: you need to edit this file and customize it, check the initial comment inside of it**):
-   * `wget https://registry.idem.garr.it/idem-conf/shibboleth/SP3/apache2/sp.example.org.conf -O /etc/apache2/sites-available/000-$(hostname -f).conf`
+   ```bash
+   wget https://registry.idem.garr.it/idem-conf/shibboleth/SP3/apache2/sp.example.org.conf -O /etc/apache2/sites-available/000-$(hostname -f).conf
+   ```
 
 4. Put SSL credentials in the right place:
    * HTTPS Server Certificate (Public Key) inside `/etc/ssl/certs` 
@@ -116,16 +122,24 @@
        * `ln -s /etc/letsencrypt/live/<SERVER_FQDN>/chain.pem /etc/ssl/certs/ACME-CA.pem`
 
 5. Configure the right privileges for the SSL Certificate and Key used by HTTPS:
-   * `chmod 400 /etc/ssl/private/$(hostname -f).key`
-   * `chmod 644 /etc/ssl/certs/$(hostname -f).crt`
+   ```bash
+   chmod 400 /etc/ssl/private/$(hostname -f).key
+   
+   chmod 644 /etc/ssl/certs/$(hostname -f).crt
+   ```
 
-     (*`$(hostname -f)` will provide your IdP Full Qualified Domain Name*)
+   (*`$(hostname -f)` will provide your IdP Full Qualified Domain Name*)
 
 6. Enable **proxy_http**, **SSL** and **headers** Apache2 modules:
-   * `a2enmod ssl headers alias include negotiation`
-   * `a2dissite 000-default.conf`
-   * `a2ensite 000-$(hostname -f).conf default-ssl`
-   * `systemctl restart apache2.service`
+   ```bash
+   a2enmod ssl headers alias include negotiation
+   
+   a2dissite 000-default.conf
+   
+   a2ensite 000-$(hostname -f).conf default-ssl
+   
+   systemctl restart apache2.service
+   ```
   
 7. Verify the strength of your SP's machine on:
    * [**https://www.ssllabs.com/ssltest/analyze.html**](https://www.ssllabs.com/ssltest/analyze.html)
@@ -139,14 +153,14 @@
    * `cd /etc/shibboleth/`
    * `wget https://md.idem.garr.it/certs/idem-signer-20220121.pem -O federation-cert.pem`
 
-    * Check the validity:
-      *  `cd /etc/shibboleth`
-      *  `openssl x509 -in federation-cert.pem -fingerprint -sha1 -noout`
+     * Check the validity:
+       *  `cd /etc/shibboleth`
+       *  `openssl x509 -in federation-cert.pem -fingerprint -sha1 -noout`
        
-         (sha1: D1:68:6C:32:A4:E3:D4:FE:47:17:58:E7:15:FC:77:A8:44:D8:40:4D)
-      *  `openssl x509 -in federation-cert.pem -fingerprint -md5 -noout`
+          (sha1: D1:68:6C:32:A4:E3:D4:FE:47:17:58:E7:15:FC:77:A8:44:D8:40:4D)
+       *  `openssl x509 -in federation-cert.pem -fingerprint -md5 -noout`
 
-         (md5: 48:3B:EE:27:0C:88:5D:A3:E7:0B:7C:74:9D:24:24:E0)
+          (md5: 48:3B:EE:27:0C:88:5D:A3:E7:0B:7C:74:9D:24:24:E0)
 
 3. Edit `shibboleth2.xml` opportunely:
    * `vim /etc/shibboleth/shibboleth2.xml`
@@ -176,18 +190,27 @@
          key="sp-encrypt-key.pem" certificate="sp-encrypt-cert.pem"/>
      ```
 4. Create SP metadata credentials:
-   * `/usr/sbin/shib-keygen -n sp-signing -e https://sp.example.org/shibboleth`
-   * `/usr/sbin/shib-keygen -n sp-encrypt -e https://sp.example.org/shibboleth`
-   * `shibd -t /etc/shibboleth/shibboleth2.xml` (Check Shibboleth configuration)
-   * `systemctl restart shibd.service`
+   ```bash
+   /usr/sbin/shib-keygen -n sp-signing -e https://$(hostname -f)/shibboleth
+   
+   /usr/sbin/shib-keygen -n sp-encrypt -e https://$(hostname -f)/shibboleth
+   
+   shibd -t /etc/shibboleth/shibboleth2.xml
+   
+   systemctl restart shibd.service
+   ```
 
 5. Enable Shibboleth Apache2 configuration:
-   * `a2enmod shib`
-   * `systemctl reload apache2.service`
+   ```bash
+   a2enmod shib
+   
+   systemctl reload apache2.service
+   ```
 
 5. Now you are able to reach your Shibboleth SP Metadata on:
-   * `https://sp.example.org/Shibboleth.sso/Metadata`
-   (change `sp.example.org` to you SP full qualified domain name)
+   * ht<span>tps://</span>sp.example.org/Shibboleth.sso/Metadata
+
+     (change `sp.example.org` to you SP full qualified domain name)
 
 7. Register you SP on IDEM Entity Registry (your entity have to be approved by an IDEM Federation Operator before become part of IDEM Test Federation):
    * Go to `https://registry.idem.garr.it/` and follow "Insert a New Service Provider into the IDEM Test Federation"
@@ -209,12 +232,13 @@
        require valid-user
      </Location>
      ```
+
    * `a2enconf secure`
 
 2. Create the "`secure`" application into the DocumentRoot:
-   * `mkdir /var/www/html/sp.example.org/secure`
+   * `mkdir /var/www/html/$(hostname -f)/secure`
 
-   * `vim /var/www/html/sp.example.org/secure/index.php`
+   * `vim /var/www/html/$(hostname -f)/secure/index.php`
 
      ```php
      <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -259,8 +283,11 @@
      ```
 
 3. Install needed packages:
-   * `apt install libapache2-mod-php php`
-   * `systemctl restart apache2.service`
+   ```bash
+   apt install libapache2-mod-php php
+   
+   systemctl restart apache2.service
+   ```
 
 ### Enable Attribute Support on Shibboleth SP
 1. Enable attribute support by removing comment from the related content into "`/etc/shibboleth/attribute-map.xml`"
