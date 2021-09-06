@@ -1167,12 +1167,18 @@ eduPersonTargetedID is an abstracted version of the SAML V2.0 Name Identifier fo
 
 File(s): `conf/attribute-registry.xml`, `conf/attributes/default-rules.xml`, `conf/attribute-resolver.xml`, `conf/attributes/custom/`
 
-1. Download `schac.xml` into the right location:
+1. Become ROOT:
+   * `sudo su -`
+
+2. Download `schac.xml` into the right location:
    * ```bash
      wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/attributes/schac.xml -O /opt/shibboleth-idp/conf/attributes/schac.xml
      ```
 
-2. Change the `default-rules.xml` to include the new `schac.xml` file:
+3. Set the proper owner/group with:
+   * `chown jetty:root /opt/shibboleth-idp/conf/attributes/schac.xml`
+
+4. Change the `default-rules.xml` to include the new `schac.xml` file:
    * `vim /opt/shibboleth-idp/conf/attributes/default-rules.xml`
    
      ```xml
