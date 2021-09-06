@@ -1107,13 +1107,16 @@ eduPersonTargetedID is an abstracted version of the SAML V2.0 Name Identifier fo
      wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/attributes/custom/eduPersonTargetedID.properties -O /opt/shibboleth-idp/conf/attributes/custom/eduPersonTargetedID.properties
      ```
 
-4. Restart Jetty to apply the changes:
+4. Set proper owner/group with:
+   * `chown jetty:root /opt/shibboleth-idp/conf/attributes/custom/eduPersonTargetedID.properties`
+
+5. Restart Jetty to apply the changes:
    * `systemctl restart jetty.service`
 
-5. Check IdP Status:
+6. Check IdP Status:
    * `bash /opt/shibboleth-idp/bin/status.sh`
 
-6. Proceed with [Configure the attribute resolution with Attribute Registry](#configure-the-attribute-resolution-with-attribute-registry)
+7. Proceed with [Configure the attribute resolution with Attribute Registry](#configure-the-attribute-resolution-with-attribute-registry)
 
 #### Strategy B - Stored mode - using the persistent NameID database
 
@@ -1149,14 +1152,16 @@ eduPersonTargetedID is an abstracted version of the SAML V2.0 Name Identifier fo
    * ```bash 
      wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/attributes/custom/eduPersonTargetedID.properties -O /opt/shibboleth-idp/conf/attributes/custom/eduPersonTargetedID.properties
      ```
+3. Set proper owner/group with:
+   * `chown jetty:root /opt/shibboleth-idp/conf/attributes/custom/eduPersonTargetedID.properties`
 
-3. Restart Jetty to apply the changes:
+4. Restart Jetty to apply the changes:
    * `systemctl restart jetty.service`
 
-4. Check IdP Status:
+5. Check IdP Status:
    * `bash /opt/shibboleth-idp/bin/status.sh`
 
-5. Proceed with [Configure the attribute resolution with Attribute Registry](#configure-the-attribute-resolution-with-attribute-registry)
+6. Proceed with [Configure the attribute resolution with Attribute Registry](#configure-the-attribute-resolution-with-attribute-registry)
 
 ### Configure the attribute resolution with Attribute Registry
 
