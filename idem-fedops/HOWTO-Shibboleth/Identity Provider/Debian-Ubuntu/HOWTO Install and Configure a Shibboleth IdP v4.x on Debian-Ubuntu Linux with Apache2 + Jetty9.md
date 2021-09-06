@@ -523,8 +523,6 @@ This Storage service will memorize User Consent data on persistent database SQL.
      `(uid=<USERNAME-USED-IN-THE-LOGIN-FORM>)` ==> `(uid=$resolutionContext.principal)` searchFilter
 
 4. Connect the openLDAP to the IdP to allow the authentication of the users:
-   
-   (for **TLS** solutions put the LDAP certificate into `/opt/shibboleth-idp/credentials/ldap-server.crt`)
 
    * For OpenLDAP:
      * Solution 1: LDAP + STARTTLS:
@@ -574,7 +572,7 @@ This Storage service will memorize User Consent data on persistent database SQL.
        * Configure the right owner/group with:
          ```bash
          chown jetty:root /opt/shibboleth-idp/credentials/ldap-server.crt ; chmod 600 /opt/shibboleth-idp/credentials/ldap-server.crt
-	 ```
+	       ```
 
      * Solution 2: LDAP + TLS:
        * `vim /opt/shibboleth-idp/credentials/secrets.properties`
@@ -623,7 +621,7 @@ This Storage service will memorize User Consent data on persistent database SQL.
        * Configure the right owner/group with:
          ```bash
          chown jetty:root /opt/shibboleth-idp/credentials/ldap-server.crt ; chmod 600 /opt/shibboleth-idp/credentials/ldap-server.crt
-	 ```
+	       ```
 
      * Solution 3: plain LDAP
        * `vim /opt/shibboleth-idp/credentials/secrets.properties`
@@ -713,7 +711,7 @@ This Storage service will memorize User Consent data on persistent database SQL.
        * Configure the right owner/group with:
          ```bash
          chown jetty:root /opt/shibboleth-idp/credentials/ldap-server.crt ; chmod 600 /opt/shibboleth-idp/credentials/ldap-server.crt
-	 ```
+	       ```
 
      * Solution 2: AD + TLS:
        * `vim /opt/shibboleth-idp/credentials/secrets.properties`
@@ -762,7 +760,7 @@ This Storage service will memorize User Consent data on persistent database SQL.
        * Configure the right owner/group with:
          ```bash
          chown jetty:root /opt/shibboleth-idp/credentials/ldap-server.crt ; chmod 600 /opt/shibboleth-idp/credentials/ldap-server.crt
-	 ```
+	       ```
 
      * Solution 3: plain AD
        * `vim /opt/shibboleth-idp/credentials/secrets.properties`
