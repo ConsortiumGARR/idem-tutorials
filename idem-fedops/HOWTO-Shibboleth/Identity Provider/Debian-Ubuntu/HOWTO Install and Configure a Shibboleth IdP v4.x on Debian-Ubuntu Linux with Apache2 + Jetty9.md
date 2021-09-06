@@ -396,6 +396,8 @@ See the configuration files and the Shibboleth documentation for details.
 Check IdP Status:
    * `bash /opt/shibboleth-idp/bin/status.sh`
 
+Proceed with [Configure the Directory (openLDAP or AD) Connection](#configure-the-directory-openldap-or-ad-connection)
+
 #### Strategy B - JPA Storage Service - using a database
 
 This Storage service will memorize User Consent data on persistent database SQL.
@@ -499,6 +501,8 @@ This Storage service will memorize User Consent data on persistent database SQL.
 11. Check IdP Status:
     * `bash /opt/shibboleth-idp/bin/status.sh`
 
+12. Proceed with [Configure the Directory (openLDAP or AD) Connection](#configure-the-directory-openldap-or-ad-connection)
+
 ### Configure the Directory (openLDAP or AD) Connection
 
 1. Become ROOT:
@@ -580,6 +584,14 @@ This Storage service will memorize User Consent data on persistent database SQL.
          chown jetty:root /opt/shibboleth-idp/credentials/ldap-server.crt ; chmod 600 /opt/shibboleth-idp/credentials/ldap-server.crt
 	       ```
 
+       * Restart Jetty to apply the changes:
+         * `systemctl restart jetty.service`
+
+       * Check IdP Status:
+         * `bash /opt/shibboleth-idp/bin/status.sh`
+         
+       * Proceed with [Configure Shibboleth Identity Provider to release the persistent NameID](#configure-shibboleth-identity-provider-to-release-the-persistent-nameid)
+
      * Solution 2: LDAP + TLS:
        * `vim /opt/shibboleth-idp/credentials/secrets.properties`
          
@@ -629,6 +641,14 @@ This Storage service will memorize User Consent data on persistent database SQL.
          chown jetty:root /opt/shibboleth-idp/credentials/ldap-server.crt ; chmod 600 /opt/shibboleth-idp/credentials/ldap-server.crt
 	       ```
 
+       * Restart Jetty to apply the changes:
+         * `systemctl restart jetty.service`
+
+       * Check IdP Status:
+         * `bash /opt/shibboleth-idp/bin/status.sh`
+         
+       * Proceed with [Configure Shibboleth Identity Provider to release the persistent NameID](#configure-shibboleth-identity-provider-to-release-the-persistent-nameid)
+
      * Solution 3: plain LDAP
        * `vim /opt/shibboleth-idp/credentials/secrets.properties`
          
@@ -668,6 +688,14 @@ This Storage service will memorize User Consent data on persistent database SQL.
           # List of attributes produced by the Data Connector that should be directly exported as resolved IdPAttributes without requiring any <AttributeDefinition>
           idp.attribute.resolver.LDAP.exportAttributes    = ### List space-separated of attributes to retrieve directly from the directory ###
           ```
+
+       * Restart Jetty to apply the changes:
+         * `systemctl restart jetty.service`
+
+       * Check IdP Status:
+         * `bash /opt/shibboleth-idp/bin/status.sh`
+         
+       * Proceed with [Configure Shibboleth Identity Provider to release the persistent NameID](#configure-shibboleth-identity-provider-to-release-the-persistent-nameid)
 
    * For Active Directory:
      * Solution 1: AD + STARTTLS:
@@ -719,6 +747,14 @@ This Storage service will memorize User Consent data on persistent database SQL.
          chown jetty:root /opt/shibboleth-idp/credentials/ldap-server.crt ; chmod 600 /opt/shibboleth-idp/credentials/ldap-server.crt
 	       ```
 
+       * Restart Jetty to apply the changes:
+         * `systemctl restart jetty.service`
+
+       * Check IdP Status:
+         * `bash /opt/shibboleth-idp/bin/status.sh`
+         
+       * Proceed with [Configure Shibboleth Identity Provider to release the persistent NameID](#configure-shibboleth-identity-provider-to-release-the-persistent-nameid)
+
      * Solution 2: AD + TLS:
        * `vim /opt/shibboleth-idp/credentials/secrets.properties`
          
@@ -768,6 +804,14 @@ This Storage service will memorize User Consent data on persistent database SQL.
          chown jetty:root /opt/shibboleth-idp/credentials/ldap-server.crt ; chmod 600 /opt/shibboleth-idp/credentials/ldap-server.crt
 	       ```
 
+       * Restart Jetty to apply the changes:
+         * `systemctl restart jetty.service`
+
+       * Check IdP Status:
+         * `bash /opt/shibboleth-idp/bin/status.sh`
+         
+       * Proceed with [Configure Shibboleth Identity Provider to release the persistent NameID](#configure-shibboleth-identity-provider-to-release-the-persistent-nameid)
+
      * Solution 3: plain AD
        * `vim /opt/shibboleth-idp/credentials/secrets.properties`
         
@@ -808,11 +852,13 @@ This Storage service will memorize User Consent data on persistent database SQL.
           idp.attribute.resolver.LDAP.exportAttributes    = ### List space-separated of attributes to retrieve directly from the directory ###
           ```
 
-5. Restart Jetty to apply the changes:
-   * `systemctl restart jetty.service`
+       * Restart Jetty to apply the changes:
+         * `systemctl restart jetty.service`
 
-6. Check IdP Status:
-   * `bash /opt/shibboleth-idp/bin/status.sh`
+       * Check IdP Status:
+         * `bash /opt/shibboleth-idp/bin/status.sh`
+         
+       * Proceed with [Configure Shibboleth Identity Provider to release the persistent NameID](#configure-shibboleth-identity-provider-to-release-the-persistent-nameid)
 
 ### Configure Shibboleth Identity Provider to release the persistent NameID
 
@@ -867,6 +913,8 @@ By default, a transient NameID will always be released to the Service Provider i
 
 4. Check IdP Status:
    * `bash /opt/shibboleth-idp/bin/status.sh`
+
+5. Proceed with [Configure the attribute resolver (sample)](#configure-the-attribute-resolver-sample)
 
 #### Strategy B - Stored mode - using a database
 
@@ -991,6 +1039,8 @@ By default, a transient NameID will always be released to the Service Provider i
 11. Check IdP Status:
     * `bash /opt/shibboleth-idp/bin/status.sh`
 
+12. Proceed with [Configure the attribute resolver (sample)](#configure-the-attribute-resolver-sample)
+
 ### Configure the attribute resolver (sample)
 
 1. Define which attributes your IdP can manage into your Attribute Resolver file. Here you can find a sample **attribute-resolver-sample.xml** as example:
@@ -1062,6 +1112,8 @@ eduPersonTargetedID is an abstracted version of the SAML V2.0 Name Identifier fo
 5. Check IdP Status:
    * `bash /opt/shibboleth-idp/bin/status.sh`
 
+6. Proceed with [Configure the attribute resolution with Attribute Registry](#configure-the-attribute-resolution-with-attribute-registry)
+
 #### Strategy B - Stored mode - using the persistent NameID database
 
 1. Check to have the `<AttributeDefinition>` and the `<DataConnector>` into the `attribute-resolver.xml`:
@@ -1102,6 +1154,8 @@ eduPersonTargetedID is an abstracted version of the SAML V2.0 Name Identifier fo
 
 4. Check IdP Status:
    * `bash /opt/shibboleth-idp/bin/status.sh`
+
+5. Proceed with [Configure the attribute resolution with Attribute Registry](#configure-the-attribute-resolution-with-attribute-registry)
 
 ### Configure the attribute resolution with Attribute Registry
 
