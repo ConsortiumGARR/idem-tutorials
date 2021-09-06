@@ -859,7 +859,7 @@ By default, a transient NameID will always be released to the Service Provider i
    * `vim /opt/shibboleth-idp/credentials/secrets.properties`
 
      ```properties
-     idp.persistentId.salt = ### result of 'openssl rand -base64 36' ###
+     idp.persistentId.salt = ### result of command 'openssl rand -base64 36' ###
      ```
 
 3. Restart Jetty to apply the changes:
@@ -958,7 +958,7 @@ By default, a transient NameID will always be released to the Service Provider i
      
    * `vim /opt/shibboleth-idp/credentials/secrets.properties`
      ```properties
-     idp.persistentId.salt = ### result of 'openssl rand -base64 36'###
+     idp.persistentId.salt = ### result of command 'openssl rand -base64 36'###
      ```
 
    * Enable the **SAML2PersistentGenerator**:
