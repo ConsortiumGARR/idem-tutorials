@@ -1435,6 +1435,9 @@ The IdP includes the ability to require user consent to attribute release, as we
    * `<bean parent="SAML2.SSO" p:postAuthenticationFlows="attribute-release" />` - to enable only Attribute Release Consent
    * `<bean parent="SAML2.SSO" p:postAuthenticationFlows="#{ {'terms-of-use', 'attribute-release'} }" />` - to enable both
 
+3. Restart Jetty:
+   * `sudo systemctl restart jetty.service`
+
 ### Appendix B: Import persistent-id from a previous database
 
 Follow these steps **ONLY IF** your need to import persistent-id database from another IdP
