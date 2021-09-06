@@ -42,6 +42,12 @@
 
  * SSL Credentials: HTTPS Certificate & Key
 
+## Notes
+
+This HOWTO use `example.org` as domain name and `sp.example.org` as FQDN (Full Qualified Domain Name) to provide example values to this guide.
+
+Please, remember to **replace all occurence** of `example.org` domain name, or part of it, with the SP domain name into the configuration files and also `sp.example.org` with the FQDN of your SP server.
+
 ## Installation Instructions
 
 ### Install software requirements
@@ -69,6 +75,8 @@
      127.0.1.1 sp.example.org sp
      ```
    (*Replace `sp.example.org` with your SP Full Qualified Domain Name*)
+   
+   (*Replace `sp` with your SP Hostname*)
 
 2. Be sure that your firewall **doesn't block** the traffic on port **443** (or you can't access to your SP)
 
@@ -85,6 +93,8 @@
 ## Configuration Instructions
 
 ### Configure SSL on Apache2
+
+> According to [NSA and NIST](https://www.keylength.com/en/compare/), RSA with 3072 bit-modulus is the minimum to protect up to TOP SECRET over than 2030.
 
 1. Become ROOT:
    * `sudo su -`
@@ -134,9 +144,9 @@
    ```bash
    a2enmod ssl headers alias include negotiation
    
-   a2dissite 000-default.conf
+   a2dissite 000-default.conf default-ssl
    
-   a2ensite 000-$(hostname -f).conf default-ssl
+   a2ensite 000-$(hostname -f).conf
    
    systemctl restart apache2.service
    ```
@@ -149,56 +159,52 @@
 1. Become ROOT: 
    * `sudo su -`
 
-2. Download Federation Metadata Signing Certificate:
-   * `cd /etc/shibboleth/`
-   * `wget https://md.idem.garr.it/certs/idem-signer-20220121.pem -O federation-cert.pem`
-
-     * Check the validity:
-       *  `cd /etc/shibboleth`
-       *  `openssl x509 -in federation-cert.pem -fingerprint -sha1 -noout`
-       
-          (sha1: D1:68:6C:32:A4:E3:D4:FE:47:17:58:E7:15:FC:77:A8:44:D8:40:4D)
-       *  `openssl x509 -in federation-cert.pem -fingerprint -md5 -noout`
-
-          (md5: 48:3B:EE:27:0C:88:5D:A3:E7:0B:7C:74:9D:24:24:E0)
-
-3. Edit `shibboleth2.xml` opportunely:
-   * `vim /etc/shibboleth/shibboleth2.xml`
-
-     ```bash
-     ...
-     <ApplicationDefaults entityID="https://sp.example.org/shibboleth"
-          REMOTE_USER="eppn subject-id pairwise-id persistent-id"
-          cipherSuites="DEFAULT:!EXP:!LOW:!aNULL:!eNULL:!DES:!IDEA:!SEED:!RC4:!3DES:!kRSA:!SSLv2:!SSLv3:!TLSv1:!TLSv1.1">
-     ...
-     <Sessions lifetime="28800" timeout="3600" relayState="ss:mem" checkAddress="false" handlerSSL="true" cookieProps="https">
-     ...
-     <!-- To install and Configure the Shibboleth Embedded Discovery Service follow: http://tiny.cc/howto-idem-shib-eds -->
-     <SSO discoveryProtocol="SAMLDS" discoveryURL="https://wayf.idem-test.garr.it/WAYF">
-        SAML2
-     </SSO>
-     ...
-     <MetadataProvider type="XML" url="http://md.idem.garr.it/metadata/idem-test-metadata-sha256.xml" legacyOrgName="true" backingFilePath="idem-test-metadata-sha256.xml" maxRefreshDelay="7200">
-        <MetadataFilter type="Signature" certificate="federation-cert.pem" verifyBackup="false"/>
-        <MetadataFilter type="RequireValidUntil" maxValidityInterval="864000" />
-     </MetadataProvider>
-     ...
-     <!-- Simple file-based resolvers for separate signing/encryption keys. -->
-     <CredentialResolver type="File" use="signing"
-         key="sp-signing-key.pem" certificate="sp-signing-cert.pem"/>
-     <CredentialResolver type="File" use="encryption"
-         key="sp-encrypt-key.pem" certificate="sp-encrypt-cert.pem"/>
-     ```
-4. Create SP metadata credentials:
+2. Change the SP entityID and technical contact email address:
    ```bash
-   /usr/sbin/shib-keygen -n sp-signing -e https://$(hostname -f)/shibboleth
+   sed -i "s/sp.example.org/$(hostname -f)/" /etc/shibboleth/shibboleth2.xml
    
-   /usr/sbin/shib-keygen -n sp-encrypt -e https://$(hostname -f)/shibboleth
+   sed -i "s/root@localhost/<TECH-CONTACT-EMAIL-ADDRESS-HERE>/" /etc/shibboleth/shibboleth2.xml
    
-   shibd -t /etc/shibboleth/shibboleth2.xml
+   sed -i 's/handlerSSL="false"/handlerSSL="true"/' /etc/shibboleth/shibboleth2.xml
    
-   systemctl restart shibd.service
+   sed -i 's/cookieProps="http"/cookieProps="https"/' /etc/shibboleth/shibboleth2.xml
    ```
+
+3. Create SP metadata Signing and Encryption credentials:
+   * Ubuntu:
+     ```bash
+     cd /etc/shibboleth
+   
+     shib-keygen -u _shibd -g _shibd -h $(hostname -f) -y 30 -e https://$(hostname -f)/shibboleth -n sp-signing -f
+   
+     shib-keygen -u _shibd -g _shibd -h $(hostname -f) -y 30 -e https://$(hostname -f)/shibboleth -n sp-encrypt -f
+   
+     /usr/sbin/shibd -t
+ 
+     systemctl restart shibd.service
+   
+     systemctl restart apache2.service
+     ```
+
+   * Debian
+     ```bash
+     cd /etc/shibboleth
+   
+     ./keygen.sh -u shibd -g shibd -h $(hostname -f) -y 30 -e https://$(hostname -f)/shibboleth -n sp-signing -f
+   
+     ./keygen.sh -u shibd -g shibd -h $(hostname -f) -y 30 -e https://$(hostname -f)/shibboleth -n sp-encrypt -f
+   
+     LD_LIBRARY_PATH=/opt/shibboleth/lib64 /usr/sbin/shibd -t
+ 
+     systemctl restart shibd.service
+   
+     systemctl restart apache2.service
+     ```
+
+4. Now you are able to reach your Shibboleth SP Metadata on:
+   * `https://sp.example.org/Shibboleth.sso/Metadata`
+
+   (*Replace `sp.example.org` with your SP Full Qualified Domain Name*)
 
 5. Enable Shibboleth Apache2 configuration:
    ```bash
@@ -207,14 +213,10 @@
    systemctl reload apache2.service
    ```
 
-5. Now you are able to reach your Shibboleth SP Metadata on:
+6. Now you are able to reach your Shibboleth SP Metadata on:
    * ht<span>tps://</span>sp.example.org/Shibboleth.sso/Metadata
 
      (change `sp.example.org` to you SP full qualified domain name)
-
-7. Register you SP on IDEM Entity Registry (your entity have to be approved by an IDEM Federation Operator before become part of IDEM Test Federation):
-   * Go to `https://registry.idem.garr.it/` and follow "Insert a New Service Provider into the IDEM Test Federation"
-
 
 ### Configure an example federated resource "secure"
 
@@ -236,53 +238,13 @@
    * `a2enconf secure`
 
 2. Create the "`secure`" application into the DocumentRoot:
-   * `mkdir /var/www/html/$(hostname -f)/secure`
+   ```bash
+   mkdir -p /var/www/html/$(hostname -f)/secure
 
-   * `vim /var/www/html/$(hostname -f)/secure/index.php`
+   wget https://registry.idem.garr.it/idem-conf/shibboleth/SP3/secure/index.php.txt -O /var/www/html/$(hostname -f)/secure/index.php
+   ```
 
-     ```php
-     <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-      <html>
-       <head>
-        <title>Example PHP Federated Application</title>
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-       </head>
-       <body>
-        <p>
-         <a href="https://sp.example.org/privacy.html">Privacy Policy</a>
-        </p>
-        <?php
-         //The REMOTE_USER variable holds the name of the user authenticated by the web server.
-         $name = getName();
-         print "<h1>Ciao " . $name . "!!!</h1>";
-
-         print "<p>Let see all other attributes:</p>";
-         print "<p>Your REMOTE_USER is <strong>" . $_SERVER["REMOTE_USER"] . "</strong></p>";
-         print "<p>Your email is <strong>" . $_SERVER['mail'] . "</strong></p>";
-         print "<p>Your eduPersonPrincipalName is <strong>" . $_SERVER["eppn"] . "</strong></p>";
-         print "<p>Your schacHomeOrganization is <strong>" . $_SERVER["schacHomeOrganization"] . "</strong></p>";
-         print "<p>Your schacHomeOrganizationType is <strong>" . $_SERVER["schacHomeOrganizationType"] . "</strong></p>";
-
-        ?>
-       </body>
-      </html>
-
-      <?php
-      function getName() {
-       if (array_key_exists("displayName", $_SERVER)) {
-       return implode(" ", explode(";", $_SERVER["displayName"]));
-       } else if (array_key_exists("cn", $_SERVER)) {
-       return implode(" ", explode(";", $_SERVER["cn"]));
-       } else if (array_key_exists("givenName", $_SERVER) && array_key_exists("sn", $_SERVER)) {
-       return implode(" ", explode(";", $_SERVER["givenName"])) . " " .
-       implode(" ", explode(";", $_SERVER["sn"]));
-       }
-       return "Unknown";
-      }
-     ?>
-     ```
-
-3. Install needed packages:
+3. Install needed packages and restart Apache2:
    ```bash
    apt install libapache2-mod-php php
    
@@ -290,8 +252,88 @@
    ```
 
 ### Enable Attribute Support on Shibboleth SP
-1. Enable attribute support by removing comment from the related content into "`/etc/shibboleth/attribute-map.xml`"
-2. Restart Shibd to apply `systemctl restart shibd.service`
+> The Attribute Map file is used by the Service Provider to recognize and support new attributes released by an Identity Provider
+
+Enable attribute support by removing comment from the related content into `/etc/shibboleth/attribute-map.xml` than restart `shibd` service:
+* `sudo systemctl restart shibd.service`
+
+### Connect SP to the Federation
+
+> Follow these steps **IF AND ONLY IF** your organization will join as a Partner or a Member into [IDEM Federation](https://idem.garr.it/en/federazione-idem-en/idem-federation)
+
+1. Retrieve the IDEM GARR Federation Certificate needed to verify the signed metadata:
+   * `cd /etc/shibboleth/`
+   * `curl https://md.idem.garr.it/certs/idem-signer-20220121.pem -o federation-cert.pem`
+   * Check the validity:
+     *  `cd /etc/shibboleth`
+     *  `openssl x509 -in federation-cert.pem -fingerprint -sha1 -noout`
+       
+         (sha1: D1:68:6C:32:A4:E3:D4:FE:47:17:58:E7:15:FC:77:A8:44:D8:40:4D)
+     *  `openssl x509 -in federation-cert.pem -fingerprint -md5 -noout`
+
+         (md5: 48:3B:EE:27:0C:88:5D:A3:E7:0B:7C:74:9D:24:24:E0)
+
+2. Edit `shibboleth2.xml` opportunely:
+   * `vim /etc/shibboleth/shibboleth2.xml`
+
+     ```bash
+
+     <!-- If it is needed to manage the authentication on several IdPs
+          install and configure the Shibboleth Embedded Discovery Service
+          by following this HOWTO: https://url.garrlab.it/nakt7s 
+     -->
+     <SSO discoveryProtocol="SAMLDS" discoveryURL="https://wayf.idem-test.garr.it/WAYF">
+        SAML2
+     </SSO>
+
+     <MetadataProvider type="XML" url="http://md.idem.garr.it/metadata/idem-test-metadata-sha256.xml"
+                       backingFilePath="idem-test-metadata-sha256.xml" maxRefreshDelay="7200">
+           <MetadataFilter type="Signature" certificate="federation-cert.pem"/>
+           <MetadataFilter type="RequireValidUntil" maxValidityInterval="864000" />
+     </MetadataProvider>
+     ```
+
+3. Register you SP on IDEM Entity Registry:
+   (your entity has to be approved by an IDEM Federation Operator before become part of IDEM Test Federation):
+   * Go to `https://registry.idem.garr.it` and follow "Insert a New Service Provider into the IDEM Test Federation"
+
+### Connect SP directly to an IdP
+
+> Follow these steps **IF** you need to connect one SP with only one IdP. It is useful for test purposes.
+
+1. Edit `shibboleth2.xml` opportunely:
+   * `vim /etc/shibboleth/shibboleth2.xml`
+
+     ```bash
+
+     <!-- If it is needed to manage the authentication on several IdPs
+          install and configure the Shibboleth Embedded Discovery Service
+          by following this HOWTO: https://url.garrlab.it/nakt7 
+     -->
+     <SSO entityID="https://idp.example.org/idp/shibboleth">
+        SAML2
+     </SSO>
+     <!-- ... other things ... -->
+     <MetadataProvider type="XML" validate="true"
+                       url="https://idp.example.org/idp/shibboleth"
+                       backingFilePath="idp-metadata.xml" maxRefreshDelay="7200" />
+     ```
+ 
+     (*Replace `entityID` with the IdP entityID and `url` with an URL where it can be downloaded its metadata*)
+     
+     (`idp-metadata.xml` will be saved into `/var/cache/shibboleth`)
+ 
+ 2. Restart `shibd` and `Apache2` daemon:
+    * `sudo systemctl restart shibd`
+    * `sudo systemctl restart apache2`
+
+ 3. Jump to [Test](#test)
+
+## Test
+
+Open the `https://sp.example.org/secure` application into your web browser
+
+(*Replace `sp.example.org` with your SP Full Qualified Domain Name*)
 
 ### Enable Attribute Checker Support on Shibboleth SP
 1. Add a sessionHook for attribute checker: `sessionHook="/Shibboleth.sso/AttrChecker"` and the `metadataAttributePrefix="Meta-"` to `ApplicationDefaults`:
@@ -401,10 +443,15 @@
 
 Shibboleth Documentation: https://wiki.shibboleth.net/confluence/display/SP3/LinuxSystemd
 
-* `sudo mkdir /etc/systemd/system/shibd.service.d`
-* `echo -e '[Service]\nTimeoutStartSec=60min' | sudo tee /etc/systemd/system/shibd.service.d/timeout.conf`
-* `sudo systemctl daemon-reload`
-* `sudo systemctl restart shibd.service`
+```bash
+sudo mkdir /etc/systemd/system/shibd.service.d
+
+echo -e '[Service]\nTimeoutStartSec=60min' | sudo tee /etc/systemd/system/shibd.service.d/timeout.conf
+
+sudo systemctl daemon-reload
+
+sudo systemctl restart shibd.service
+```
 
 ### OPTIONAL - Maintain '```shibd```' working
 
