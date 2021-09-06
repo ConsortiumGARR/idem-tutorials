@@ -1425,6 +1425,9 @@ Follow these steps **ONLY IF** your organization is connected to the [GARR Netwo
 
 The IdP includes the ability to require user consent to attribute release, as well as presenting a "terms of use" message prior to completing a login to a service, a simpler "static" form of consent.
 
+1. Move to the Shibboleth IdP dir:
+   * `cd /opt/shibboleth-idp`
+
 1. Load Consent Module:
    * `bin/module.sh -t idp.intercept.Consent || bin/module.sh -e idp.intercept.Consent`
 
