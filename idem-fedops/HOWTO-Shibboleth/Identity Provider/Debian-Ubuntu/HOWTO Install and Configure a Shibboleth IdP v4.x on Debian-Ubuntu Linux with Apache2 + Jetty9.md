@@ -501,10 +501,13 @@ This Storage service will memorize User Consent data on persistent database SQL.
 
 ### Configure the Directory (openLDAP or AD) Connection
 
-1. Install `ldap-utils` package:
-   * `sudo apt install ldap-utils`
+1. Become ROOT:
+   * `sudo su -`
+
+2. Install `ldap-utils` package:
+   * `apt install ldap-utils`
    
-2. Check that you can reach the Directory from your IDP server:
+3. Check that you can reach the Directory from your IDP server:
    * For Active Directory:
      ```bash
      ldapsearch -x -h <AD-SERVER-FQDN-OR-IP> -D 'CN=idpuser,CN=Users,DC=ad,DC=example,DC=org' -w '<IDPUSER-PASSWORD>' -b 'CN=Users,DC=ad,DC=example,DC=org' '(sAMAccountName=<USERNAME-USED-IN-THE-LOGIN-FORM>)'
@@ -519,7 +522,7 @@ This Storage service will memorize User Consent data on persistent database SQL.
      
      `(uid=<USERNAME-USED-IN-THE-LOGIN-FORM>)` ==> `(uid=$resolutionContext.principal)` searchFilter
 
-3. Connect the openLDAP to the IdP to allow the authentication of the users:
+4. Connect the openLDAP to the IdP to allow the authentication of the users:
    
    (for **TLS** solutions put the LDAP certificate into `/opt/shibboleth-idp/credentials/ldap-server.crt`)
 
@@ -566,6 +569,13 @@ This Storage service will memorize User Consent data on persistent database SQL.
           idp.attribute.resolver.LDAP.exportAttributes    = ### List space-separated of attributes to retrieve directly from the directory ###
           ```
 
+       * Paste the content of OpenLDAP certificate into `/opt/shibboleth-idp/credentials/ldap-server.crt`
+
+       * Configure the right owner/group with:
+         ```bash
+         chown jetty:root /opt/shibboleth-idp/credentials/ldap-server.crt ; chmod 600 /opt/shibboleth-idp/credentials/ldap-server.crt
+	 ```
+
      * Solution 2: LDAP + TLS:
        * `vim /opt/shibboleth-idp/credentials/secrets.properties`
          
@@ -607,6 +617,13 @@ This Storage service will memorize User Consent data on persistent database SQL.
           # List of attributes produced by the Data Connector that should be directly exported as resolved IdPAttributes without requiring any <AttributeDefinition>
           idp.attribute.resolver.LDAP.exportAttributes    = ### List space-separated of attributes to retrieve directly from the directory ###
           ```
+	  
+       * Paste the content of OpenLDAP certificate into `/opt/shibboleth-idp/credentials/ldap-server.crt`
+
+       * Configure the right owner/group with:
+         ```bash
+         chown jetty:root /opt/shibboleth-idp/credentials/ldap-server.crt ; chmod 600 /opt/shibboleth-idp/credentials/ldap-server.crt
+	 ```
 
      * Solution 3: plain LDAP
        * `vim /opt/shibboleth-idp/credentials/secrets.properties`
@@ -691,6 +708,13 @@ This Storage service will memorize User Consent data on persistent database SQL.
           idp.attribute.resolver.LDAP.exportAttributes    = ### List space-separated of attributes to retrieve directly from the directory ###
           ```
 
+       * Paste the content of OpenLDAP certificate into `/opt/shibboleth-idp/credentials/ldap-server.crt`
+
+       * Configure the right owner/group with:
+         ```bash
+         chown jetty:root /opt/shibboleth-idp/credentials/ldap-server.crt ; chmod 600 /opt/shibboleth-idp/credentials/ldap-server.crt
+	 ```
+
      * Solution 2: AD + TLS:
        * `vim /opt/shibboleth-idp/credentials/secrets.properties`
          
@@ -732,6 +756,13 @@ This Storage service will memorize User Consent data on persistent database SQL.
           # List of attributes produced by the Data Connector that should be directly exported as resolved IdPAttributes without requiring any <AttributeDefinition>
           idp.attribute.resolver.LDAP.exportAttributes    = ### List space-separated of attributes to retrieve directly from the directory ###
           ```
+
+       * Paste the content of OpenLDAP certificate into `/opt/shibboleth-idp/credentials/ldap-server.crt`
+
+       * Configure the right owner/group with:
+         ```bash
+         chown jetty:root /opt/shibboleth-idp/credentials/ldap-server.crt ; chmod 600 /opt/shibboleth-idp/credentials/ldap-server.crt
+	 ```
 
      * Solution 3: plain AD
        * `vim /opt/shibboleth-idp/credentials/secrets.properties`
