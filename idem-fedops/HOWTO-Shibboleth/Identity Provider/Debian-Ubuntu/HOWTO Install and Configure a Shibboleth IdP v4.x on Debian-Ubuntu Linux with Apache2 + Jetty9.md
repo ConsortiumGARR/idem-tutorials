@@ -1226,7 +1226,7 @@ Translate the IdP messages in your language:
         - Remove `validUntil` XML attribute.
 	
       <IDPSSODescriptor> Section:
-        - Remove completely the comment on <mdui:UIInfo>. 
+        - Remove completely the comment containing <mdui:UIInfo>. 
           You will add it on the "IDEM Entity Registry", the web application provided by the IDEM GARR AAI to manage metadata.
 
         - Remove the endpoint:
