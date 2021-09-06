@@ -1043,21 +1043,22 @@ By default, a transient NameID will always be released to the Service Provider i
 
 ### Configure the attribute resolver (sample)
 
-1. Define which attributes your IdP can manage into your Attribute Resolver file. Here you can find a sample **attribute-resolver-sample.xml** as example:
-    * Download the sample attribute resolver provided by IDEM GARR AAI Federation Operators (OpenLDAP / Active Directory compliant):
-      * ```bash
-        wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/attribute-resolver-v4-idem-sample.xml -O /opt/shibboleth-idp/conf/attribute-resolver.xml
-        ```
+The attribute resolver contains attribute definitions and data connectors that collect information from a variety of sources, combine and transform it, and produce a final collection of IdPAttribute objects, which are an internal representation of user data not specific to SAML or any other supported identity protocol.
 
-        If you decide to use the Solutions plain LDAP/AD, remove or comment the following directives from your Attribute Resolver file:
+1. Download the sample attribute resolver provided by IDEM GARR AAI Federation Operators (OpenLDAP / Active Directory compliant):
+   * ```bash
+     wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/attribute-resolver-v4-idem-sample.xml -O /opt/shibboleth-idp/conf/attribute-resolver.xml
+     ```
 
-        ```xml
-        Line 1:  useStartTLS="%{idp.attribute.resolver.LDAP.useStartTLS:true}"
-        Line 2:  trustFile="%{idp.attribute.resolver.LDAP.trustCertificates}"
-        ```
+     If you decide to use the Solutions plain LDAP/AD, remove or comment the following directives from your Attribute Resolver file:
+
+     ```xml
+     Line 1:  useStartTLS="%{idp.attribute.resolver.LDAP.useStartTLS:true}"
+     Line 2:  trustFile="%{idp.attribute.resolver.LDAP.trustCertificates}"
+     ```
     
-    * Configure the right owner:
-      * `chown jetty /opt/shibboleth-idp/conf/attribute-resolver.xml`
+   * Configure the right owner:
+     * `chown jetty /opt/shibboleth-idp/conf/attribute-resolver.xml`
 
 2. Restart Jetty to apply the changes:
    * `systemctl restart jetty.service`
