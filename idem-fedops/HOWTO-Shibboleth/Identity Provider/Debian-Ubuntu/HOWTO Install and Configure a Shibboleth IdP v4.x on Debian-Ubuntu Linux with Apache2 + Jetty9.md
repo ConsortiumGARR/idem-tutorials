@@ -513,18 +513,24 @@ This Storage service will memorize User Consent data on persistent database SQL.
      ldapsearch -x -h <AD-SERVER-FQDN-OR-IP> -D 'CN=idpuser,CN=Users,DC=ad,DC=example,DC=org' -w '<IDPUSER-PASSWORD>' -b 'CN=Users,DC=ad,DC=example,DC=org' '(sAMAccountName=<USERNAME-USED-IN-THE-LOGIN-FORM>)'
      ```
 
-     `(sAMAccountName=<USERNAME-USED-IN-THE-LOGIN-FORM>)` ==> `(sAMAccountName=$resolutionContext.principal)` searchFilter
+     `(sAMAccountName=<USERNAME-USED-IN-THE-LOGIN-FORM>)` ==> `(sAMAccountName=$resolutionContext.principal)` searchFilter (`conf/ldap.properties`)
      
    * For OpenLDAP:
      ```bash
      ldapsearch -x -h <LDAP-SERVER-FQDN-OR-IP> -D 'cn=idpuser,ou=system,dc=example,dc=org' -w '<IDPUSER-PASSWORD>' -b 'ou=people,dc=example,dc=org' '(uid=<USERNAME-USED-IN-THE-LOGIN-FORM>)'
      ```
-     
-     `(uid=<USERNAME-USED-IN-THE-LOGIN-FORM>)` ==> `(uid=$resolutionContext.principal)` searchFilter
+
+     **UTILITY FOR OPENLDAP ADMINISTRATOR:**
+       * `slapcat | grep dn`
+         * the baseDN ==> `ou=people,dc=example,dc=org` (branch containing the registered users)
+         * the bindDN ==> `cn=idpuser,ou=system,dc=example,dc=org` (distinguished name for the user that can made queries on the LDAP)
+    
+       * `(uid=<USERNAME-USED-IN-THE-LOGIN-FORM>)` ==> `(uid=$resolutionContext.principal)` searchFilter
 
 4. Connect the openLDAP to the IdP to allow the authentication of the users:
 
    * For OpenLDAP:
+
      * Solution 1: LDAP + STARTTLS:
        * `vim /opt/shibboleth-idp/credentials/secrets.properties`
          
@@ -801,11 +807,6 @@ This Storage service will memorize User Consent data on persistent database SQL.
           # List of attributes produced by the Data Connector that should be directly exported as resolved IdPAttributes without requiring any <AttributeDefinition>
           idp.attribute.resolver.LDAP.exportAttributes    = ### List space-separated of attributes to retrieve directly from the directory ###
           ```
-
-     **UTILITY FOR OPENLDAP ADMINISTRATOR:**
-       * `slapcat | grep dn`
-         * the baseDN ==> `ou=people,dc=example,dc=org` (branch containing the registered users)
-         * the bindDN ==> `cn=idpuser,ou=system,dc=example,dc=org` (distinguished name for the user that can made queries on the LDAP)
 
 5. Restart Jetty to apply the changes:
    * `systemctl restart jetty.service`
