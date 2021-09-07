@@ -516,13 +516,6 @@ This Storage service will memorize User Consent data on persistent database SQL.
    * `apt install ldap-utils`
    
 3. Check that you can reach the Directory from your IDP server:
-   * For Active Directory:
-     ```bash
-     ldapsearch -x -h <AD-SERVER-FQDN-OR-IP> -D 'CN=idpuser,CN=Users,DC=ad,DC=example,DC=org' -w '<IDPUSER-PASSWORD>' -b 'CN=Users,DC=ad,DC=example,DC=org' '(sAMAccountName=<USERNAME-USED-IN-THE-LOGIN-FORM>)'
-     ```
-
-     `(sAMAccountName=<USERNAME-USED-IN-THE-LOGIN-FORM>)` ==> `(sAMAccountName=$resolutionContext.principal)` searchFilter (`conf/ldap.properties`)
-     
    * For OpenLDAP:
      ```bash
      ldapsearch -x -h <LDAP-SERVER-FQDN-OR-IP> -D 'cn=idpuser,ou=system,dc=example,dc=org' -w '<IDPUSER-PASSWORD>' -b 'ou=people,dc=example,dc=org' '(uid=<USERNAME-USED-IN-THE-LOGIN-FORM>)'
@@ -530,11 +523,18 @@ This Storage service will memorize User Consent data on persistent database SQL.
 
      **UTILITY FOR OPENLDAP ADMINISTRATOR:**
        * `slapcat | grep dn`
-         * the baseDN ==> `ou=people,dc=example,dc=org` (branch containing the registered users)
-         * the bindDN ==> `cn=idpuser,ou=system,dc=example,dc=org` (distinguished name for the user that can made queries on the LDAP)
+         * the baseDN (`-b` parameter) ==> `ou=people,dc=example,dc=org` (branch containing the registered users)
+         * the bindDN (`-D` parameter) ==> `cn=idpuser,ou=system,dc=example,dc=org` (distinguished name for the user that can made queries on the LDAP)
     
-       * `(uid=<USERNAME-USED-IN-THE-LOGIN-FORM>)` ==> `(uid=$resolutionContext.principal)` searchFilter
+       * `(uid=<USERNAME-USED-IN-THE-LOGIN-FORM>)` == `(uid=$resolutionContext.principal)` searchFilter into `conf/ldap.properties` file
 
+   * For Active Directory:
+     ```bash
+     ldapsearch -x -h <AD-SERVER-FQDN-OR-IP> -D 'CN=idpuser,CN=Users,DC=ad,DC=example,DC=org' -w '<IDPUSER-PASSWORD>' -b 'CN=Users,DC=ad,DC=example,DC=org' '(sAMAccountName=<USERNAME-USED-IN-THE-LOGIN-FORM>)'
+     ```
+
+     `(sAMAccountName=<USERNAME-USED-IN-THE-LOGIN-FORM>)` ==> `(sAMAccountName=$resolutionContext.principal)` searchFilter (`conf/ldap.properties`)
+     
 4. Connect the openLDAP to the IdP to allow the authentication of the users:
 
    * For OpenLDAP:
