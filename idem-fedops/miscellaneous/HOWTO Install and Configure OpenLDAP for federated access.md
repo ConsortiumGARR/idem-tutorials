@@ -5,9 +5,11 @@
 ## Table of Contents
 
 1. [Requirements](#requirements)
-2. [Installation](#installation)
-3. [Configuration](#configuration)
-4. [PhpLdapAdmin (PLA) - optional](#phpldapadmin-pla---optional)
+2. [Notes](#notes)
+3. [Utility](#utility)
+4. [Installation](#installation)
+5. [Configuration](#configuration)
+6. [PhpLdapAdmin (PLA) - optional](#phpldapadmin-pla---optional)
    1. [PLA Installation](#pla-installation)
    2. [PLA Configuration](#pla-configuration)
 
@@ -19,6 +21,11 @@
 This HOWTO uses `example.org` to provide this guide with example values.
 
 Please remember to **replace all occurencences** of the `example.org` domain name with the domain name of your institution.
+
+# Utility
+
+* Simple Bash script useful to convert a Domain Name into a Distinguished Name of LDAP: 
+  [domain2dn.sh](https://github.com/ConsortiumGARR/idem-tutorials/blob/master/idem-fedops/miscellaneous/domain2dn.sh)
 
 ## Installation
 
@@ -403,6 +410,6 @@ Please remember to **replace all occurencences** of the `example.org` domain nam
      * Username: `cn=admin,dc=example,dc=org`
      * Password: `<LDAP-ROOT-PW_CHANGEME>`
 
-# PLA Configuration
+## PLA Configuration
 
 1. Edit `/var/www/html/pla/config/config.php` to configure PhpLdapAdmin.
