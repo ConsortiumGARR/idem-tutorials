@@ -341,7 +341,7 @@ Please remember to **replace all occurencences** of the `example.org` domain nam
 14. Check that LDAP has TLS ('anonymous' MUST BE returned):
     * `sudo ldapwhoami -H ldap:// -x -ZZ`
 
-15. Make mail, eduPersonPrincipalName and schacPersonalUniqueID as unique
+15. Make mail, eduPersonPrincipalName and schacPersonalUniqueID as unique:
     * Load `unique` module:
       ```bash
       sudo bash -c 'cat > /etc/ldap/scratch/loadUniqueModule.ldif
