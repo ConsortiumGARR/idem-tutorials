@@ -93,9 +93,12 @@ Please remember to **replace all occurencences** of the `example.org` domain nam
 1. Become ROOT:
    * `sudo su -`
 
-2. Change the default mirror to the GARR ones on `/etc/apt/sources.list` (OPTIONAL):
+2. Change the default mirror to the GARR (only for italian institutions) ones on `/etc/apt/sources.list` (OPTIONAL):
    * `debian.mirror.garr.it` (Debian)
    * `ubuntu.mirror.garr.it` (Ubuntu)
+
+   Debian Mirror List: https://www.debian.org/mirror/list
+   Ubuntu Mirror List: https://launchpad.net/ubuntu/+archivemirrors
    
 3. Update packages:
    ```bash
