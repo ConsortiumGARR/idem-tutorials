@@ -280,7 +280,7 @@ Enable attribute support by removing comment from the related content into `/etc
 
      <!-- If it is needed to manage the authentication on several IdPs
           install and configure the Shibboleth Embedded Discovery Service
-          by following this HOWTO: https://url.garrlab.it/nakt7s 
+          by following this HOWTO: https://url.garrlab.it/nakt7 
      -->
      <SSO discoveryProtocol="SAMLDS" discoveryURL="https://wayf.idem-test.garr.it/WAYF">
         SAML2
