@@ -14,6 +14,12 @@
 ## Requirements
 * Debian 11 (Buster) or Ubuntu 20.04 (Local Fossa)
 
+## Notes
+
+This HOWTO uses `example.org` to provide this guide with example values.
+
+Please remember to **replace all occurencences** of the `example.org` domain name with the domain name of your institution.
+
 ## Installation
 
 1. System Update:
