@@ -338,7 +338,7 @@ The Apache HTTP Server will be configured as a reverse proxy and it will be used
    * HTTPS Server Certificate (Public Key) inside `/etc/ssl/certs` 
    * HTTPS Server Key (Private Key) inside `/etc/ssl/private`
    * Add CA Cert into `/etc/ssl/certs`
-     * If you use GARR TCS (Sectigo CA):
+     * If you use GARR TCS or GEANT TCS:
        ```bash
        wget -O /etc/ssl/certs/GEANT_OV_RSA_CA_4.pem https://crt.sh/?d=2475254782
        
