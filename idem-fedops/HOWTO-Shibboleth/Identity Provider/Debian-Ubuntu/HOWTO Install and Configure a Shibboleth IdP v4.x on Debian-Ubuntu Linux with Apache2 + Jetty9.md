@@ -59,9 +59,11 @@
  * Logo:
    * size: 80x60 px (or other that respect the aspect-ratio)
    * format: PNG
+   * style: with a transparent background
  * Favicon: 
    * size: 16x16 px (or other that respect the aspect-ratio)
    * format: PNG
+   * style: with a transparent background
 
 ## Software that will be installed
 
