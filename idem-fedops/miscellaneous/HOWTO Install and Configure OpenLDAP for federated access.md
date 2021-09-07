@@ -349,7 +349,7 @@ Please remember to **replace all occurencences** of the `example.org` domain nam
       dn: cn=module{0},cn=config
       changetype: modify
       add: olcModuleLoad
-      olcModuleload: unique.la
+      olcModuleload: unique
       EOF'
       
       sudo ldapmodify -Y EXTERNAL -H ldapi:/// -f /etc/ldap/scratch/loadUniqueModule.ldif
