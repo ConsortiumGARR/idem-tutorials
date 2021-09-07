@@ -63,7 +63,7 @@ Please remember to **replace all occurencences** of the `example.org` domain nam
 
    * Signed (**Do not use if you are not a NREN GARR Member**):
      * Add CA Cert into `/etc/ssl/certs`
-       * If you use GARR TCS (Sectigo CA):
+       * If you use GARR TCS or GEANT TCS:
          ```bash
          sudo wget -O /etc/ssl/certs/GEANT_OV_RSA_CA_4.pem https://crt.sh/?d=2475254782
 
