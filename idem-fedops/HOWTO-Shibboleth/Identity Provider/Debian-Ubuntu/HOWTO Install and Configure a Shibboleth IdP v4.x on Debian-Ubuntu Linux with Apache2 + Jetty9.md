@@ -100,8 +100,7 @@ and `idp.example.org` value with the Full Qualified Name of the Identity Provide
    * `debian.mirror.garr.it` (Debian)
    * `ubuntu.mirror.garr.it` (Ubuntu)
 
-   Debian Mirror List: https://www.debian.org/mirror/list
-   Ubuntu Mirror List: https://launchpad.net/ubuntu/+archivemirrors
+   Debian Mirror List: https://www.debian.org/mirror/list<br/>Ubuntu Mirror List: https://launchpad.net/ubuntu/+archivemirrors
    
 3. Update packages:
    ```bash
