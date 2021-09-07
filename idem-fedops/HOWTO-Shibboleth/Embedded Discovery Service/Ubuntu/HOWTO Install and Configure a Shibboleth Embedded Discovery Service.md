@@ -9,7 +9,7 @@ The EDS is a set of Javascript and CSS files, so installing it and using it is s
 
 1. [Requirements](#requirements)
 2. [Installation](#installation)
-   1. [Debian](#debian)
+   1. [Debian/Ubuntu](#debian/ubuntu)
    2. [CentOS](#centos)
 4. [Enable EDS on Shibboleth SP](#enable-eds-on-shibboleth-sp)
 5. [Configuration](#configuration)
@@ -32,7 +32,7 @@ The EDS is a set of Javascript and CSS files, so installing it and using it is s
 
 ## Installation
 
-### Debian
+### Debian/Ubuntu
 
 1. `sudo su -`
 
