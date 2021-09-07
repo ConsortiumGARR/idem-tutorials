@@ -353,6 +353,7 @@ Please remember to **replace all occurencences** of the `example.org` domain nam
     olcmodulepath: /usr/lib/ldap
 
     dn: olcOverlay=unique,olcDatabase={1}mdb,cn=config
+    changetype: modify
     objectClass: olcOverlayConfig
     objectClass: olcUniqueConfig
     olcOverlay: unique
