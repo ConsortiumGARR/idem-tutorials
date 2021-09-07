@@ -28,7 +28,7 @@
      slapd slapd/password2 password <LDAP-ROOT-PW_CHANGEME>
      slapd slapd/move_old_database boolean true
      slapd slapd/domain string <INSTITUTE-DOMAIN_CHANGEME>
-     slapd shared/organization string <ORGANIZATION-NAME_CHANGE>
+     slapd shared/organization string <ORGANIZATION-NAME_CHANGEME>
      slapd slapd/no_configuration boolean false
      slapd slapd/purge_database boolean false
      slapd slapd/allow_ldap_v2 boolean false
