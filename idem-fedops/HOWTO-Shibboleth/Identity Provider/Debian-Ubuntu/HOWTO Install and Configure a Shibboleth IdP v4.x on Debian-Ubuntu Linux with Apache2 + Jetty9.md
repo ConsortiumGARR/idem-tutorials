@@ -82,9 +82,10 @@
 
 ## Notes
 
-This HOWTO uses `example.org` to provide this guide with example values.
+This HOWTO uses `example.org` and `idp.example.org` to provide this guide with example values.
 
-Please remember to **replace all occurencences** of the `example.org` domain name with the IdP domain name in the configuration files.
+Please remember to **replace all occurencences** of the `example.org` value with the IdP domain name 
+and `idp.example.org` value with the Full Qualified Name of the Identity Provider.
 
 ## Install Instructions
 
