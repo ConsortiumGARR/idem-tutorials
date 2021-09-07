@@ -343,8 +343,9 @@ Please remember to **replace all occurencences** of the `example.org` domain nam
 
 15. Make mail, eduPersonPrincipalName and schacPersonalUniqueID as unique:
     * Load `unique` module:
+
       ```bash
-      sudo bash -c 'cat > /etc/ldap/scratch/loadUniqueModule.ldif
+      sudo bash -c 'cat > /etc/ldap/scratch/loadUniqueModule.ldif <<EOF
       dn: cn=module{0},cn=config
       changetype: modify
       add: olcModuleLoad
