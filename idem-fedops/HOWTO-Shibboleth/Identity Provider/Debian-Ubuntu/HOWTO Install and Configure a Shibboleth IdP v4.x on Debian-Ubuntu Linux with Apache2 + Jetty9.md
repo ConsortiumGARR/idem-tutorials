@@ -1079,7 +1079,7 @@ The attribute resolver contains attribute definitions and data connectors that c
      wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP4/attribute-resolver-v4-idem-sample.xml -O /opt/shibboleth-idp/conf/attribute-resolver.xml
      ```
 
-     If you decide to use the Solutions plain LDAP/AD, remove or comment the following directives from your Attribute Resolver file:
+     If you decide to use the Solutions plain LDAP/AD, **_remove or comment_** the following directives from your Attribute Resolver file:
 
      ```xml
      Line 1:  useStartTLS="%{idp.attribute.resolver.LDAP.useStartTLS:true}"
@@ -1103,7 +1103,7 @@ eduPersonTargetedID is an abstracted version of the SAML V2.0 Name Identifier fo
 
 #### Strategy A - Computed mode - using the computed persistent NameID
 
-1. Check to have the `<AttributeDefinition>` and the `<DataConnector>` into the `attribute-resolver.xml`:
+1. Check to have the following `<AttributeDefinition>` and the `<DataConnector>` into the `attribute-resolver.xml`:
    * `vim /opt/shibboleth-idp/conf/attribute-resolver.xml`
       
      ```xml
@@ -1149,7 +1149,7 @@ eduPersonTargetedID is an abstracted version of the SAML V2.0 Name Identifier fo
 
 #### Strategy B - Stored mode - using the persistent NameID database
 
-1. Check to have the `<AttributeDefinition>` and the `<DataConnector>` into the `attribute-resolver.xml`:
+1. Check to have the following `<AttributeDefinition>` and the `<DataConnector>` into the `attribute-resolver.xml`:
    * `vim /opt/shibboleth-idp/conf/attribute-resolver.xml`
       
      ```xml
@@ -1207,7 +1207,7 @@ File(s): `conf/attribute-registry.xml`, `conf/attributes/default-rules.xml`, `co
 3. Set the proper owner/group with:
    * `chown jetty:root /opt/shibboleth-idp/conf/attributes/schac.xml`
 
-4. Change the `default-rules.xml` to include the new `schac.xml` file:
+4. Change the `default-rules.xml` to include the new `schac.xml` file in the list:
    * `vim /opt/shibboleth-idp/conf/attributes/default-rules.xml`
    
      ```xml
@@ -1275,7 +1275,7 @@ Translate the IdP messages in your language:
 
         - Remove all ":8443" from the existing URL (such port is not used anymore)
 
-      <AttributeAuthorityDescriptor> Section (Remember what was said at the beginning of this step):
+      <AttributeAuthorityDescriptor> Section (Remember what was said at the beginning of this section):
         - From the list "protocolSupportEnumeration" replace the value:
           - urn:oasis:names:tc:SAML:1.1:protocol
           with:
