@@ -85,7 +85,7 @@ The EDS is a set of Javascript and CSS files, so installing it and using it is s
      ```
 
 2. Restart "**shibd**" service:
-  * `systemctl restart shibd.service`
+   * `systemctl restart shibd.service`
 
 ## Configuration
 
