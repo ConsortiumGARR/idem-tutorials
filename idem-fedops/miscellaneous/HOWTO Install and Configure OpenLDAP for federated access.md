@@ -411,14 +411,22 @@ Please remember to **replace all occurencences** of the `example.org` domain nam
    * `sudo apt install apache2-utils python3-passlib gettext php php-ldap php-xml`
 
 2. Download and extract PLA into the Apache2 DocumentRoot directory:
-   * `cd /var/www/html`
-   * `wget https://github.com/leenooks/phpLDAPadmin/archive/refs/tags/1.2.6.2.tar.gz -O phpldapadmin.tar.gz`
-   * `tar -xzf phpldapadmin.tar.gz`
-   * `mv phpLDAPadmin-1.2.6.2 pla`
+   ```bash
+   cd /var/www/html
+   
+   wget https://github.com/leenooks/phpLDAPadmin/archive/refs/tags/1.2.6.2.tar.gz -O phpldapadmin.tar.gz
+   
+   tar -xzf phpldapadmin.tar.gz
+   
+   mv phpLDAPadmin-1.2.6.2 pla
+   ```
 
 3. Create PLA configuration file:
-   * `cd /var/www/html/pla/config`
-   * `sudo cp config.php.example config.php`
+   ```bash
+   cd /var/www/html/pla/config
+   
+   sudo cp config.php.example config.php
+   ```
 
 4. Enable LDAP Apache module:
    * `sudo a2enmod ldap`
