@@ -124,11 +124,14 @@ Please remember to **replace all occurencences** of the `example.org` domain nam
    replace: olcTLSCertificateKeyFile
    olcTLSCertificateKeyFile: /etc/ldap/$(hostname -f).key
    EOF'
+   ```
   
+3. Apply with:
+   ```bash
    sudo ldapmodify -Y EXTERNAL -H ldapi:/// -f /etc/ldap/scratch/olcTLS.ldif
    ```
 
-3. Create the 3 main _Organizational Unit_ (OU), `people`, `groups` and `system`.
+4. Create the 3 main _Organizational Unit_ (OU), `people`, `groups` and `system`.
 
    *Example:* if the domain name is `example.org` than  the distinguish name will be `dc=example,dc=org`:
    
@@ -151,28 +154,34 @@ Please remember to **replace all occurencences** of the `example.org` domain nam
      objectClass: top
      ou: System
      EOF'
-   
+     ```
+
+   * Apply with:
+     ```bash
      sudo ldapadd -x -D 'cn=admin,dc=example,dc=org' -w '<LDAP-ROOT-PW_CHANGEME>' -H ldapi:/// -f /etc/ldap/scratch/add_ou.ldif
      ```
 
    * Verify with: `sudo ldapsearch -x -b dc=example,dc=org`
 
-4. Create the `idpuser` needed to perform "*Bind and Search*" operations:
+5. Create the `idpuser` needed to perform "*Bind and Search*" operations:
    
    **Be carefull!** Replace `dc=example,dc=org` with distinguish name ([DN](https://ldap.com/ldap-dns-and-rdns/)) of your domain name, `<LDAP-ROOT-PW_CHANGEME>` with the LDAP ROOT password and `<INSERT-HERE-IDPUSER-PW>` with password for the `idpuser` user!
 
-   ```bash
-   sudo bash -c 'cat > /etc/ldap/scratch/add_idpuser.ldif <<EOF
-   dn: cn=idpuser,ou=system,dc=example,dc=org
-   objectClass: inetOrgPerson
-   cn: idpuser
-   sn: idpuser
-   givenName: idpuser
-   userPassword: <INSERT-HERE-IDPUSER-PW>
-   EOF'
-     
-   sudo ldapadd -x -D 'cn=admin,dc=example,dc=org' -w '<LDAP-ROOT-PW_CHANGEME>' -H ldapi:/// -f /etc/ldap/scratch/add_idpuser.ldif
-   ```
+   * ```bash
+     sudo bash -c 'cat > /etc/ldap/scratch/add_idpuser.ldif <<EOF
+     dn: cn=idpuser,ou=system,dc=example,dc=org
+     objectClass: inetOrgPerson
+     cn: idpuser
+     sn: idpuser
+     givenName: idpuser
+     userPassword: <INSERT-HERE-IDPUSER-PW>
+     EOF'
+     ```
+
+   * Apply with:
+     ```bash     
+     sudo ldapadd -x -D 'cn=admin,dc=example,dc=org' -w '<LDAP-ROOT-PW_CHANGEME>' -H ldapi:/// -f /etc/ldap/scratch/add_idpuser.ldif
+     ```
 
 5. Configure OpenLDAP ACL to allow `idpuser` to perform *search* operation on the directory:
 
@@ -194,7 +203,10 @@ Please remember to **replace all occurencences** of the `example.org` domain nam
      olcAccess: {3}to dn.base="cn=Subschema" by * read
      olcAccess: {4}to * by dn.exact="cn=idpuser,ou=system,dc=example,dc=org" read by anonymous auth by self read
      EOF'
-   
+     ```
+
+   * Apply with:
+     ```bash
      sudo ldapadd  -Y EXTERNAL -H ldapi:/// -f /etc/ldap/scratch/olcAcl.ldif
      ```
 
@@ -305,32 +317,35 @@ Please remember to **replace all occurencences** of the `example.org` domain nam
 12. Add your first user:
 
     **Be carefull!** Replace `dc=example,dc=org` with distinguish name ([DN](https://ldap.com/ldap-dns-and-rdns/)) of your domain name!
-
-    ```bash
-    sudo bash -c 'cat > /etc/ldap/scratch/user1.ldif <<EOF
-    # USERNAME: user1 , PASSWORD: ciaouser1
-    # Generate a new password with: sudo slappasswd -s <newPassword>
-    dn: uid=user1,ou=people,dc=example,dc=org
-    changetype: add
-    objectClass: inetOrgPerson
-    objectClass: eduPerson
-    uid: user1
-    sn: User1
-    givenName: Test
-    cn: Test User1
-    displayName: Test User1
-    preferredLanguage: it
-    userPassword: {SSHA}u5tYgO6iVerMuuMJBsYnPHM+70ammhnj
-    mail: test.user1@example.org
-    eduPersonAffiliation: student
-    eduPersonAffiliation: staff
-    eduPersonAffiliation: member
-    eduPersonEntitlement: urn:mace:terena.org:tcs:escience-user
-    eduPersonEntitlement: urn:mace:terena.org:tcs:personal-user
-    EOF'
-    
-    sudo ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/ldap/scratch/user1.ldif
-    ```
+    * Configure `user1.ldif`:
+      ```bash
+      sudo bash -c 'cat > /etc/ldap/scratch/user1.ldif <<EOF
+      # USERNAME: user1 , PASSWORD: ciaouser1
+      # Generate a new password with: sudo slappasswd -s <newPassword>
+      dn: uid=user1,ou=people,dc=example,dc=org
+      changetype: add
+      objectClass: inetOrgPerson
+      objectClass: eduPerson
+      uid: user1
+      sn: User1
+      givenName: Test
+      cn: Test User1
+      displayName: Test User1
+      preferredLanguage: it
+      userPassword: {SSHA}u5tYgO6iVerMuuMJBsYnPHM+70ammhnj
+      mail: test.user1@example.org
+      eduPersonAffiliation: student
+      eduPersonAffiliation: staff
+      eduPersonAffiliation: member
+      eduPersonEntitlement: urn:mace:terena.org:tcs:escience-user
+      eduPersonEntitlement: urn:mace:terena.org:tcs:personal-user
+      EOF'
+      ```
+      
+   * Apply with:
+     ```bash
+     sudo ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/ldap/scratch/user1.ldif
+     ```
 
 13. Check that `idpuser` can find `user1`:
 
