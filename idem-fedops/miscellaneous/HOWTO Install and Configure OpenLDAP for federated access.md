@@ -161,7 +161,7 @@ Please remember to **replace all occurencences** of the `example.org` domain nam
      sudo ldapadd -x -D 'cn=admin,dc=example,dc=org' -w '<LDAP-ROOT-PW_CHANGEME>' -H ldapi:/// -f /etc/ldap/scratch/add_ou.ldif
      ```
 
-   * Verify with: `sudo ldapsearch -x -b dc=example,dc=org`
+   * Verify with: `sudo ldapsearch -x -b 'dc=example,dc=org'`
 
 5. Create the `idpuser` needed to perform "*Bind and Search*" operations:
    
@@ -215,7 +215,7 @@ Please remember to **replace all occurencences** of the `example.org` domain nam
    **Be carefull!** Replace `dc=example,dc=org` with distinguish name ([DN](https://ldap.com/ldap-dns-and-rdns/)) of your domain name!
 
    ```bash
-   sudo ldapsearch -x -D 'cn=idpuser,ou=system,dc=example,dc=org' -w <INSERT-HERE-IDPUSER-PW> -b "ou=people,dc=example,dc=org"
+   sudo ldapsearch -x -D 'cn=idpuser,ou=system,dc=example,dc=org' -w '<INSERT-HERE-IDPUSER-PW>' -b 'ou=people,dc=example,dc=org'
    ```
 
 7. Install needed schemas (eduPerson, SCHAC, Password Policy):
@@ -226,7 +226,7 @@ Please remember to **replace all occurencences** of the `example.org` domain nam
    sudo ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/ldap/schema/schac.ldif
    sudo ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/ldap/schema/ppolicy.ldif
   
-   sudo ldapsearch -Q -LLL -Y EXTERNAL -H ldapi:/// -b cn=schema,cn=config dn
+   sudo ldapsearch -Q -LLL -Y EXTERNAL -H ldapi:/// -b 'cn=schema,cn=config dn'
    ```
 
    and verify presence of the new `schac` and `eduPerson` schemas.
@@ -351,7 +351,7 @@ Please remember to **replace all occurencences** of the `example.org` domain nam
 
     **Be carefull!** Replace `dc=example,dc=org` with distinguish name ([DN](https://ldap.com/ldap-dns-and-rdns/)) of your domain name!
 
-    * `sudo ldapsearch -x -D 'cn=idpuser,ou=system,dc=example,dc=org' -W -b "uid=user1,ou=people,dc=example,dc=org"`
+    * `sudo ldapsearch -x -D 'cn=idpuser,ou=system,dc=example,dc=org' -w '<INSERT-HERE-IDPUSER-PW>' -b 'uid=user1,ou=people,dc=example,dc=org'`
 
 14. Check that LDAP has TLS ('anonymous' MUST BE returned):
     * `sudo ldapwhoami -H ldap:// -x -ZZ`
