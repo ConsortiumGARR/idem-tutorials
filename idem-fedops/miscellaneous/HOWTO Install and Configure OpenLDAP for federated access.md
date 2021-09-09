@@ -412,7 +412,11 @@ Please remember to **replace all occurencences** of the `example.org` domain nam
 
 2. Download and extract PLA into the Apache2 DocumentRoot directory:
    ```bash
-   cd /var/www/html
+   sudo su
+   
+   mkdir /var/www/html/$(hostname -f)
+   
+   cd /var/www/html/$(hostname -f)
    
    wget https://github.com/leenooks/phpLDAPadmin/archive/refs/tags/1.2.6.2.tar.gz -O phpldapadmin.tar.gz
    
@@ -423,7 +427,7 @@ Please remember to **replace all occurencences** of the `example.org` domain nam
 
 3. Create PLA configuration file:
    ```bash
-   cd /var/www/html/pla/config
+   cd /var/www/html/$(hostname -f)/pla/config
    
    sudo cp config.php.example config.php
    ```
@@ -442,4 +446,4 @@ Please remember to **replace all occurencences** of the `example.org` domain nam
 
 ## PLA Configuration
 
-1. Edit `/var/www/html/pla/config/config.php` to configure PhpLdapAdmin.
+1. Edit `/var/www/html/$(hostname -f)/pla/config/config.php` to configure PhpLdapAdmin.
