@@ -16,11 +16,14 @@
    2. [Configure Shibboleth SP](#configure-shibboleth-sp)
    3. [Configure an example federated resource "secure"](#configure-an-example-federated-resource-secure)
    4. [Enable Attribute Support on Shibboleth SP](#enable-attribute-support-on-shibboleth-sp)
-   5. [Enable Attribute Checker Support on Shibboleth SP](#enable-attribute-checker-support-on-shibboleth-sp)
-   6. [Increase startup timeout](#increase-startup-timeout)
-   7. [OPTIONAL - Maintain 'shibd' working](#optional---maintain-shibd-working)
-6. [Authors](#authors)
-7. [Thanks](#thanks)
+   5. [Connect SP to the Federation](#connect-sp-to-the-federation)
+   6. [Connect SP directly to an IdP](#connect-sp-directly-to-an-idp)
+6. [Test](#test)
+7. [Enable Attribute Checker Support on Shibboleth SP](#enable-attribute-checker-support-on-shibboleth-sp)
+8. [Increase startup timeout](#increase-startup-timeout)
+9. [OPTIONAL - Maintain 'shibd' working](#optional---maintain-shibd-working)
+10. [Authors](#authors)
+11. [Thanks](#thanks)
 
 
 ## Requirements Hardware
