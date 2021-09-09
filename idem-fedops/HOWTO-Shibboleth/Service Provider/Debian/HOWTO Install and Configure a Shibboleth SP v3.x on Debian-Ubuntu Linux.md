@@ -201,22 +201,17 @@ Please, remember to **replace all occurence** of `example.org` domain name, or p
      systemctl restart apache2.service
      ```
 
-4. Now you are able to reach your Shibboleth SP Metadata on:
-   * `https://sp.example.org/Shibboleth.sso/Metadata`
-
-   (*Replace `sp.example.org` with your SP Full Qualified Domain Name*)
-
-5. Enable Shibboleth Apache2 configuration:
+4. Enable Shibboleth Apache2 configuration:
    ```bash
    a2enmod shib
    
    systemctl reload apache2.service
    ```
 
-6. Now you are able to reach your Shibboleth SP Metadata on:
+5. Now you are able to reach your Shibboleth SP Metadata on:
    * ht<span>tps://</span>sp.example.org/Shibboleth.sso/Metadata
 
-     (change `sp.example.org` to you SP full qualified domain name)
+     (*Replace `sp.example.org` with your SP Full Qualified Domain Name*)
 
 ### Configure an example federated resource "secure"
 
