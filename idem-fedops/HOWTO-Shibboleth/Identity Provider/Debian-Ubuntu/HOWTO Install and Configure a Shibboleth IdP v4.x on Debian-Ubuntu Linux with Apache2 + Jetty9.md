@@ -22,11 +22,11 @@
       2. [Strategy B - JPA Storage Service - using a database](#strategy-b---jpa-storage-service---using-a-database)
    4. [Configure the Directory (openLDAP or AD) Connection](#configure-the-directory-openldap-or-ad-connection)
    5. [Configure Shibboleth Identity Provider to release the persistent NameID](#configure-shibboleth-identity-provider-to-release-the-persistent-nameid)
-      1. [Strategy A - Computed mode - Default & Recommended](#strategy-a---computed-mode---default--recommended)
+      1. [Strategy A - Computed mode (Default) - Recommended](#strategy-a---computed-mode--default---recommended)
       2. [Strategy B - Stored mode - using a database](#strategy-b---stored-mode---using-a-database)
    6. [Configure the attribute resolver (sample)](#configure-the-attribute-resolver-sample)
    7. [Configure Shibboleth Identity Provider to release the eduPersonTargetedID](#configure-shibboleth-identity-provider-to-release-the-edupersontargetedid)
-      1. [Strategy A - Computed mode - using the computed persistent NameID](#strategy-a---computed-mode---using-the-computed-persistent-nameid)
+      1. [Strategy A - Computed mode - using the computed persistent NameID - Recommended](#strategy-a---computed-mode---using-the-computed-persistent-nameid---recommended)
       2. [Strategy B - Stored mode - using a database](#strategy-b---stored-mode---using-the-persistent-nameid-database)
    8. [Configure the attribute resolution with Attribute Registry](#configure-the-attribute-resolution-with-attribute-registry)
    9. [Configure Shibboleth IdP Logging](#configure-shibboleth-idp-logging)
@@ -899,7 +899,7 @@ This part will teach you how to release the "persistent" identifiers with a data
 
 By default, a transient NameID will always be released to the Service Provider if the persistent one is not requested.
 
-#### Strategy A - Computed mode - Default & Recommended
+#### Strategy A - Computed mode (Default) - Recommended
 
 1. Become ROOT: 
    * `sudo su -`
@@ -1102,7 +1102,7 @@ eduPersonTargetedID is an abstracted version of the SAML V2.0 Name Identifier fo
 
 > To be able to follow these steps, you need to have followed the previous steps on "persistent" NameID generation.
 
-#### Strategy A - Computed mode - using the computed persistent NameID
+#### Strategy A - Computed mode - using the computed persistent NameID - Recommended
 
 1. Check to have the following `<AttributeDefinition>` and the `<DataConnector>` into the `attribute-resolver.xml`:
    * `vim /opt/shibboleth-idp/conf/attribute-resolver.xml`
