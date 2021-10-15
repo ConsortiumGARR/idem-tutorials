@@ -22,7 +22,7 @@
       2. [Strategy B - JPA Storage Service - using a database](#strategy-b---jpa-storage-service---using-a-database)
    4. [Configure the Directory (openLDAP or AD) Connection](#configure-the-directory-openldap-or-ad-connection)
    5. [Configure Shibboleth Identity Provider to release the persistent NameID](#configure-shibboleth-identity-provider-to-release-the-persistent-nameid)
-      1. [Strategy A - Computed mode (Default) - Recommended](#strategy-a---computed-mode-default---recommended
+      1. [Strategy A - Computed mode (Default) - Recommended](#strategy-a---computed-mode-default---recommended)
       2. [Strategy B - Stored mode - using a database](#strategy-b---stored-mode---using-a-database)
    6. [Configure the attribute resolver (sample)](#configure-the-attribute-resolver-sample)
    7. [Configure Shibboleth Identity Provider to release the eduPersonTargetedID](#configure-shibboleth-identity-provider-to-release-the-edupersontargetedid)
