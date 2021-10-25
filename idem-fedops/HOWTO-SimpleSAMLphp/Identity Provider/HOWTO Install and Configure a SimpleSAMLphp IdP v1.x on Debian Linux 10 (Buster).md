@@ -13,6 +13,14 @@
    1. [Configure SSL on Apache2](#configure-ssl-on-apache2)
    2. [Configure SimpleSAMLphp](#configure-simplesamlphp)
    3. [Configure the Identity Provider](#configure-the-identity-provider)
+      1. [Configure Metadata](#configure-metadata)
+      2. [Configure SAML Metadata Credentials](#configure-saml-metadata-credentials)
+      3. [Configure the authentication source](#configure-the-authentication-source)
+      4. [Configure automatic download of Federation Metadata](#configure-automatic-download-of-federation-metadata)
+      5. [Add translations of the new 'schacHomeOrganizationType' attribute](#add-translations-of-the-new-schacHomeOrganizationType-attribute)
+      6. [Enable UTF-8 on IdP metadata (to avoid encoding problems with accents)](#enable-utf-8-on-idp-metadata-to-avoid-encoding-problems-with-accents)
+      7. [Download IdP Metadata](#download-idp-metadata)
+      8. [Register IdP on IDEM Entity Registry](#register-idp-on-idem-entity-registry)
 5. [Appendix A - How to release attributes to specific SP only](#appendix-a---how-to-release-attributes-to-specific-sp-only)
 6. [Appendix B - How to manage sessions with Memcache](#appendix-b---how-to-manage-sessions-with-memcached)
 7. [Appendix C - How to collect useful-statistics](#appendix-c---how-to-collect-useful-statistics)
@@ -282,7 +290,8 @@ The software installation provided by this guide is intended to run by ROOT user
 
 ### Configure the Identity Provider
 
-1. Configure `saml20-idp-hosted.php`:
+#### Configure Metadata
+
    * `vim /var/simplesamlphp/metadata/saml20-idp-hosted.php`
 
      ```php
@@ -399,7 +408,8 @@ The software installation provided by this guide is intended to run by ROOT user
      ];
      ```
 
-2. Generate SAML Credentials needed to sign/encrypt assertion sent by the IdP:
+#### Configure SAML Metadata Credentials
+
    * `vim /var/simplesamlphp/cert/ssp-idp-credentials.cnf`:
    
      ```cnf
@@ -425,18 +435,18 @@ The software installation provided by this guide is intended to run by ROOT user
      subjectKeyIdentifier=hash
      ```
 
-   * Generate Metadata Credentials:
-     * `cd /var/simplesamlphp/cert`
-     * `openssl req -new -x509 -config ssp-idp-credentials.cnf -text -out ssp-idp.crt -days 3650`
-     * `chown -R www-data: /var/simplesamlphp/cert`
-     * `chmod 400 /var/simplesamlphp/cert/ssp-idp.key`
+   * `cd /var/simplesamlphp/cert`
+   * `openssl req -new -x509 -config ssp-idp-credentials.cnf -text -out ssp-idp.crt -days 3650`
+   * `chown -R www-data: /var/simplesamlphp/cert`
+   * `chmod 400 /var/simplesamlphp/cert/ssp-idp.key`
 
-3. Configure ldap:LDAP authentication source:
+#### Configure the authentication source
+
    1. Enable LDAP PHP module:
       * `apt install php-ldap`
       * `systemctl restart apache2.service`
 
-   2. Enable LDAP Authentication Source:
+   2. Enable ldap:LDAP Authentication Source:
       * `vim /var/simplesamlphp/config/authsources.php`
       
         ```php
@@ -479,155 +489,156 @@ The software installation provided by this guide is intended to run by ROOT user
 
    4. Try the LDAP Authentication Source on: https://<IDP-FQDN>/simplesaml/module.php/core/authenticate.php
 
-4. Configure automatic download of Federation Metadata:
+#### Configure automatic download of Federation Metadata
 
-   * Load CRON module:
-     * `cd /var/simplesamlphp`
-     * `cp modules/cron/config-templates/module_cron.php config/`
+   1. Load CRON module:
+      * `cd /var/simplesamlphp`
+      * `cp modules/cron/config-templates/module_cron.php config/`
 
-   * Load METAREFRESH module:
-     * `cd /var/simplesamlphp`
-     * `cp modules/metarefresh/config-templates/config-metarefresh.php config/`
+   2. Load METAREFRESH module:
+      * `cd /var/simplesamlphp`
+      * `cp modules/metarefresh/config-templates/config-metarefresh.php config/`
 
-   * Enable CRON & METAREFRESH modules:
-     * `vim /var/simplesamlphp/config/config.php`
+   3. Enable CRON & METAREFRESH modules:
+      * `vim /var/simplesamlphp/config/config.php`
 
-       ```php
-       /* ...other things... */
-       'module.enable' => [
-          'cron' => true,
-          'metarefresh' => true,
-          'consent' => true,
-       ],
-       /* ...other things... */
-       ```
-
-   * Test it:
-     * `cd /var/simplesamlphp/modules/metarefresh/bin`
-     * `./metarefresh.php -s http://md.idem.garr.it/metadata/idem-test-metadata-sha256.xml > metarefresh-test.txt`
-
-   * Generate the CRON `<SECRET>`:
-     * `tr -c -d '0123456789abcdefghijklmnopqrstuvwxyz' </dev/urandom | dd bs=32 count=1 2>/dev/null ; echo`
-
-   * Change the CRON configuration file:
-     * `vim /var/simplesamlphp/config/module_cron.php`
-
-     ```php
-     <?php
-     /*
-      * Configuration for the Cron module.
-      */
-
-     $config = [
-        'key' => '<SECRET>',
-        'allowed_tags' => ['hourly'],
-        'debug_message' => TRUE,
-        'sendemail' => TRUE,
-     ];
-     ?>
-     ```
-
-   * Insert the following Cron job to the crontab file (`crontab -e`):
-   
-     ```bash
-     # Run cron: [hourly]
-     01 * * * *  root  curl --silent "https://idp.example.org/simplesaml/module.php/cron/cron.php?key=<SECRET>&tag=hourly" > /dev/null 2>&1
-     ```
-
-   * Configure METAREFRESH:
-     * `vim /var/simplesamlphp/config/config-metarefresh.php`
-
-       ```php
-       <?php
-
-       $config = [
-
-          /*
-           * Global blacklist: entityIDs that should be excluded from ALL sets.
-          */
-          #'blacklist' = array(
-          #       'http://my.own.uni/idp'
-          #),
-
-          /*
-           * Conditional GET requests
-           * Efficient downloading so polling can be done more frequently.
-           * Works for sources that send 'Last-Modified' or 'Etag' headers.
-           * Note that the 'data' directory needs to be writable for this to work.
-           */
-          #'conditionalGET'       => TRUE,
-
-          'sets' => [
-             'idem' => [
-                'cron'    => ['hourly'],
-                'sources' => [
-                              [
-                               'src' => 'http://md.idem.garr.it/metadata/idem-test-metadata-sha256.xml',
-                               'certificates' => [
-                                  '/var/simplesamlphp/cert/federation-cert.pem',
-                               ],
-                               'template' => [
-                                  'tags'  => ['idem'],
-                                  'authproc' => [
-                                     51 => ['class' => 'core:AttributeMap', 'oid2name'],
-                                  ],
-                               ],
-
-                               /*
-                                * The sets of entities to load, any combination of:
-                                *  - 'saml20-idp-remote'
-                                *  - 'saml20-sp-remote'
-                                *  - 'shib13-idp-remote'
-                                *  - 'shib13-sp-remote'
-                                *  - 'attributeauthority-remote'
-                                *
-                                * All of them will be used by default.
-                                */
-                                'types' => ['saml20-sp-remote'],   // Load only SAML v2.0 SP from metadata
-                              ],
-                             ],
-                'expireAfter' => 864000, // Maximum 10 days cache time (3600*24*10)
-                'outputDir'   => 'metadata/',
-
-                /*
-                 * Which output format the metadata should be saved as.
-                 * Can be 'flatfile' or 'serialize'. 'flatfile' is the default.
-                */
-                'outputFormat' => 'flatfile',
-             ],
-          ],
-       ];
-       ```
-
-   * Change SimpleSAMLphp configuration to load the new metadata provider:
-     * `vim /var/simplesamlphp/config/config.php`
-
-       ```php
-       'metadata.sources' => [
-           ['type' => 'flatfile'],
+        ```php
+        /* ...other things... */
+        'module.enable' => [
+           'cron' => true,
+           'metarefresh' => true,
+           'consent' => true,
         ],
+        /* ...other things... */
         ```
 
-   * Remove not needed files from:
-     * `cd /var/simplesamlphp/metadata ; rm !(saml20-idp-hosted.php)`
+   4. Test it:
+      * `cd /var/simplesamlphp/modules/metarefresh/bin`
+      * `./metarefresh.php -s http://md.idem.garr.it/metadata/idem-test-metadata-sha256.xml > metarefresh-test.txt`
 
-   * Download the Federation signing certificate: 
-     * ```bash
-       wget https://md.idem.garr.it/certs/idem-signer-20220121.pem -O /var/simplesamlphp/cert/federation-cert.pem
-       ```
+   5. Generate the CRON `<SECRET>`:
+      * `tr -c -d '0123456789abcdefghijklmnopqrstuvwxyz' </dev/urandom | dd bs=32 count=1 2>/dev/null ; echo`
 
-   * Check the validity of the signing certificate:
-     * `cd /var/simplesamlphp/cert`
-     * `openssl x509 -in federation-cert.pem -fingerprint -sha1 -noout`
+   6. Change the CRON configuration file:
+      * `vim /var/simplesamlphp/config/module_cron.php`
+
+        ```php
+        <?php
+        /*
+         * Configuration for the Cron module.
+         */
+
+        $config = [
+           'key' => '<SECRET>',
+           'allowed_tags' => ['hourly'],
+           'debug_message' => TRUE,
+           'sendemail' => TRUE,
+        ];
+        ?>
+        ```
+
+   7. Insert the following Cron job to the crontab file (`crontab -e`):
+   
+      ```bash
+      # Run cron: [hourly]
+      01 * * * *  root  curl --silent "https://idp.example.org/simplesaml/module.php/cron/cron.php?key=<SECRET>&tag=hourly" > /dev/null 2>&1
+      ```
+
+   8. Configure METAREFRESH:
+      * `vim /var/simplesamlphp/config/config-metarefresh.php`
+
+        ```php
+        <?php
+
+        $config = [
+
+           /*
+            * Global blacklist: entityIDs that should be excluded from ALL sets.
+           */
+           #'blacklist' = array(
+           #       'http://my.own.uni/idp'
+           #),
+
+           /*
+            * Conditional GET requests
+            * Efficient downloading so polling can be done more frequently.
+            * Works for sources that send 'Last-Modified' or 'Etag' headers.
+            * Note that the 'data' directory needs to be writable for this to work.
+            */
+           #'conditionalGET'       => TRUE,
+
+           'sets' => [
+              'idem' => [
+                 'cron'    => ['hourly'],
+                 'sources' => [
+                               [
+                                'src' => 'http://md.idem.garr.it/metadata/idem-test-metadata-sha256.xml',
+                                'certificates' => [
+                                   '/var/simplesamlphp/cert/federation-cert.pem',
+                                ],
+                                'template' => [
+                                   'tags'  => ['idem'],
+                                   'authproc' => [
+                                      51 => ['class' => 'core:AttributeMap', 'oid2name'],
+                                   ],
+                                ],
+
+                                /*
+                                 * The sets of entities to load, any combination of:
+                                 *  - 'saml20-idp-remote'
+                                 *  - 'saml20-sp-remote'
+                                 *  - 'shib13-idp-remote'
+                                 *  - 'shib13-sp-remote'
+                                 *  - 'attributeauthority-remote'
+                                 *
+                                 * All of them will be used by default.
+                                 */
+                                 'types' => ['saml20-sp-remote'],   // Load only SAML v2.0 SP from metadata
+                               ],
+                              ],
+                 'expireAfter' => 864000, // Maximum 10 days cache time (3600*24*10)
+                 'outputDir'   => 'metadata/',
+
+                 /*
+                  * Which output format the metadata should be saved as.
+                  * Can be 'flatfile' or 'serialize'. 'flatfile' is the default.
+                 */
+                 'outputFormat' => 'flatfile',
+              ],
+           ],
+        ];
+        ```
+
+   9. Change SimpleSAMLphp configuration to load the new metadata provider:
+      * `vim /var/simplesamlphp/config/config.php`
+
+        ```php
+        'metadata.sources' => [
+            ['type' => 'flatfile'],
+         ],
+         ```
+
+   10. Remove not needed files from:
+       * `cd /var/simplesamlphp/metadata ; rm !(saml20-idp-hosted.php)`
+
+   11. Download the Federation signing certificate: 
+       * ```bash
+         wget https://md.idem.garr.it/certs/idem-signer-20220121.pem -O /var/simplesamlphp/cert/federation-cert.pem
+         ```
+
+   12. Check the validity of the signing certificate:
+       * `cd /var/simplesamlphp/cert`
+       * `openssl x509 -in federation-cert.pem -fingerprint -sha1 -noout`
        
-       (sha1: D1:68:6C:32:A4:E3:D4:FE:47:17:58:E7:15:FC:77:A8:44:D8:40:4D)
-     * `openssl x509 -in federation-cert.pem -fingerprint -md5 -noout`
+         (sha1: D1:68:6C:32:A4:E3:D4:FE:47:17:58:E7:15:FC:77:A8:44:D8:40:4D)
+       * `openssl x509 -in federation-cert.pem -fingerprint -md5 -noout`
 
-       (md5: 48:3B:EE:27:0C:88:5D:A3:E7:0B:7C:74:9D:24:24:E0)
+         (md5: 48:3B:EE:27:0C:88:5D:A3:E7:0B:7C:74:9D:24:24:E0)
 
-   * Go to 'https://ssp-idp.example.org/simplesaml/module.php/core/frontpage_federation.php' and forcing download of the Federation metadata by pressing on `Metarefresh: fetch metadata` or wait 1 day
+   13. Go to 'https://ssp-idp.example.org/simplesaml/module.php/core/frontpage_federation.php' and forcing download of the Federation metadata by pressing on `Metarefresh: fetch metadata` or wait 1 day
 
-5. Add translations of the new `schacHomeOrganizationType` attribute:
+#### Add translations of the new `schacHomeOrganizationType` attribute
+
    * `vim /var/simplesamlphp/dictionaries/attributes.definition.json`
 
      ```json
@@ -655,7 +666,7 @@ The software installation provided by this guide is intended to run by ROOT user
 
      (Pay attention also to "commas"!)
 
-6. Enable UTF-8 on IdP metadata (to avoid encoding problems with accents):
+#### Enable UTF-8 on IdP metadata (to avoid encoding problems with accents)
 
    * `vim /var/simplesamlphp/vendor/simplesamlphp/saml2/src/SAML2/DOMDocumentFactory.php`
 
@@ -668,14 +679,15 @@ The software installation provided by this guide is intended to run by ROOT user
      }
      ```
 
-7. Now you are able to reach your Shibboleth IDP Metadata on:
+#### Download IdP Metadata
 
    * `https://ssp-idp.example.org/simplesaml/saml2/idp/metadata.php`
 
    (change ```ssp-idp.example.org``` to you IDP full qualified domain name)
 
-8. Register you IDP on IDEM Entity Registry (your entity has to be approved by an IDEM Federation Operator before become part of IDEM Test Federation):
-   * Go to `https://registry.idem.garr.it` and follow "**Insert a New Identity Provider into the IDEM Test Federation**"
+#### Register IdP on IDEM Entity Registry
+
+   * Go to `https://registry.idem.garr.it` and follow "**Insert a New Identity Provider into the IDEM Test Federation**" (your entity has to be approved by an IDEM Federation Operator before become part of IDEM Test Federation)
 
 ### Appendix A - How to release attributes to specific SP only
 
