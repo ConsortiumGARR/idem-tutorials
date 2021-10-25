@@ -17,7 +17,7 @@
       2. [Configure SAML Metadata Credentials](#configure-saml-metadata-credentials)
       3. [Configure the authentication source](#configure-the-authentication-source)
       4. [Configure automatic download of Federation Metadata](#configure-automatic-download-of-federation-metadata)
-      5. [Add translations of the new 'schacHomeOrganizationType' attribute](#add-translations-of-the-new-schacHomeOrganizationType-attribute)
+      5. [Add translations of the new 'schacHomeOrganizationType' attribute](#add-translations-of-the-new-schachomeorganizationtype-attribute)
       6. [Enable UTF-8 on IdP metadata (to avoid encoding problems with accents)](#enable-utf-8-on-idp-metadata-to-avoid-encoding-problems-with-accents)
       7. [Download IdP Metadata](#download-idp-metadata)
       8. [Register IdP on IDEM Entity Registry](#register-idp-on-idem-entity-registry)
