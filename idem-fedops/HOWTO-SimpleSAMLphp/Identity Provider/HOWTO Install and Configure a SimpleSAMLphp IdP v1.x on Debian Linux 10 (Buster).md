@@ -94,10 +94,10 @@ The software installation provided by this guide is intended to run by ROOT user
 2. Install SimpleSAMLphp:
    * `cd /var/`
    * ```bash
-     wget https://github.com/simplesamlphp/simplesamlphp/releases/download/v1.19.1/simplesamlphp-1.19.1.tar.gz
+     wget https://github.com/simplesamlphp/simplesamlphp/releases/download/v1.19.3/simplesamlphp-1.19.3.tar.gz
      ```
-   * `tar xzf simplesamlphp-1.19.1.tar.gz`
-   * `mv simplesamlphp-1.19.1 simplesamlphp`
+   * `tar xzf simplesamlphp-1.19.3.tar.gz`
+   * `mv simplesamlphp-1.19.3 simplesamlphp`
 
 ## Configuration
 
