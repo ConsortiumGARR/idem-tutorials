@@ -1366,25 +1366,27 @@ Follow these steps **IF** your organization **IS NOT** connected to the [GARR Ne
      * `sudo systemctl restart jetty.service`
 
 ### Useful Documentation
-* https://wiki.shibboleth.net/confluence/display/IDP4/SpringConfiguration
-* https://wiki.shibboleth.net/confluence/display/IDP4/ConfigurationFileSummary
-* https://wiki.shibboleth.net/confluence/display/IDP4/LoggingConfiguration
-* https://wiki.shibboleth.net/confluence/display/IDP4/AuditLoggingConfiguration
-* https://wiki.shibboleth.net/confluence/display/IDP4/FTICKSLoggingConfiguration
-* https://wiki.shibboleth.net/confluence/display/IDP4/MetadataConfiguration
-* https://wiki.shibboleth.net/confluence/display/IDP4/PasswordAuthnConfiguration
-* https://wiki.shibboleth.net/confluence/display/IDP4/AttributeResolverConfiguration
-* https://wiki.shibboleth.net/confluence/display/IDP4/LDAPConnector
-* https://wiki.shibboleth.net/confluence/display/IDP4/AttributeRegistryConfiguration
-* https://wiki.shibboleth.net/confluence/display/IDP4/TranscodingRuleConfiguration
-* https://wiki.shibboleth.net/confluence/display/IDP4/HTTPResource
-* https://wiki.shibboleth.net/confluence/display/CONCEPT/SAMLKeysAndCertificates
-* https://wiki.shibboleth.net/confluence/display/IDP4/SecretKeyManagement
-* https://wiki.shibboleth.net/confluence/display/IDP4/NameIDGenerationConfiguration
-* https://wiki.shibboleth.net/confluence/display/IDP4/GCMEncryption
-* https://wiki.shibboleth.net/confluence/display/IDP4/Switching+locale+on+the+login+page
-* https://wiki.shibboleth.net/confluence/display/IDP4/WebInterfaces
-* https://wiki.shibboleth.net/confluence/display/IDP4/PasswordAuthnConfiguration#PasswordAuthnConfiguration-UserInterface
+
+* https://shibboleth.atlassian.net/wiki/spaces/IDP4/pages/1265631699/SpringConfiguration
+* https://shibboleth.atlassian.net/wiki/spaces/IDP4/pages/1265631633/ConfigurationFileSummary
+* https://shibboleth.atlassian.net/wiki/spaces/IDP4/pages/1265631710/LoggingConfiguration
+* https://shibboleth.atlassian.net/wiki/spaces/IDP4/pages/1265631711/AuditLoggingConfiguration
+* https://shibboleth.atlassian.net/wiki/spaces/IDP4/pages/1265631712/FTICKSLoggingConfiguration
+* https://shibboleth.atlassian.net/wiki/spaces/IDP4/pages/1265631635/MetadataConfiguration
+* https://shibboleth.atlassian.net/wiki/spaces/IDP4/pages/1265631611/PasswordAuthnConfiguration
+* https://shibboleth.atlassian.net/wiki/spaces/IDP4/pages/1265631549/AttributeResolverConfiguration
+* https://shibboleth.atlassian.net/wiki/spaces/IDP4/pages/1265631572/LDAPConnector
+* https://shibboleth.atlassian.net/wiki/spaces/IDP4/pages/1272054306/AttributeRegistryConfiguration
+* https://shibboleth.atlassian.net/wiki/spaces/IDP4/pages/1272054333/TranscodingRuleConfiguration
+* https://shibboleth.atlassian.net/wiki/spaces/IDP4/pages/1265631675/HTTPResource
+* https://shibboleth.atlassian.net/wiki/spaces/CONCEPT/pages/948470554/SAMLKeysAndCertificates
+* https://shibboleth.atlassian.net/wiki/spaces/IDP4/pages/1265631799/SecretKeyManagement
+* https://shibboleth.atlassian.net/wiki/spaces/IDP4/pages/1265631671/NameIDGenerationConfiguration
+* https://shibboleth.atlassian.net/wiki/spaces/IDP4/pages/1285914730/GCMEncryption
+* https://shibboleth.atlassian.net/wiki/spaces/KB/pages/1435927082/Switching+locale+on+the+login+page
+* https://shibboleth.atlassian.net/wiki/spaces/IDP4/pages/1265631851/WebInterfaces
+* https://shibboleth.atlassian.net/wiki/spaces/IDP4/pages/1265631611/PasswordAuthnConfiguration
+* https://shibboleth.atlassian.net/wiki/spaces/IDP4/pages/1280180737/Cross-Site+Request+Forgery+CSRF+Protection
 
 
 ### Authors
