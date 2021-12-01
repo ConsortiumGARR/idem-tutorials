@@ -1390,7 +1390,7 @@ Follow these steps **ONLY IF** your organization is connected to the [GARR Netwo
 
    * Retrieve the Federation Certificate used to verify signed metadata:
      *  ```bash
-        wget https://md.idem.garr.it/certs/idem-signer-20220121.pem -O /opt/shibboleth-idp/metadata/federation-cert.pem
+        wget https://md.idem.garr.it/certs/idem-signer-20241118.pem -O /opt/shibboleth-idp/metadata/federation-cert.pem
         ```
 
    * Check the validity:
