@@ -272,7 +272,7 @@ Enable attribute support by removing comment from the related content into `/etc
 
 1. Retrieve the IDEM GARR Federation Certificate needed to verify the signed metadata:
    * `cd /etc/shibboleth/`
-   * `curl https://md.idem.garr.it/certs/idem-signer-20220121.pem -o federation-cert.pem`
+   * `curl https://md.idem.garr.it/certs/idem-signer-20241118.pem -o federation-cert.pem`
    * Check the validity:
      *  `cd /etc/shibboleth`
      *  `openssl x509 -in federation-cert.pem -fingerprint -sha1 -noout`
