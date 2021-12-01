@@ -623,7 +623,7 @@ The software installation provided by this guide is intended to run by ROOT user
 
    11. Download the Federation signing certificate: 
        * ```bash
-         wget https://md.idem.garr.it/certs/idem-signer-20220121.pem -O /var/simplesamlphp/cert/federation-cert.pem
+         wget https://md.idem.garr.it/certs/idem-signer-20241118.pem -O /var/simplesamlphp/cert/federation-cert.pem
          ```
 
    12. Check the validity of the signing certificate:
