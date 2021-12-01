@@ -431,7 +431,7 @@
 
    * Download the Federation signing certificate:
 
-     `wget https://md.idem.garr.it/certs/idem-signer-20220121.pem -O /opt/simplesamlphp/cert/federation-cert.pem`
+     `wget https://md.idem.garr.it/certs/idem-signer-20241118.pem -O /opt/simplesamlphp/cert/federation-cert.pem`
 
    * Check the validity:
      * `cd /opt/simplesamlphp/cert/`
