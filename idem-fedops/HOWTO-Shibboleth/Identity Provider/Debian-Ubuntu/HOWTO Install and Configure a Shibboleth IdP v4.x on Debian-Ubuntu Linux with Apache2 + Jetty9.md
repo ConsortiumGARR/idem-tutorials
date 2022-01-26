@@ -1574,7 +1574,6 @@ Follow these steps **IF** your organization **IS NOT** connected to the [GARR Ne
 * https://shibboleth.atlassian.net/wiki/spaces/IDP4/pages/1285914730/GCMEncryption
 * https://shibboleth.atlassian.net/wiki/spaces/KB/pages/1435927082/Switching+locale+on+the+login+page
 * https://shibboleth.atlassian.net/wiki/spaces/IDP4/pages/1265631851/WebInterfaces
-* https://shibboleth.atlassian.net/wiki/spaces/IDP4/pages/1265631611/PasswordAuthnConfiguration
 * https://shibboleth.atlassian.net/wiki/spaces/IDP4/pages/1280180737/Cross-Site+Request+Forgery+CSRF+Protection
 
 
