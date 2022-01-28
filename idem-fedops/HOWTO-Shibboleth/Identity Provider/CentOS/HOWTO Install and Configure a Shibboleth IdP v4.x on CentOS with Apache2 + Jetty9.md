@@ -1078,8 +1078,8 @@ Translate the IdP messages in your language:
      ```properties
      idp.login.infoPage=Informations
      idp.url.infoPage=https://my.organization.it/english-idp-info-page.html
-     idp.url.privacyPage=Privacy Policy
-     idp.login.privacyPage=https://my.organization.it/english-idp-privacy-policy.html
+     idp.login.privacyPage=Privacy Policy
+     idp.url.privacyPage=https://my.organization.it/english-idp-privacy-policy.html
      ```
 
    * `messages/messages_it.properties`:
@@ -1087,8 +1087,8 @@ Translate the IdP messages in your language:
      ```properties
      idp.login.infoPage=Informazioni
      idp.url.infoPage=https://my.organization.it/italian-idp-info-page.html
-     idp.url.privacyPage=Privacy Policy
-     idp.login.privacyPage=https://my.organization.it/italian-idp-privacy-policy.html
+     idp.login.privacyPage=Privacy Policy
+     idp.url.privacyPage=https://my.organization.it/italian-idp-privacy-policy.html
      ```
         
 3. Rebuild IdP WAR file and Restart Jetty to apply changes:
