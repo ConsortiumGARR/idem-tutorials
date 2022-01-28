@@ -32,9 +32,10 @@
    9. [Configure Shibboleth IdP Logging](#configure-shibboleth-idp-logging)
    10. [Translate IdP messages into the preferred language](#translate-idp-messages-into-preferred-language)
    11. [Enrich IdP Login Page with Information and Privacy Policy pages](#enrich-idp-login-page-with-information-and-privacy-policy-pages)
-   12. [Disable SAML1 Deprecated Protocol](#disable-saml1-deprecated-protocol)
-   13. [Secure cookies and other IDP data](#secure-cookies-and-other-idp-data)
-   14. [Configure Attribute Filter Policy to release attributes to Federated Resources](#configure-attribute-filter-policy-to-release-attributes-to-federated-resources)
+   12. [Change default login page footer text](#change-default-login-page-footer-text)
+   13. [Disable SAML1 Deprecated Protocol](#disable-saml1-deprecated-protocol)
+   14. [Secure cookies and other IDP data](#secure-cookies-and-other-idp-data)
+   15. [Configure Attribute Filter Policy to release attributes to Federated Resources](#configure-attribute-filter-policy-to-release-attributes-to-federated-resources)
 6. [Register the IdP on the IDEM Test Federation](#register-the-idp-on-the-idem-test-federation)
 7. [Appendix A: Enable Consent Module: Attribute Release + Terms of Use Consent](#appendix-a-enable-consent-module-attribute-release--terms-of-use-consent)
 8. [Appendix B: Import persistent-id from a previous database](#appendix-b-import-persistent-id-from-a-previous-database)
@@ -1255,7 +1256,7 @@ Translate the IdP messages in your language:
    <li class="list-help-item"><a href="#springMessageText("idp.url.helpdesk", '#')"><span class="item-marker">&rsaquo;</span> #springMessageText("idp.login.needHelp", "Need Help?")</a></li>
    ```
 
-2. Add the new velocity variables defined with lines added at point 1 into `messages*.properties` files:
+2. Add the new variables defined with lines added at point 1 into `messages*.properties` files:
 
    * `messages/messages.properties`:
 
@@ -1278,7 +1279,23 @@ Translate the IdP messages in your language:
 3. Rebuild IdP WAR file and Restart Jetty to apply changes:
    * `cd /opt/shibboleth-idp/bin ; ./build.sh`
    * `sudo systemctl restart jetty`
-   
+
+### Change default login page footer text
+
+1. Change the content of `idp.footer` variable into `messages*.properties` files:
+
+   * `messages/messages.properties`:
+
+     ```properties
+     idp.footer=Footer text for english version of IdP login page
+     ```
+
+   * `messages/messages_it.properties`:
+
+     ```properties
+     idp.footer=Testo del Footer a pie di pagina per la versione italiana della pagina di login dell'IdP
+     ```
+
 ### Disable SAML1 Deprecated Protocol
 
 1. Modify the IdP metadata to enable only the SAML2 protocol:
