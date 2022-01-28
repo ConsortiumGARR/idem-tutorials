@@ -31,9 +31,10 @@
    8. [Configure the attribute resolution with Attribute Registry](#configure-the-attribute-resolution-with-attribute-registry)
    9. [Configure Shibboleth IdP Logging](#configure-shibboleth-idp-logging)
    10. [Translate IdP messages into the preferred language](#translate-idp-messages-into-preferred-language)
-   11. [Disable SAML1 Deprecated Protocol](#disable-saml1-deprecated-protocol)
-   12. [Secure cookies and other IDP data](#secure-cookies-and-other-idp-data)
-   13. [Configure Attribute Filter Policy to release attributes to Federated Resources](#configure-attribute-filter-policy-to-release-attributes-to-federated-resources)
+   11. [Enrich IdP Login Page with Information and Privacy Policy pages](#enrich-idp-login-page-with-information-and-privacy-policy-pages)
+   12. [Disable SAML1 Deprecated Protocol](#disable-saml1-deprecated-protocol)
+   13. [Secure cookies and other IDP data](#secure-cookies-and-other-idp-data)
+   14. [Configure Attribute Filter Policy to release attributes to Federated Resources](#configure-attribute-filter-policy-to-release-attributes-to-federated-resources)
 6. [Register the IdP on the IDEM Test Federation](#register-the-idp-on-the-idem-test-federation)
 7. [Appendix A: Enable Consent Module: Attribute Release + Terms of Use Consent](#appendix-a-enable-consent-module-attribute-release--terms-of-use-consent)
 8. [Appendix B: Import persistent-id from a previous database](#appendix-b-import-persistent-id-from-a-previous-database)
@@ -1239,6 +1240,44 @@ Translate the IdP messages in your language:
    * Get the files translated in your language from [Shibboleth page](https://wiki.shibboleth.net/confluence/display/IDP4/MessagesTranslation)
    * Put '`messages_XX.properties`' downloaded file into `/opt/shibboleth-idp/messages` directory
    * Restart Jetty to apply the changes with `systemctl restart jetty.service`
+
+### Enrich IdP Login Page with Information and Privacy Policy pages
+
+1. Add the following two lines into `views/login.vm`:
+   ```xml
+   <li class="list-help-item"><a href="#springMessageText("idp.url.infoPage", '#')"><span class="item-marker">&rsaquo;</span> #springMessageText("idp.login.infoPage", "Information page")</a></li>
+   <li class="list-help-item"><a href="#springMessageText("idp.url.privacyPage", '#')"><span class="item-marker">&rsaquo;</span> #springMessageText("idp.login.privacyPage", "Privacy Policy")</a></li>
+   ```
+
+   under the line:
+
+   ```xml
+   <li class="list-help-item"><a href="#springMessageText("idp.url.helpdesk", '#')"><span class="item-marker">&rsaquo;</span> #springMessageText("idp.login.needHelp", "Need Help?")</a></li>
+   ```
+
+2. Add the new velocity variables defined with lines added at point 1 into `messages*.properties` files:
+
+   * `messages/messages.properties`:
+
+     ```properties
+     idp.login.infoPage=Informations
+     idp.url.infoPage=https://my.organization.it/english-idp-info-page.html
+     idp.url.privacyPage=Privacy Policy
+     idp.login.privacyPage=https://my.organization.it/english-idp-privacy-policy.html
+     ```
+
+   * `messages/messages_it.properties`:
+
+     ```properties
+     idp.login.infoPage=Informazioni
+     idp.url.infoPage=https://my.organization.it/italian-idp-info-page.html
+     idp.url.privacyPage=Privacy Policy
+     idp.login.privacyPage=https://my.organization.it/italian-idp-privacy-policy.html
+     ```
+        
+3. Rebuild IdP WAR file and Restart Jetty to apply changes:
+   * `cd /opt/shibboleth-idp/bin ; ./build.sh`
+   * `sudo systemctl restart jetty`
    
 ### Disable SAML1 Deprecated Protocol
 
