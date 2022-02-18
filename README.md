@@ -44,6 +44,7 @@ These GitHub Repository contains step-by-step tutorials on Identity and Service 
 
 #### Shibboleth
 
+* [HOWTO Configure a Shibboleth IdP v4.x to authenticate users existing on different LDAP Servers](./idem-fedops/HOWTO-Shibboleth/Solutions/HOWTO%20Configure%20a%20Shibboleth%20IdP%20v4.x%20to%20authenticate%20users%20existing%20on%20different%20LDAP%20Servers.md)
 * [HOWTO Configure a Shibboleth IdP v3.2.1 to authenticate users existing on different LDAP Servers](./idem-fedops/HOWTO-Shibboleth/Solutions/HOWTO%20Configure%20a%20Shibboleth%20IdP%20v3.2.1%20to%20authenticate%20Users%20existing%20on%20different%20LDAP%20Servers.md)
 * [HOWTO Release only one value of a specific attribute to a specific resource](./idem-fedops/HOWTO-Shibboleth/Solutions/HOWTO%20Release%20only%20one%20value%20of%20a%20specific%20attribute%20to%20a%20specific%20resource.md)
 * [HOWTO Install and Configure a Shibboleth Embedded Discovery Service on Ubuntu Linux](./idem-fedops/HOWTO-Shibboleth/Embedded%20Discovery%20Service/Ubuntu/HOWTO%20Install%20and%20Configure%20a%20Shibboleth%20Embedded%20Discovery%20Service.md)
