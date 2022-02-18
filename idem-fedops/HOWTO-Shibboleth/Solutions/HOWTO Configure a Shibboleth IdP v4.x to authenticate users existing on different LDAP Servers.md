@@ -5,15 +5,24 @@
 ## Table of Contents
 
 1. [Requirements](#requirements)
-2. [Notes before start](#notes-before-you-start)
-3. [OpenLDAP Case connected with bindSearchAuthenticator](#openldap-case-connected-with-bindSearchAuthenticator)
-4. [Active Directory Case connected with bindSearchAuthenticator](#active-directory-case-connected-with-bindSearchAuthenticator)
-5. [Authors](#authors)
+2. [Files involved](#files-involved)
+3. [Notes before start](#notes-before-you-start)
+4. [OpenLDAP Case connected with bindSearchAuthenticator](#openldap-case-connected-with-bindsearchauthenticator)
+5. [Active Directory Case connected with bindSearchAuthenticator](#active-directory-case-connected-with-bindsearchauthenticator)
+6. [Authors](#authors)
+
 
 ## Requirements
 
 * A machine with Shibboleth IdP v4.x installed (tested with v4.1.4)
 * Two LDAP/AD provided by different servers.
+
+## Files Involved
+
+* `conf/authn/password-authn-config.xml`
+* `conf/ldap.properties`
+* `conf/credentials/secrets.properties`
+* `conf/attribute-resolver.xml`
 
 ## Notes before you start
 
@@ -25,17 +34,17 @@ The attributes listed into each `exportAttributes` property have to be different
 
 ## OpenLDAP Case connected with bindSearchAuthenticator
 
-1. Change the **shibboleth.authn.Password.Validators** list into `/opt/shibboleth-idp/conf/authn/password-authn-config.xml` as following:
+1. Change the **shibboleth.authn.Password.Validators** list into `conf/authn/password-authn-config.xml` as following:
    ```xml
    <!--
-       These use the settings defined in ldap.properties except:
-      - p:ldapUrl
-      - p:baseDn
-      - p:bindDn
-      - p:bindDnCredential
-      - p:userFilter
+       These use the settings defined in conf/ldap.properties except:
+         - p:ldapUrl
+         - p:baseDn
+         - p:bindDn
+         - p:bindDnCredential
+         - p:userFilter
 
-      overridden here.
+       overridden here.
    -->
    <util:list id="shibboleth.authn.Password.Validators">
        <bean p:id="ldap_1" parent="shibboleth.LDAPValidator">
@@ -61,19 +70,19 @@ The attributes listed into each `exportAttributes` property have to be different
    </util:list>
    ```
 
-2. Insert into `/opt/shibboleth-idp/conf/ldap.properties` the properties added into `/opt/shibboleth-idp/conf/authn/password-authn-config.xml`:
+2. Insert into `conf/ldap.properties` the properties added into `conf/authn/password-authn-config.xml`:
    ```xml
    # LDAP 1 authentication configuration properties:
-   # - /opt/shibboleth-idp/conf/authn/password-authn-config.xml         (LDAP chaining)
-   # - /opt/shibboleth-idp/conf/ldap.properties                         (LDAP properties)
+   # - conf/authn/password-authn-config.xml         (LDAP chaining)
+   # - conf/ldap.properties                         (LDAP properties)
    idp.authn.LDAP.ldapURL.1                          = ldap://<URL-LDAP-1>:389
    idp.authn.LDAP.baseDN.1                           = ou=people-1,dc=example,dc=org
    idp.authn.LDAP.bindDN.1                           = cn=admin-1,dc=people,dc=example,dc=org
    idp.authn.LDAP.userFilter.1                       = (uid={user})
 
    # LDAP 2 authentication configuration properties:
-   # - /opt/shibboleth-idp/conf/authn/password-authn-config.xml         (LDAP chaining)
-   # - /opt/shibboleth-idp/conf/ldap.properties                         (LDAP properties)
+   # - conf/authn/password-authn-config.xml         (LDAP chaining)
+   # - conf/ldap.properties                         (LDAP properties)
    idp.authn.LDAP.ldapURL.2                          = ldap://<URL-LDAP-2>:389
    idp.authn.LDAP.baseDN.2                           = ou=people-2,dc=example,dc=org
    idp.authn.LDAP.bindDN.2                           = cn=admin-2,ou=people,dc=example,dc=org
@@ -87,7 +96,7 @@ The attributes listed into each `exportAttributes` property have to be different
    idp.authn.LDAP.responseTimeout                  = PT3S     # Time in milliseconds to wait for responses
    idp.authn.LDAP.subtreeSearch                    = true
 
-   # LDAP 1 DataConnector configuration on attribute-resolver.xml
+   # LDAP 1 DataConnector configuration on conf/attribute-resolver.xml
    idp.attribute.resolver.LDAP.ldapURL.1             = %{idp.authn.LDAP.ldapURL.1}
    idp.attribute.resolver.LDAP.connectTimeout.1      = %{idp.authn.LDAP.connectTimeout:PT3S}
    idp.attribute.resolver.LDAP.responseTimeout.1     = %{idp.authn.LDAP.responseTimeout:PT3S}
@@ -96,7 +105,7 @@ The attributes listed into each `exportAttributes` property have to be different
    idp.attribute.resolver.LDAP.useStartTLS.1         = %{idp.authn.LDAP.useStartTLS:true}
    idp.attribute.resolver.LDAP.searchFilter.1        = (uid=$resolutionContext.principal)
 
-   # LDAP 2 DataConnector configuration on attribute-resolver.xml
+   # LDAP 2 DataConnector configuration on conf/attribute-resolver.xml
    idp.attribute.resolver.LDAP.ldapURL.2             = %{idp.authn.LDAP.ldapURL.2}
    idp.attribute.resolver.LDAP.connectTimeout.2      = %{idp.authn.LDAP.connectTimeout:PT3S}
    idp.attribute.resolver.LDAP.responseTimeout.2     = %{idp.authn.LDAP.responseTimeout:PT3S}
@@ -109,7 +118,7 @@ The attributes listed into each `exportAttributes` property have to be different
    idp.attribute.resolver.LDAP.exportAttributes.1    = uid givenName sn cn mail displayName mobile title preferredLanguage telephoneNumber eduPersonAffiliation eduPersonEntitlement eduPersonOrgDN eduPersonOrgUnitDN eduPersonOrcid schacMotherTongue schacPersonalTitle schacUserPresenceID schacPersonalUniqueID schacPersonalPositon 
    ```
 
-3. Insert into `/opt/shibboleth-idp/conf/credentials/secrets.properties` the new credential:
+3. Insert into `conf/credentials/secrets.properties` the new credential:
    ```xml
    # LDAP 1 access to authn and attribute stores.
    idp.authn.LDAP.bindDNCredential.1              = <PASSWORD-LDAP-USER-1>
@@ -120,7 +129,7 @@ The attributes listed into each `exportAttributes` property have to be different
    idp.attribute.resolver.LDAP.bindDNCredential.2 = %{idp.authn.LDAP.bindDNCredential.2:undefined}
    ```
 
-4. Change the `attribute-resolver.xml` by adding the new `<DataConnector>`:
+4. Change the `conf/attribute-resolver.xml` by adding the new `<DataConnector>`:
    ```xml
    <?xml version="1.0" encoding="UTF-8"?>
 
@@ -270,18 +279,18 @@ The attributes listed into each `exportAttributes` property have to be different
 
 ## Active Directory Case connected with bindSearchAuthenticator
 
-1. Change the **shibboleth.authn.Password.Validators** list into `/opt/shibboleth-idp/conf/authn/password-authn-config.xml` as following:
+1. Change the **shibboleth.authn.Password.Validators** list into `conf/authn/password-authn-config.xml` as following:
    ```xml
    <!--
-       These use the settings defined in ldap.properties except:
-      - p:ldapUrl
-      - p:baseDn
-      - p:bindDn
-      - p:bindDnCredential
-      - p:userFilter
-      - p:dnFormat
+       These use the settings defined in conf/ldap.properties except:
+         - p:ldapUrl
+         - p:baseDn
+         - p:bindDn
+         - p:bindDnCredential
+         - p:userFilter
+         - p:dnFormat
 
-      overridden here.
+       overridden here.
    -->
    <util:list id="shibboleth.authn.Password.Validators">
        <bean p:id="ldap_1" parent="shibboleth.LDAPValidator">
@@ -309,11 +318,11 @@ The attributes listed into each `exportAttributes` property have to be different
    </util:list>
    ```
 
-2. Insert into `/opt/shibboleth-idp/conf/ldap.properties` the properties added into `/opt/shibboleth-idp/conf/authn/password-authn-config.xml`:
+2. Insert into `conf/ldap.properties` the properties added into `conf/authn/password-authn-config.xml`:
    ```xml
    # AD 1 authentication configuration properties:
-   # - /opt/shibboleth-idp/conf/authn/password-authn-config.xml         (LDAP chaining)
-   # - /opt/shibboleth-idp/conf/ldap.properties                         (LDAP properties)
+   # - conf/authn/password-authn-config.xml         (LDAP chaining)
+   # - conf/ldap.properties                         (LDAP properties)
    idp.authn.LDAP.ldapURL.1                          = ldap://<URL-AD-1>:389
    idp.authn.LDAP.baseDN.1                           = ou=people-1,dc=example,dc=org
    idp.authn.LDAP.bindDN.1                           = cn=admin-1,dc=people,dc=example,dc=org
@@ -321,8 +330,8 @@ The attributes listed into each `exportAttributes` property have to be different
    idp.authn.LDAP.dnFormat.1                         = %s@example.org
 
    # AD 2 authentication configuration properties:
-   # - /opt/shibboleth-idp/conf/authn/password-authn-config.xml         (LDAP chaining)
-   # - /opt/shibboleth-idp/conf/ldap.properties                         (LDAP properties)
+   # - conf/authn/password-authn-config.xml         (LDAP chaining)
+   # - conf/ldap.properties                         (LDAP properties)
    idp.authn.LDAP.ldapURL.2                          = ldap://<URL-AD-2>:389
    idp.authn.LDAP.baseDN.2                           = ou=people-2,dc=example,dc=org
    idp.authn.LDAP.bindDN.2                           = cn=admin-2,ou=people,dc=example,dc=org
@@ -337,7 +346,7 @@ The attributes listed into each `exportAttributes` property have to be different
    idp.authn.LDAP.responseTimeout                  = PT3S     # Time in milliseconds to wait for responses
    idp.authn.LDAP.subtreeSearch                    = true
 
-   # AD 1 DataConnector configuration on attribute-resolver.xml
+   # AD 1 DataConnector configuration on conf/attribute-resolver.xml
    idp.attribute.resolver.LDAP.ldapURL.1             = %{idp.authn.LDAP.ldapURL.1}
    idp.attribute.resolver.LDAP.connectTimeout.1      = %{idp.authn.LDAP.connectTimeout:PT3S}
    idp.attribute.resolver.LDAP.responseTimeout.1     = %{idp.authn.LDAP.responseTimeout:PT3S}
@@ -346,7 +355,7 @@ The attributes listed into each `exportAttributes` property have to be different
    idp.attribute.resolver.LDAP.useStartTLS.1         = %{idp.authn.LDAP.useStartTLS:true}
    idp.attribute.resolver.LDAP.searchFilter.1        = (uid=$resolutionContext.principal)
 
-   # AD 2 DataConnector configuration on attribute-resolver.xml
+   # AD 2 DataConnector configuration on conf/attribute-resolver.xml
    idp.attribute.resolver.LDAP.ldapURL.2             = %{idp.authn.LDAP.ldapURL.2}
    idp.attribute.resolver.LDAP.connectTimeout.2      = %{idp.authn.LDAP.connectTimeout:PT3S}
    idp.attribute.resolver.LDAP.responseTimeout.2     = %{idp.authn.LDAP.responseTimeout:PT3S}
@@ -359,7 +368,7 @@ The attributes listed into each `exportAttributes` property have to be different
    idp.attribute.resolver.LDAP.exportAttributes.1    = sAMAccountName givenName sn cn mail displayName mobile title preferredLanguage telephoneNumber eduPersonAffiliation eduPersonEntitlement eduPersonOrgDN eduPersonOrgUnitDN eduPersonOrcid schacMotherTongue schacPersonalTitle schacUserPresenceID schacPersonalUniqueID schacPersonalPositon 
    ```
 
-3. Insert into `/opt/shibboleth-idp/conf/credentials/secrets.properties` the new credential:
+3. Insert into `conf/credentials/secrets.properties` the new credential:
    ```xml
    # LDAP 1 access to authn and attribute stores.
    idp.authn.LDAP.bindDNCredential.1              = <PASSWORD-AD-USER-1>
