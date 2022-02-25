@@ -21,16 +21,20 @@
 
 * `conf/authn/password-authn-config.xml`
 * `conf/ldap.properties`
-* `conf/credentials/secrets.properties`
+* `credentials/secrets.properties`
 * `conf/attribute-resolver.xml`
 
 ## Notes before you start
 
-The tutorials below use only `idp.attribute.resolver.LDAP.exportAttributes.1` because tests are done with two identical LDAP servers provided by two different machines.
+The tutorial values only `idp.attribute.resolver.LDAP.exportAttributes.1` because it is valid, and will be used,  by both LDAP servers connected to the Shibboleth IdP.
 
-The attributes listed into the first `exportAttributes` will be valid also for the second `<DataConnector>` if they are the same attributes.
+The LDAP servers, in this example, provide the same set of attributes from two different machines.
 
-The attributes listed into each `exportAttributes` property have to be different.
+The value of `idp.attribute.resolver.LDAP.exportAttributes.2` have to be left empty because the attribute set provided by the `idp.attribute.resolver.LDAP.exportAttributes.1` value will be used also for the second `<DataConnector>`.
+
+If the second LDAP server connected to the Shibboleth IdP manage different attributes, it is needed to value `idp.attribute.resolver.LDAP.exportAttributes.2` with those attributes that are not already included by the first one.
+
+The attributes listed in each `idp.attribute.resolver.LDAP.exportAttributes` properties have to be different.
 
 ## OpenLDAP Case connected with bindSearchAuthenticator
 
@@ -118,7 +122,7 @@ The attributes listed into each `exportAttributes` property have to be different
    idp.attribute.resolver.LDAP.exportAttributes.1    = uid givenName sn cn mail displayName mobile title preferredLanguage telephoneNumber eduPersonAffiliation eduPersonEntitlement eduPersonOrgDN eduPersonOrgUnitDN eduPersonOrcid schacMotherTongue schacPersonalTitle schacUserPresenceID schacPersonalUniqueID schacPersonalPositon 
    ```
 
-3. Insert into `conf/credentials/secrets.properties` the new credential:
+3. Insert into `credentials/secrets.properties` the new credential:
    ```xml
    # LDAP 1 access to authn and attribute stores.
    idp.authn.LDAP.bindDNCredential.1              = <PASSWORD-LDAP-USER-1>
@@ -187,7 +191,7 @@ The attributes listed into each `exportAttributes` property have to be different
            useStartTLS="%{idp.attribute.resolver.LDAP.useStartTLS.1:true}"
            connectTimeout="%{idp.attribute.resolver.LDAP.connectTimeout}"
            responseTimeout="%{idp.attribute.resolver.LDAP.responseTimeout}"
-           exportAttributes="%{idp.attribute.resolver.LDAP.exportAttributes}">
+           exportAttributes="%{idp.attribute.resolver.LDAP.exportAttributes.1}">
            <FailoverDataConnector ref="LDAP-2" />
            <FilterTemplate>
                <![CDATA[
@@ -368,7 +372,7 @@ The attributes listed into each `exportAttributes` property have to be different
    idp.attribute.resolver.LDAP.exportAttributes.1    = sAMAccountName givenName sn cn mail displayName mobile title preferredLanguage telephoneNumber eduPersonAffiliation eduPersonEntitlement eduPersonOrgDN eduPersonOrgUnitDN eduPersonOrcid schacMotherTongue schacPersonalTitle schacUserPresenceID schacPersonalUniqueID schacPersonalPositon 
    ```
 
-3. Insert into `conf/credentials/secrets.properties` the new credential:
+3. Insert into `credentials/secrets.properties` the new credential:
    ```xml
    # LDAP 1 access to authn and attribute stores.
    idp.authn.LDAP.bindDNCredential.1              = <PASSWORD-AD-USER-1>
@@ -437,7 +441,7 @@ The attributes listed into each `exportAttributes` property have to be different
            useStartTLS="%{idp.attribute.resolver.LDAP.useStartTLS.1:true}"
            connectTimeout="%{idp.attribute.resolver.LDAP.connectTimeout}"
            responseTimeout="%{idp.attribute.resolver.LDAP.responseTimeout}"
-           exportAttributes="%{idp.attribute.resolver.LDAP.exportAttributes}">
+           exportAttributes="%{idp.attribute.resolver.LDAP.exportAttributes.1}">
            <FailoverDataConnector ref="LDAP-2" />
            <FilterTemplate>
                <![CDATA[
