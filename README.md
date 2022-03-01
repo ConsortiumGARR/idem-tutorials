@@ -45,7 +45,6 @@ These GitHub Repository contains step-by-step tutorials on Identity and Service 
 #### Shibboleth
 
 * [HOWTO Configure a Shibboleth IdP v4.x to authenticate users existing on different LDAP Servers](./idem-fedops/HOWTO-Shibboleth/Solutions/HOWTO%20Configure%20a%20Shibboleth%20IdP%20v4.x%20to%20authenticate%20users%20existing%20on%20different%20LDAP%20Servers.md)
-* [HOWTO Configure a Shibboleth IdP v3.2.1 to authenticate users existing on different LDAP Servers](./idem-fedops/HOWTO-Shibboleth/Solutions/HOWTO%20Configure%20a%20Shibboleth%20IdP%20v3.2.1%20to%20authenticate%20Users%20existing%20on%20different%20LDAP%20Servers.md)
 * [HOWTO Release only one value of a specific attribute to a specific resource](./idem-fedops/HOWTO-Shibboleth/Solutions/HOWTO%20Release%20only%20one%20value%20of%20a%20specific%20attribute%20to%20a%20specific%20resource.md)
 * [HOWTO Install and Configure a Shibboleth Embedded Discovery Service on Ubuntu Linux](./idem-fedops/HOWTO-Shibboleth/Embedded%20Discovery%20Service/Ubuntu/HOWTO%20Install%20and%20Configure%20a%20Shibboleth%20Embedded%20Discovery%20Service.md)
 * [HOWTO Define dynamically attributes for Shibboleth IdP v3](./idem-fedops/HOWTO-Shibboleth/Solutions/HOWTO%20Define%20dynamically%20attributes%20for%20Shibboleth%20IdP%20v3.md)
@@ -69,6 +68,7 @@ These GitHub Repository contains step-by-step tutorials on Identity and Service 
 8. [HOWTO Install and Configure a Shibboleth IdP v3.4.x on CentOS 7 with Apache2 + Jetty9 (End of Life Dec 2020)](./idem-fedops/HOWTO-Shibboleth/Identity%20Provider/CentOS/HOWTO%20Install%20and%20Configure%20a%20Shibboleth%20IdP%20v3.4.x%20on%20CentOS%207%20with%20Apache2%20+%20Jetty9.md)
 9. [HOWTO Install and Configure a Shibboleth IdP v3.2.1 on Linux Fedora 24 Server Edition with Apache2 + Jetty9](./idem-fedops/HOWTO-Shibboleth/Identity%20Provider/Fedora/HOWTO%20Install%20and%20Configure%20a%20Shibboleth%20IdP%20v3.2.1%20on%20Linux%20Fedora%2024%20Server%20Edition%20with%20Apache2%20%2B%20Jetty9.md)
 10. [HOWTO Install and Configure a Shibboleth IdP v3.2.1 on Linux Fedora 24 Server Edition with Apache2 + Tomcat8](./idem-fedops/HOWTO-Shibboleth/Identity%20Provider/Fedora/HOWTO%20Install%20and%20Configure%20a%20Shibboleth%20IdP%20v3.2.1%20on%20Linux%20Fedora%2024%20Server%20Edition%20with%20Apache2%20%2B%20Tomcat8.md)
+11. [HOWTO Configure a Shibboleth IdP v3.2.1 to authenticate users existing on different LDAP Servers](./idem-fedops/HOWTO-Shibboleth/Solutions/HOWTO%20Configure%20a%20Shibboleth%20IdP%20v3.2.1%20to%20authenticate%20Users%20existing%20on%20different%20LDAP%20Servers.md)
 
 ## IDEM Community Users HOWTOs
 
