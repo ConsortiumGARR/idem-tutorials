@@ -1,4 +1,4 @@
-# HOWTO Configure IdP v4.x for Office 365
+# HOWTO Configure Shibboleth IdP v4.x for Office 365
 
 1. Into `conf/relying-party.xml`, under `<util:list id="shibboleth.RelyingPartyOverrides">`, add the following `<bean>`:
    ```xml
