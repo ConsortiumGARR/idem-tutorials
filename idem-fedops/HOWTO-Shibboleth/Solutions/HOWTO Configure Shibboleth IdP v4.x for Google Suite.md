@@ -1,4 +1,4 @@
-# HOWTO Configure IdP v4.x for Google Suite
+# HOWTO Configure Shibboleth IdP v4.x for Google Suite
 
 1. Into `conf/relying-party.xml`, under `<util:list id="shibboleth.RelyingPartyOverrides">`, add the following `<bean>`:
    ```xml
