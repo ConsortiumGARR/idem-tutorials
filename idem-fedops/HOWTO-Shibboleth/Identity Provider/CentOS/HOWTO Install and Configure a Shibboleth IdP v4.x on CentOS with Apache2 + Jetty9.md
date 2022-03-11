@@ -43,7 +43,8 @@
 9. [Appendix D: Connect an SP with the IdP](#appendix-d-connect-an-sp-with-the-idp)
 10. [Utilities](#utilities)
 11. [Useful Documentation](#useful-documentation)
-12. [Authors](#authors)
+12. [Utility](#utility)
+13. [Authors](#authors)
     * [Original Author](#original-author)
 
 ## Requirements
@@ -1443,6 +1444,10 @@ Follow these steps **IF** your organization **IS NOT** connected to the [GARR Ne
 * https://shibboleth.atlassian.net/wiki/spaces/IDP4/pages/1265631851/WebInterfaces
 * https://shibboleth.atlassian.net/wiki/spaces/IDP4/pages/1280180737/Cross-Site+Request+Forgery+CSRF+Protection
 
+### Utility
+
+* [The Mozilla Observatory](https://observatory.mozilla.org/):
+  The Mozilla Observatory has helped over 240,000 websites by teaching developers, system administrators, and security professionals how to configure their sites safely and securely.
 
 ### Authors
 
