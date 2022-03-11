@@ -24,7 +24,8 @@
 5. [Appendix A - How to release attributes to specific SP only](#appendix-a---how-to-release-attributes-to-specific-sp-only)
 6. [Appendix B - How to manage sessions with Memcache](#appendix-b---how-to-manage-sessions-with-memcached)
 7. [Appendix C - How to collect useful-statistics](#appendix-c---how-to-collect-useful-statistics)
-5. [Authors](#authors)
+8. [Utility](#utility)
+9. [Authors](#authors)
 
 
 ## Requirements Hardware
@@ -748,6 +749,11 @@ The software installation provided by this guide is intended to run by ROOT user
 ### Appendix C - How to collect useful statistics
 
 Follow https://simplesamlphp.org/docs/stable/statistics:statistics
+
+### Utility
+
+* [The Mozilla Observatory](https://observatory.mozilla.org/):
+  The Mozilla Observatory has helped over 240,000 websites by teaching developers, system administrators, and security professionals how to configure their sites safely and securely.
 
 ### Authors
 
