@@ -24,7 +24,8 @@
 7. [Appendix A - SE Linux](#appendix-a---se-linux)
 8. [Appendix B - Enable Attribute Checker Support on Shibboleth SP](#appendix-b---enable-attribute-checker-support-on-shibboleth-sp)
 9. [Appendix C - Connect SP directly to an IdP](#appendix-c---connect-sp-directly-to-an-idp)
-10. [Authors](#authors)
+10. [Utility](#utility)
+11. [Authors](#authors)
 
 
 ## Requirements
@@ -463,6 +464,11 @@ Thanks eduGAIN for the original "HOWTO" posted [here](https://wiki.geant.org/dis
     * `sudo systemctl restart httpd`
 
  3. Jump to [Test](#test)
+
+### Utility
+
+* [The Mozilla Observatory](https://observatory.mozilla.org/):
+  The Mozilla Observatory has helped over 240,000 websites by teaching developers, system administrators, and security professionals how to configure their sites safely and securely.
 
 ## Authors
 
