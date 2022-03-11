@@ -15,7 +15,8 @@
    1. [Configure SSL on Apache2](#configure-ssl-on-apache2)
    2. [Configure SimpleSAMLphp SP](#configure-simplesamlphp-sp)
    3. [Configure an example federated resouce "secure"](#configure-an-example-federated-resouce-secure)
-6. [Authors](#authors)
+6. [Utility](#utility)
+7. [Authors](#authors)
 
 
 ## Requirements Hardware
@@ -625,6 +626,11 @@
         </body>
      </html>
      ```
+
+### Utility
+
+* [The Mozilla Observatory](https://observatory.mozilla.org/):
+  The Mozilla Observatory has helped over 240,000 websites by teaching developers, system administrators, and security professionals how to configure their sites safely and securely.
 
 ### Authors
 
