@@ -22,8 +22,9 @@
 7. [Enable Attribute Checker Support on Shibboleth SP](#enable-attribute-checker-support-on-shibboleth-sp)
 8. [Increase startup timeout](#increase-startup-timeout)
 9. [OPTIONAL - Maintain 'shibd' working](#optional---maintain-shibd-working)
-10. [Authors](#authors)
-11. [Thanks](#thanks)
+10. [Utility](#utility)
+11. [Authors](#authors)
+12. [Thanks](#thanks)
 
 
 ## Requirements Hardware
@@ -495,6 +496,11 @@ sudo systemctl restart shibd.service
 
 3. Reload daemon:
    * `systemctl daemon-reload`
+
+### Utility
+
+* [The Mozilla Observatory](https://observatory.mozilla.org/):
+  The Mozilla Observatory has helped over 240,000 websites by teaching developers, system administrators, and security professionals how to configure their sites safely and securely.
 
 ### Authors
 
