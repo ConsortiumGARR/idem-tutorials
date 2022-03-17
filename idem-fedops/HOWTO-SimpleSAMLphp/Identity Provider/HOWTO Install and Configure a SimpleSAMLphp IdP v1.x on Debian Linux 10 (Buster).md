@@ -683,7 +683,7 @@ The software installation provided by this guide is intended to run by ROOT user
 
 #### Download IdP Metadata
 
-   * `https://ssp-idp.example.org/simplesaml/saml2/idp/metadata.php/default-sp`
+   * `https://ssp-idp.example.org/simplesaml/saml2/idp/metadata.php`
 
    (change `ssp-idp.example.org` to you IDP full qualified domain name)
 
