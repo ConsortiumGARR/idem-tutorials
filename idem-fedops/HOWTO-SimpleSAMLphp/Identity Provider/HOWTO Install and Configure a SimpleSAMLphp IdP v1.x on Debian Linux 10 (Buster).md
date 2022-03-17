@@ -71,10 +71,10 @@ The software installation provided by this guide is intended to run by ROOT user
 4. Be sure that your firewall **doesn't block** traffic on port **443** (or you can't access to your IdP)
 
 5. Import SSL credentials:
-   * Import SSL Certificate into: "```/etc/ssl/certs/ssp-idp.example.org.crt```"
-   * Import SSL Key into: "```/etc/ssl/private/ssp-idp.example.org.key```"
-   * Import SSL CA: "```/usr/local/share/ca-certificates/ssl-ca.crt```"
-   * Run the command: "```update-ca-certificates```"
+   * Import SSL Certificate into: `/etc/ssl/certs/ssp-idp.example.org.crt`
+   * Import SSL Key into: `/etc/ssl/private/ssp-idp.example.org.key`
+   * Import SSL CA: `/usr/local/share/ca-certificates/ssl-ca.crt`
+   * Run the command: `update-ca-certificates`
    
 ### Install SimpleSAMLphp
 
@@ -83,7 +83,7 @@ The software installation provided by this guide is intended to run by ROOT user
 
 1. Prepare the environment:
    * ```bash
-     apt install apache2 ntp php php-curl php-dom php-mbstring php-dev libmcrypt-dev php-pear curl cron build-essential --no-install-recommends --no-install-recommends
+     apt install apache2 ntp php php-curl php-dom php-mbstring php-dev libmcrypt-dev php-pear curl cron build-essential --no-install-recommends
      ```
    * `pecl channel-update pecl.php.net`
      
@@ -95,10 +95,10 @@ The software installation provided by this guide is intended to run by ROOT user
 2. Install SimpleSAMLphp:
    * `cd /var/`
    * ```bash
-     wget https://github.com/simplesamlphp/simplesamlphp/releases/download/v1.19.3/simplesamlphp-1.19.3.tar.gz
+     wget https://github.com/simplesamlphp/simplesamlphp/releases/download/v1.19.5/simplesamlphp-1.19.5.tar.gz
      ```
-   * `tar xzf simplesamlphp-1.19.3.tar.gz`
-   * `mv simplesamlphp-1.19.3 simplesamlphp`
+   * `tar xzf simplesamlphp-1.19.5.tar.gz`
+   * `mv simplesamlphp-1.19.5 simplesamlphp`
 
 ## Configuration
 
@@ -219,10 +219,10 @@ The software installation provided by this guide is intended to run by ROOT user
    * `chown www-data /var/simplesamlphp/log`
 
 2. Generate some useful opaque strings:
-   * User Admin Password (```auth.adminpassword```):
+   * User Admin Password (`auth.adminpassword`):
      * `php /var/simplesamlphp/bin/pwgen.php`
         
-   * Secret Salt (```secretsalt```):
+   * Secret Salt (`secretsalt`):
      * `tr -c -d '0123456789abcdefghijklmnopqrstuvwxyz' </dev/urandom | dd bs=32 count=1 2>/dev/null ; echo`
 
 3. Change SimpleSAMLphp configuration:
@@ -257,7 +257,7 @@ The software installation provided by this guide is intended to run by ROOT user
      local5.=notice                  /var/log/simplesamlphp.stat
      ```
      
-   * `sydo systemctl restart rsyslog.service`
+   * `sudo systemctl restart rsyslog.service`
 
 4. Check Login on the SSP appliance and retrieve the IdP "Entity ID" from "Fedearation" tab:
    * `https://ssp-idp.example.org/`
@@ -404,6 +404,7 @@ The software installation provided by this guide is intended to run by ROOT user
            // If language is set in Consent module it will be added as an attribute
            99 => 'core:LanguageAdaptor',
            
+           // Convert LDAP names to oids
            100 => ['class' => 'core:AttributeMap', 'name2oid'],
         ],
      ];
@@ -682,9 +683,9 @@ The software installation provided by this guide is intended to run by ROOT user
 
 #### Download IdP Metadata
 
-   * `https://ssp-idp.example.org/simplesaml/saml2/idp/metadata.php`
+   * `https://ssp-idp.example.org/simplesaml/saml2/idp/metadata.php/default-sp`
 
-   (change ```ssp-idp.example.org``` to you IDP full qualified domain name)
+   (change `ssp-idp.example.org` to you IDP full qualified domain name)
 
 #### Register IdP on IDEM Entity Registry
 
