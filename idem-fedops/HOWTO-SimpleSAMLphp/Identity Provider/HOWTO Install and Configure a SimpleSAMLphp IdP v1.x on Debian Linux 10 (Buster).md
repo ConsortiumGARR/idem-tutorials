@@ -398,6 +398,9 @@ The software installation provided by this guide is intended to run by ROOT user
            // that releases all attributes requested by an SP through the <md:RequestedAttribute> into its metadata.
            // The "core:AttributeLimit authproc can be moved here instead of keep it on config/config.php file.
 
+           // Convert oid to LDAP names to be able to see human readable value on Consent page
+           89 => ['class' => 'core:AttributeMap','oid2name'],
+
            // Consent module is enabled(with no permanent storage, using cookies)
            90 => [
                   'class' => 'consent:Consent',
