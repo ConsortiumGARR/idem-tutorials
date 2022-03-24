@@ -83,14 +83,8 @@ The software installation provided by this guide is intended to run by ROOT user
 
 1. Prepare the environment:
    * ```bash
-     apt install apache2 ntp php php-curl php-dom php-mbstring php-dev libmcrypt-dev php-pear curl cron build-essential --no-install-recommends
+     apt install apache2 ntp php php-curl php-dom php-mbstring libmcrypt-dev curl cron build-essential --no-install-recommends
      ```
-   * `pecl channel-update pecl.php.net`
-     
-   * `pecl install channel://pecl.php.net/mcrypt-1.0.2`
-
-   * `php -m | grep mcrypt` (must return "`mcrypt`")
-
 
 2. Install SimpleSAMLphp:
    * `cd /var/`
@@ -275,14 +269,13 @@ The software installation provided by this guide is intended to run by ROOT user
      
    * `systemctl restart postfix.service`
 
-6. Enable `mcrypt` module and set PHP `memory_limit` to '1024M' or more to allow the download of huge metadata files (like eduGAIN):
+6. Set PHP `memory_limit` to '1024M' or more to allow the download of huge metadata files (like eduGAIN):
 
    * `vim /etc/php/7.3/mods-available/ssp.ini`
 
      ```bash
      ; configuration for SSP
      ; priority=20
-     extension=mcrypt.so
      memory_limit = 1024M
      ```
 
@@ -359,6 +352,12 @@ The software installation provided by this guide is intended to run by ROOT user
         ],
 
         'authproc' => [
+           // Generate the persistent NameID
+           2 => [
+                 'class' => 'saml:PersistentNameID',
+                 'attribute' => 'uid',  // the source attribute needed by the NameID generation
+           ],
+        
            // Add schacHomeOrganization for domain of entity
            10 => [
                   'class' => 'core:AttributeAdd',
@@ -382,29 +381,35 @@ The software installation provided by this guide is intended to run by ROOT user
                   'targetAttribute' => 'eduPersonScopedAffiliation',
                  ],
 
+           // Enable this authproc filter to automatically generated eduPersonTargetedID/persistent nameID
+           20 => [
+                  'class' => 'saml:PersistentNameID2TargetedID',
+                  'attribute' => 'eduPersonTargetedID',
+                  'nameId' => true,
+                 ],
+
            // Adopts language from attribute to use in UI
            30 => 'core:LanguageAdaptor',
 
-           // Consent module is enabled(with no permanent storage, using cookies)
+           // Convert LDAP names to oids needed to Attribute Filtering with core:AttributeLimit authproc module
+           49 => ['class' => 'core:AttributeMap','name2oid'],
 
-           97 => [
+           // On "config/config.php" the default 'authproc.idp' behaviour defines a basic Attribute Filtering
+           // that releases all attributes requested by an SP through the <md:RequestedAttribute> into its metadata.
+           // The "core:AttributeLimit authproc can be moved here instead of keep it on config/config.php file.
+
+           // Consent module is enabled(with no permanent storage, using cookies)
+           90 => [
                   'class' => 'consent:Consent',
                   'store' => 'consent:Cookie',
                   'focus' => 'yes',
-                  'checked' => FALSE
-                 ],
-
-           // Enable this authproc filter to automatically generated eduPersonTargetedID
-           98 => [
-                  'class' => 'core:TargetedID',
-                  'attributename' => 'uid',
-                  'nameId' => TRUE,
+                  'checked' => false
                  ],
     
            // If language is set in Consent module it will be added as an attribute
            99 => 'core:LanguageAdaptor',
            
-           // Convert LDAP names to oids
+           // Convert LDAP names to oids needed to send attributes to the SP
            100 => ['class' => 'core:AttributeMap', 'name2oid'],
         ],
      ];
