@@ -265,47 +265,52 @@ Please, remember to **replace all occurence** of `example.org` domain name, or p
 
 Enable attribute support by removing comment from the related content into `/etc/shibboleth/attribute-map.xml`.
 
-
-
 ### Connect SP to the Federation
 
 > Follow these steps **IF AND ONLY IF** your organization will join as a Partner or a Member into [IDEM Federation](https://idem.garr.it/en/federazione-idem-en/idem-federation)
 
-1. Retrieve the IDEM GARR Federation Certificate needed to verify the signed metadata:
-   * `cd /etc/shibboleth/`
-   * `curl https://md.idem.garr.it/certs/idem-signer-20241118.pem -o federation-cert.pem`
-   * Check the validity:
-     *  `cd /etc/shibboleth`
-     *  `openssl x509 -in federation-cert.pem -fingerprint -sha1 -noout`
-       
-         (sha1: D1:68:6C:32:A4:E3:D4:FE:47:17:58:E7:15:FC:77:A8:44:D8:40:4D)
-     *  `openssl x509 -in federation-cert.pem -fingerprint -md5 -noout`
-
-         (md5: 48:3B:EE:27:0C:88:5D:A3:E7:0B:7C:74:9D:24:24:E0)
-
-2. Edit `shibboleth2.xml` opportunely:
-   * `vim /etc/shibboleth/shibboleth2.xml`
-
-     ```bash
-
-     <!-- If it is needed to manage the authentication on several IdPs
-          install and configure the Shibboleth Embedded Discovery Service
-          by following this HOWTO: https://url.garrlab.it/nakt7s 
-     -->
-     <SSO discoveryProtocol="SAMLDS" discoveryURL="https://wayf.idem-test.garr.it/WAYF">
-        SAML2
-     </SSO>
-
-     <MetadataProvider type="XML" url="http://md.idem.garr.it/metadata/idem-test-metadata-sha256.xml"
-                       backingFilePath="idem-test-metadata-sha256.xml" maxRefreshDelay="7200">
-           <MetadataFilter type="Signature" certificate="federation-cert.pem"/>
-           <MetadataFilter type="RequireValidUntil" maxValidityInterval="864000" />
-     </MetadataProvider>
-     ```
-
-3. Register you SP on IDEM Entity Registry:
+1. Register you SP on IDEM Entity Registry:
    (your entity has to be approved by an IDEM Federation Operator before become part of IDEM Test Federation):
-   * Go to `https://registry.idem.garr.it` and follow "Insert a New Service Provider into the IDEM Test Federation"
+   * Go to `https://registry.idem.garr.it`, follow "Insert a New Service Provider into the IDEM Test Federation" and insert your SP metadata
+
+2. Configure the SP to retrieve the Federation Metadata:
+
+   1. **IDEM MDX (recommended): https://mdx.idem.garr.it/**
+
+   2. IDEM MDS (legacy):
+      1. Retrieve the IDEM GARR Federation Certificate needed to verify the signed metadata:
+         * `cd /etc/shibboleth/`
+         * `curl https://md.idem.garr.it/certs/idem-signer-20241118.pem -o federation-cert.pem`
+         * Check the validity:
+           *  `cd /etc/shibboleth`
+           *  `openssl x509 -in federation-cert.pem -fingerprint -sha1 -noout`
+
+               (sha1: D1:68:6C:32:A4:E3:D4:FE:47:17:58:E7:15:FC:77:A8:44:D8:40:4D)
+           *  `openssl x509 -in federation-cert.pem -fingerprint -md5 -noout`
+
+               (md5: 48:3B:EE:27:0C:88:5D:A3:E7:0B:7C:74:9D:24:24:E0)
+
+      2. Edit `shibboleth2.xml` opportunely:
+         * `vim /etc/shibboleth/shibboleth2.xml`
+
+           ```bash
+
+           <!-- If it is needed to manage the authentication on several IdPs
+                install and configure the Shibboleth Embedded Discovery Service
+                by following this HOWTO: https://url.garrlab.it/nakt7 
+           -->
+           <SSO discoveryProtocol="SAMLDS" discoveryURL="https://wayf.idem-test.garr.it/WAYF">
+              SAML2
+           </SSO>
+
+           <MetadataProvider type="XML" url="http://md.idem.garr.it/metadata/idem-test-metadata-sha256.xml"
+                             backingFilePath="idem-test-metadata-sha256.xml" maxRefreshDelay="7200">
+                 <MetadataFilter type="Signature" certificate="federation-cert.pem"/>
+                 <MetadataFilter type="RequireValidUntil" maxValidityInterval="864000" />
+           </MetadataProvider>
+           ```
+
+3. Jump to [Test](#test)
 
 ## Test
 
@@ -433,7 +438,7 @@ The SE Linux is disabled if you will find `Current mode: permissive` from the co
 
 Thanks eduGAIN for the original "HOWTO" posted [here](https://wiki.geant.org/display/eduGAIN/How+to+configure+Shibboleth+SP+attribute+checker).
 
-### Appendix C - Connect SP directly to an IdP
+## Appendix C - Connect SP directly to an IdP
 
 > Follow these steps **IF** you need to connect one SP with only one IdP. It is useful for test purposes.
 
@@ -465,7 +470,7 @@ Thanks eduGAIN for the original "HOWTO" posted [here](https://wiki.geant.org/dis
 
  3. Jump to [Test](#test)
 
-### Utility
+## Utility
 
 * [The Mozilla Observatory](https://observatory.mozilla.org/):
   The Mozilla Observatory has helped over 240,000 websites by teaching developers, system administrators, and security professionals how to configure their sites safely and securely.
