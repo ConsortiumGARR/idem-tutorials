@@ -60,7 +60,7 @@
 ### Configure the environment
 
 1. Modify your `/etc/hosts`:
-   * `vim /etc/hosts```
+   * `vim /etc/hosts`
   
      ```bash
      127.0.1.1 sp.example.org sp
@@ -194,9 +194,9 @@
 
 3. Enable the simplesaml Apache2 configuration:
 
-   * ```a2enconf simplesaml.conf`
+   * `a2enconf simplesaml.conf`
 
-   * `systemctl reload apache2.service```
+   * `systemctl reload apache2.service`
 
 4. Change the permission for SimpleSAMLphp logs:
 
@@ -240,220 +240,220 @@
 
 7. Configure automatic download of Federation Metadata:
 
-   * Enable CRON module:
-
-     ```bash
-     cd /opt/simplesamlphp/
-
-     touch modules/cron/enable
-
-     cp modules/cron/config-templates/module_cron.php config/
-     ```
-
-   * Enable METAREFRESH module:
+   1. **IDEM MDX (recommended): https://mdx.idem.garr.it/**
    
-     ```bash
-     cd /opt/simplesamlphp/
+   2. IDEM MDS (legacy): 
 
-     touch modules/metarefresh/enable
+      * Enable CRON module:
 
-     cp modules/metarefresh/config-templates/config-metarefresh.php config/
-     ```
+        ```bash
+        cd /opt/simplesamlphp/
 
-     Test if it works:
+        touch modules/cron/enable
 
-     ```bash
-     cd /opt/simplesamlphp/modules/metarefresh/bin
+        cp modules/cron/config-templates/module_cron.php config/
+        ```
 
-     ./metarefresh.php -s http://md.idem.garr.it/metadata/idem-test-metadata-sha256.xml > metarefresh-test.txt
-     ```
+      * Enable METAREFRESH module:
 
-   * Change the CRON configuration file:
+        ```bash
+        cd /opt/simplesamlphp/
 
-     `vim /opt/simplesamlphp/config/module_cron.php`
+        touch modules/metarefresh/enable
 
-     ```php
-     <?php
-     /*
-      * Configuration for the Cron module.
-      */
+        cp modules/metarefresh/config-templates/config-metarefresh.php config/
+        ```
 
-     $config = array (
+        Test if it works:
 
-             'key' => '#_YOUR_CRON_KEY_#',
-             'allowed_tags' => array('daily', 'hourly', 'frequent'),
-             'debug_message' => TRUE,
-             'sendemail' => TRUE,
+        ```bash
+        cd /opt/simplesamlphp/modules/metarefresh/bin
 
-     );
-     ?>
-     ```
+        ./metarefresh.php -s http://md.idem.garr.it/metadata/idem-test-metadata-sha256.xml > metarefresh-test.txt
+        ```
 
-   * Insert the following Cron job to the crontab file (`crontab -e`):
-   
-     ```bash
-     # Run cron: [hourly]
-     01 * * * *  root  curl --silent "https://sp.example.org/simplesaml/module.php/cron/cron.php?key=<SECRET>&tag=hourly" > /dev/null 2>&1
-     ```
+      * Change the CRON configuration file:
 
-   * Configure METAREFRESH:
+        `vim /opt/simplesamlphp/config/module_cron.php`
 
-     `vim /opt/simplesamlphp/config/config-metarefresh.php`
-
-     ```bash
-     <?php
-
-     $config = array(
-
+        ```php
+        <?php
         /*
-         * Global blacklist: entityIDs that should be excluded from ALL sets.
-        */
-        #'blacklist' = array(
-        #       'http://my.own.uni/idp'
-        #),
-
-        /*
-         * Conditional GET requests
-         * Efficient downloading so polling can be done more frequently.
-         * Works for sources that send 'Last-Modified' or 'Etag' headers.
-         * Note that the 'data' directory needs to be writable for this to work.
+         * Configuration for the Cron module.
          */
-        #'conditionalGET'       => TRUE,
 
-        'sets' => array(
+        $config = array (
+                'key' => '#_YOUR_CRON_KEY_#',
+                'allowed_tags' => array('daily', 'hourly', 'frequent'),
+                'debug_message' => TRUE,
+                'sendemail' => TRUE,
+        );
+        ?>
+        ```
 
-           'idem' => array(
-              'cron'    => array('hourly'),
-              'sources' => array(
-                              array(
-                                 /*
-                                  * entityIDs that should be excluded from this src.
-                                  */
-                                 #'blacklist' => array(
-                                 #       'http://some.other.uni/idp',
-                                 #),
+      * Insert the following Cron job to the crontab file (`crontab -e`):
 
-                                 /*
-                                  * Whitelist: only keep these EntityIDs.
-                                  */
-                                 #'whitelist' => array(
-                                 #       'http://some.uni/idp',
-                                 #       'http://some.other.uni/idp',
-                                 #),
+        ```bash
+        # Run cron: [hourly]
+        01 * * * *  root  curl --silent "https://sp.example.org/simplesaml/module.php/cron/cron.php?key=<SECRET>&tag=hourly" > /dev/null 2>&1
+        ```
 
-                                 #'conditionalGET' => TRUE,
-                                 'src' => 'http://md.idem.garr.it/metadata/idem-test-metadata-sha256.xml',
-                                 'certificates' => array(
-                                    '/opt/simplesamlphp/cert/federation-cert.pem',
-                                 ),
-                                 'template' => array(
-                                    'tags'  => array('idem'),
-                                    'authproc' => array(
-                                       51 => array('class' => 'core:AttributeMap', 'oid2name'),
+      * Configure METAREFRESH:
+
+        `vim /opt/simplesamlphp/config/config-metarefresh.php`
+
+        ```bash
+        <?php
+
+        $config = array(
+
+           /*
+            * Global blacklist: entityIDs that should be excluded from ALL sets.
+           */
+           #'blacklist' = array(
+           #       'http://my.own.uni/idp'
+           #),
+
+           /*
+            * Conditional GET requests
+            * Efficient downloading so polling can be done more frequently.
+            * Works for sources that send 'Last-Modified' or 'Etag' headers.
+            * Note that the 'data' directory needs to be writable for this to work.
+            */
+           #'conditionalGET'       => TRUE,
+
+           'sets' => array(
+
+              'idem' => array(
+                 'cron'    => array('hourly'),
+                 'sources' => array(
+                                 array(
+                                    /*
+                                     * entityIDs that should be excluded from this src.
+                                     */
+                                    #'blacklist' => array(
+                                    #       'http://some.other.uni/idp',
+                                    #),
+
+                                    /*
+                                     * Whitelist: only keep these EntityIDs.
+                                     */
+                                    #'whitelist' => array(
+                                    #       'http://some.uni/idp',
+                                    #       'http://some.other.uni/idp',
+                                    #),
+
+                                    #'conditionalGET' => TRUE,
+                                    'src' => 'http://md.idem.garr.it/metadata/idem-test-metadata-sha256.xml',
+                                    'certificates' => array(
+                                       '/opt/simplesamlphp/cert/federation-cert.pem',
                                     ),
+                                    'template' => array(
+                                       'tags'  => array('idem'),
+                                       'authproc' => array(
+                                          51 => array('class' => 'core:AttributeMap', 'oid2name'),
+                                       ),
+                                    ),
+
+                                    /*
+                                     * The sets of entities to load, any combination of:
+                                     *  - 'saml20-idp-remote'
+                                     *  - 'saml20-sp-remote'
+                                     *  - 'shib13-idp-remote'
+                                     *  - 'shib13-sp-remote'
+                                     *  - 'attributeauthority-remote'
+                                     *
+                                     * All of them will be used by default.
+                                     *
+                                     * This option takes precedence over the same option per metadata set.
+                                     */
+                                   //'types' => array(),
                                  ),
-
-                                 /*
-                                  * The sets of entities to load, any combination of:
-                                  *  - 'saml20-idp-remote'
-                                  *  - 'saml20-sp-remote'
-                                  *  - 'shib13-idp-remote'
-                                  *  - 'shib13-sp-remote'
-                                  *  - 'attributeauthority-remote'
-                                  *
-                                  * All of them will be used by default.
-                                  *
-                                  * This option takes precedence over the same option per metadata set.
-                                  */
-                                //'types' => array(),
                               ),
-                           ),
-              'expireAfter' => 60*60*24*10, // Maximum 10 days cache time
-              'outputDir'   => 'metadata/idem-federation/',
+                 'expireAfter' => 60*60*24*10, // Maximum 10 days cache time
+                 'outputDir'   => 'metadata/idem-federation/',
 
-              /*
-               * Which output format the metadata should be saved as.
-               * Can be 'flatfile' or 'serialize'. 'flatfile' is the default.
-              */
-              'outputFormat' => 'flatfile',
+                 /*
+                  * Which output format the metadata should be saved as.
+                  * Can be 'flatfile' or 'serialize'. 'flatfile' is the default.
+                 */
+                 'outputFormat' => 'flatfile',
 
 
-              /*
-               * The sets of entities to load, any combination of:
-               *  - 'saml20-idp-remote'
-               *  - 'saml20-sp-remote'
-               *  - 'shib13-idp-remote'
-               *  - 'shib13-sp-remote'
-               *  - 'attributeauthority-remote'
-               *
-               * All of them will be used by default.
-              */
-              //'types' => array(),
+                 /*
+                  * The sets of entities to load, any combination of:
+                  *  - 'saml20-idp-remote'
+                  *  - 'saml20-sp-remote'
+                  *  - 'shib13-idp-remote'
+                  *  - 'shib13-sp-remote'
+                  *  - 'attributeauthority-remote'
+                  *
+                  * All of them will be used by default.
+                 */
+                 //'types' => array(),
+              ),
+           ),
+        );
+        ```
+
+      * `mkdir /opt/simplesamlphp/metadata/idem-federation ; chown www-data /opt/simplesamlphp/metadata/idem-federation`
+
+      * Change the SimpleSAMLphp configuration file:
+
+        `vim /opt/simplesamlphp/config/config.php`
+
+        ```bash
+        ...
+        'metadata.sources' => array(
+           array('type' => 'flatfile'),
+           array(
+              'type' => 'flatfile', 
+              'directory' => 'metadata/idem-federation'
            ),
         ),
-     );
+        ```
 
-     ```
+      * Remove/Rename all PHP files under:
 
-   * `mkdir /opt/simplesamlphp/metadata/idem-federation ; chown www-data /opt/simplesamlphp/metadata/idem-federation`
+        `cd /opt/simplesamlphp/metadata ; rm *.php`
 
-   * Change the SimpleSAMLphp configuration file:
+        ```php
+        adfs-idp-hosted.php
+        adfs-sp-remote.php
+        saml20-idp-hosted.php
+        saml20-idp-remote.php
+        saml20-sp-remote.php
+        shib13-idp-hosted.php
+        shib13-idp-remote.php
+        shib13-sp-hosted.php
+        shib13-sp-remote.php
+        wsfed-idp-remote.php
+        wsfed-sp-hosted.php
+        ```
 
-     `vim /opt/simplesamlphp/config/config.php`
+      * Download the Federation signing certificate:
 
-     ```bash
-     ...
-     'metadata.sources' => array(
-        array('type' => 'flatfile'),
-        array(
-           'type' => 'flatfile', 
-           'directory' => 'metadata/idem-federation'
-        ),
-     ),
-     ```
+        `wget https://md.idem.garr.it/certs/idem-signer-20241118.pem -O /opt/simplesamlphp/cert/federation-cert.pem`
 
-   * Remove/Rename all PHP files under:
-   
-     `cd /opt/simplesamlphp/metadata ; rm *.php`
+      * Check the validity:
+        * `cd /opt/simplesamlphp/cert/`
+        * `openssl x509 -in federation-cert.pem -fingerprint -sha1 -noout`
 
-     ```
-     adfs-idp-hosted.php
-     adfs-sp-remote.php
-     saml20-idp-hosted.php
-     saml20-idp-remote.php
-     saml20-sp-remote.php
-     shib13-idp-hosted.php
-     shib13-idp-remote.php
-     shib13-sp-hosted.php
-     shib13-sp-remote.php
-     wsfed-idp-remote.php
-     wsfed-sp-hosted.php
-     ```
+          (sha1: D1:68:6C:32:A4:E3:D4:FE:47:17:58:E7:15:FC:77:A8:44:D8:40:4D)
+        * `openssl x509 -in federation-cert.pem -fingerprint -md5 -noout`
 
-   * Download the Federation signing certificate:
+          (md5: 48:3B:EE:27:0C:88:5D:A3:E7:0B:7C:74:9D:24:24:E0)
 
-     `wget https://md.idem.garr.it/certs/idem-signer-20241118.pem -O /opt/simplesamlphp/cert/federation-cert.pem`
+      * Go to 'https://sp.example.org/simplesaml/module.php/core/frontpage_federation.php' and forcing download of the Federation metadata by pressing on `Metarefresh: fetch metadata` or wait 1 day
 
-   * Check the validity:
-     * `cd /opt/simplesamlphp/cert/`
-     * `openssl x509 -in federation-cert.pem -fingerprint -sha1 -noout`
-       
-       (sha1: D1:68:6C:32:A4:E3:D4:FE:47:17:58:E7:15:FC:77:A8:44:D8:40:4D)
-     * `openssl x509 -in federation-cert.pem -fingerprint -md5 -noout`
+      * Set PHP 'memory_limit' to '1024M' or more to allow the download of huge metadata files (like eduGAIN):
+        * `vim /etc/php/7.0/apache2/php.ini`
 
-       (md5: 48:3B:EE:27:0C:88:5D:A3:E7:0B:7C:74:9D:24:24:E0)
+          ```bash
+          memory_limit = 1024M
+          ```
 
-   * Go to 'https://sp.example.org/simplesaml/module.php/core/frontpage_federation.php' and forcing download of the Federation metadata by pressing on `Metarefresh: fetch metadata` or wait 1 day
-
-8. Set PHP 'memory_limit' to '1024M' or more to allow the download of huge metadata files (like eduGAIN):
-
-   * `vim /etc/php/7.0/apache2/php.ini`
-
-     ```bash
-     memory_limit = 1024M
-     ```
-
-9. Choose and modify your authsources:
+8. Choose and modify your authsources:
 
    * `vim /opt/simplesamlphp/config/authsources.php`
 
@@ -475,9 +475,8 @@
          // and Shibboleth 1.3 IdPs.
          'default-sp' => array(
              'saml:SP',
-	     
-	     'privatekey' => 'ssp-sp.key',
-	     'certificate' => 'ssp-sp.crt',
+             'privatekey' => 'ssp-sp.key',
+             'certificate' => 'ssp-sp.crt',
 
              // The entity ID of this SP.
              // Can be NULL/unset, in which case an entity ID is generated based on the metadata URL.
@@ -566,7 +565,7 @@
 
      ```
 
-10. OPTIONAL: Enable UTF-8 for SP metadata:
+9. OPTIONAL: Enable UTF-8 for SP metadata:
 
    * `vim /opt/simplesamlphp/vendor/simplesamlphp/saml2/src/SAML2/DOMDocumentFactory.php`
 
@@ -579,19 +578,19 @@
      }
      ```
 
-11. Now you are able to reach your Shibboleth SP Metadata on:
+10. Now you are able to reach your Shibboleth SP Metadata on:
 
    * `https://sp.example.org/simplesaml/module.php/saml/sp/metadata.php/default-sp`
 
-   (change ```sp.example.org``` to you SP full qualified domain name)
+   (change `sp.example.org` to you SP full qualified domain name)
 
-12. Register you SP on IDEM Entity Registry (your entity have to be approved by an IDEM Federation Operator before become part of IDEM Test Federation):
+11. Register you SP on IDEM Entity Registry (your entity have to be approved by an IDEM Federation Operator before become part of IDEM Test Federation):
    * Go to `https://registry.idem.garr.it/` and follow "**Insert a New Service Provider into the IDEM Test Federation**"
 
 
 ### Configure an example federated resouce "secure"
 
-1. Create the "`secure`" application into the DocumentRoot:
+1. Create the `secure` application into the DocumentRoot:
    * `mkdir /var/www/html/secure`
 
    * `vim /var/www/html/secure/index.php`
