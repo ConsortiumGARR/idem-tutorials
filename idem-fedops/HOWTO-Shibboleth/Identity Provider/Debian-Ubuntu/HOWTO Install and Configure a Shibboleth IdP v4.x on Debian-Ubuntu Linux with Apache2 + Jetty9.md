@@ -1445,55 +1445,58 @@ Follow these steps **ONLY IF** your organization is connected to the [GARR Netwo
 
 2. Configure the IdP to retrieve the Federation Metadata:
 
-   * Retrieve the Federation Certificate used to verify signed metadata:
-     *  ```bash
-        wget https://md.idem.garr.it/certs/idem-signer-20241118.pem -O /opt/shibboleth-idp/metadata/federation-cert.pem
+   1. **IDEM MDX (recommended): https://mdx.idem.garr.it/**
+   
+   2. IDEM MDS (legacy):
+      * Retrieve the Federation Certificate used to verify signed metadata:
+        *  ```bash
+           wget https://md.idem.garr.it/certs/idem-signer-20241118.pem -O /opt/shibboleth-idp/metadata/federation-cert.pem
+           ```
+
+      * Check the validity:
+        *  `cd /opt/shibboleth-idp/metadata`
+        *  `openssl x509 -in federation-cert.pem -fingerprint -sha1 -noout`
+       
+           (sha1: D1:68:6C:32:A4:E3:D4:FE:47:17:58:E7:15:FC:77:A8:44:D8:40:4D)
+        *  `openssl x509 -in federation-cert.pem -fingerprint -md5 -noout`
+
+           (md5: 48:3B:EE:27:0C:88:5D:A3:E7:0B:7C:74:9D:24:24:E0)
+
+      * `vim /opt/shibboleth-idp/conf/metadata-providers.xml`
+   
+        and add before the last `</MetadataProvider>` this piece of code:
+
+        ```xml
+        <!-- IDEM Test Federation -->
+        <MetadataProvider
+           id="URLMD-IDEM-Federation"
+           xsi:type="FileBackedHTTPMetadataProvider"
+           backingFile="%{idp.home}/metadata/idem-test-metadata-sha256.xml"
+           metadataURL="http://md.idem.garr.it/metadata/idem-test-metadata-sha256.xml">
+
+           <!--
+               Verify the signature on the root element of the metadata aggregate using a trusted metadata signing certificate.
+           -->
+           <MetadataFilter xsi:type="SignatureValidation" requireSignedRoot="true" certificateFile="${idp.home}/metadata/federation-cert.pem"/>
+
+           <!--
+               Require a validUntil XML attribute on the root element and make sure its value is no more than 10 days into the future.
+           -->
+           <MetadataFilter xsi:type="RequiredValidUntil" maxValidityInterval="P10D"/>
+   
+           <!-- 
+               Consume only SP in the metadata aggregate
+           -->
+           <MetadataFilter xsi:type="EntityRoleWhiteList">
+             <RetainedRole>md:SPSSODescriptor</RetainedRole>
+           </MetadataFilter>
+        </MetadataProvider>
         ```
 
-   * Check the validity:
-     *  `cd /opt/shibboleth-idp/metadata`
-     *  `openssl x509 -in federation-cert.pem -fingerprint -sha1 -noout`
-       
-        (sha1: D1:68:6C:32:A4:E3:D4:FE:47:17:58:E7:15:FC:77:A8:44:D8:40:4D)
-     *  `openssl x509 -in federation-cert.pem -fingerprint -md5 -noout`
-
-        (md5: 48:3B:EE:27:0C:88:5D:A3:E7:0B:7C:74:9D:24:24:E0)
-
-   * `vim /opt/shibboleth-idp/conf/metadata-providers.xml`
-   
-     and add before the last `</MetadataProvider>` this piece of code:
-
-     ```xml
-     <!-- IDEM Test Federation -->
-     <MetadataProvider
-        id="URLMD-IDEM-Federation"
-        xsi:type="FileBackedHTTPMetadataProvider"
-        backingFile="%{idp.home}/metadata/idem-test-metadata-sha256.xml"
-        metadataURL="http://md.idem.garr.it/metadata/idem-test-metadata-sha256.xml">
-
-        <!--
-            Verify the signature on the root element of the metadata aggregate using a trusted metadata signing certificate.
-        -->
-        <MetadataFilter xsi:type="SignatureValidation" requireSignedRoot="true" certificateFile="${idp.home}/metadata/federation-cert.pem"/>   
-
-        <!--
-            Require a validUntil XML attribute on the root element and make sure its value is no more than 10 days into the future.
-        -->
-        <MetadataFilter xsi:type="RequiredValidUntil" maxValidityInterval="P10D"/>
-   
-        <!-- 
-            Consume only SP in the metadata aggregate
-        -->
-        <MetadataFilter xsi:type="EntityRoleWhiteList">
-          <RetainedRole>md:SPSSODescriptor</RetainedRole>
-        </MetadataFilter>
-     </MetadataProvider>
-     ```
-
-3. Reload service with id `shibboleth.MetadataResolverService` to retrieve the Federation Metadata:
-   *  `bash /opt/shibboleth-idp/bin/reload-service.sh -id shibboleth.MetadataResolverService`
+   3. Reload service with id `shibboleth.MetadataResolverService` to retrieve the Federation Metadata:
+      *  `bash /opt/shibboleth-idp/bin/reload-service.sh -id shibboleth.MetadataResolverService`
     
-4. Check that your IdP release at least eduPersonScopedAffiliation, eduPersonTargetedID and a saml2:NameID transient/persistent to the testing SP provided by IDEM:
+3. Check that your IdP release at least eduPersonScopedAffiliation, eduPersonTargetedID and a saml2:NameID transient/persistent to the testing SP provided by IDEM:
    * `bash /opt/shibboleth-idp/bin/aacli.sh -n <USERNAME> -r https://sp.example.org/shibboleth --saml2` 
      
      (the command will have a `transient` NameID into the Subject of the assertion)
@@ -1502,9 +1505,9 @@ Follow these steps **ONLY IF** your organization is connected to the [GARR Netwo
 
      (the command will have a `persistent` NameID into the Subject of the assertion)
 
-5. Wait that your IdP Metadata is approved by an IDEM Federation Operator into the metadata stream and the next steps provided by the operator itself.
+4. Wait that your IdP Metadata is approved by an IDEM Federation Operator into the metadata stream and the next steps provided by the operator itself.
 
-6. Follow the [instructions provided by IDEM](https://wiki.idem.garr.it/wiki/RegistraEntita).
+5. Follow the [instructions provided by IDEM](https://wiki.idem.garr.it/wiki/RegistraEntita).
 
 ### Appendix A: Enable Consent Module: Attribute Release + Terms of Use Consent
 
