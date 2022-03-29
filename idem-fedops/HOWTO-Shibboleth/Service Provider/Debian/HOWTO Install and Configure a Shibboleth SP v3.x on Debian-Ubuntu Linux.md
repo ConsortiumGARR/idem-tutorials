@@ -260,41 +260,48 @@ Enable attribute support by removing comment from the related content into `/etc
 
 > Follow these steps **IF AND ONLY IF** your organization will join as a Partner or a Member into [IDEM Federation](https://idem.garr.it/en/federazione-idem-en/idem-federation)
 
-1. Retrieve the IDEM GARR Federation Certificate needed to verify the signed metadata:
-   * `cd /etc/shibboleth/`
-   * `curl https://md.idem.garr.it/certs/idem-signer-20241118.pem -o federation-cert.pem`
-   * Check the validity:
-     *  `cd /etc/shibboleth`
-     *  `openssl x509 -in federation-cert.pem -fingerprint -sha1 -noout`
-       
-         (sha1: D1:68:6C:32:A4:E3:D4:FE:47:17:58:E7:15:FC:77:A8:44:D8:40:4D)
-     *  `openssl x509 -in federation-cert.pem -fingerprint -md5 -noout`
-
-         (md5: 48:3B:EE:27:0C:88:5D:A3:E7:0B:7C:74:9D:24:24:E0)
-
-2. Edit `shibboleth2.xml` opportunely:
-   * `vim /etc/shibboleth/shibboleth2.xml`
-
-     ```bash
-
-     <!-- If it is needed to manage the authentication on several IdPs
-          install and configure the Shibboleth Embedded Discovery Service
-          by following this HOWTO: https://url.garrlab.it/nakt7 
-     -->
-     <SSO discoveryProtocol="SAMLDS" discoveryURL="https://wayf.idem-test.garr.it/WAYF">
-        SAML2
-     </SSO>
-
-     <MetadataProvider type="XML" url="http://md.idem.garr.it/metadata/idem-test-metadata-sha256.xml"
-                       backingFilePath="idem-test-metadata-sha256.xml" maxRefreshDelay="7200">
-           <MetadataFilter type="Signature" certificate="federation-cert.pem"/>
-           <MetadataFilter type="RequireValidUntil" maxValidityInterval="864000" />
-     </MetadataProvider>
-     ```
-
-3. Register you SP on IDEM Entity Registry:
+1. Register you SP on IDEM Entity Registry:
    (your entity has to be approved by an IDEM Federation Operator before become part of IDEM Test Federation):
-   * Go to `https://registry.idem.garr.it` and follow "Insert a New Service Provider into the IDEM Test Federation"
+   * Go to `https://registry.idem.garr.it`, follow "Insert a New Service Provider into the IDEM Test Federation" and insert your SP metadata
+
+2. Configure the SP to retrieve the Federation Metadata:
+
+   1. **IDEM MDX (recommended): https://mdx.idem.garr.it/**
+
+   2. IDEM MDS (legacy):
+      1. Retrieve the IDEM GARR Federation Certificate needed to verify the signed metadata:
+         * `cd /etc/shibboleth/`
+         * `curl https://md.idem.garr.it/certs/idem-signer-20241118.pem -o federation-cert.pem`
+         * Check the validity:
+           *  `cd /etc/shibboleth`
+           *  `openssl x509 -in federation-cert.pem -fingerprint -sha1 -noout`
+
+               (sha1: D1:68:6C:32:A4:E3:D4:FE:47:17:58:E7:15:FC:77:A8:44:D8:40:4D)
+           *  `openssl x509 -in federation-cert.pem -fingerprint -md5 -noout`
+
+               (md5: 48:3B:EE:27:0C:88:5D:A3:E7:0B:7C:74:9D:24:24:E0)
+
+      2. Edit `shibboleth2.xml` opportunely:
+         * `vim /etc/shibboleth/shibboleth2.xml`
+
+           ```bash
+
+           <!-- If it is needed to manage the authentication on several IdPs
+                install and configure the Shibboleth Embedded Discovery Service
+                by following this HOWTO: https://url.garrlab.it/nakt7 
+           -->
+           <SSO discoveryProtocol="SAMLDS" discoveryURL="https://wayf.idem-test.garr.it/WAYF">
+              SAML2
+           </SSO>
+
+           <MetadataProvider type="XML" url="http://md.idem.garr.it/metadata/idem-test-metadata-sha256.xml"
+                             backingFilePath="idem-test-metadata-sha256.xml" maxRefreshDelay="7200">
+                 <MetadataFilter type="Signature" certificate="federation-cert.pem"/>
+                 <MetadataFilter type="RequireValidUntil" maxValidityInterval="864000" />
+           </MetadataProvider>
+           ```
+
+3. Jump to [Test](#test)
 
 ### Connect SP directly to an IdP
 
@@ -322,11 +329,11 @@ Enable attribute support by removing comment from the related content into `/etc
      
      (`idp-metadata.xml` will be saved into `/var/cache/shibboleth`)
  
- 2. Restart `shibd` and `Apache2` daemon:
-    * `sudo systemctl restart shibd`
-    * `sudo systemctl restart apache2`
+2. Restart `shibd` and `Apache2` daemon:
+   * `sudo systemctl restart shibd`
+   * `sudo systemctl restart apache2`
 
- 3. Jump to [Test](#test)
+3. Jump to [Test](#test)
 
 ## Test
 
@@ -334,7 +341,7 @@ Open the `https://sp.example.org/secure` application into your web browser
 
 (*Replace `sp.example.org` with your SP Full Qualified Domain Name*)
 
-### Enable Attribute Checker Support on Shibboleth SP
+## Enable Attribute Checker Support on Shibboleth SP
 1. Add a sessionHook for attribute checker: `sessionHook="/Shibboleth.sso/AttrChecker"` and the `metadataAttributePrefix="Meta-"` to `ApplicationDefaults`:
    * `vim /etc/shibboleth/shibboleth2.xml`
 
@@ -438,7 +445,7 @@ Open the `https://sp.example.org/secure` application into your web browser
    ./apache2/other_vhosts_access.log:193.206.129.66 - - [20/Sep/2018:15:05:07 +0000] "GET /track.png?idp=https://garr-idp-test.irccs.garr.it/idp/shibboleth&miss=-SHIB_givenName-SHIB_cn-SHIB_sn-SHIB_eppn-SHIB_schacHomeOrganization-SHIB_schacHomeOrganizationType HTTP/1.1" 404 637 "https://sp.example.org/Shibboleth.sso/AttrChecker?return=https%3A%2F%2Fsp.example.org%2FShibboleth.sso%2FSAML2%2FPOST%3Fhook%3D1%26target%3Dss%253Amem%253A43af2031f33c3f4b1d61019471537e5bc3fde8431992247b3b6fd93a14e9802d&target=https%3A%2F%2Fsp.example.org%2Fsecure%2F"
    ```
 
-### Increase startup timeout
+## Increase startup timeout
 
 Shibboleth Documentation: https://wiki.shibboleth.net/confluence/display/SP3/LinuxSystemd
 
@@ -452,7 +459,7 @@ sudo systemctl daemon-reload
 sudo systemctl restart shibd.service
 ```
 
-### OPTIONAL - Maintain '```shibd```' working
+## OPTIONAL - Maintain '```shibd```' working
 
 1. Edit '`shibd`' init script:
    * `vim /etc/init.d/shibd`
@@ -497,17 +504,17 @@ sudo systemctl restart shibd.service
 3. Reload daemon:
    * `systemctl daemon-reload`
 
-### Utility
+## Utility
 
 * [The Mozilla Observatory](https://observatory.mozilla.org/):
   The Mozilla Observatory has helped over 240,000 websites by teaching developers, system administrators, and security professionals how to configure their sites safely and securely.
 
-### Authors
+## Authors
 
-#### Original Author
+### Original Author
 
  * Marco Malavolti (marco.malavolti@garr.it)
  
-### Thanks
+## Thanks
 
  * eduGAIN Wiki: For the original [How to configure Shibboleth SP attribute checker](https://wiki.geant.org/display/eduGAIN/How+to+configure+Shibboleth+SP+attribute+checker)
