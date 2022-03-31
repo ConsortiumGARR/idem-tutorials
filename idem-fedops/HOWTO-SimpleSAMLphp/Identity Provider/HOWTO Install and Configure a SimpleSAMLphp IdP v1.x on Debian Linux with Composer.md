@@ -1,4 +1,4 @@
-# HOWTO Install and Configure a SimpleSAMLphp IdP v1.x on Debian Linux 10 (Buster) 
+# HOWTO Install and Configure a SimpleSAMLphp IdP v1.x on Debian Linux with Composer 
 
 <!--<img width="120px" src="https://wiki.idem.garr.it/IDEM_Approved.png" />-->
 
@@ -56,7 +56,7 @@
 
 ## Installation
 
-The software installation provided by this guide is intended to run by ROOT user so...
+The software installation provided by this guide is intended to run by ROOT user:
    * `sudo su -`
 
 ### Prepare the environment
@@ -331,6 +331,7 @@ To update Composer use: `composer self-update`
         'certificate' => 'ssp-idp.crt',
         
         'scope' => ['<INSERT-HERE-IDP-SCOPE>'],   // Usually the scope is the domain name
+        'userid.attribute' => 'uid' //deprecated, but needed by Consent module. It takes the same value of the persistent NameID source attribute
 
         'UIInfo' => [
            'DisplayName' => [
@@ -391,7 +392,7 @@ To update Composer use: `composer self-update`
            // Generate the persistent NameID
            2 => [
                  'class' => 'saml:PersistentNameID',
-                 'attribute' => 'uid',  // the source attribute needed by the NameID generation
+                 'attribute' => 'uid',  //the source attribute needed by the NameID generation
            ],
         
            // Add schacHomeOrganization for domain of entity
@@ -427,9 +428,17 @@ To update Composer use: `composer self-update`
            // Adopts language from attribute to use in UI
            30 => 'core:LanguageAdaptor',
 
-           // On "config/config.php" the default 'authproc.idp' behaviour defines a basic Attribute Filtering
-           // that releases all attributes requested by an SP through the <md:RequestedAttribute> into its metadata.
-           // The "core:AttributeLimit authproc can be moved here instead of keep it on config/config.php file.
+           // The Attribute Limit will be use to release all possibile values supported by IdP to SPs
+           50 => [
+                 'class' => 'core:AttributeLimit',
+                 'givenName','sn','cn','mail','displayName','mobile','title','preferredLanguage','telephoneNumber','eduPersonAffiliation','eduPersonEntitlement','eduPersonOrgDN','eduPersonOrgUnitDN','eduPersonOrcid','schacMotherTongue','schacPersonalTitle','schacUserPresenceID','schacPersonalUniqueID','schacPersonalPosition','schacHomeOrganization','schacHomeOrganizationType','eduPersonScopedAffiliation','eduPersonAffiliation' => [
+                'student',
+                'staff',
+                'member',
+                'alum',
+                'affiliate',
+                'library-walk-in']
+           ],
 
            // Consent module is enabled(with no permanent storage, using cookies)
            90 => [
@@ -439,7 +448,7 @@ To update Composer use: `composer self-update`
                   'checked' => false
                  ],
     
-           // If language is set in Consent module it will be added as an attribute
+           // If language is set in Consent module it will be added as 'preferredLanguage' attribute
            99 => 'core:LanguageAdaptor',
            
            // Convert LDAP names to oids needed to send attributes to the SP
