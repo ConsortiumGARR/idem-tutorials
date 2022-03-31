@@ -429,15 +429,23 @@ To update Composer use: `composer self-update`
            30 => 'core:LanguageAdaptor',
 
            // The Attribute Limit will be use to release all possibile values supported by IdP to SPs
+           // Remember to comment out the same part with "50" on config/config.php file or no attributes will be released
            50 => [
-                 'class' => 'core:AttributeLimit',
-                 'givenName','sn','cn','mail','displayName','mobile','title','preferredLanguage','telephoneNumber','eduPersonAffiliation','eduPersonEntitlement','eduPersonOrgDN','eduPersonOrgUnitDN','eduPersonOrcid','schacMotherTongue','schacPersonalTitle','schacUserPresenceID','schacPersonalUniqueID','schacPersonalPosition','schacHomeOrganization','schacHomeOrganizationType','eduPersonScopedAffiliation','eduPersonAffiliation' => [
-                'student',
-                'staff',
-                'member',
-                'alum',
-                'affiliate',
-                'library-walk-in']
+                  'class' => 'core:AttributeLimit',
+                  'givenName','sn','cn','mail','displayName','mobile',
+                  'title','preferredLanguage','telephoneNumber','eduPersonAffiliation',
+                  'eduPersonEntitlement','eduPersonOrgDN','eduPersonOrgUnitDN',
+                  'eduPersonOrcid','schacMotherTongue','schacPersonalTitle',
+                  'schacUserPresenceID','schacPersonalUniqueID','schacPersonalPosition',
+                  'schacHomeOrganization','schacHomeOrganizationType','eduPersonScopedAffiliation',
+                  'eduPersonAffiliation' => [
+                                             'student',
+                                             'staff',
+                                             'member',
+                                             'alum',
+                                             'affiliate',
+                                             'library-walk-in'
+                                            ],
            ],
 
            // Consent module is enabled(with no permanent storage, using cookies)
