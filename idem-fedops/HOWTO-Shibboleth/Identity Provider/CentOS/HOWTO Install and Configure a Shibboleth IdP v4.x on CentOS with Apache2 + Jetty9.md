@@ -457,14 +457,18 @@ This Storage service will memorize User Consent data on persistent database SQL.
      ldapsearch -x -h <AD-SERVER-FQDN-OR-IP> -D 'CN=idpuser,CN=Users,DC=ad,DC=example,DC=org' -w '<IDPUSER-PASSWORD>' -b 'CN=Users,DC=ad,DC=example,DC=org' '(sAMAccountName=<USERNAME-USED-IN-THE-LOGIN-FORM>)'
      ```
 
-     `(sAMAccountName=<USERNAME-USED-IN-THE-LOGIN-FORM>)` ==> `(sAMAccountName=$resolutionContext.principal)` searchFilter
-     
+     * the baseDN (`-b` parameter) ==> `CN=Users,DC=ad,DC=example,DC=org` (branch containing the registered users)
+     * the bindDN (`-D` parameter) ==> `CN=idpuser,CN=Users,DC=ad,DC=example,DC=org` (distinguished name for the user that can made queries on the LDAP, read only is sufficient)
+     * the searchFilter `(sAMAccountName=<USERNAME-USED-IN-THE-LOGIN-FORM>)` corresponds to the `(sAMAccountName=$resolutionContext.principal)` searchFilter configured into `conf/ldap.properties`
+
    * For OpenLDAP:
      ```bash
      ldapsearch -x -h <LDAP-SERVER-FQDN-OR-IP> -D 'cn=idpuser,ou=system,dc=example,dc=org' -w '<IDPUSER-PASSWORD>' -b 'ou=people,dc=example,dc=org' '(uid=<USERNAME-USED-IN-THE-LOGIN-FORM>)'
      ```
      
-     `(uid=<USERNAME-USED-IN-THE-LOGIN-FORM>)` ==> `(uid=$resolutionContext.principal)` searchFilter
+     * the baseDN (`-b` parameter) ==> `ou=people,dc=example,dc=org` (branch containing the registered users)
+     * the bindDN (`-D` parameter) ==> `cn=idpuser,ou=system,dc=example,dc=org` (distinguished name for the user that can made queries on the LDAP, read only is sufficient)
+     * the searchFilter `(uid=<USERNAME-USED-IN-THE-LOGIN-FORM>)` corresponds to the `(uid=$resolutionContext.principal)` searchFilter configured into `conf/ldap.properties`
 
 2. Connect the openLDAP to the IdP to allow the authentication of the users:
    
