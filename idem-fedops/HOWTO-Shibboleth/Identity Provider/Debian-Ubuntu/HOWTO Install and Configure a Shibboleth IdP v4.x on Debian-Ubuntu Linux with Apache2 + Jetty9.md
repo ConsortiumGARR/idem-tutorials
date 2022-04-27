@@ -528,16 +528,18 @@ This Storage service will memorize User Consent data on persistent database SQL.
      **UTILITY FOR OPENLDAP ADMINISTRATOR:**
        * `slapcat | grep dn`
          * the baseDN (`-b` parameter) ==> `ou=people,dc=example,dc=org` (branch containing the registered users)
-         * the bindDN (`-D` parameter) ==> `cn=idpuser,ou=system,dc=example,dc=org` (distinguished name for the user that can made queries on the LDAP)
+         * the bindDN (`-D` parameter) ==> `cn=idpuser,ou=system,dc=example,dc=org` (distinguished name for the user that can made queries on the LDAP, read only is sufficient)
     
-       * `(uid=<USERNAME>)` == `(uid=$resolutionContext.principal)` searchFilter into `conf/ldap.properties` file
+       * `(uid=<USERNAME>)` ==> `(uid=$resolutionContext.principal)` searchFilter into `conf/ldap.properties`
 
    * For Active Directory:
      ```bash
      ldapsearch -x -h <AD-SERVER-FQDN-OR-IP> -D 'CN=idpuser,CN=Users,DC=ad,DC=example,DC=org' -w '<IDPUSER-PASSWORD>' -b 'CN=Users,DC=ad,DC=example,DC=org' '(sAMAccountName=<USERNAME>)'
      ```
 
-     `(sAMAccountName=<USERNAME>)` ==> `(sAMAccountName=$resolutionContext.principal)` searchFilter (`conf/ldap.properties`)
+     * the baseDN (`-b` parameter) ==> `CN=Users,DC=ad,DC=example,DC=org` (branch containing the registered users)
+     * the bindDN (`-D` parameter) ==> `CN=idpuser,CN=Users,DC=ad,DC=example,DC=org` (distinguished name for the user that can made queries on the LDAP, read only is sufficient)
+     * `(sAMAccountName=<USERNAME>)` ==> `(sAMAccountName=$resolutionContext.principal)` searchFilter (`conf/ldap.properties`)
      
 4. Connect the openLDAP to the IdP to allow the authentication of the users:
 
