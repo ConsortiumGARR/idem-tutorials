@@ -352,6 +352,11 @@ The software installation provided by this guide is intended to run by ROOT user
         ],
 
         'authproc' => [
+           // Generate the transient NameID.
+           1 => [
+                 'class' => 'saml:TransientNameID',
+           ],
+
            // Generate the persistent NameID
            2 => [
                  'class' => 'saml:PersistentNameID',
