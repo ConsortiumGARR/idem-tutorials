@@ -517,6 +517,9 @@ The software installation provided by this guide is intended to run by ROOT user
            ```php
            /* ...other things... */
            'module.enable' => [
+              'exampleauth' => 'false',
+              'core' => 'true',
+              'saml' => 'true',
               'cron' => true,
               'metarefresh' => true,
               'consent' => true,
@@ -720,6 +723,9 @@ The software installation provided by this guide is intended to run by ROOT user
      ```php
      /* ...other things... */
      'module.enable' => [
+        'exampleauth' => 'false',
+        'core' => 'true',
+        'saml' => 'true',
         'cron' => true,
         'metarefresh' => true,
         'consent' => true,
