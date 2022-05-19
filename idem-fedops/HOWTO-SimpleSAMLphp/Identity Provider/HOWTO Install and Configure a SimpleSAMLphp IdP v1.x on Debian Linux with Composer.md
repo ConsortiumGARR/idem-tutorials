@@ -1,6 +1,6 @@
 # HOWTO Install and Configure a SimpleSAMLphp IdP v1.x on Debian Linux with Composer 
 
-<!--<img width="120px" src="https://wiki.idem.garr.it/IDEM_Approved.png" />-->
+<img width="120px" src="https://wiki.idem.garr.it/IDEM_Approved.png" />
 
 ## Table of Contents
 
@@ -275,6 +275,8 @@ To update Composer use: `composer self-update`
       /* ...other things... */
       'metadatadir' => '/var/simplesamlphp/metadata',
       /* ...other things... */
+      // Comment out all content of "authproc.idp" because we will use the 'authproc' into 'saml20-idp-hosted.php' metadata
+      /* ...other things... */
       'store.type' => 'phpsession',
       ```
       
@@ -389,6 +391,11 @@ To update Composer use: `composer self-update`
         ],
 
         'authproc' => [
+           // Generate the transient NameID.
+           1 => [
+                 'class' => 'saml:TransientNameID',
+           ],
+
            // Generate the persistent NameID
            2 => [
                  'class' => 'saml:PersistentNameID',
@@ -444,7 +451,9 @@ To update Composer use: `composer self-update`
                                              'member',
                                              'alum',
                                              'affiliate',
-                                             'library-walk-in'
+                                             'library-walk-in',
+                                             'faculty', // NO IDEM
+                                             'employee' // NO IDEM
                                             ],
            ],
 
@@ -687,10 +696,10 @@ To update Composer use: `composer self-update`
           * `cd /var/simplesamlphp/cert`
           * `openssl x509 -in federation-cert.pem -fingerprint -sha1 -noout`
 
-            (sha1: D1:68:6C:32:A4:E3:D4:FE:47:17:58:E7:15:FC:77:A8:44:D8:40:4D)
+            (sha1: 0E:21:81:8E:06:02:D1:D9:D1:CF:3D:4C:41:ED:5F:F3:43:70:16:79)
           * `openssl x509 -in federation-cert.pem -fingerprint -md5 -noout`
 
-            (md5: 48:3B:EE:27:0C:88:5D:A3:E7:0B:7C:74:9D:24:24:E0)
+            (md5: 73:B7:29:FA:7C:AE:5C:E7:58:1F:10:0B:FC:EE:DA:A9)
 
       12. Go to `https://ssp-idp.example.org/simplesaml/module.php/core/frontpage_federation.php` and forcing download of the Federation metadata by pressing on `Metarefresh: fetch metadata` or wait 1 day
 
