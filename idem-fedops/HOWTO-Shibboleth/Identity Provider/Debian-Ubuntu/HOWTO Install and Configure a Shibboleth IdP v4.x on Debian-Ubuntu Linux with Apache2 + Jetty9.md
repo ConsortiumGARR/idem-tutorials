@@ -1456,10 +1456,10 @@ Follow these steps **ONLY IF** your organization is connected to the [GARR Netwo
         *  `cd /opt/shibboleth-idp/metadata`
         *  `openssl x509 -in federation-cert.pem -fingerprint -sha1 -noout`
        
-           (sha1: D1:68:6C:32:A4:E3:D4:FE:47:17:58:E7:15:FC:77:A8:44:D8:40:4D)
+           (sha1: 0E:21:81:8E:06:02:D1:D9:D1:CF:3D:4C:41:ED:5F:F3:43:70:16:79)
         *  `openssl x509 -in federation-cert.pem -fingerprint -md5 -noout`
 
-           (md5: 48:3B:EE:27:0C:88:5D:A3:E7:0B:7C:74:9D:24:24:E0)
+           (md5: 73:B7:29:FA:7C:AE:5C:E7:58:1F:10:0B:FC:EE:DA:A9)
 
       * `vim /opt/shibboleth-idp/conf/metadata-providers.xml`
    
