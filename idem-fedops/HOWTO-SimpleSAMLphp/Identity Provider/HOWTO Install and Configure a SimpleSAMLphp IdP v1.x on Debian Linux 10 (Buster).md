@@ -238,6 +238,8 @@ The software installation provided by this guide is intended to run by ROOT user
       'logging.handler' => 'syslog',
       /* ...other things... */
       'enable.saml20-idp' => true,
+      /* ...other things ... */
+      // Comment out all content of "authproc.idp" because we will use the 'authproc' into 'saml20-idp-hosted.php' metadata
       /* ...other things... */
       'store.type' => 'phpsession',
       ```
@@ -269,7 +271,7 @@ The software installation provided by this guide is intended to run by ROOT user
      
    * `systemctl restart postfix.service`
 
-6. Set PHP `memory_limit` to '1024M' or more to allow the download of huge metadata files (like eduGAIN):
+6. Set PHP `memory_limit` to '1024M' or more to allow the download of huge metadata files (like eduGAIN) if MDX IDEM is not used:
 
    * `vim /etc/php/7.3/mods-available/ssp.ini`
 
@@ -396,9 +398,26 @@ The software installation provided by this guide is intended to run by ROOT user
            // Adopts language from attribute to use in UI
            30 => 'core:LanguageAdaptor',
 
-           // On "config/config.php" the default 'authproc.idp' behaviour defines a basic Attribute Filtering
-           // that releases all attributes requested by an SP through the <md:RequestedAttribute> into its metadata.
-           // The "core:AttributeLimit authproc can be moved here instead of keep it on config/config.php file.
+           // The Attribute Limit will be use to release all possibile values supported by IdP
+           50 => [
+                  'class' => 'core:AttributeLimit',
+                  'givenName','sn','cn','mail','displayName','mobile',
+                  'title','preferredLanguage','telephoneNumber','eduPersonAffiliation',
+                  'eduPersonEntitlement','eduPersonOrgDN','eduPersonOrgUnitDN',
+                  'eduPersonOrcid','schacMotherTongue','schacPersonalTitle',
+                  'schacUserPresenceID','schacPersonalUniqueID','schacPersonalPosition',
+                  'schacHomeOrganization','schacHomeOrganizationType','eduPersonScopedAffiliation',
+                  'eduPersonAffiliation' => [
+                     'student',
+                     'staff',
+                     'member',
+                     'alum',
+                     'affiliate',
+                     'library-walk-in',
+                     'faculty', // NO IDEM
+                     'employee', // NO IDEM
+                  ],
+           ],
 
            // Consent module is enabled(with no permanent storage, using cookies)
            90 => [
@@ -645,10 +664,10 @@ The software installation provided by this guide is intended to run by ROOT user
           * `cd /var/simplesamlphp/cert`
           * `openssl x509 -in federation-cert.pem -fingerprint -sha1 -noout`
 
-            (sha1: D1:68:6C:32:A4:E3:D4:FE:47:17:58:E7:15:FC:77:A8:44:D8:40:4D)
+            (sha1: 0E:21:81:8E:06:02:D1:D9:D1:CF:3D:4C:41:ED:5F:F3:43:70:16:79)
           * `openssl x509 -in federation-cert.pem -fingerprint -md5 -noout`
 
-            (md5: 48:3B:EE:27:0C:88:5D:A3:E7:0B:7C:74:9D:24:24:E0)
+            (md5: 73:B7:29:FA:7C:AE:5C:E7:58:1F:10:0B:FC:EE:DA:A9)
 
       13. Go to 'https://ssp-idp.example.org/simplesaml/module.php/core/frontpage_federation.php' and forcing download of the Federation metadata by pressing on `Metarefresh: fetch metadata` or wait 1 day
 
