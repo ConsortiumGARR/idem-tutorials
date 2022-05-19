@@ -439,22 +439,23 @@ To update Composer use: `composer self-update`
            // Remember to comment out the same part with "50" on config/config.php file or no attributes will be released
            50 => [
                   'class' => 'core:AttributeLimit',
-                  'givenName','sn','cn','mail','displayName','mobile',
-                  'title','preferredLanguage','telephoneNumber','eduPersonAffiliation',
-                  'eduPersonEntitlement','eduPersonOrgDN','eduPersonOrgUnitDN',
-                  'eduPersonOrcid','schacMotherTongue','schacPersonalTitle',
-                  'schacUserPresenceID','schacPersonalUniqueID','schacPersonalPosition',
-                  'schacHomeOrganization','schacHomeOrganizationType','eduPersonScopedAffiliation',
-                  'eduPersonAffiliation' => [
-                                             'student',
-                                             'staff',
-                                             'member',
-                                             'alum',
-                                             'affiliate',
-                                             'library-walk-in',
-                                             'faculty', // NO IDEM
-                                             'employee' // NO IDEM
-                                            ],
+                  'uid','givenName','sn','cn','mail','displayName','mobile',
+                  'title','preferredLanguage','telephoneNumber',
+                  'schacMotherTongue','schacPersonalTitle','schacHomeOrganization',
+                  'schacHomeOrganizationType','schacUserPresenceID','schacPersonalPosition',
+                  'schacPersonalUniqueCode','schacPersonalUniqueID',
+                  'eduPersonPrincipalName','eduPersonEntitlement',
+                  'eduPersonTargetedID','eduPersonOrcid','eduPersonOrgDN','eduPersonOrgUnitDN',
+                  'eduPersonScopedAffiliation','eduPersonAffiliation' => [
+                     'student',
+                     'staff',
+                     'member',
+                     'alum',
+                     'affiliate',
+                     'library-walk-in',
+                     'faculty', // NO IDEM
+                     'employee', // NO IDEM
+                  ],
            ],
 
            // Consent module is enabled(with no permanent storage, using cookies)
