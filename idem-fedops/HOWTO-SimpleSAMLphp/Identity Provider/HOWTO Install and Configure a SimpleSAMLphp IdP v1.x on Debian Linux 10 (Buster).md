@@ -297,6 +297,7 @@ The software installation provided by this guide is intended to run by ROOT user
         'certificate' => 'ssp-idp.crt',
         
         'scope' => ['<INSERT-HERE-IDP-SCOPE>'],   // Usually the scope is the domain name
+        'userid.attribute' => 'uid',              // useless: added only to avoid error messages on the log file
 
         'UIInfo' => [
            'DisplayName' => [
@@ -397,6 +398,12 @@ The software installation provided by this guide is intended to run by ROOT user
 
            // Adopts language from attribute to use in UI
            30 => 'core:LanguageAdaptor',
+           
+           45 => [
+                  'class'         => 'core:StatisticsWithAttribute',
+                  'attributename' => 'realm',
+                  'type'          => 'saml20-idp-SSO',
+           ],
 
            // The Attribute Limit will be use to release all possibile values supported by IdP
            // Remember to comment out the same part with "50" on config/config.php file or no attributes will be released
