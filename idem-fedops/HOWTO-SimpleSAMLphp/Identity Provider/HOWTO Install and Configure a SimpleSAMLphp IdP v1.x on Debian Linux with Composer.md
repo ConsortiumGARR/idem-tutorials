@@ -309,7 +309,7 @@ To update Composer use: `composer self-update`
      
    * `systemctl restart postfix.service`
 
-6. Set PHP `memory_limit` to '1024M' or more to allow the download of huge metadata files (like eduGAIN):
+6. **if MDX IDEM is not used**, set PHP `memory_limit` to '1024M' or more to allow the download of huge metadata files (like eduGAIN):
 
    * `vim /etc/php/7.4/mods-available/ssp.ini`
 
