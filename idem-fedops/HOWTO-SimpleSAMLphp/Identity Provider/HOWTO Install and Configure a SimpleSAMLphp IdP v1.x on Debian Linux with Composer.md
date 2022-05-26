@@ -15,18 +15,18 @@
    2. [Configure SimpleSAMLphp](#configure-simplesamlphp)
    3. [Configure the Identity Provider](#configure-the-identity-provider)
       1. [Configure Metadata](#configure-metadata)
-      2. [Configure SAML Metadata Credentials](#configure-saml-metadata-credentials)
-      3. [Configure the authentication source](#configure-the-authentication-source)
-      4. [Configure automatic download of Federation Metadata](#configure-automatic-download-of-federation-metadata)
-      5. [Add translations of the new 'schacHomeOrganizationType' attribute](#add-translations-of-the-new-schachomeorganizationtype-attribute)
-      6. [Enable UTF-8 on IdP metadata (to avoid encoding problems with accents)](#enable-utf-8-on-idp-metadata-to-avoid-encoding-problems-with-accents)
-      7. [Download IdP Metadata](#download-idp-metadata)
-      8. [Register IdP on IDEM Entity Registry](#register-idp-on-idem-entity-registry)
-6. [Appendix A - How to release attributes to specific SP only](#appendix-a---how-to-release-attributes-to-specific-sp-only)
-7. [Appendix B - How to manage sessions with Memcache](#appendix-b---how-to-manage-sessions-with-memcached)
-8. [Appendix C - How to collect useful-statistics](#appendix-c---how-to-collect-useful-statistics)
-9. [Utility](#utility)
-10. [Authors](#authors)
+      2. [Configure Attribute Release Policies](#configure-attribute-release-policies)
+      3. [Configure SAML Metadata Credentials](#configure-saml-metadata-credentials)
+      4. [Configure the authentication source](#configure-the-authentication-source)
+      5. [Configure automatic download of Federation Metadata](#configure-automatic-download-of-federation-metadata)
+      6. [Add translations of the new 'schacHomeOrganizationType' attribute](#add-translations-of-the-new-schachomeorganizationtype-attribute)
+      7. [Enable UTF-8 on IdP metadata (to avoid encoding problems with accents)](#enable-utf-8-on-idp-metadata-to-avoid-encoding-problems-with-accents)
+      8. [Download IdP Metadata](#download-idp-metadata)
+      9. [Register IdP on IDEM Entity Registry](#register-idp-on-idem-entity-registry)
+6. [Appendix A - How to manage sessions with Memcache](#appendix-a---how-to-manage-sessions-with-memcached)
+7. [Appendix B - How to collect useful-statistics](#appendix-b---how-to-collect-useful-statistics)
+8. [Utility](#utility)
+9. [Authors](#authors)
 
 
 ## Requirements Hardware
@@ -274,6 +274,8 @@ To update Composer use: `composer self-update`
       'enable.saml20-idp' => true,
       /* ...other things... */
       'metadatadir' => '/var/simplesamlphp/metadata',
+      /* ...other things ... */
+      'theme.header' = '#_YOUR_ORGANIZATION_NAME_#',
       /* ...other things... */
       // Comment out all content of "authproc.idp" because we will use the 'authproc' into 'saml20-idp-hosted.php' metadata
       /* ...other things... */
@@ -458,6 +460,25 @@ To update Composer use: `composer self-update`
                   ],
            ],
 
+           // Convert the attributes' names into OID because
+           // SSP will use them from parsed metadata on the $attributes array.
+           51 => ['class' => 'core:AttributeMap','name2oid'],
+
+           // IDEM Attribute Filter:
+           // IDEM SPs + Entity Category SPs + Custom SPs
+           60 =>[
+                'class' => 'core:PHP',
+                'code'	=>
+                '
+                $config_dir = apache_getenv("SIMPLESAMLPHP_CONFIG_DIR");
+                include($config_dir."/idem-attribute-filter.php");
+                '
+           ],
+
+           // Convert the attributes' names into Name
+           // to be able to see their names on the Consent page
+           80 => ['class' => 'core:AttributeMap','oid2name'],
+
            // Consent module is enabled(with no permanent storage, using cookies)
            90 => [
                   'class' => 'consent:Consent',
@@ -474,6 +495,27 @@ To update Composer use: `composer self-update`
         ],
      ];
      ```
+
+#### Configure Attribute Release Policies
+
+> The following rules are set with the `idem-attribute-filter.php` file used by the `saml20-idp-hosted.php` file.
+>
+> IDEM + Entity Category + Custom SPs Attribute Release Policies:
+> 1) Release "`eduPersonTargetedID`" ONLY IF the preferred "`<md:NameIDFormat>`" of the SP
+>    IS NOT the "`persistent`" ones.
+> 2) Release the "`eduPersonScopedAffiliation`" to all IDEM SPs
+> 3) Release all required (`isRequired="true"`) attributes to all IDEM SPs
+> 4) Release all required (`isRequired="true"`) attributes to all CoCo SP (if the EC is supported)
+> 5) Release all R&S subset attributes:
+> `mail`, `givenName`, `sn`, `displayName`, `eduPersonScopedAffiliation`, `eduPersonPrincipalName`, `eduPersonTargetedID`
+> 6) Release attributes to those SPs that do not requrest attributes by their metadata,
+>    or that has needed to receive a specific value for one or more attributes
+
+   * Download IDEM ARP into SimpleSAMLphp `config` directory:
+     * `cd /var/simplesamlphp/config`
+     * `sudo wget https://registry.idem.garr.it/idem-conf/simplesamlphp/SSP1/idem-attribute-filter.php`
+
+   * Change the `require` line into `idem-attribute-filter.php` by setting the correct path of the `attributemap.php` file
 
 #### Configure SAML Metadata Credentials
 
@@ -556,9 +598,10 @@ To update Composer use: `composer self-update`
         ];
         ```
 
-   4. Try the LDAP Authentication Source on: `https://ssp-idp.example.org/simplesaml/module.php/core/authenticate.php`
+   4. Try the LDAP Authentication Source on: 
+      * `https://ssp-idp.example.org/simplesaml/module.php/core/authenticate.php`
 
-      (*Replace `ssp-idp.example.org` with your IDP Full Qualified Domain Name*)
+        (*Replace `ssp-idp.example.org` with your IDP Full Qualified Domain Name*)
 
 #### Configure automatic download of Federation Metadata
    
@@ -758,43 +801,7 @@ To update Composer use: `composer self-update`
 
    * Go to `https://registry.idem.garr.it` and follow "**Insert a New Identity Provider into the IDEM Test Federation**" (your entity has to be approved by an IDEM Federation Operator before become part of IDEM Test Federation)
 
-### Appendix A - How to release attributes to specific SP only
-
-1. Download and extract `attributepolicy` module:
-   * ```bash
-     wget https://github.com/RikV/simplesaml-attributepolicy/archive/1.1.tar.gz -O /usr/local/src/ssp-attributepolicy.tar.gz
-     ```
-   * `cd /usr/local/src`
-   * `tar xzf ssp-attributepolicy.tar.gz`
-   * `rm -R ssp-attributepolicy.tar.gz`
-   
-2. Load module in SimpleSAMLphp:
-   * `ln -s /usr/local/src/simplesaml-attributepolicy-1.1/attributepolicy/ /var/simplesamlphp/modules/`
-   
-3. Activate module:
-   * `vim /var/simplesamlphp/config/config.php`
-
-     ```php
-     /* ...other things... */
-     'module.enable' => [
-        'cron' => true,
-        'metarefresh' => true,
-        'consent' => true,
-        'attributepolicy' => true,
-     ],
-     /* ...other things... */
-     ```
-
-4. Create the Attribute Release Policy for IDEM Test Federation:
-   * Copy the content of [module_attributepolicy_test.php](utils/module_attributepolicy_test.php) and paste it into `/var/simplesamlphp/config/module_attributepolicy.php`
-   
-   (the default template is into 
-    ```bash 
-    /var/simplesamlphp/modules/attributepolicy/config-templates/module_attributepolicy.php
-    ```
-    )
-
-### Appendix B - How to manage sessions with Memcached
+### Appendix A - How to manage sessions with Memcached
 
 1. Install needed packages:
    * `sudo apt install memcached php-memcached`
@@ -814,7 +821,7 @@ To update Composer use: `composer self-update`
      /* ...other things... */
      ```
      
-### Appendix C - How to collect useful statistics
+### Appendix B - How to collect useful statistics
 
 Follow https://simplesamlphp.org/docs/stable/statistics:statistics
 
