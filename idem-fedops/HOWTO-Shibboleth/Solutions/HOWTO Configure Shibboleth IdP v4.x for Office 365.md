@@ -4,10 +4,10 @@
    ```xml
    <bean id="Office365" parent="RelyingPartyByName" c:relyingPartyIds="urn:federation:MicrosoftOnline">
       <property name="profileConfigurations">
-	       <list>
-	          <bean parent="SAML2.SSO" p:encryptAssertions="false" p:signAssertions="true" p:signResponses="false" />
+         <list>
+            <bean parent="SAML2.SSO" p:encryptAssertions="false" p:signAssertions="true" p:signResponses="false" />
             <bean parent="SAML2.ECP" p:encryptAssertions="false" p:signAssertions="true" p:signResponses="false" p:nameIDFormatPrecedence="urn:oasis:names:tc:SAML:2.0:nameid-format:persistent" />
-	       </list>
+         </list>
       </property>
    </bean>
    ```
@@ -39,7 +39,7 @@
    </bean>
    ```
 
-3. Into `conf/attribute-resolver.xml`, create the following `<AttributeDefinition>` to be able to generate the Google Principal (`GPrincipal`) attribute (if it is not already present into your LDAP directory):
+3. Into `conf/attribute-resolver.xml`, create the following `<AttributeDefinition>` to be able to generate the ImmutableID (`ImmutableID`) attribute and the User ID (`UserId`) scoped attribute starting from the `uid` attribute (`uid` must be part of the `exportAttributes` list on the `ldap.properties` configuration file)
    ```xml
    <!--  Microsoft Office365 - Azure AD ImmutableID & User ID  -->
    <AttributeDefinition xsi:type="Simple" id="ImmutableID">
