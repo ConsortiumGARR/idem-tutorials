@@ -498,6 +498,8 @@ To update Composer use: `composer self-update`
 
 #### Configure Attribute Release Policies
 
+> :warning: **These rules have been tested on a Test Federation**: Be careful to use without having understood them before!
+
 > The following rules are set with the `idem-attribute-filter.php` file used by the `saml20-idp-hosted.php` file.
 >
 > IDEM + Entity Category + Custom SPs Attribute Release Policies:
