@@ -110,3 +110,22 @@
 
 9. Test with AACLI:
    `bash /opt/shibboleth-idp/bin/aacli.sh -n <REPLACE_WITH_USERNAME_IDP> -r urn:federation:MicrosoftOnline --saml2`
+
+## Utilities
+
+1. If the Shibboleth IdP returns an error like:
+
+   ```
+   WARN [org.opensaml.saml.saml2.profile.impl.AddNameIDToSubjects:334] - Profile Action AddNameIDToSubjects: Request specified use of an unsupportable identifier format: urn:oasis:names:tc:SAML:2.0:nameid-format:persistent
+   WARN [org.opensaml.profile.action.impl.LogEvent:101] - A non-proceed event occurred while processing the request: InvalidNameIDPolicy
+   ```
+   
+   try to run AACLI for the Microsoft resource:
+   
+   `bash /opt/shibboleth-idp/bin/aacli.sh -n <USERNAME> -r urn:federation:MicrosoftOnline  --saml2`
+   
+   by replacing `<USERNAME>` with the username of a real user.
+   
+   This will help to discover what kind of NameID the IDP is releasing to the SP.
+   
+   If the NameID released is the `transient` one, check the Microsoft SP metadata and remove the `transient` `<md:NameIDFormat>` element from it before trying again.
