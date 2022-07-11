@@ -486,7 +486,8 @@ This Storage service will memorize User Consent data on persistent database SQL.
          
        * `vim /opt/shibboleth-idp/conf/ldap.properties`
 
-          The `idp.attribute.resolver.LDAP.exportAttributes` list MUST contains the attribute chosen for the persistent-id generation (idp.persistentId.sourceAttribute)
+          The property `idp.attribute.resolver.LDAP.exportAttributes` **has to be added** into the file and configured with the list of attributes the IdP retrieves directly from LDAP. 
+          The list MUST contain the attribute chosen for the persistent-id generation (*idp.persistentId.sourceAttribute*).
 
           ```properties
           idp.authn.LDAP.authenticator = bindSearchAuthenticator
@@ -528,7 +529,8 @@ This Storage service will memorize User Consent data on persistent database SQL.
          
        * `vim /opt/shibboleth-idp/conf/ldap.properties`
 
-          The `idp.attribute.resolver.LDAP.exportAttributes` list MUST contains the attribute chosen for the persistent-id generation (idp.persistentId.sourceAttribute)
+          The property `idp.attribute.resolver.LDAP.exportAttributes` **has to be added** into the file and configured with the list of attributes the IdP retrieves directly from LDAP. 
+          The list MUST contain the attribute chosen for the persistent-id generation (*idp.persistentId.sourceAttribute*).
 
           ```properties
           idp.authn.LDAP.authenticator = bindSearchAuthenticator
@@ -570,7 +572,8 @@ This Storage service will memorize User Consent data on persistent database SQL.
          
        * `vim /opt/shibboleth-idp/conf/ldap.properties`
 
-          The `idp.attribute.resolver.LDAP.exportAttributes` list MUST contains the attribute chosen for the persistent-id generation (idp.persistentId.sourceAttribute)
+          The property `idp.attribute.resolver.LDAP.exportAttributes` **has to be added** into the file and configured with the list of attributes the IdP retrieves directly from LDAP. 
+          The list MUST contain the attribute chosen for the persistent-id generation (*idp.persistentId.sourceAttribute*).
 
           ```properties
           idp.authn.LDAP.authenticator = bindSearchAuthenticator
@@ -611,7 +614,8 @@ This Storage service will memorize User Consent data on persistent database SQL.
          
        * `vim /opt/shibboleth-idp/conf/ldap.properties`
 
-          The `idp.attribute.resolver.LDAP.exportAttributes` list MUST contains the attribute chosen for the persistent-id generation (idp.persistentId.sourceAttribute)
+          The property `idp.attribute.resolver.LDAP.exportAttributes` **has to be added** into the file and configured with the list of attributes the IdP retrieves directly from LDAP. 
+          The list MUST contain the attribute chosen for the persistent-id generation (*idp.persistentId.sourceAttribute*).
 
           ```properties
           idp.authn.LDAP.authenticator = bindSearchAuthenticator
@@ -653,7 +657,8 @@ This Storage service will memorize User Consent data on persistent database SQL.
          
        * `vim /opt/shibboleth-idp/conf/ldap.properties`
 
-          The `idp.attribute.resolver.LDAP.exportAttributes` list MUST contains the attribute chosen for the persistent-id generation (idp.persistentId.sourceAttribute)
+          The property `idp.attribute.resolver.LDAP.exportAttributes` **has to be added** into the file and configured with the list of attributes the IdP retrieves directly from LDAP. 
+          The list MUST contain the attribute chosen for the persistent-id generation (*idp.persistentId.sourceAttribute*).
 
           ```properties
           idp.authn.LDAP.authenticator = bindSearchAuthenticator
@@ -695,7 +700,8 @@ This Storage service will memorize User Consent data on persistent database SQL.
          
        * `vim /opt/shibboleth-idp/conf/ldap.properties`
 
-          The `idp.attribute.resolver.LDAP.exportAttributes` list MUST contains the attribute chosen for the persistent-id generation (idp.persistentId.sourceAttribute)
+          The property `idp.attribute.resolver.LDAP.exportAttributes` **has to be added** into the file and configured with the list of attributes the IdP retrieves directly from LDAP. 
+          The list MUST contain the attribute chosen for the persistent-id generation (*idp.persistentId.sourceAttribute*).
 
           ```properties
           idp.authn.LDAP.authenticator = bindSearchAuthenticator
