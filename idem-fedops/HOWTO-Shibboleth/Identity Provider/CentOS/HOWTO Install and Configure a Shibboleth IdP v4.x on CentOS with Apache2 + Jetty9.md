@@ -33,10 +33,11 @@
    10. [Translate IdP messages into the preferred language](#translate-idp-messages-into-preferred-language)
    11. [Enrich IdP Login Page with Information and Privacy Policy pages](#enrich-idp-login-page-with-information-and-privacy-policy-pages)
    12. [Change default login page footer text](#change-default-login-page-footer-text)
-   13. [Disable SAML1 Deprecated Protocol](#disable-saml1-deprecated-protocol)
-   14. [Secure cookies and other IDP data](#secure-cookies-and-other-idp-data)
-   15. [Configure Attribute Filter Policy to release attributes to Federated Resources](#configure-attribute-filter-policy-to-release-attributes-to-federated-resources)
-   16. [Register the IdP on the IDEM Test Federation](#register-the-idp-on-the-idem-test-federation)
+   13. [Change default "Forgot your password?" and "Need help?" endpoints](#change-default-forgot-your-password-and-need-help-endpoints)
+   14. [Disable SAML1 Deprecated Protocol](#disable-saml1-deprecated-protocol)
+   15. [Secure cookies and other IDP data](#secure-cookies-and-other-idp-data)
+   16. [Configure Attribute Filter Policy to release attributes to Federated Resources](#configure-attribute-filter-policy-to-release-attributes-to-federated-resources)
+   17. [Register the IdP on the IDEM Test Federation](#register-the-idp-on-the-idem-test-federation)
 6. [Appendix A: Enable Consent Module: Attribute Release + Terms of Use Consent](#appendix-a-enable-consent-module-attribute-release--terms-of-use-consent)
 7. [Appendix B: Import persistent-id from a previous database](#appendix-b-import-persistent-id-from-a-previous-database)
 8. [Appendix C: Useful logs to find problems](#appendix-c-useful-logs-to-find-problems)
@@ -1083,7 +1084,7 @@ Translate the IdP messages in your language:
    <li class="list-help-item"><a href="#springMessageText("idp.url.helpdesk", '#')"><span class="item-marker">&rsaquo;</span> #springMessageText("idp.login.needHelp", "Need Help?")</a></li>
    ```
 
-2. Add the new variables defined with lines added at point 1 into `messages*.properties` files:
+2. Add the new variables defined with lines added at point 1 into `messages*.properties` files linked to the view `view/login.vm`:
 
    * `messages/messages.properties`:
 
@@ -1109,7 +1110,7 @@ Translate the IdP messages in your language:
 
 ### Change default login page footer text
 
-1. Change the content of `idp.footer` variable into `messages*.properties` files:
+Change the content of `idp.footer` variable into `messages*.properties` files linked to the view `view/login.vm`:
 
    * `messages/messages.properties`:
 
@@ -1122,6 +1123,25 @@ Translate the IdP messages in your language:
      ```properties
      idp.footer=Testo del Footer a pie di pagina per la versione italiana della pagina di login dell'IdP
      ```
+
+### Change default "Forgot your password?" and "Need help?" endpoints
+
+Change the content of `idp.url.password.reset` and `idp.url.helpdesk` variables into `messages*.properties` files linked to the view `view/login.vm`:
+
+   * `messages/messages.properties`:
+
+     ```properties
+     idp.url.password.reset=CONTENT-FOR-FORGOT-YOUR-PASSWORD-LINK
+     idp.url.helpdesk=CONTENT-FOR-NEED-HELP-LINK
+     ```
+
+   * `messages/messages_it.properties`:
+
+     ```properties
+     idp.url.password.reset=CONTENUTO-PER-LINK-PASSWORD-DIMENTICATA
+     idp.url.helpdesk=CONTENUTO-PER-SERVE-AIUTO-LINK
+     ```
+
 
 ### Disable SAML1 Deprecated Protocol
 
