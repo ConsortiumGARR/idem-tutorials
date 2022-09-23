@@ -118,13 +118,13 @@ and `idp.example.org` value with the Full Qualified Name of the Identity Provide
 
 5. Install Amazon Corretto JDK:
    ```bash
-   wget -O- https://apt.corretto.aws/corretto.key | sudo apt-key add -
+   wget -O- https://apt.corretto.aws/corretto.key | apt-key add -
 
    apt-get install software-properties-common
 
    add-apt-repository 'deb https://apt.corretto.aws stable main'
 
-   apt-get update; sudo apt-get install -y java-11-amazon-corretto-jdk
+   apt-get update; apt-get install -y java-11-amazon-corretto-jdk
 
    java -version
    ```
@@ -259,7 +259,7 @@ Jetty is a Web server and a Java Servlet container. It will be used to run the I
 
 8. Configure **/etc/default/jetty**:
    ```bash
-   sudo bash -c 'cat > /etc/default/jetty <<EOF
+   bash -c 'cat > /etc/default/jetty <<EOF
    JETTY_HOME=/usr/local/src/jetty-src
    JETTY_BASE=/opt/jetty
    JETTY_USER=jetty
@@ -297,7 +297,7 @@ Jetty is a Web server and a Java Servlet container. It will be used to run the I
    ```bash
    mkdir /opt/jetty/webapps
    
-   sudo bash -c 'cat > /opt/jetty/webapps/idp.xml <<EOF
+   bash -c 'cat > /opt/jetty/webapps/idp.xml <<EOF
    <Configure class="org.eclipse.jetty.webapp.WebAppContext">
      <Set name="war"><SystemProperty name="idp.home"/>/war/idp.war</Set>
      <Set name="contextPath">/idp</Set>
@@ -330,7 +330,7 @@ The Apache HTTP Server will be configured as a reverse proxy and it will be used
    ```bash
    mkdir /var/www/html/$(hostname -f)
 
-   sudo chown -R www-data: /var/www/html/$(hostname -f)
+   chown -R www-data: /var/www/html/$(hostname -f)
 
    echo '<h1>It Works!</h1>' > /var/www/html/$(hostname -f)/index.html
    ```
