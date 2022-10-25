@@ -55,7 +55,7 @@
  * CPU: 2 Core (64 bit)
  * RAM: 4 GB
  * HDD: 20 GB
- * OS: Centos 7, Centos 8
+ * OS: Centos 7 (EOL: 30/06/2024)
  
 ### Other
 
