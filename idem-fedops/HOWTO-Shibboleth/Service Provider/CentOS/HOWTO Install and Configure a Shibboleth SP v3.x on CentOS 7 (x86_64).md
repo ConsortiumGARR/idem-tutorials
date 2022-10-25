@@ -32,9 +32,10 @@
 
 ### Hardware
 
- * CPU: 2 Core
+ * CPU: 2 Core (64 Bit)
  * RAM: 4 GB
  * HDD: 20 GB
+ * OS: Centos 7 (EOL: 30/06/2024)
 
 ### Other
 
