@@ -4,7 +4,7 @@
 
 ## Table of Contents
 
-1. [Requirements](#requirements-hardware)
+1. [Requirements](#requirements)
    1. [Hardware](#hardware)
    2. [Other](#other)
 2. [Software that will be installed](#software-that-will-be-installed)
