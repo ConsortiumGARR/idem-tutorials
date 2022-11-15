@@ -69,7 +69,7 @@
    displayName.it=Azure AD ImmutableID
    description.en=Azure AD ImmutableID
    description.it=Azure AD ImmutableID
-   saml2.name=urn:oid:0.9.2342.19200300.100.1.1
+   saml2.name=urn:oid:<REPLACE_WITH_IMMUTABLEID_OID_NUMBER>
    saml1.encodeType=false
    ```
    
