@@ -47,11 +47,11 @@
    </bean>
    ```
 
-3. Into `conf/attribute-resolver.xml`, create the following `<AttributeDefinition>` to be able to generate the ImmutableID (`ImmutableID`) attribute and the User ID (`UserId`) scoped attribute starting from the `uid` attribute (`uid` must be part of the `exportAttributes` list on the `ldap.properties` configuration file)
+3. Into `conf/attribute-resolver.xml`, create the following `<AttributeDefinition>` to be able to generate the ImmutableID (`ImmutableID`) attribute and the User ID (`UserId`) scoped attribute starting from the `uid` attribute (`uid` and `objectGUID` must be part of the `exportAttributes` list on the `ldap.properties` configuration file)
    ```xml
    <!--  Microsoft Office365 - Azure AD ImmutableID & User ID  -->
    <AttributeDefinition xsi:type="Simple" id="ImmutableID">
-      <InputDataConnector ref="myLDAP" attributeNames="uid"/>
+      <InputDataConnector ref="myLDAP" attributeNames="objectGUID"/>
    </AttributeDefinition>
    
    <AttributeDefinition scope="%{idp.scope}" xsi:type="Scoped" id="UserId">
@@ -61,7 +61,7 @@
 
 4. Create `conf/attributes/custom/ImmutableID.properties`  as follow (the example considers italian and english languages only):
    ```properties
-   # Azure AD ImmutableID
+   # Azure AD ImmutableID (objectGUID)
 
    id=ImmutableID
    transcoder=SAML2StringTranscoder
@@ -69,7 +69,7 @@
    displayName.it=Azure AD ImmutableID
    description.en=Azure AD ImmutableID
    description.it=Azure AD ImmutableID
-   saml2.name=urn:oid:<REPLACE_WITH_IMMUTABLEID_OID_NUMBER>
+   saml2.name=urn:oid:1.2.840.113556.1.4.2
    saml1.encodeType=false
    ```
    
