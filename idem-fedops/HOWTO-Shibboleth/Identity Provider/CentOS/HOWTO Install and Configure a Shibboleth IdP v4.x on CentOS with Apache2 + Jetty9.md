@@ -31,21 +31,21 @@
    8. [Configure the attribute resolution with Attribute Registry](#configure-the-attribute-resolution-with-attribute-registry)
    9. [Configure Shibboleth IdP Logging](#configure-shibboleth-idp-logging)
    10. [Translate IdP messages into the preferred language](#translate-idp-messages-into-preferred-language)
-   11. [Enrich IdP Login Page with Information and Privacy Policy pages](#enrich-idp-login-page-with-information-and-privacy-policy-pages)
-   12. [Change default login page footer text](#change-default-login-page-footer-text)
-   13. [Change default "Forgot your password?" and "Need help?" endpoints](#change-default-forgot-your-password-and-need-help-endpoints)
-   14. [Disable SAML1 Deprecated Protocol](#disable-saml1-deprecated-protocol)
-   15. [Secure cookies and other IDP data](#secure-cookies-and-other-idp-data)
-   16. [Configure Attribute Filter Policy to release attributes to Federated Resources](#configure-attribute-filter-policy-to-release-attributes-to-federated-resources)
-   17. [Register the IdP on the IDEM Test Federation](#register-the-idp-on-the-idem-test-federation)
+   11. [Enrich IdP Login Page with the Institutional Logo](#enrich-idp-login-page-with-the-institutional-logo)
+   12. [Enrich IdP Login Page with Information and Privacy Policy pages](#enrich-idp-login-page-with-information-and-privacy-policy-pages)
+   13. [Change default login page footer text](#change-default-login-page-footer-text)
+   14. [Change default "Forgot your password?" and "Need help?" endpoints](#change-default-forgot-your-password-and-need-help-endpoints)
+   15. [Disable SAML1 Deprecated Protocol](#disable-saml1-deprecated-protocol)
+   16. [Secure cookies and other IDP data](#secure-cookies-and-other-idp-data)
+   17. [Configure Attribute Filter Policy to release attributes to Federated Resources](#configure-attribute-filter-policy-to-release-attributes-to-federated-resources)
+   18. [Register the IdP on the IDEM Test Federation](#register-the-idp-on-the-idem-test-federation)
 6. [Appendix A: Enable Consent Module: Attribute Release + Terms of Use Consent](#appendix-a-enable-consent-module-attribute-release--terms-of-use-consent)
 7. [Appendix B: Import persistent-id from a previous database](#appendix-b-import-persistent-id-from-a-previous-database)
 8. [Appendix C: Useful logs to find problems](#appendix-c-useful-logs-to-find-problems)
 9. [Appendix D: Connect an SP with the IdP](#appendix-d-connect-an-sp-with-the-idp)
 10. [Utilities](#utilities)
 11. [Useful Documentation](#useful-documentation)
-12. [Utility](#utility)
-13. [Authors](#authors)
+12. [Authors](#authors)
     * [Original Author](#original-author)
 
 ## Requirements
@@ -1070,6 +1070,18 @@ Translate the IdP messages in your language:
    * Put '`messages_XX.properties`' downloaded file into `/opt/shibboleth-idp/messages` directory
    * Restart Jetty to apply the changes with `systemctl restart jetty.service`
 
+### Enrich IdP Login Page with the Institutional Logo
+
+  1. Discover what images are publicly available by opening an URL similar to "https://idp.example.org/idp/images/" from a web browser.
+  
+  2. Copy the institutional logo into all placeholder found inside the `/opt/shibboleth-idp/edit-webapp/images` directory **without renaming them**.
+
+  3. Rebuild IdP war file:
+     * `cd /opt/shibboleth-idp/bin ; ./build.sh`
+
+  4. Restart Jetty:
+     * `sudo systemctl restart jetty.service`
+
 ### Enrich IdP Login Page with Information and Privacy Policy pages
 
 1. Add the following two lines into `views/login.vm`:
@@ -1455,14 +1467,8 @@ Follow these steps **IF** your organization **IS NOT** connected to the [GARR Ne
   * `export JAVA_HOME=/usr/lib/jvm/java-11-amazon-corretto`
   * `bash /opt/shibboleth-idp/bin/aacli.sh -n <USERNAME> -r <ENTITYID-SP> --saml2`
 
-* Customize IdP Login page with the institutional logo:
-  1. Replace the images found inside `/opt/shibboleth-idp/edit-webapp/images` without renaming them.
-
-  2. Rebuild IdP war file:
-     * `cd /opt/shibboleth-idp/bin ; ./build.sh`
-
-  3. Restart Jetty:
-     * `sudo systemctl restart jetty.service`
+* [The Mozilla Observatory](https://observatory.mozilla.org/):
+  The Mozilla Observatory has helped over 240,000 websites by teaching developers, system administrators, and security professionals how to configure their sites safely and securely.
 
 ### Useful Documentation
 
@@ -1485,11 +1491,6 @@ Follow these steps **IF** your organization **IS NOT** connected to the [GARR Ne
 * https://shibboleth.atlassian.net/wiki/spaces/KB/pages/1435927082/Switching+locale+on+the+login+page
 * https://shibboleth.atlassian.net/wiki/spaces/IDP4/pages/1265631851/WebInterfaces
 * https://shibboleth.atlassian.net/wiki/spaces/IDP4/pages/1280180737/Cross-Site+Request+Forgery+CSRF+Protection
-
-### Utility
-
-* [The Mozilla Observatory](https://observatory.mozilla.org/):
-  The Mozilla Observatory has helped over 240,000 websites by teaching developers, system administrators, and security professionals how to configure their sites safely and securely.
 
 ### Authors
 
