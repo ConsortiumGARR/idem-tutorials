@@ -172,6 +172,8 @@ Please, remember to **replace all occurence** of `example.org` domain name, or p
    sed -i 's/handlerSSL="false"/handlerSSL="true"/' /etc/shibboleth/shibboleth2.xml
    
    sed -i 's/cookieProps="http"/cookieProps="https"/' /etc/shibboleth/shibboleth2.xml
+   
+   sed -i 's/cookieProps="https">/cookieProps="https" redirectLimit="exact">/' /etc/shibboleth/shibboleth2.xml
    ```
 
 3. Create SP metadata Signing and Encryption credentials:
