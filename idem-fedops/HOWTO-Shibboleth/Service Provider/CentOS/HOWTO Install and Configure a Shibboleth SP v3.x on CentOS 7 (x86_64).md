@@ -211,6 +211,7 @@ Please, remember to **replace all occurence** of `example.org` domain name, or p
 2. Change the SP entityID and technical contact email address:
    * `sed -i "s/sp.example.org/$(hostname -f)/" /etc/shibboleth/shibboleth2.xml`
    * `sed -i "s/root@localhost/<TECH-CONTACT-EMAIL-ADDRESS-HERE>/" /etc/shibboleth/shibboleth2.xml`
+   * `sed -i 's/cookieProps="https">/cookieProps="https" redirectLimit="exact">/' /etc/shibboleth/shibboleth2.xml`
 
 3. Create SP metadata Signing and Encryption credentials:
    * `cd /etc/shibboleth`  
