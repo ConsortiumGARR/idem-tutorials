@@ -83,8 +83,6 @@
  * liblogback-java
  * default-mysql-server (if JPAStorageService is used)
  * libmariadb-java (if JPAStorageService is used)
- * libcommons-dbcp-java (if JPAStorageService is used)
- * libcommons-pool-java (if JPAStorageService is used)
 
 ## Notes
 
@@ -418,7 +416,7 @@ This Storage service will memorize User Consent data on persistent database SQL.
 
 2. Install required packages:
    * ```bash
-     apt install default-mysql-server libmariadb-java libcommons-dbcp-java libcommons-pool-java --no-install-recommends
+     apt install default-mysql-server libmariadb-java --no-install-recommends
      ```
 
 3. Activate MariaDB database service:
@@ -445,8 +443,6 @@ This Storage service will memorize User Consent data on persistent database SQL.
 7. Rebuild IdP with the needed libraries:
    * `cd /opt/shibboleth-idp`
    * `ln -s /usr/share/java/mariadb-java-client.jar edit-webapp/WEB-INF/lib`
-   * `ln -s /usr/share/java/commons-dbcp.jar edit-webapp/WEB-INF/lib`
-   * `ln -s /usr/share/java/commons-pool.jar edit-webapp/WEB-INF/lib`
    * `bin/build.sh`
 
 8. Enable JPA Storage Service:
@@ -482,14 +478,14 @@ This Storage service will memorize User Consent data on persistent database SQL.
      <!-- Bean to store IdP data unrelated with persistent identifiers on 'storageservice' database -->
 
      <bean id="storageservice.JPAStorageService.DataSource"
-           class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close" lazy-init="true"
+           class="org.apache.commons.dbcp2.BasicDataSource" destroy-method="close" lazy-init="true"
            p:driverClassName="org.mariadb.jdbc.Driver"
            p:url="jdbc:mysql://localhost:3306/storageservice?autoReconnect=true"
            p:username="###_SS-USERNAME-CHANGEME_###"
            p:password="###_SS-DB-USER-PASSWORD-CHANGEME_###"
-           p:maxActive="10"
+           p:maxTotal="10"
            p:maxIdle="5"
-           p:maxWait="15000"
+           p:maxWaitMillis="15000"
            p:testOnBorrow="true"
            p:validationQuery="select 1"
            p:validationQueryTimeout="5" />
@@ -964,7 +960,7 @@ By default, a transient NameID will always be released to the Service Provider i
 
 2. Install required packages:
    * ```bash
-     apt install default-mysql-server libmariadb-java libcommons-dbcp-java libcommons-pool-java --no-install-recommends
+     apt install default-mysql-server libmariadb-java --no-install-recommends
      ```
 
 3. Activate MariaDB database service:
@@ -991,8 +987,6 @@ By default, a transient NameID will always be released to the Service Provider i
 7. Rebuild IdP with the needed libraries:
    * `cd /opt/shibboleth-idp`
    * `ln -s /usr/share/java/mariadb-java-client.jar edit-webapp/WEB-INF/lib`
-   * `ln -s /usr/share/java/commons-dbcp.jar edit-webapp/WEB-INF/lib`
-   * `ln -s /usr/share/java/commons-pool.jar edit-webapp/WEB-INF/lib`
    * `bin/build.sh`
 
 8. Enable Persistent Identifier's store:
@@ -1004,14 +998,14 @@ By default, a transient NameID will always be released to the Service Provider i
      <!-- Bean to store persistent-id on 'shibboleth' database -->
 
      <bean id="MyDataSource"
-           class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close" lazy-init="true"
+           class="org.apache.commons.dbcp2.BasicDataSource" destroy-method="close" lazy-init="true"
            p:driverClassName="org.mariadb.jdbc.Driver"
            p:url="jdbc:mysql://localhost:3306/shibboleth?autoReconnect=true"
            p:username="###_SHIB-USERNAME-CHANGEME_###"
            p:password="###_SHIB-DB-USER-PASSWORD-CHANGEME_###"
-           p:maxActive="10"
+           p:maxTotal="10"
            p:maxIdle="5"
-           p:maxWait="15000"
+           p:maxWaitMillis="15000"
            p:testOnBorrow="true"
            p:validationQuery="select 1"
            p:validationQueryTimeout="5" />
