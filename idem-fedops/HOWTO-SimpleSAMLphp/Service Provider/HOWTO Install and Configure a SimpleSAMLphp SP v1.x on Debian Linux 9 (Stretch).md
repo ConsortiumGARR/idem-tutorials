@@ -30,7 +30,7 @@
  * ca-certificates
  * ntp
  * vim
- * libapache2-mod-php, php, php7.0-mcrypt, php-dom, php-curl, php-mbstring, apache2 (>= 2.4)
+ * libapache2-mod-php, php, php-dom, php-curl, php-mbstring, apache2 (>= 2.4)
  * openssl
  * cron
  * curl
@@ -76,14 +76,14 @@
 
 2. Install required packages SP:
    * ```bash
-     apt install apache2 openssl ntp vim php php-curl php-dom php7.0-mcrypt php-mbstring curl cron --no-install-recommends
+     apt install apache2 openssl ntp vim php php-curl php-dom php-mbstring curl cron --no-install-recommends
      ```
 
 3. Install the SimpleSAMLphp SP:
    * `cd /opt/`
-   * `wget https://github.com/simplesamlphp/simplesamlphp/releases/download/v1.19.1/simplesamlphp-1.19.1.tar.gz`
-   * `tar xzf simplesamlphp-1.19.1.tar.gz`
-   * `mv simplesamlphp-1.19.1 simplesamlphp`
+   * `wget https://github.com/simplesamlphp/simplesamlphp/releases/download/v1.19.7/simplesamlphp-1.19.7.tar.gz`
+   * `tar xzf simplesamlphp-1.19.7.tar.gz`
+   * `mv simplesamlphp-1.19.7 simplesamlphp`
 
 ## Configuration Instructions
 
