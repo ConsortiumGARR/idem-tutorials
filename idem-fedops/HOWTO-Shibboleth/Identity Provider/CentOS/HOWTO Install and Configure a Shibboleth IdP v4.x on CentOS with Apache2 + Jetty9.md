@@ -1341,14 +1341,14 @@ Follow these steps **ONLY IF** your organization is connected to the [GARR Netwo
            <MetadataFilter xsi:type="RequiredValidUntil" maxValidityInterval="P10D"/>
    
            <!-- 
-               Consume only SP in the metadata aggregate for Shibboleth IdP v3.x and 4.0:
+               Consume only SP in the metadata aggregate for Shibboleth IdP 4.0:
            -->
-	   <!--
+           <!--
            <MetadataFilter xsi:type="EntityRoleWhiteList">
              <RetainedRole>md:SPSSODescriptor</RetainedRole>
            </MetadataFilter>
            -->
-		
+	
            <!-- 
                Consume only SP in the metadata aggregate for Shibboleth IdP v4.1+:
            -->
