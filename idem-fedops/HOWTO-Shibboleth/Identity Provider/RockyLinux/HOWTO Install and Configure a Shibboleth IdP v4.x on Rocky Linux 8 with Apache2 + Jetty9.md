@@ -1,4 +1,4 @@
-# HOWTO Install and Configure a Shibboleth IdP v4.x on CentOS with Apache2 + Jetty9
+# HOWTO Install and Configure a Shibboleth IdP v4.x on Rocky Linux 8 with Apache2 + Jetty9
 
 <img width="120px" src="https://wiki.idem.garr.it/IDEM_Approved.png" />
 
