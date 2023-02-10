@@ -514,6 +514,12 @@
 	     
              'attributes.NameFormat' => 'urn:oasis:names:tc:SAML:2.0:attrname-format:uri',
 
+             // Needed to request a 'persistent' NameID to IdPs
+             'NameIDPolicy' => array(
+                'Format' => \SAML2\Constants::NAMEID_PERSISTENT, 
+                'AllowCreate' => true,
+             ),
+
              'description' => array(
                 'en' => 'Service Description',
                 'it' => 'Descrizione del Servizio offerto',
