@@ -1660,6 +1660,7 @@ Follow these steps **IF** your organization **IS NOT** connected to the [GARR Ne
 * https://shibboleth.atlassian.net/wiki/spaces/IDP4/pages/1265631635/MetadataConfiguration
 * https://shibboleth.atlassian.net/wiki/spaces/IDP4/pages/1265631611/PasswordAuthnConfiguration
 * https://shibboleth.atlassian.net/wiki/spaces/IDP4/pages/1265631549/AttributeResolverConfiguration
+* https://shibboleth.atlassian.net/wiki/spaces/IDP4/pages/1265631865/AttributeFilter
 * https://shibboleth.atlassian.net/wiki/spaces/IDP4/pages/1265631572/LDAPConnector
 * https://shibboleth.atlassian.net/wiki/spaces/IDP4/pages/1272054306/AttributeRegistryConfiguration
 * https://shibboleth.atlassian.net/wiki/spaces/IDP4/pages/1272054333/TranscodingRuleConfiguration
