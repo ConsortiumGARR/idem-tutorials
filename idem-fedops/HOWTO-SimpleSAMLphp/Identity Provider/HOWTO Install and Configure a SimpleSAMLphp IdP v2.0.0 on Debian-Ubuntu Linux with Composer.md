@@ -35,7 +35,7 @@
 ### Hardware
 
 * CPU: 2 Core (64 bit)
-* RAM: 4 GB
+* RAM: 2 GB
 * HDD: 20 GB
 * OS: Ubuntu 22.04 (jammy)
 
