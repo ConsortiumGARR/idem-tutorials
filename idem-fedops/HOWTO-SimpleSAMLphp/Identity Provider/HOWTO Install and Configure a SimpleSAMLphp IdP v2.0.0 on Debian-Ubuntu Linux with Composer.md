@@ -689,7 +689,7 @@ and `idp.example.org` value with the Full Qualified Name of the Identity Provide
      * the Search Filter `(&(objectClass=inetOrgPerson)(uid=<USERNAME-USED-IN-THE-LOGIN-FORM>))`:<br/>
        corresponds to `search.filter' authsource LDAP setting.
 
-5. Add the `ldap:LDAP` Authentication Source:
+5. Add the `ldap:Ldap` Authentication Source:
    * `vim /var/simplesamlphp/config/authsources.php`
 
      **NOTE**:
