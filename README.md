@@ -24,8 +24,9 @@ These GitHub Repository contains step-by-step tutorials on Identity and Service 
 #### HOWTO Install and Configure an Identity Provider
 
 1. [HOWTO Install and Configure a Shibboleth IdP v4.x on Debian-Ubuntu Linux with Apache2 + Jetty9](./idem-fedops/HOWTO-Shibboleth/Identity%20Provider/Debian-Ubuntu/HOWTO%20Install%20and%20Configure%20a%20Shibboleth%20IdP%20v4.x%20on%20Debian-Ubuntu%20Linux%20with%20Apache2%20%2B%20Jetty9.md)
-2. [HOWTO Install and Configure a SimpleSAMLphp IDP v1.x on Debian Linux 10 (Buster)](./idem-fedops/HOWTO-SimpleSAMLphp/Identity%20Provider/HOWTO%20Install%20and%20Configure%20a%20SimpleSAMLphp%20IdP%20v1.x%20on%20Debian%20Linux%2010%20(Buster).md#howto-install-and-configure-a-simplesamlphp-idp-v1x-on-debian-linux-10-buster)
-3. [HOWTO Install and Configure a SimpleSAMLphp IDP v1.x on Debian Linux with Composer](https://github.com/ConsortiumGARR/idem-tutorials/blob/master/idem-fedops/HOWTO-SimpleSAMLphp/Identity%20Provider/HOWTO%20Install%20and%20Configure%20a%20SimpleSAMLphp%20IdP%20v1.x%20on%20Debian%20Linux%20with%20Composer.md#howto-install-and-configure-a-simplesamlphp-idp-v1x-on-debian-linux-with-composer)
+2. [HOWTO Install and Configure a SimpleSAMLphp IdP v2.0.0 on Debian-Ubuntu Linux with Composer](./idem-fedops/HOWTO-SimpleSAMLphp/Identity%20Provider/HOWTO%20Install%20and%20Configure%20a%20SimpleSAMLphp%20IdP%20v2.0.0%20on%20Debian-Ubuntu%20Linux%20with%20Composer.md)
+3. [HOWTO Install and Configure a SimpleSAMLphp IDP v1.x on Debian Linux 10 (Buster)](./idem-fedops/HOWTO-SimpleSAMLphp/Identity%20Provider/HOWTO%20Install%20and%20Configure%20a%20SimpleSAMLphp%20IdP%20v1.x%20on%20Debian%20Linux%2010%20(Buster).md#howto-install-and-configure-a-simplesamlphp-idp-v1x-on-debian-linux-10-buster)
+4. [HOWTO Install and Configure a SimpleSAMLphp IDP v1.x on Debian Linux with Composer](https://github.com/ConsortiumGARR/idem-tutorials/blob/master/idem-fedops/HOWTO-SimpleSAMLphp/Identity%20Provider/HOWTO%20Install%20and%20Configure%20a%20SimpleSAMLphp%20IdP%20v1.x%20on%20Debian%20Linux%20with%20Composer.md#howto-install-and-configure-a-simplesamlphp-idp-v1x-on-debian-linux-with-composer)
 
 #### HOWTO Install and Configure a Service Provider
 
