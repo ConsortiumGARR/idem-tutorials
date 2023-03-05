@@ -581,7 +581,7 @@ and `idp.example.org` value with the Full Qualified Name of the Identity Provide
            // IDEM SPs + Entity Category SPs + Custom SPs
            60 =>[
                 'class' => 'core:PHP',
-                'code'	=>
+                'code'  =>
                 '
                 $config_dir = apache_getenv("SIMPLESAMLPHP_CONFIG_DIR");
                 include($config_dir."/idem-attribute-filter.php");
