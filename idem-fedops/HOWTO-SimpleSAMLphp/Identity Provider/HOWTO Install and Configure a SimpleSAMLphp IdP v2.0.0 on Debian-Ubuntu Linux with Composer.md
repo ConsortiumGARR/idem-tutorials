@@ -153,7 +153,7 @@ and `idp.example.org` value with the Full Qualified Name of the Identity Provide
      **NOTE**: To update Composer use: `composer self-update`
 
 5. Create the required directories:
-   * `mkdir -p /var/simplesamlphp/cert /var/simplesamlphp/config /var/simplesamlphp/metadata`
+   * `mkdir -p /var/simplesamlphp/cert /var/simplesamlphp/config /var/simplesamlphp/metadata /var/simplesamlphp/data`
 
 6. Install SimpleSAMLphp:
    * `cd /var/simplesamlphp`
