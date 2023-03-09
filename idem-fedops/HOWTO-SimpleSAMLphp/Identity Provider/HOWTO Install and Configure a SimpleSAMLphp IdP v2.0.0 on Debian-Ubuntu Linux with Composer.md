@@ -593,12 +593,18 @@ and `idp.example.org` value with the Full Qualified Name of the Identity Provide
            80 => ['class' => 'core:AttributeMap','oid2name'],
 
            // Consent module is enabled(with no permanent storage, using cookies)
-           90 => [
+           // In order to generate the privacy preserving hashes in the consent module, 
+           // is needed to pick one attribute that is always available and that is unique to all users. 
+           // An example of such an attribute is uid or eduPersonPrincipalName.
+           // FOR IDEM GARR AAI THIS MODULE ON SSP v2.0.0 CAN'T BE USED DUE ITS ATTRIBUTE FILTER FILE
+           // THAT FILTER OUT ALL NOT REQUIRED ATTRIBUTES.
+           // THIS USE CASE IS UNDER STUDYING
+           /*90 => [
                   'class' => 'consent:Consent',
-                  'identifyingAttribute' => 'eduPersonScopedAffiliation',
+                  'identifyingAttribute' => '## WAIT FOR A SOLUTION ##',
                   'store' => 'consent:Cookie',
                   'focus' => 'yes',
-                 ],
+                 ],*/
     
            // If language is set in Consent module it will be added as 'preferredLanguage' attribute
            99 => 'core:LanguageAdaptor',
