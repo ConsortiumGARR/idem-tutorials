@@ -342,7 +342,7 @@ and `idp.example.org` value with the Full Qualified Name of the Identity Provide
 5. Install Consent module:
    * `composer require simplesamlphp/simplesamlphp-module-consent:v1.2.2`
 
-6. Enable Consent module:
+6. Enable Consent module and create the `nameid` internal attribute:
    * `vim /var/simplesamlphp/config/config.php`
 
      ```php
@@ -355,6 +355,17 @@ and `idp.example.org` value with the Full Qualified Name of the Identity Provide
         'consent' => true,
      ],
      /* ...other things...*/
+     ```
+
+     ```php
+     'authproc.sp' => [
+        // Generates 'nameid' internal attribute
+        // used by Consent module as identifyingAttribute
+        // for each SP.
+        21 => [
+              'class' => 'saml:NameIDAttribute',
+        ],
+     ],
      ```
 
 7. Check if the module is enabled on the Administration page :
@@ -544,12 +555,10 @@ and `idp.example.org` value with the Full Qualified Name of the Identity Provide
                   'nameId' => true,
                  ],
 
-           // Adopts language from attribute to use in UI
-           30 => 'core:LanguageAdaptor',
-
            // The Attribute Limit will be use to release all possibile values supported by IdP to SPs
            // Remember to Comment out entire "authproc.idp" element into "config/config.php" file
            // or no attribute will be released.
+           
            50 => [
                   'class' => 'core:AttributeLimit',
                   'uid','givenName','sn','cn','mail','displayName','mobile',
@@ -561,14 +570,25 @@ and `idp.example.org` value with the Full Qualified Name of the Identity Provide
                   'urn:oasis:names:tc:SAML:attribute:subject-id',
                   'urn:oasis:names:tc:SAML:attribute:pairwise-id',
                   'eduPersonTargetedID','eduPersonOrcid','eduPersonOrgDN','eduPersonOrgUnitDN',
-                  'eduPersonScopedAffiliation','eduPersonAffiliation' => [
+                  'eduPersonScopedAffiliation' => [
+                     'regex' => true,
+                     '/^student@.*/',
+                     '/^staff@.*/',
+                     '/^member@.*/',
+                     '/^alum@.*/',
+                     '/^affiliate@.*/',
+                     '/^library-walk-in@.*/',
+                     '/^faculty@.*/',  // NO IDEM
+                     '/^employee@.*/', // NO IDEM
+                  ],
+                  'eduPersonAffiliation' => [
                      'student',
                      'staff',
                      'member',
                      'alum',
                      'affiliate',
                      'library-walk-in',
-                     'faculty', // NO IDEM
+                     'faculty',  // NO IDEM
                      'employee', // NO IDEM
                   ],
            ],
@@ -592,19 +612,20 @@ and `idp.example.org` value with the Full Qualified Name of the Identity Provide
            // to be able to see their names on the Consent page
            80 => ['class' => 'core:AttributeMap','oid2name'],
 
-           // Consent module is enabled(with no permanent storage, using cookies)
+           // Consent module is enabled without persistence.
            // In order to generate the privacy preserving hashes in the consent module, 
            // is needed to pick one attribute that is always available and that is unique to all users. 
            // An example of such an attribute is uid or eduPersonPrincipalName.
-           // FOR IDEM GARR AAI THIS MODULE ON SSP v2.0.0 CAN'T BE USED DUE ITS ATTRIBUTE FILTER FILE
-           // THAT FILTER OUT ALL NOT REQUIRED ATTRIBUTES.
-           // THIS USE CASE IS UNDER STUDYING
-           /*90 => [
+           //
+           // This setup uses no persistent storage at all. 
+           // This means that the user will always be asked to give consent each time he logs in.
+           90 => [
                   'class' => 'consent:Consent',
-                  'identifyingAttribute' => '## WAIT FOR A SOLUTION ##',
-                  'store' => 'consent:Cookie',
+                  'identifyingAttribute' => 'nameid',
                   'focus' => 'yes',
-                 ],*/
+                  'includeValues' => true,
+                  'attributes.exclude' => ['nameid'],
+           ],
     
            // If language is set in Consent module it will be added as 'preferredLanguage' attribute
            99 => 'core:LanguageAdaptor',
@@ -742,8 +763,8 @@ and `idp.example.org` value with the Full Qualified Name of the Identity Provide
              ],
              'search.scope' => 'sub',
              'search.attributes' => ['uid'],
-             'search.username' => 'cn=admin,dc=example,dc=org',
-             'search.password' => 'ciaoldap',
+             'search.username' => '<LDAP-DN-OF-USER-THAT-PERFORMS-QUERIES-ON-DIRECTORY>',
+             'search.password' => '<QUERY-USER-PASSWORD>',
          ],
      ];
      ```
