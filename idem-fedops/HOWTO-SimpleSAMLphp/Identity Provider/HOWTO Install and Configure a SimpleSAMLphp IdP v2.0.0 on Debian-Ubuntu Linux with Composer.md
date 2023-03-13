@@ -26,8 +26,9 @@
 7. [Appendix A - How to manage sessions with Memcached](#appendix-a---how-to-manage-sessions-with-memcached)
 8. [Appendix B - Enable UTF-8 on IdP metadata (to avoid encoding problems with accents)](#appendix-b---enable-utf-8-on-idp-metadata-to-avoid-encoding-problems-with-accents)
 9. [Appendix C - How to collect useful statistics](#appendix-c---how-to-collect-useful-statistics)
-10. [Utility](#utility)
-11. [Authors](#authors)
+10. [Appendix D - How to upgrade all modules](#appendix-d---how-to-upgrade-all-modules)
+11. [Utility](#utility)
+12. [Authors](#authors)
       1. [Original Author](#original-author)
 
 ## Requirements
@@ -920,6 +921,16 @@ Follow: <https://simplesamlphp.org/docs/contrib_modules/statistics/statistics.ht
 6. Copy the suggestion for a crontab file from the location `/simplesaml/module.php/cron/info` into your crontab:
    * `crontab -e`
    * Paste the suggestion before the end of file
+
+[[TOC]](#table-of-contents)
+
+## Appendix D - How to upgrade all modules
+
+1. Move into the installation dir:
+   * `cd /var/simplesamlphp`
+
+2. Update all Composer packages with:
+   * `sudo composer update`
 
 [[TOC]](#table-of-contents)
 
