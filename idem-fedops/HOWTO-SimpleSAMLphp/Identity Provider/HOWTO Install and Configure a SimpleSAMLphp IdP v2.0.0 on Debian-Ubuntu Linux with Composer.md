@@ -157,7 +157,7 @@ and `idp.example.org` value with the Full Qualified Name of the Identity Provide
 
 6. Install SimpleSAMLphp:
    * `cd /var/simplesamlphp`
-   * `composer require simplesamlphp/simplesamlphp:v2.0.0`
+   * `composer require simplesamlphp/simplesamlphp --update-no-dev`
    * To the question "**Do you trust "simplesamlphp/composer-module-installer**" to execute code and wish to enable it now? (writes "allow-plugins" to composer.json) [y,n,d,?]" answer `y`
 
 7. Load `config` and `metadata` configuration files into `/var/simplesamlphp`:
@@ -340,7 +340,7 @@ and `idp.example.org` value with the Full Qualified Name of the Identity Provide
      ```
 
 5. Install Consent module:
-   * `composer require simplesamlphp/simplesamlphp-module-consent:v1.2.2`
+   * `composer require simplesamlphp/simplesamlphp-module-consent --update-no-dev`
 
 6. Enable Consent module and create the `nameid` internal attribute:
    * `vim /var/simplesamlphp/config/config.php`
@@ -679,7 +679,7 @@ and `idp.example.org` value with the Full Qualified Name of the Identity Provide
 
 3. Install the SimpleSAMLphp LDAP module:
    * `cd /var/simplesamlphp`
-   * `composer require simplesamlphp/simplesamlphp-module-ldap:v2.1.5`
+   * `composer require simplesamlphp/simplesamlphp-module-ldap --update-no-dev`
 
 4. Check that you can reach the Directory from your IDP server:
    * For OpenLDAP:
@@ -894,7 +894,7 @@ Follow: <https://simplesamlphp.org/docs/contrib_modules/statistics/statistics.ht
 
 2. Install the 'statistics' module:
    * `cd /var/simplesamlphp`
-   * `composer require simplesamlphp/simplesamlphp-module-statistics:v1.1.8`
+   * `composer require simplesamlphp/simplesamlphp-module-statistics --update-no-dev`
 
 3. Configure the 'statistics' and `cron` module
    * statistics:
