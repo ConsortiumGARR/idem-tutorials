@@ -901,13 +901,13 @@ Follow: <https://simplesamlphp.org/docs/contrib_modules/statistics/statistics.ht
    * statistics:
 
      ```bash
-     cp /var/simplesamlphp/vendor/simplesamlphp/simplesamlphp/modules/statistics/config-templates/*.php /var/simplesamlphp/config
+     cp /var/simplesamlphp/vendor/simplesamlphp/simplesamlphp/modules/statistics/config-templates/module_statistics.php /var/simplesamlphp/config/module_statistics.php
      ```
 
    * cron:
 
      ```bash
-     cp /var/simplesamlphp/vendor/simplesamlphp/simplesamlphp/modules/cron/config-templates/*.php /var/simplesamlphp/config
+     cp /var/simplesamlphp/vendor/simplesamlphp/simplesamlphp/modules/cron/config/module_cron.php.dist /var/simplesamlphp/config/module_cron.php
      ```
 
 4. Prepare the environment for 'statistics' module:
