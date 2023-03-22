@@ -343,7 +343,7 @@ and `idp.example.org` value with the Full Qualified Name of the Identity Provide
 5. Install Consent module:
    * `composer require simplesamlphp/simplesamlphp-module-consent --update-no-dev`
 
-6. Enable Consent module and create the `nameid` internal attribute:
+6. Enable Consent module:
    * `vim /var/simplesamlphp/config/config.php`
 
      ```php
@@ -356,17 +356,6 @@ and `idp.example.org` value with the Full Qualified Name of the Identity Provide
         'consent' => true,
      ],
      /* ...other things...*/
-     ```
-
-     ```php
-     'authproc.sp' => [
-        // Generates 'nameid' internal attribute
-        // used by Consent module as identifyingAttribute
-        // for each SP.
-        21 => [
-              'class' => 'saml:NameIDAttribute',
-        ],
-     ],
      ```
 
 7. Check if the module is enabled on the Administration page :
@@ -594,10 +583,6 @@ and `idp.example.org` value with the Full Qualified Name of the Identity Provide
                   ],
            ],
 
-           // Convert the attributes' names into OID because
-           // SSP will use them from parsed metadata on the $attributes array.
-           51 => ['class' => 'core:AttributeMap','name2oid'],
-
            // IDEM Attribute Filter:
            // IDEM SPs + Entity Category SPs + Custom SPs
            60 =>[
@@ -609,23 +594,27 @@ and `idp.example.org` value with the Full Qualified Name of the Identity Provide
                 '
            ],
 
-           // Convert the attributes' names into Name
-           // to be able to see their names on the Consent page
-           80 => ['class' => 'core:AttributeMap','oid2name'],
-
-           // Consent module is enabled without persistence.
+           // Consent module is enabled with persistence.
            // In order to generate the privacy preserving hashes in the consent module, 
            // is needed to pick one attribute that is always available and that is unique to all users. 
            // An example of such an attribute is uid or eduPersonPrincipalName.
            //
-           // This setup uses no persistent storage at all. 
-           // This means that the user will always be asked to give consent each time he logs in.
+           // This setup uses Cookies as storage backend. 
            90 => [
                   'class' => 'consent:Consent',
-                  'identifyingAttribute' => 'nameid',
+                  'identifyingAttribute' => 'uid',
                   'focus' => 'yes',
-                  'includeValues' => true,
-                  'attributes.exclude' => ['nameid'],
+                  'checked' => true,
+                  'store' => 'consent:Cookie'
+                  'attributes.exclude' => ['uid'],
+           ],
+           
+           91 => [
+                 'class' => 'core:PHP',
+                 'code'  =>
+                 '
+                 unset($attributes['uid']);
+                 '
            ],
     
            // If language is set in Consent module it will be added as 'preferredLanguage' attribute
