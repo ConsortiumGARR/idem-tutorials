@@ -24,9 +24,8 @@
    5. [Download IdP Metadata](#download-idp-metadata)
    6. [Register the IdP on the IDEM Test Federation](#register-the-idp-on-the-idem-test-federation)
 7. [Appendix A - How to manage sessions with Memcached](#appendix-a---how-to-manage-sessions-with-memcached)
-8. [Appendix B - Enable UTF-8 on IdP metadata (to avoid encoding problems with accents)](#appendix-b---enable-utf-8-on-idp-metadata-to-avoid-encoding-problems-with-accents)
-9. [Appendix C - How to collect useful statistics](#appendix-c---how-to-collect-useful-statistics)
-10. [Appendix D - How to upgrade all modules](#appendix-d---how-to-upgrade-all-modules)
+9. [Appendix B - How to collect useful statistics](#appendix-b---how-to-collect-useful-statistics)
+10. [Appendix C - How to upgrade all modules](#appendix-c---how-to-upgrade-all-modules)
 11. [Utility](#utility)
 12. [Authors](#authors)
       1. [Original Author](#original-author)
@@ -839,28 +838,7 @@ Follow these steps **ONLY IF** your organization is connected to the [GARR Netwo
 
 [[TOC]](#table-of-contents)
 
-## Appendix B - Enable UTF-8 on IdP metadata (to avoid encoding problems with accents)
-
-* `vim /var/simplesamlphp/vendor/simplesamlphp/simplesamlphp/src/SimpleSAML/Metadata/SAMLBuilder.php`
-
-```bash
-public function getEntityDescriptorText(bool $formatted = true): string
-{
-   $xml = $this->getEntityDescriptor();
-   if ($formatted) {
-       $xmlUtils = new Utils\XML();
-       $xmlUtils->formatDOMElement($xml);
-   }
-
-   $xml->ownerDocument->encoding = "utf-8";
-
-   return $xml->ownerDocument->saveXML();
-}
-```
-
-[[TOC]](#table-of-contents)
-
-## Appendix C - How to collect useful statistics
+## Appendix B - How to collect useful statistics
 
 Follow: <https://simplesamlphp.org/docs/contrib_modules/statistics/statistics.html>
 
@@ -913,7 +891,7 @@ Follow: <https://simplesamlphp.org/docs/contrib_modules/statistics/statistics.ht
 
 [[TOC]](#table-of-contents)
 
-## Appendix D - How to upgrade all modules
+## Appendix C - How to upgrade all modules
 
 1. Move into the installation dir:
    * `cd /var/simplesamlphp`
