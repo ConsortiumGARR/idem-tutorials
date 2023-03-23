@@ -604,8 +604,8 @@ and `idp.example.org` value with the Full Qualified Name of the Identity Provide
                   'identifyingAttribute' => 'uid',
                   'focus' => 'yes',
                   'checked' => true,
-                  'store' => 'consent:Cookie'
-                  'attributes.exclude' => ['uid'],
+                  'store' => 'consent:Cookie',
+                  'attributes.exclude' => ['uid']
            ],
            
            91 => [
