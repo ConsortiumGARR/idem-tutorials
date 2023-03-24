@@ -186,7 +186,7 @@ and `idp.example.org` value with the Full Qualified Name of the Identity Provide
 3. Create the Virtualhost file (**please pay attention: you need to edit this file and customize it, check the internal initial comment**):
 
    ```bash
-   wget https://registry.idem.garr.it/idem-conf/simplesamlphp/2/IDP/apache2/idp.example.org.conf -O /etc/apache2/sites-available/$(hostname -f).conf
+   wget https://registry.idem.garr.it/idem-conf/simplesamlphp/IDP2/apache2/idp.example.org.conf -O /etc/apache2/sites-available/$(hostname -f).conf
    ```
 
 4. Put SSL credentials in the right place:
@@ -651,7 +651,7 @@ and `idp.example.org` value with the Full Qualified Name of the Identity Provide
 >    or that has needed to receive a specific value for one or more attributes
 
 * Download IDEM ARP into SimpleSAMLphp `config` directory:
-  * `sudo wget https://registry.idem.garr.it/idem-conf/simplesamlphp/2/IDP/config/idem-attribute-filter.php -O /var/simplesamlphp/config/idem-attribute-filter.php`
+  * `sudo wget https://registry.idem.garr.it/idem-conf/simplesamlphp/IDP2/config/idem-attribute-filter.php -O /var/simplesamlphp/config/idem-attribute-filter.php`
 
 * Change the `require` line into `idem-attribute-filter.php` by setting the correct path of the `name2oid.php` file if differs on your instance.
 
