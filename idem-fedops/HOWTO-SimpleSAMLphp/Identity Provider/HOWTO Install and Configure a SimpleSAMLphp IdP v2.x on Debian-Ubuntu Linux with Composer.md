@@ -524,6 +524,7 @@ and `idp.example.org` value with the Full Qualified Name of the Identity Provide
                  ],
                  
            // Add subject-id
+           // The value of the "identifyingAttribute" MUST CONTAINS ONLY ALPHA or DIGIT characters and "=" or "-" symbols
            13 => [
                   'class' => 'saml:SubjectID',
                   'identifyingAttribute' => 'uid',
