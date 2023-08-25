@@ -352,7 +352,7 @@ Please remember to **replace all occurencences** of the `example.org` domain nam
       eduPersonAffiliation: student
       eduPersonAffiliation: staff
       eduPersonAffiliation: member
-      eduPersonEntitlement: urn:mace:terena.org:tcs:escience-user
+      eduPersonEntitlement: urn:mace:dir:entitlement:common-lib-terms
       eduPersonEntitlement: urn:mace:terena.org:tcs:personal-user
       EOF'
       ```
