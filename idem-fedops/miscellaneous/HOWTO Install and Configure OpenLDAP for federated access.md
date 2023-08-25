@@ -429,20 +429,18 @@ Please remember to **replace all occurencences** of the `example.org` domain nam
    ```bash
    sudo su
    
-   mkdir /var/www/html/$(hostname -f)
+   cd /var/www/html/
    
-   cd /var/www/html/$(hostname -f)
-   
-   wget https://github.com/leenooks/phpLDAPadmin/archive/refs/tags/1.2.6.2.tar.gz -O phpldapadmin.tar.gz
+   wget https://github.com/leenooks/phpLDAPadmin/archive/refs/tags/1.2.6.6.tar.gz -O phpldapadmin.tar.gz
    
    tar -xzf phpldapadmin.tar.gz
    
-   mv phpLDAPadmin-1.2.6.2 pla
+   mv phpLDAPadmin-1.2.6.6 pla
    ```
 
 3. Create PLA configuration file:
    ```bash
-   cd /var/www/html/$(hostname -f)/pla/config
+   cd /var/www/html/pla/config
    
    sudo cp config.php.example config.php
    ```
@@ -461,4 +459,4 @@ Please remember to **replace all occurencences** of the `example.org` domain nam
 
 ## PLA Configuration
 
-1. Edit `/var/www/html/$(hostname -f)/pla/config/config.php` to configure PhpLdapAdmin.
+1. Edit `/var/www/html/pla/config/config.php` to configure PhpLdapAdmin.
