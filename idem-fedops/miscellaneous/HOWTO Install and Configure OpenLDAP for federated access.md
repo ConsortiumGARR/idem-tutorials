@@ -219,19 +219,34 @@ Please remember to **replace all occurencences** of the `example.org` domain nam
    ```
 
 7. Install needed schemas (eduPerson, SCHAC, Password Policy):
+
    ```bash
    sudo wget https://raw.githubusercontent.com/malavolti/ansible-shibboleth/master/roles/openldap/files/eduperson-201602.ldif -O /etc/ldap/schema/eduperson.ldif
    sudo wget https://raw.githubusercontent.com/malavolti/ansible-shibboleth/master/roles/openldap/files/schac-20150413.ldif -O /etc/ldap/schema/schac.ldif
    sudo ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/ldap/schema/eduperson.ldif
    sudo ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/ldap/schema/schac.ldif
-   sudo ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/ldap/schema/ppolicy.ldif
+   sudo ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/ldap/schema/ppolicy.ldif  (on Ubuntu 22.04 LTS it does not exist! See below)
   
    sudo ldapsearch -Q -LLL -Y EXTERNAL -H ldapi:/// -b 'cn=schema,cn=config' dn
    ```
 
-   and verify presence of the new `schac` and `eduPerson` schemas.
+   and verify presence of the new `schac`, `eduPerson` and  `ppolicy` schemas.
 
-8. Add MemberOf Configuration:
+   * For Ubuntu >= 22.04:
+     * Create the `ppolicy.ldif` file
+       ```bash
+       sudo bash -c 'cat > /etc/ldap/schema/ppolicy.ldif <<EOF
+       dn: cn=module,cn=config
+       objectClass: olcModuleList
+       cn: module
+       olcModuleLoad: ppolicy
+       EOF'
+       ```
+       
+     * Add Password Policy module with:
+       * `sudo ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/ldap/schema/ppolicy.ldif`
+
+9. Add MemberOf Configuration:
    ```bash
    sudo bash -c 'cat > /etc/ldap/scratch/add_memberof.ldif <<EOF
    dn: cn=module,cn=config
@@ -256,7 +271,7 @@ Please remember to **replace all occurencences** of the `example.org` domain nam
    sudo ldapadd -Q -Y EXTERNAL -H ldapi:/// -f /etc/ldap/scratch/add_memberof.ldif
    ```
 
-9. Improve performance:
+10. Improve performance:
    ```bash
    sudo bash -c 'cat > /etc/ldap/scratch/olcDbIndex.ldif <<EOF
    dn: olcDatabase={1}mdb,cn=config
@@ -275,7 +290,7 @@ Please remember to **replace all occurencences** of the `example.org` domain nam
    sudo ldapmodify -Y EXTERNAL -H ldapi:/// -f /etc/ldap/scratch/olcDbIndex.ldif
    ```
 
-10. Configure Logging:
+11. Configure Logging:
     ```bash
     sudo mkdir /var/log/slapd
 
@@ -297,7 +312,7 @@ Please remember to **replace all occurencences** of the `example.org` domain nam
     sudo service slapd restart
     ```
 
-11. Configure openLDAP olcSizeLimit:
+12. Configure openLDAP olcSizeLimit:
     ```bash
     sudo bash -c 'cat > /etc/ldap/scratch/olcSizeLimit.ldif <<EOF
     dn: cn=config
@@ -314,7 +329,7 @@ Please remember to **replace all occurencences** of the `example.org` domain nam
     sudo ldapmodify -Y EXTERNAL -H ldapi:/// -f /etc/ldap/scratch/olcSizeLimit.ldif
     ```
 
-12. Add your first user:
+13. Add your first user:
 
     **Be carefull!** Replace `dc=example,dc=org` with distinguish name ([DN](https://ldap.com/ldap-dns-and-rdns/)) of your domain name!
     * Configure `user1.ldif`:
