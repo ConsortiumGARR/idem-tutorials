@@ -226,7 +226,7 @@ Please remember to **replace all occurencences** of the `example.org` domain nam
    sudo ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/ldap/schema/schac.ldif
    sudo ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/ldap/schema/ppolicy.ldif
   
-   sudo ldapsearch -Q -LLL -Y EXTERNAL -H ldapi:/// -b 'cn=schema,cn=config dn'
+   sudo ldapsearch -Q -LLL -Y EXTERNAL -H ldapi:/// -b 'cn=schema,cn=config' dn
    ```
 
    and verify presence of the new `schac` and `eduPerson` schemas.
