@@ -58,7 +58,6 @@ These GitHub Repository contains step-by-step tutorials on Identity and Service 
 #### OpenLDAP
 
 * [HOWTO Install and Configure OpenLDAP for federated access](./idem-fedops/miscellaneous/HOWTO%20Install%20and%20Configure%20OpenLDAP%20for%20federated%20access.md#howto-install-and-configure-openldap-for-federated-access)
-* [HOWTO Install and Configure OpenLDAP for federated access on CentOS](./idem-fedops/miscellaneous/HOWTO%20Install%20and%20Configure%20OpenLDAP%20for%20federated%20access-CentOS.md)
 
 ### HOWTOs DEPRECATED
 1. [HOWTO Install and Configure a SimpleSAMLphp IDP v1.x on Debian Linux with Composer](https://github.com/ConsortiumGARR/idem-tutorials/blob/master/idem-fedops/HOWTO-SimpleSAMLphp/Identity%20Provider/HOWTO%20Install%20and%20Configure%20a%20SimpleSAMLphp%20IdP%20v1.x%20on%20Debian%20Linux%20with%20Composer.md#howto-install-and-configure-a-simplesamlphp-idp-v1x-on-debian-linux-with-composer)
@@ -74,6 +73,7 @@ These GitHub Repository contains step-by-step tutorials on Identity and Service 
 11. [HOWTO Install and Configure a Shibboleth IdP v3.2.1 on Linux Fedora 24 Server Edition with Apache2 + Jetty9](./idem-fedops/HOWTO-Shibboleth/Identity%20Provider/Fedora/HOWTO%20Install%20and%20Configure%20a%20Shibboleth%20IdP%20v3.2.1%20on%20Linux%20Fedora%2024%20Server%20Edition%20with%20Apache2%20%2B%20Jetty9.md)
 12. [HOWTO Install and Configure a Shibboleth IdP v3.2.1 on Linux Fedora 24 Server Edition with Apache2 + Tomcat8](./idem-fedops/HOWTO-Shibboleth/Identity%20Provider/Fedora/HOWTO%20Install%20and%20Configure%20a%20Shibboleth%20IdP%20v3.2.1%20on%20Linux%20Fedora%2024%20Server%20Edition%20with%20Apache2%20%2B%20Tomcat8.md)
 13. [HOWTO Configure a Shibboleth IdP v3.2.1 to authenticate users existing on different LDAP Servers](./idem-fedops/HOWTO-Shibboleth/Solutions/HOWTO%20Configure%20a%20Shibboleth%20IdP%20v3.2.1%20to%20authenticate%20Users%20existing%20on%20different%20LDAP%20Servers.md)
+14. [HOWTO Install and Configure OpenLDAP for federated access on CentOS](./idem-fedops/miscellaneous/HOWTO%20Install%20and%20Configure%20OpenLDAP%20for%20federated%20access-CentOS.md)
 
 ## IDEM Community Users HOWTOs
 
