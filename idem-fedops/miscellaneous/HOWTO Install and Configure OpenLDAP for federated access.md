@@ -58,7 +58,9 @@ Please remember to **replace all occurencences** of the `example.org` domain nam
 3. Install required package:
    * `sudo apt install slapd ldap-utils ldapscripts`
 
-4. Create Certificate/Key (**This HOWTO will use Self Signed Certificate for LDAP**):
+4. Check `/etc/hosts` to be sure to have the correct FQDN for OpenLDAP server
+
+5. Create Certificate/Key (**This HOWTO will use Self Signed Certificate for LDAP**):
    * Self Signed (4096 bit - 3 years before expiration):
 
       * ```bash
@@ -92,8 +94,6 @@ Please remember to **replace all occurencences** of the `example.org` domain nam
        sudo cp /etc/ssl/private/$(hostname -f).key /etc/ldap/$(hostname -f).key
        sudo chown openldap:openldap /etc/ldap/$(hostname -f).crt /etc/ldap/$(hostname -f).key
        ```
-
-5. Check `/etc/hosts` to be sure to have the correct FQDN for OpenLDAP server
 
 6. Enable SSL for LDAP:
    ```bash
