@@ -161,8 +161,8 @@ and `idp.example.org` value with the Full Qualified Name of the Identity Provide
    * To the question "**Do you trust "simplesamlphp/composer-module-installer**" to execute code and wish to enable it now? (writes "allow-plugins" to composer.json) [y,n,d,?]" answer `y`
 
 7. Load `config` and `metadata` configuration files into `/var/simplesamlphp`:
-   * `cp -r /var/simplesamlphp/vendor/simplesamlphp/simplesamlphp/config/config.php.dist /var/simplesamlphp/config/config.php`
-   * `cp -r /var/simplesamlphp/vendor/simplesamlphp/simplesamlphp/metadata/saml20-idp-hosted.php.dist /var/simplesamlphp/metadata/saml20-idp-hosted.php`
+   * `cp -r /var/simplesamlphp/vendor/simplesamlphp/simplesamlphp/config-templates/config.php /var/simplesamlphp/config/config.php`
+   * `cp -r /var/simplesamlphp/vendor/simplesamlphp/simplesamlphp/metadata-templates/saml20-idp-hosted.php /var/simplesamlphp/metadata/saml20-idp-hosted.php`
 
 [[TOC]](#table-of-contents)
 
