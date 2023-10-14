@@ -498,7 +498,7 @@ and `idp.example.org` value with the Full Qualified Name of the Identity Provide
            2 => [
                  'class' => 'saml:PersistentNameID',
                  'identifyingAttribute' => 'uid',  //the source attribute needed by the NameID generation
-                 'NameQualifier => true,
+                 'NameQualifier' => true,
                  'SPNameQualifier' => true,
            ],
         
