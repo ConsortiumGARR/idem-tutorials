@@ -387,6 +387,9 @@ To update Composer use: `composer self-update`
         /* eduPersonTargetedID with oid NameFormat is a raw XML value */
         'attributeencodings' => ['urn:oid:1.3.6.1.4.1.5923.1.1.1.10' => 'raw'],
 
+        /* The <LogoutResponse> message MUST be signed if the HTTP POST or Redirect binding is used */
+        'sign.logout' => true,
+
         'NameIDFormat' => [
            'urn:oasis:names:tc:SAML:2.0:nameid-format:transient',
            'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
