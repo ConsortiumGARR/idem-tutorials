@@ -335,7 +335,7 @@ To update Composer use: `composer self-update`
         'certificate' => 'ssp-idp.crt',
         
         'scope' => ['<INSERT-HERE-IDP-SCOPE>'],   // Usually the scope is the domain name
-        'userid.attribute' => 'uid' //deprecated, but needed by Consent module. It takes the same value of the persistent NameID source attribute
+        'userid.attribute' => 'uid', //deprecated, but needed by Consent module. It takes the same value of the persistent NameID source attribute
 
         'UIInfo' => [
            'DisplayName' => [
