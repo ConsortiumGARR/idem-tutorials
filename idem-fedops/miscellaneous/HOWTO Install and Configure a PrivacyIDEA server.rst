@@ -300,15 +300,15 @@ When the administrator logs in and no UserIdResolver and no Realm are defined,
 a popup appears, which asks you to create a default Realm.
 Say "**No**" to the *Create default realm* request.
 
-.. image:: images/FirstLogin_1.jpeg
+.. image:: ../images/FirstLogin_1.jpeg
 
-.. image:: images/FirstLogin_2.jpeg
+.. image:: ../images/FirstLogin_2.jpeg
 
-.. image:: images/FirstLogin_3.jpeg
+.. image:: ../images/FirstLogin_3.jpeg
 
-.. image:: images/FirstLogin_4.jpeg
+.. image:: ../images/FirstLogin_4.jpeg
 
-.. image:: images/FirstLogin_5.jpeg
+.. image:: ../images/FirstLogin_5.jpeg
 
 Than disable the Welcome message with the Policy template ``hide_welcome``:
 
