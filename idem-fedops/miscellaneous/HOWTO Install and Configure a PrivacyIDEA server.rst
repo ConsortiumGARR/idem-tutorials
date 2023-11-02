@@ -19,9 +19,9 @@ Index
 #. `Login to the Web UI`_
 #. `Setup basic Policies`_
 
-   #. `Allow admin user to do everything`_
    #. `Disable Welcome message`_
    #. `Change the Logout Time`_
+   #. `Allow admin user to do everything`_
    #. `Change the Token label`_
 
 #. `Create UserIdResolvers`_
@@ -293,27 +293,6 @@ For example:
 * **user** policies define, how the system reacts if a user is managing his own tokens.
 * **authentication** and **authorization** policies influence the authentication and the authorization of users/admins.
 
-Allow admin user to do everything
-+++++++++++++++++++++++++++++++++
-
-**Attention:** Admins in privacyIDEA have rights to all actions at the beginning.
-This will apply as long as no admin policy is defined. 
-If you define a policy in the scope ``admin``, 
-only the rights entered for the policies apply to all admins. 
-If there is no further admin policy yet, 
-you should be careful not to block yourself out of the web UI.
-
-* Go to Config -> Policies
-* Create new Policy -> Show Policy templates
-* Click on **superuser**
-* Set the Policy Name to **superuser**
-* Set to 1 the **Priority** value
-* Leave the value of **Admin-Realm** under the **Condition** tab to **None Selected** to enable policy for all admins' realms.
-* Add the username of the administrator created ``admin`` to field **Admin** to enable the policy for only the selected user.
-* Save Policy
-
-`[TOP] <Index_>`_
-
 Disable Welcome message
 +++++++++++++++++++++++
 
@@ -356,6 +335,27 @@ The default timeout is 120 seconds.
 * Set its value to 10 minutes: 600
 * Set to 3 the **Priority** value
 * Set the Policy Name to **webui-timeout**
+* Save Policy
+
+`[TOP] <Index_>`_
+
+Allow admin user to do everything
++++++++++++++++++++++++++++++++++
+
+**Attention:** Admins in privacyIDEA have rights to all actions at the beginning.
+This will apply as long as no admin policy is defined. 
+If you define a policy in the scope ``admin``, 
+only the rights entered for the policies apply to all admins. 
+If there is no further admin policy yet, 
+you should be careful not to block yourself out of the web UI.
+
+* Go to Config -> Policies
+* Create new Policy -> Show Policy templates
+* Click on **superuser**
+* Set the Policy Name to **superuser**
+* Set to 1 the **Priority** value
+* Leave the value of **Admin-Realm** under the **Condition** tab to **None Selected** to enable policy for all admins' realms.
+* Add the username of the administrator created ``admin`` to field **Admin** to enable the policy for only the selected user.
 * Save Policy
 
 `[TOP] <Index_>`_
