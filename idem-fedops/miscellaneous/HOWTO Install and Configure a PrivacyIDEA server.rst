@@ -398,14 +398,7 @@ DOC: `PrivacyIDEA LDAP Resolver <https://privacyidea.readthedocs.io/en/v3.8.1/co
 The LDAP resolver can be used to access any kind of LDAP service
 like OpenLDAP, Active Directory, FreeIPA, Penrose, Novell eDirectory.
 
-PrivacyIDEA can use the following datas:
-
-* username
-* surname
-* givenname
-* email
-* phone
-* mobile
+PrivacyIDEA can use the following datas: *username*, *surname*, *givenname*, *email*, *phone*, *mobile*
 
 * Go to Config -> Users to create a UserIdResolver.
 * Choose **New ldapresolver** and fill at least the following fields:
