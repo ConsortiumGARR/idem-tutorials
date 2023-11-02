@@ -312,11 +312,11 @@ Say "**No**" to the *Create default realm* request.
 
 Than disable the Welcome message with the Policy template ``hide_welcome``:
 
-* Go to Config -> Policies
-* Create new Policy -> Show Policy templates
+* Go to **Config** -> **Policies**
+* Open **Create new Policy** -> **Show Policy templates**
 * Click on **hide_welcome**
-* Set to 2 the **Priority** value
-* Set the Policy Name to **hide_welcome**
+* Set the value of **Policy Name** to **hide_welcome**
+* Set the value of **Priority** to **2**
 * Save Policy
 
 `[TOP] <Index_>`_
@@ -327,14 +327,14 @@ Change the Logout Time
 Set the timeout, after which a user in the WebUI will be logged out.
 The default timeout is 120 seconds.
 
-* Go to Config -> Policies
-* Create new Policy
-* Set to **webui** the Scope
+* Go to **Config** -> **Policies**
+* Open **Create new Policy**
+* Set the value of **Policy Name** to **webui-timeout**
+* Set the value of **Priority** to **3**
+* Set the value of **Scope** to **webui**
 * Move on the **Action** tab
 * Insert ``logout_time`` in the *filter action* search box
-* Set its value to 10 minutes: 600
-* Set to 3 the **Priority** value
-* Set the Policy Name to **webui-timeout**
+* Set the value of ``logout_time`` to 10 minutes: **600**
 * Save Policy
 
 `[TOP] <Index_>`_
@@ -349,13 +349,13 @@ only the rights entered for the policies apply to all admins.
 If there is no further admin policy yet, 
 you should be careful not to block yourself out of the web UI.
 
-* Go to Config -> Policies
-* Create new Policy -> Show Policy templates
+* Go to **Config** -> **Policies**
+* Open **Create new Policy** -> **Show Policy templates**
 * Click on **superuser**
-* Set the Policy Name to **superuser**
-* Set to 1 the **Priority** value
-* Leave the value of **Admin-Realm** under the **Condition** tab to **None Selected** to enable policy for all admins' realms.
-* Add the username of the administrator created ``admin`` to field **Admin** to enable the policy for only the selected user.
+* Set the value of **Policy Name** to **superuser**
+* Set the value of **Priority** to **1**
+* Leave the value of **Admin-Realm** (under the **Condition** tab) to **None Selected** to enable policy for all admins' realms.
+* Add the username of the administrator created ``admin`` to the field **Admin** to enable the policy for only the selected user.
 * Save Policy
 
 `[TOP] <Index_>`_
@@ -366,13 +366,13 @@ Change the Token label
 Set label for a new enrolled Google Authenticator app.
 Possible tags are <u> (user), <r> (realm), <s> (serial).
 
-* Go to Config -> Policies
-* Create new Policy -> Show Policy templates
+* Go to **Config** -> **Policies**
+* Open **Create new Policy** -> **Show Policy templates**
 * Click on **enroll_tokenlabel**
-* Set the Policy Name to **enroll_tokenlabel**
-* Set to 4 the **Priority** value
+* Set the value of **Policy Name** to **enroll_tokenlabel**
+* Set the value of **Priority** to **4**
 * Move on the **Action** tab and click on the **Show selected actions only** button
-* Edit the **tokenlabel** by inserting the label you prefer (e.g.: Lab MFA 42: OTP (<u>))
+* Edit the **tokenlabel** by inserting the label you prefer (e.g.: ``Lab MFA 42: OTP (<u>)``)
 * Save Policy
 
 `[TOP] <Index_>`_
@@ -400,7 +400,7 @@ like OpenLDAP, Active Directory, FreeIPA, Penrose, Novell eDirectory.
 
 PrivacyIDEA can use the following datas: *username*, *surname*, *givenname*, *email*, *phone*, *mobile*
 
-* Go to Config -> Users to create a UserIdResolver.
+* Go to **Config** -> **Users** to create a UserIdResolver.
 * Choose **New ldapresolver** and fill at least the following fields:
 
   * Resolver name: ``LABMFA<N>-ldap-resolver``
@@ -414,12 +414,13 @@ PrivacyIDEA can use the following datas: *username*, *surname*, *givenname*, *em
   * Bind DN: ``cn=idm-user,ou=system,dc=idem-day-org-<N>,dc=it``
   * Bind Password: ``<IDM-USER-PASSWORD>``
   * Per-process server pool: ``Checked``
-  * Press on ``Preset OpenLDAP``
+  * Click on ``Preset OpenLDAP``
   * Insert into ``Loginname Attribute`` the LDAP attribute name used to login the PrivacyIDEA Web UI
   * Insert into ``Search Filter`` the correct value to list all possible users
   * Remove from the ``Attribute mapping`` those datas not managed by the OpenLDAP server connected
   * Insert into ``Multivalue Attributes`` a Python list of user attributes, that should return a list of values. E.g.: ``['mail']``
   * Insert into ``UID Type`` the unique identifier for the LDAP object. We suggest to use an attribute with a value that not change permanently. If your OpenLDAP get corrupted, you will break all due the change of the ``entryUUID`` value for all entries.
+  * Check the ``No anonymous referral chasing`` box if Active Directory is used.
   * Check the ``No retrieval of schema information`` box to disable the retrieval of schema information in order to improve performance.
 
 The Server URI can contains a comma separated list of servers. 
@@ -460,10 +461,10 @@ Users outside of the default realm have to authenticate theirselves with ``usern
 
 Into this HOWTO we'll use only the default realm because we don't need more than one realm.
 
-* Go to Config -> Realms
-* Check the new resolver created
+* Go to **Config** -> **Realms**
 * Set ``idem-day-org-<N>.it`` on Realm name
-* Press on "Create realm"
+* Check the new resolver created
+* Press on **Create realm**
 
 If other realms are defined on PrivacyIDEA, the default one can set on the realm list from the WebUI.
 
@@ -483,9 +484,9 @@ DOC: `TOTP Token <https://privacyidea.readthedocs.io/en/v3.8.1/tokens/tokentypes
 
 A time based One Time Password tokens based on `RFC6238 <https://tools.ietf.org/html/rfc6238>`_.
 
-* Go to Tokens -> Enroll Token
-* Select *TOTP: Time Base One Time Passwords.*
-* Enter the user name under *Username*
+* Go to **Tokens** -> **Enroll Token**
+* Select **TOTP: Time Base One Time Passwords.**
+* Enter the user name under **Username**
 * Leave the *PIN* empty
 * Press the Enroll Token button
 * Scan the QR Code with Google Authenticator or another apps
@@ -503,40 +504,42 @@ A token that sends the OTP value to the E-Mail address of the user.
 
 #. Add your SMTP server:
 
-   #. Go to Config -> System -> SMTP servers
-   #. Adding a new SMTP server by opening ``New SMTP server``:
+   #. Go to **Config** -> **System** -> **SMTP servers**
+   #. Adding a new SMTP server by opening **New SMTP server**:
 
-      * Identifier: ``labmfa<N>-smtp``
-      * IP or FQDN: ``idem-day-idp-<N>.aai-test.garr.it``
-      * Port: ``1025``
-      * Sender Email: ``privacyidea@idem-day-org-<N>.it``
-      * StartTLS: ``no``
-      * Recipient for testing: ``personal@email.it``
-      * Test with ``Send Test Email``
+      * **Identifier**: ``labmfa<N>-smtp``
+      * **IP or FQDN**: ``idem-day-idp-<N>.aai-test.garr.it``
+      * **Port**: ``1025``
+      * **Timeout**: ``10``
+      * **Sender Email**: ``privacyidea@idem-day-org-<N>.it``
+      * **StartTLS**: ``no``
+      * **Recipient for testing**: ``personal@email.it``
+      * Test with **Send Test Email**
       * Save SMTP server
 
 #. Link the SMTP server to the Email Token:
 
-   * Go to Config -> Tokens -> Email
-   * Insert the SMTP server created under *SMTP server configuration*
+   * Go to **Config** -> **Tokens** -> **Email**
+   * Select the SMTP server created into **SMTP server configuration**
+   * Set the **OTP validity time** to 30 seconds.
+   * Save
 
 #. Enroll an Email Token from the WebUI:
 
-   * Go to Tokens -> Enroll Token
-   * Select *Email: Send a One Time Passwords to the users email address.*
-   * Check the box *Read email address dynamically from user source on each request.*
-   * Enter the user name under *Username*
-   * Leave the "PIN" empty
-   * Press the Enroll Token button
-   * Email Token is enrolled
-   * Enjoy
+   * Go to **Tokens** -> **Enroll Token**
+   * Select **Email: Send a One Time Passwords to the users email address.**
+   * Check the box **Read email address dynamically from user source on each request.**
+   * Enter the user name under **Username**
+   * Leave the "PIN" empty (if you don't use it)
+   * Press the **Enroll Token** button
 
    The Email Token is a challenge response token,
    this means that first the user sends an authentication request to obtain the OTP value sent by email,
    and then sends a second authentication request by presenting the OTP value obtained by email:
 
    #. ``curl -X POST -F 'user=<USERNAME>' -F 'pass=' https://idem-day-mfa-<N>.aai-test.garr.it/validate/check``
-   #. ``curl -X POST -F 'user=<USERNAME>' -F 'transaction_id=<TRANSACTION_ID>' -F 'pass=<EMAIL-OTP>' https://idem-day-mfa-<N>.aai-test.garr.it/validate/check``
+   #. The OTP value is sent to the email address of the user <USERNAME>. 
+   #. ``curl -X POST -F 'user=<USERNAME>' -F 'transaction_id=<TRANSACTION_ID>' -F 'pass=<OTP-VALUE>' https://idem-day-mfa-<N>.aai-test.garr.it/validate/check``
 
 `[TOP] <Index_>`_
 
