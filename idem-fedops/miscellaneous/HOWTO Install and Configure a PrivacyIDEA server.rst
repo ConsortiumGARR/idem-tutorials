@@ -428,8 +428,8 @@ The servers are used to create a server pool and are used with a round robin str
 
 * Test with:
 
-  * Quick resolver test
-  * Test LDAP Resolver
+  * **Quick resolver test** button
+  * **Test LDAP Resolver** button
 
 * Save resolver
 
@@ -462,7 +462,7 @@ Users outside of the default realm have to authenticate theirselves with ``usern
 Into this HOWTO we'll use only the default realm because we don't need more than one realm.
 
 * Go to **Config** -> **Realms**
-* Set ``idem-day-org-<N>.it`` on Realm name
+* Set ``idem-day-org-<N>.it`` on **Realm name**
 * Check the new resolver created
 * Press on **Create realm**
 
