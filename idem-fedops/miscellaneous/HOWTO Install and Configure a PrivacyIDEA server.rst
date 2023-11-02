@@ -368,9 +368,11 @@ Possible tags are <u> (user), <r> (realm), <s> (serial).
 
 * Go to Config -> Policies
 * Create new Policy -> Show Policy templates
-* Click on **enroll_tokenlabel** -> Insert the label you prefer
-* Set to 4 the **Priority** value
+* Click on **enroll_tokenlabel**
 * Set the Policy Name to **enroll_tokenlabel**
+* Set to 4 the **Priority** value
+* Move on the **Action** tab and click on the **Show selected actions only** button
+* Edit the **tokenlabel** by inserting the label you prefer (e.g.: Lab MFA 42: OTP (<u>))
 * Save Policy
 
 `[TOP] <Index_>`_
