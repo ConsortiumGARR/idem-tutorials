@@ -206,6 +206,15 @@ Install PrivacyIDEA
 
      * ``echo "SUPERUSER_REALM = ['administrators']" >> /etc/privacyidea/pi.cfg``
 
+#. Exit from the Python Virtual Environment:
+
+   * ``deactivate``
+
+#. Become ROOT:
+
+   * ``exit`` (this has to be executed if the command line starts with ``privacyidea@...``
+   * ``sudo su -``
+
 #. Enable the required Apache2 configuration:
 
    * ``PRIVACYIDEA_VENV_APACHECONF="https://raw.githubusercontent.com/NetKnights-GmbH/ubuntu/master/deploy/apache/sites-available/privacyidea-venv.conf"``
