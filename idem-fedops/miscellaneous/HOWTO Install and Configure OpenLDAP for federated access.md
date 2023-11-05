@@ -14,7 +14,8 @@
    2. [PLA Configuration](#pla-configuration)
 
 ## Requirements
-* Debian 11 (Buster) or Ubuntu 20.04 (Local Fossa)
+
+* Debian 11 (Buster) or Ubuntu 20.04 (Local Fossa) or Debian 12 (Bookworm)
 
 ## Notes
 
@@ -56,7 +57,7 @@ Please remember to **replace all occurencences** of the `example.org` domain nam
       * `<ORGANIZATION-NAME_CHANGEME>` ==> `Example Org`
 
 3. Install required package:
-   * `sudo apt install slapd ldap-utils ldapscripts`
+   * `sudo apt install slapd ldap-utils ldapscripts rsyslog`
 
 4. Check `/etc/hosts` to be sure to have the correct FQDN for OpenLDAP server
 
@@ -98,6 +99,13 @@ Please remember to **replace all occurencences** of the `example.org` domain nam
 6. Enable SSL for LDAP:
    ```bash
    sudo sed -i "s/TLS_CACERT.*/TLS_CACERT\t\/etc\/ldap\/$(hostname -f).crt/g" /etc/ldap/ldap.conf
+   
+   sudo chown openldap:openldap /etc/ldap/ldap.conf
+   ```
+
+   On Debian 12 - Bookworm
+   ```bash
+   sudo echo -e "TLS_CACERT\t/etc/ldap/$(hostname -f).crt" >> /etc/ldap/ldap.conf
    
    sudo chown openldap:openldap /etc/ldap/ldap.conf
    ```
@@ -221,18 +229,18 @@ Please remember to **replace all occurencences** of the `example.org` domain nam
 7. Install needed schemas (eduPerson, SCHAC, Password Policy):
 
    ```bash
-   sudo wget https://raw.githubusercontent.com/malavolti/ansible-shibboleth/master/roles/openldap/files/eduperson-201602.ldif -O /etc/ldap/schema/eduperson.ldif
-   sudo wget https://raw.githubusercontent.com/malavolti/ansible-shibboleth/master/roles/openldap/files/schac-20150413.ldif -O /etc/ldap/schema/schac.ldif
+   sudo wget https://raw.githubusercontent.com/REFEDS/eduperson/master/schema/openldap/eduperson.ldif -O /etc/ldap/schema/eduperson.ldif
+   sudo wget https://raw.githubusercontent.com/REFEDS/SCHAC/main/schema/openldap.ldif -O /etc/ldap/schema/schac.ldif
    sudo ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/ldap/schema/eduperson.ldif
    sudo ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/ldap/schema/schac.ldif
-   sudo ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/ldap/schema/ppolicy.ldif  (on Ubuntu 22.04 LTS it does not exist! See below)
+   sudo ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/ldap/schema/ppolicy.ldif  (on Ubuntu 22.04 LTS and Debian 12 it does not exist! See below)
   
    sudo ldapsearch -Q -LLL -Y EXTERNAL -H ldapi:/// -b 'cn=schema,cn=config' dn
    ```
 
    and verify presence of the new `schac`, `eduPerson` and  `ppolicy` schemas.
 
-   * For Ubuntu >= 22.04:
+   * For Ubuntu >= 22.04 or Debian 12:
      * Create the `ppolicy.ldif` file
        ```bash
        sudo bash -c 'cat > /etc/ldap/schema/ppolicy.ldif <<EOF
