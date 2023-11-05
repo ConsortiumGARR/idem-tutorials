@@ -9,7 +9,8 @@
 3. [Utility](#utility)
 4. [Installation](#installation)
 5. [Configuration](#configuration)
-6. [PhpLdapAdmin (PLA) - optional](#phpldapadmin-pla---optional)
+6. [Password Policies](#password-policies)
+7. [PhpLdapAdmin (PLA) - optional](#phpldapadmin-pla---optional)
    1. [PLA Installation](#pla-installation)
    2. [PLA Configuration](#pla-configuration)
 
@@ -66,10 +67,10 @@ Please remember to **replace all occurencences** of the `example.org` domain nam
 
       * ```bash
         sudo openssl req -newkey rsa:4096 -x509 -nodes -out /etc/ldap/$(hostname -f).crt -keyout /etc/ldap/$(hostname -f).key -days 1095 -subj "/CN=$(hostname -f)"
-        sudo chown openldap:openldap /etc/ldap/$(hostname -f).crt
-        sudo chown openldap:openldap /etc/ldap/$(hostname -f).key
-        sudo chown openldap:openldap /etc/ldap/$(hostname -f).crt /etc/ldap/$(hostname -f).key
         ```
+      * `sudo chown openldap:openldap /etc/ldap/$(hostname -f).crt`
+      * `sudo chown openldap:openldap /etc/ldap/$(hostname -f).key`
+      * `sudo chown openldap:openldap /etc/ldap/$(hostname -f).crt /etc/ldap/$(hostname -f).key`
 
    * Signed (**Do not use if you are not a NREN GARR Member**):
      * Add CA Cert into `/etc/ssl/certs`
@@ -88,29 +89,26 @@ Please remember to **replace all occurencences** of the `example.org` domain nam
          * `sudo ln -s /etc/letsencrypt/live/<SERVER_FQDN>/chain.pem /etc/ssl/certs/ACME-CA.pem`
 
      * Generate CSR(Certificate Signing Request) and the KEY:
-       ```bash
-       sudo openssl req -new -newkey rsa:4096 -nodes -out /etc/ssl/certs/$(hostname -f).csr -keyout /etc/ssl/private/$(hostname -f).key -subj "/C=IT/ST=/L=Rome/O=Consortium GARR/CN=$(hostname -f)"
-        
-       sudo cp /etc/ssl/certs/$(hostname -f).crt /etc/ldap/$(hostname -f).crt
-       sudo cp /etc/ssl/private/$(hostname -f).key /etc/ldap/$(hostname -f).key
-       sudo chown openldap:openldap /etc/ldap/$(hostname -f).crt /etc/ldap/$(hostname -f).key
-       ```
+       * ```bash
+         sudo openssl req -new -newkey rsa:4096 -nodes -out /etc/ssl/certs/$(hostname -f).csr -keyout /etc/ssl/private/$(hostname -f).key -subj "/C=IT/ST=/L=Rome/O=Consortium GARR/CN=$(hostname -f)"
+         ```
+       * `sudo cp /etc/ssl/certs/$(hostname -f).crt /etc/ldap/$(hostname -f).crt`
+       * `sudo cp /etc/ssl/private/$(hostname -f).key /etc/ldap/$(hostname -f).key`
+       * `sudo chown openldap:openldap /etc/ldap/$(hostname -f).crt /etc/ldap/$(hostname -f).key`
 
 6. Enable SSL for LDAP:
-   ```bash
-   sudo sed -i "s/TLS_CACERT.*/TLS_CACERT\t\/etc\/ldap\/$(hostname -f).crt/g" /etc/ldap/ldap.conf
-   
-   sudo chown openldap:openldap /etc/ldap/ldap.conf
-   ```
+   * ```bash
+     sudo sed -i "s/TLS_CACERT.*/TLS_CACERT\t\/etc\/ldap\/$(hostname -f).crt/g" /etc/ldap/ldap.conf
+     ```
+   * `sudo chown openldap:openldap /etc/ldap/ldap.conf`
 
-   On Debian 12 - Bookworm
-   ```bash
-   sudo echo -e "TLS_CACERT\t/etc/ldap/$(hostname -f).crt" >> /etc/ldap/ldap.conf
-   
-   sudo chown openldap:openldap /etc/ldap/ldap.conf
-   ```
+   On Debian 12 - Bookworm:
+   * ```bash
+     sudo echo -e "TLS_CACERT\t/etc/ldap/$(hostname -f).crt" >> /etc/ldap/ldap.conf
+     ```
+   * `sudo chown openldap:openldap /etc/ldap/ldap.conf`
 
-7. Restart OpenLDAP:
+8. Restart OpenLDAP:
    * `sudo service slapd restart`
 
 ## Configuration
@@ -150,17 +148,17 @@ Please remember to **replace all occurencences** of the `example.org` domain nam
      dn: ou=people,dc=example,dc=org
      objectClass: organizationalUnit
      objectClass: top
-     ou: People
+     ou: people
 
      dn: ou=groups,dc=example,dc=org
      objectClass: organizationalUnit
      objectClass: top
-     ou: Groups
+     ou: groups
 
      dn: ou=system,dc=example,dc=org
      objectClass: organizationalUnit
      objectClass: top
-     ou: System
+     ou: system
      EOF'
      ```
 
@@ -230,73 +228,75 @@ Please remember to **replace all occurencences** of the `example.org` domain nam
 
    ```bash
    sudo wget https://raw.githubusercontent.com/REFEDS/eduperson/master/schema/openldap/eduperson.ldif -O /etc/ldap/schema/eduperson.ldif
+
    sudo wget https://raw.githubusercontent.com/REFEDS/SCHAC/main/schema/openldap.ldif -O /etc/ldap/schema/schac.ldif
+     
    sudo ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/ldap/schema/eduperson.ldif
+
    sudo ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/ldap/schema/schac.ldif
-   sudo ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/ldap/schema/ppolicy.ldif  (on Ubuntu 22.04 LTS and Debian 12 it does not exist! See below)
-  
-   sudo ldapsearch -Q -LLL -Y EXTERNAL -H ldapi:/// -b 'cn=schema,cn=config' dn
-   ```
 
-   and verify presence of the new `schac`, `eduPerson` and  `ppolicy` schemas.
+   sudo ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/ldap/schema/ppolicy.ldif  (for Ubuntu 22.04 LTS and Debian 12 it does not exist! See below)
+     ```
 
-   * For Ubuntu >= 22.04 or Debian 12:
-     * Create the `ppolicy.ldif` file
-       ```bash
-       sudo bash -c 'cat > /etc/ldap/schema/ppolicy.ldif <<EOF
-       dn: cn=module,cn=config
-       objectClass: olcModuleList
-       cn: module
-       olcModuleLoad: ppolicy
-       EOF'
-       ```
-       
-     * Add Password Policy module with:
-       * `sudo ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/ldap/schema/ppolicy.ldif`
+   and verify presence of the new `schac`, `eduPerson` and  `ppolicy` schemas:
+
+   `sudo ldapsearch -Q -LLL -Y EXTERNAL -H ldapi:/// -b 'cn=schema,cn=config' dn`
+
+   For Ubuntu >= 22.04 or Debian 12 follow [Password Policies](#password-policies)
 
 9. Add MemberOf Configuration:
-   ```bash
-   sudo bash -c 'cat > /etc/ldap/scratch/add_memberof.ldif <<EOF
-   dn: cn=module,cn=config
-   cn: module
-   objectClass: olcModuleList
-   olcModuleLoad: memberof
-   olcModulePath: /usr/lib/ldap
 
-   dn: olcOverlay={0}memberof,olcDatabase={1}mdb,cn=config
-   objectClass: olcConfig
-   objectClass: olcMemberOf
-   objectClass: olcOverlayConfig
-   objectClass: top
-   olcOverlay: memberof
-   olcMemberOfDangling: ignore
-   olcMemberOfRefInt: TRUE
-   olcMemberOfGroupOC: groupOfNames
-   olcMemberOfMemberAD: member
-   olcMemberOfMemberOfAD: memberOf
-   EOF'
-      
-   sudo ldapadd -Q -Y EXTERNAL -H ldapi:/// -f /etc/ldap/scratch/add_memberof.ldif
-   ```
+    * Create `add_memberof.ldif`:
+
+      ```bash
+      sudo bash -c 'cat > /etc/ldap/scratch/add_memberof.ldif <<EOF
+      dn: cn=module,cn=config
+      cn: module
+      objectClass: olcModuleList
+      olcModuleLoad: memberof
+      olcModulePath: /usr/lib/ldap
+   
+      dn: olcOverlay={0}memberof,olcDatabase={1}mdb,cn=config
+      objectClass: olcConfig
+      objectClass: olcMemberOf
+      objectClass: olcOverlayConfig
+      objectClass: top
+      olcOverlay: memberof
+      olcMemberOfDangling: ignore
+      olcMemberOfRefInt: TRUE
+      olcMemberOfGroupOC: groupOfNames
+      olcMemberOfMemberAD: member
+      olcMemberOfMemberOfAD: memberOf
+      EOF'
+      ```
+
+    * Add it to the Directory:
+      `sudo ldapadd -Q -Y EXTERNAL -H ldapi:/// -f /etc/ldap/scratch/add_memberof.ldif`
+
 
 10. Improve performance:
-   ```bash
-   sudo bash -c 'cat > /etc/ldap/scratch/olcDbIndex.ldif <<EOF
-   dn: olcDatabase={1}mdb,cn=config
-   changetype: modify
-   replace: olcDbIndex
-   olcDbIndex: objectClass eq
-   olcDbIndex: member eq
-   olcDbIndex: cn pres,eq,sub
-   olcDbIndex: ou pres,eq,sub
-   olcDbIndex: uid pres,eq
-   olcDbIndex: entryUUID eq
-   olcDbIndex: sn pres,eq,sub
-   olcDbIndex: mail pres,eq,sub
-   EOF'
-     
-   sudo ldapmodify -Y EXTERNAL -H ldapi:/// -f /etc/ldap/scratch/olcDbIndex.ldif
-   ```
+
+    * Create `olcDbIndex.ldif`:
+
+      ```bash
+      sudo bash -c 'cat > /etc/ldap/scratch/olcDbIndex.ldif <<EOF
+      dn: olcDatabase={1}mdb,cn=config
+      changetype: modify
+      replace: olcDbIndex
+      olcDbIndex: objectClass eq
+      olcDbIndex: member eq
+      olcDbIndex: cn pres,eq,sub
+      olcDbIndex: ou pres,eq,sub
+      olcDbIndex: uid pres,eq
+      olcDbIndex: entryUUID eq
+      olcDbIndex: sn pres,eq,sub
+      olcDbIndex: mail pres,eq,sub
+      EOF'
+      ```
+
+    * Add it to the Directory:
+    
+      `sudo ldapmodify -Y EXTERNAL -H ldapi:/// -f /etc/ldap/scratch/olcDbIndex.ldif`
 
 11. Configure Logging:
     ```bash
@@ -422,9 +422,49 @@ Please remember to **replace all occurencences** of the `example.org` domain nam
     add: olcRequires
     olcRequires: authc
     EOF'
-      
+
     sudo ldapmodify -Y EXTERNAL -H ldapi:/// -f /etc/ldap/scratch/disableAnonymoysBind.ldif
     ```
+
+# Password Policies
+
+1. Load Password Policy module:
+   ```bash
+   sudo bash -c 'cat > /etc/ldap/scratch/load-ppolicy-mod.ldif <<EOF
+   dn: cn=module{0},cn=config
+   changetype: modify
+   add: olcModuleLoad
+   olcModuleLoad: ppolicy.la
+   EOF'
+
+   sudo ldapadd -Y EXTERNAL -H ldapi:/// -f load-ppolicy-mod.ldif
+   ```
+
+2. Create Password Policies OU Container:
+
+   **Be carefull!** Replace `dc=example,dc=org` with distinguish name ([DN](https://ldap.com/ldap-dns-and-rdns/)) of your domain name!
+
+   ```bash
+   sudo bash -c 'cat > /etc/ldap/scratch/policies-ou.ldif <<EOF
+   dn: ou=policies,dc=example,dc=org
+   objectClass: organizationalUnit
+   objectClass: top
+   ou: policies
+   EOF'
+
+3. Create OpenLDAP Password Policy Overlay DN:
+
+   **Be carefull!** Replace `dc=example,dc=org` with distinguish name ([DN](https://ldap.com/ldap-dns-and-rdns/)) of your domain name!
+
+   ```bash
+   sudo bash -c 'cat > /etc/ldap/scratch/ppolicy-overlay.ldif <<EOF
+   dn: olcOverlay=ppolicy,olcDatabase={1}mdb,cn=config
+   objectClass: olcOverlayConfig
+   objectClass: olcPPolicyConfig
+   olcOverlay: ppolicy
+   olcPPolicyDefault: cn=default,ou=policies,dc=example,dc=org
+   olcPPolicyHashCleartext: TRUE
+   EOF'
 
 # PhpLdapAdmin (PLA) - optional
 
