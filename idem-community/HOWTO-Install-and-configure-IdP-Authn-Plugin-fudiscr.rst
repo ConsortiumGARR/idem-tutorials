@@ -1,200 +1,234 @@
 HOWTO Install and Configure the IdP-Authn-Plugin fudiscr
 ========================================================
 
-.. _1-privacyidea:
+.. image:: https://wiki.idem.garr.it/IDEM_Approved.png
+   :width: 120 px
 
-1. privacyIDEA
-==============
+Table of Contents
+-----------------
 
-.. _11-become-the-privacyidea-user:
+#. `Overview`_
+#. `Requirements`_
+#. `Configure PrivacyIDEA`_
 
-1.1 Become the PrivacyIDEA user
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   #. `Create Administrator`_
+   #. `Create the idp-admin authorization token`_
+   #. `Create the idp-admin policies on the PrivacyIDEA server`_
 
--  ``sudo su - privacyidea``
--  ``source bin/activate``
+      #. `Setup Policy for idp-admin`_
+      #. `Enable application_tokentype policy`_
 
-.. _12-create-an-admin-user:
+#. `Configure Shibboleth IdP`_
 
-1.2 Create an admin user
-~~~~~~~~~~~~~~~~~~~~~~~~
+   #. `Enable MFA module`_
+   #. `Install fudiscr plugin`_
+   #. `Configure fudiscr plugin`_
 
--  ``pi-manage admin add idp-admin``
--  ``pi-manage admin list``
+#. `Restart Jetty`_
+#. `Authors`_
 
-.. _13-create-an-access-token:
+Overview
+--------
 
-1.3 Create an access token
-~~~~~~~~~~~~~~~~~~~~~~~~~~
 
--  ``pi-manage api createtoken -r admin -u idp-admin -d 3650``
+Requirements
+------------
 
-.. _14-access-privacyidea-server:
+* PrivacyIDEA (tested with v3.8.1)
+* Shibboleth Identity Provider (tested with v4.3.1)
+* de.zedat.fudis.shibboleth.idp.plugin.authn.fudiscr (tested with v1.3.0)
 
-1.4 Access privacyIDEA server
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Configure PrivacyIDEA
+---------------------
 
-``https://idem-day-mfa-42.aai-test.garr.it``
+Create Administrator
+++++++++++++++++++++
 
-.. _141-create-policies:
+The creation of the administrator user for Shibboleth in the PrivacyIDEA database
+is done throught a command line in the PrivacyIDEA Virtual Environment:
 
-1.4.1 Create Policies
-^^^^^^^^^^^^^^^^^^^^^
+* .. code-block:: text
 
-**idp-admin**
+     cd /opt/privacyidea
 
-::
+* .. code-block:: text
 
-   Config -> Policies -> Create new Policy
-   Policy Name : 'idp-admin'
-   Scope : admin
-   Condition -> Admin : 'idp-admin'
-   Action -> token -> tokenlist : check
-   Action -> general -> triggerchallenge : check
+     source bin/activate
 
-**idp-application-tokentype**
+* .. code-block:: text
 
-::
+     pi-manage admin add idp-admin
 
-   Config -> Policies -> Create new Policy
-   Policy Name : 'idp-application-tokentype'
-   Scope : authorization
-   Action -> miscellaneous -> application_tokentype : check
+`TOC`_
 
-.. raw:: html
+Create the idp-admin authorization token
+++++++++++++++++++++++++++++++++++++++++
 
-   <br>
+.. code-block:: text
 
-.. _2-shibboleth-idp:
+   pi-manage api createtoken -r admin -u idp-admin -d 3650
 
-2. Shibboleth IdP
-=================
+Create the idp-admin policies on the PrivacyIDEA server
++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-.. _21-mfa-module-activation:
+Setup Policy for idp-admin
+;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-2.1 MFA module activation
-~~~~~~~~~~~~~~~~~~~~~~~~~
+* Go to **Config** -> **Policies**
+* Open **Create new Policy**
+* Set the value of **Policy Name** to **idp-admin**
+* Set the value of **Scope** to **admin**
+* Set the value of **Priority** to **last policy number + 1**
+* Move on the **Condition** tab
+* Leave the value of **Admin-Realm** to **None Selected** to enable policy for all admins' realms.
+* Set the value of **Admin** to **idp-admin**
+* Move on the **Action** tab
+* Search ``tokenlist`` on the *Filter action...* box and check it.
+* Search ``triggerchallenge`` on the *Filter action...* box and check it.
+* Save Policy
 
--  ``sudo su -``
--  ``cd /opt/shibboleth-idp``
--  ``bin/module.sh -e idp.authn.MFA``
--  ``bin/module.sh -l``
+Enable application_tokentype policy
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-.. _22-fudiscr-plugin-installation:
+DOC: `application_tokentype`_
 
-2.2 fudiscr plugin installation
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+By enabling ``application_tokentype`` policy, an application can determine via ``type``
+parameter which tokens of a user check.
 
--  ``bin/plugin.sh -i https://identity.fu-berlin.de/downloads/shibboleth/idp/plugins/authn/fudiscr/current/fudis-shibboleth-idp-plugin-authn-fudiscr-current.tar.gz``
+* Go to **Config** -> **Policies**
+* Open **Create new Policy**
+* Set the value of **Policy Name** to **idp-application-tokentype**
+* Set the value of **Scope** to **authorization**
+* Set the value of **Priority** to **last policy number + 1**
+* Move on the **Action** tab
+* Search ``application_tokentype`` on the *Filter action...* box and check it.
+* Save Policy
 
-if you want to install a specific version:
+Configure Shibboleth IdP
+------------------------
 
--  ``bin/plugin.sh -i https://identity.fu-berlin.de/downloads/shibboleth/idp/plugins/authn/fudiscr/1.3.0/fudis-shibboleth-idp-plugin-authn-fudiscr-1.3.0.tar.gz``
+Enable MFA module
++++++++++++++++++
 
--  ``bin/plugin.sh -l``
+*  .. code-block:: text
 
-future updates will be installed automatically with the following
-command:
+      sudo su -
 
--  ``bin/plugin.sh -u de.zedat.fudis.shibboleth.idp.plugin.authn.fudiscr``
+*  .. code-block:: text
 
-.. _23-fudiscr-plugin-configuration:
+      /opt/shibboleth-idp/bin/module.sh -e idp.authn.MFA
 
-2.3 fudiscr plugin configuration
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+*  .. code-block:: text
 
-edit the file:
+      /opt/shibboleth-idp/bin/module.sh -l
 
--  ``conf/authn/fudiscr.properties``
+Install fudiscr plugin
+++++++++++++++++++++++
 
-modify the following lines:
+.. code-block:: text
 
-::
+   /opt/shibboleth-idp/bin/plugin.sh -i https://identity.fu-berlin.de/downloads/shibboleth/idp/plugins/authn/fudiscr/current/fudis-shibboleth-idp-plugin-authn-fudiscr-current.tar.gz
+
+If you need to install a specific version:
+
+.. code-block:: text
+
+   /opt/shibboleth-idp/bin/plugin.sh -i https://identity.fu-berlin.de/downloads/shibboleth/idp/plugins/authn/fudiscr/1.3.0/fudis-shibboleth-idp-plugin-authn-fudiscr-1.3.0.tar.gz
+
+If you need to check the plugins installed into Shibboleth IdP
+
+.. code-block:: text
+
+   /opt/shibboleth-idp/bin/plugin.sh -l
+
+If you need to update ``fudiscr`` plugin:
+
+.. code-block:: text
+
+   /opt/shibboleth-idp/bin/plugin.sh -u de.zedat.fudis.shibboleth.idp.plugin.authn.fudiscr
+
+Configure fudiscr plugin
+++++++++++++++++++++++++
+
+.. code-block:: text
+
+   vim /opt/shibboleth-idp/conf/authn/fudiscr.properties
+
+and set the following lines with the right value:
+
+.. code-block:: text
+
+   #...other things...
 
    #####
    # PrivacyIDEA
    #####
-   fudiscr.privacyidea.base_uri=
-   fudiscr.privacyidea.authorization_token=
+   fudiscr.privacyidea.base_uri=<PRIVACYIDEA-URI>
+   fudiscr.privacyidea.authorization_token=<IDP-ADMIN-AUTHORIZATION-TOKEN>
 
-.. _24-mfa-configuration:
+Replace ``<PRIVACYIDEA-URI>`` with an uri likes ``https://privacyidea.server.url``
+and ``<IDP-ADMIN-AUTHORIZATION-TOKEN>`` with the authorization token created
+in the section `Create the idp-admin authorization token`_
 
-2.4 MFA configuration
-~~~~~~~~~~~~~~~~~~~~~
+Configure Shibboleth MFA plugin
++++++++++++++++++++++++++++++++
 
-edit the file:
+#. Edit ``authn.properties``:
 
--  ``conf/authn/authn.properties``
+   .. code-block:: text
 
-modify the following lines:
+      vim /opt/shibboleth-idp/conf/authn/authn.properties
 
-::
+   and enable the MFA Flow by setting the ``idp.authn.flows`` property:
 
-   idp.authn.flows = MFA
+   .. code-block:: text
 
+      idp.authn.flows = MFA
 
-   #### MFA ####
+   and add the missing ``supportPrincipals`` as follow:
 
-   idp.authn.MFA.supportedPrincipals = \
-       saml2/urn:oasis:names:tc:SAML:2.0:ac:classes:InternetProtocol, \
-       saml2/urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport, \
-       saml2/urn:oasis:names:tc:SAML:2.0:ac:classes:Password, \
-       saml1/urn:oasis:names:tc:SAML:1.0:am:password, \
-       saml2/urn:de:zedat:fudis:SAML:2.0:ac:classes:CR, \
-       saml2/https://refeds.org/profile/mfa
+   .. code-block:: text
 
+      #### MFA ####
 
-     #### FUDISCR plugin ####
-
-     idp.authn.fudiscr.supportedPrincipals = \
+      idp.authn.MFA.supportedPrincipals = \
+         saml2/urn:oasis:names:tc:SAML:2.0:ac:classes:InternetProtocol, \
+         saml2/urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport, \
+         saml2/urn:oasis:names:tc:SAML:2.0:ac:classes:Password, \
+         saml1/urn:oasis:names:tc:SAML:1.0:am:password, \
          saml2/urn:de:zedat:fudis:SAML:2.0:ac:classes:CR, \
          saml2/https://refeds.org/profile/mfa
 
-edit the file:
+      #### FUDISCR plugin ####
 
--  ``conf/authn/mfa-authn-config.xml``
+      idp.authn.fudiscr.supportedPrincipals = \
+         saml2/urn:de:zedat:fudis:SAML:2.0:ac:classes:CR, \
+         saml2/https://refeds.org/profile/mfa
 
-::
+#. Edit ``mfa-authn-config.xml``:
 
-   <util:map id="shibboleth.authn.MFA.TransitionMap">
-   <!-- First rule runs the Password login flow. -->
-   <entry key="">
-       <bean parent="shibboleth.authn.MFA.Transition" p:nextFlow="authn/Password" />
-   </entry>
+   * .. code-block:: text
 
-   <!--
-   Second rule runs a function if Password succeeds, to determine whether an additional factor is required.
-   -->
-   <entry key="authn/Password">
-       <bean parent="shibboleth.authn.MFA.Transition" :nextFlowStrategy-ref="checkSecondFactor" />
-   </entry>
+        sed -i 's|authn/Password|authn/fudiscr|g' mfa-authn-config.xml
 
-   <!-- An implicit final rule will return whatever the final flow returns. --> 
-   </util:map>
+   * .. code-block:: text
 
-   <!-- Example script to see if second factor is  required. -->
-   <bean id="checkSecondFactor"  parent="shibboleth.ContextFunctions.Scripted" factory method="inlineScript">
-       <constructor-arg>
-           <value>
-           <![CDATA[
-               nextFlow = "authn/fudiscr";
-    
-               // Check if second factor is necessary for request to be satisfied.
-               authCtx = input.getSubcontext("net.shibboleth.idp.authn.context.AuthenticationContext");
-               mfaCtx = authCtx.getSubcontext("net.shibboleth.idp.authn.context.MultiFactorAuthenticationContext");
-               if (mfaCtx.isAcceptable()) {
-                   nextFlow = null;
-               }
-    
-               nextFlow;   // pass control to second factor or end with the first
-           ]]>
-           </value>
-       </constructor-arg>
-   </bean>
+        sed -i 's|authn/IPAddress|authn/Password|g' mfa-authn-config.xml
 
-.. _3-author:
+`TOC`_
 
-3. Author
-=========
+Restart Jetty
+-------------
 
--  Marco Pirovano
+.. code-block:: text
+
+   /etc/init.d/jetty stop ; /etc/init.d/jetty run
+
+Authors
+-------
+
+* Marco Pirovano
+* Marco Malavolti
+
+.. _application_tokentype: https://privacyidea.readthedocs.io/en/v3.8.1/policies/authorization.html?highlight=application_tokentype#application-tokentype
+.. _TOC: `Table of Contents`_
