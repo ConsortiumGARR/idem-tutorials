@@ -10,6 +10,7 @@ These GitHub Repository contains step-by-step tutorials on Identity and Service 
     + [HOWTO Install and Configure an Identity Provider](#howto-install-and-configure-an-identity-provider-1)
     + [HOWTO Install and Configure a Service Provider](#howto-install-and-configure-a-service-provider-1)
   * Miscellaneous:
+    + [PrivacyIDEA](#privacyidea)
     + [Shibboleth](#shibboleth)
     + [OpenLDAP](#openldap)
   * [HOWTOs DEPRECATED](#howtos-deprecated)
@@ -43,6 +44,11 @@ These GitHub Repository contains step-by-step tutorials on Identity and Service 
 1. [HOWTO Install and Configure a Shibboleth SP v3.x on CentOS 7 (x86_64)](./idem-fedops/HOWTO-Shibboleth/Service%20Provider/CentOS/HOWTO%20Install%20and%20Configure%20a%20Shibboleth%20SP%20v3.x%20on%20CentOS%207%20(x86_64).md)
 
 ### Miscellaneous
+
+#### PrivacyIDEA
+
+* [HOWTO Install and Configure a PrivacyIDEA server](.idem-fedops/miscellaneous/HOWTO%20Install%20and%20Configure%20a%20PrivacyIDEA%20server.rst)
+* [HOWTO Integrate a PrivacyIDEA server o a SimpleSAMLphp IdP](./idem-fedops/miscellaneous/HOWTO%20Integrate%20a%20PrivacyIDEA%20on%20a%20SimpleSAMLphp%20IdP.rst)
 
 #### Shibboleth
 
