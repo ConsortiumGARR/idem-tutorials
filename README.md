@@ -48,7 +48,8 @@ These GitHub Repository contains step-by-step tutorials on Identity and Service 
 #### PrivacyIDEA
 
 * [HOWTO Install and Configure a PrivacyIDEA server](.idem-fedops/miscellaneous/HOWTO%20Install%20and%20Configure%20a%20PrivacyIDEA%20server.rst)
-* [HOWTO Integrate a PrivacyIDEA server o a SimpleSAMLphp IdP](./idem-fedops/miscellaneous/HOWTO%20Integrate%20a%20PrivacyIDEA%20on%20a%20SimpleSAMLphp%20IdP.rst)
+* [HOWTO Integrate a PrivacyIDEA server on a SimpleSAMLphp IdP](./idem-fedops/miscellaneous/HOWTO%20Integrate%20a%20PrivacyIDEA%20on%20a%20SimpleSAMLphp%20IdP.rst)
+* [HOWTO Integrate a PrivacyIDEA server on a Shibboleth IdP with fudiscr plugin](idem-community/HOWTO-Integrate-a-PrivacyIDEA-server-on-a-Shibboleth-IdP-with-fudiscr-plugin.rst)
 
 #### Shibboleth
 
