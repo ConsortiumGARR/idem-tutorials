@@ -45,8 +45,7 @@ For more you can check the `REFEDS MFA Profile`_
 Requirements
 ------------
 
-* Python (tested with v3.9.2), Python Virtual Environment & PIP
-* PrivacyIDEA (tested with v3.8.1)
+* PrivacyIDEA server (tested with v3.8.1)
 * Composer
 * simpleSAMLphp Identity Provider (tested with v1.19)
 
