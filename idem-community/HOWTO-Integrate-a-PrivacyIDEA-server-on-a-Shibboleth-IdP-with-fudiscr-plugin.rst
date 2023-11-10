@@ -1,5 +1,5 @@
-HOWTO Install and Configure the IdP-Authn-Plugin fudiscr
-========================================================
+HOWTO Integrate a PrivacyIDEA server on a Shibboleth IdP with fudiscr plugin
+============================================================================
 
 .. image:: https://wiki.idem.garr.it/IDEM_Approved.png
    :width: 120 px
