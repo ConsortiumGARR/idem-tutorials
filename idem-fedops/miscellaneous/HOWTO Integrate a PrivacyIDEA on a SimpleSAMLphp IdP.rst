@@ -1,6 +1,6 @@
-===========================================================
-HOWTO Integrate a PrivacyIDEA server on a SimpleSAMLphp IdP
-===========================================================
+============================================================================
+HOWTO Integrate a PrivacyIDEA server o a simpleSAMLphp Identity Provider
+============================================================================
 
 .. image:: https://wiki.idem.garr.it/IDEM_Approved.png
    :width: 120 px
@@ -29,11 +29,11 @@ Table of Contents
 Overview
 --------
 
-This HOWTO aims to integrate a PrivacyIDEA server on a SimpleSAMLphp Identity Provider to provide a Mutli Factor Authentication to the users.
+This HOWTO aims to integrate a PrivacyIDEA server on a simpleSAMLphp Identity Provider to provide a Mutli Factor Authentication to the users.
 To do so we will use two different modules:
 
-* `PrivacyIDEA module for SimpleSAMLphp`_
-* `Cirrusgeneral module for SimpleSAMLphp`_
+* `PrivacyIDEA module for simpleSAMLphp`_
+* `Cirrusgeneral module for simpleSAMLphp`_
 
 In our use case, we have two different machine, one with the SimpleSAMLphp IdP and one with the PrivacyIDEA server.
 Also, the Identity Provider can perform the multi factor authentication when the Service Provider has in its request 
@@ -45,10 +45,10 @@ For more you can check the `REFEDS MFA Profile`_
 Requirements
 ------------
 
-* Python (version 3.9.2), Python Virtual Environment & PIP (package installer di Python)
-* `PrivacyIDEA (version 3.8.1)`_
-* `Composer`_
-* `SimpleSAMLphp Identity Provider 1.19`_
+* Python (tested with v3.9.2), Python Virtual Environment & PIP
+* PrivacyIDEA (tested with v3.8.1)
+* Composer
+* simpleSAMLphp Identity Provider (tested with v1.19)
 
 `TOC`_
 
@@ -58,7 +58,7 @@ Configure PrivacyIDEA
 Create Administrator
 +++++++++++++++++++++
 
-The creation of the administrator user for SimpleSAMLphp in the PrivacyIDEA database
+The creation of the administrator user for simpleSAMLphp in the PrivacyIDEA database
 is done throught a command line in the PrivacyIDEA Virtual Environment:
 
 * ``cd /opt/privacyidea``
@@ -316,8 +316,10 @@ Reference
 ---------
 
 * `PrivacyIDEA Documentation`_
-* `PrivacyIDEA module for SimpleSAMLphp`_
-* `Cirrusgeneral module for SimpleSAMLphp`_
+* `PrivacyIDEA module for simpleSAMLphp`_
+* `Cirrusgeneral module for simpleSAMLphp`_
+* `SimpleSAMLphp Documentation`_
+* `Composer`_
 
 `TOC`_
 
@@ -334,11 +336,10 @@ This HOWTO is licensed under `CC BY-SA 4.0 <https://creativecommons.org/licenses
 
 `TOC`_
 
-.. _PrivacyIDEA module for SimpleSAMLphp : https://github.com/privacyidea/simplesamlphp-module-privacyidea
-.. _Cirrusgeneral module for SimpleSAMLphp: https://github.com/cirrusidentity/simplesamlphp-module-cirrusgeneral
+.. _PrivacyIDEA module for simpleSAMLphp : https://github.com/privacyidea/simplesamlphp-module-privacyidea
+.. _Cirrusgeneral module for simpleSAMLphp: https://github.com/cirrusidentity/simplesamlphp-module-cirrusgeneral
 .. _REFEDS MFA Profile: https://wiki.refeds.org/display/PRO/Introducing+the+REFEDS+MFA+Profile
-.. _PrivacyIDEA (version 3.8.1): `PrivacyIDEA Documentation`_
-.. _PrivacyIDEA Documentation: https://privacyidea.readthedocs.io/en/v3.8.1/index.html
-.. _SimpleSAMLphp Identity Provider 1.19: https://simplesamlphp.org/docs/1.19/index.html
+.. _PrivacyIDEA Documentation: https://privacyidea.readthedocs.io
+.. _simpleSAMLphp Documentation: https://simplesamlphp.org/docs/stable/index.html
 .. _Composer: https://getcomposer.org/
 .. _TOC: `Table of Contents`_
