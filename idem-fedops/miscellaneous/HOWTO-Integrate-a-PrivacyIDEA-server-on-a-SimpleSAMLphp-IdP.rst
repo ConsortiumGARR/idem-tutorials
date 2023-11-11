@@ -1,6 +1,6 @@
-==========================================================
-HOWTO Integrate a PrivacyIDEA server o a SimpleSAMLphp IdP
-==========================================================
+===========================================================
+HOWTO Integrate a PrivacyIDEA server on a SimpleSAMLphp IdP
+===========================================================
 
 .. image:: https://wiki.idem.garr.it/IDEM_Approved.png
    :width: 120 px
