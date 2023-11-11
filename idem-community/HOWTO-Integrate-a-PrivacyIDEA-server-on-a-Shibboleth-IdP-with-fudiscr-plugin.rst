@@ -23,6 +23,7 @@ Table of Contents
    #. `Enable MFA module`_
    #. `Install fudiscr plugin`_
    #. `Configure fudiscr plugin`_
+   #. `Configure Shibboleth MFA flow`_
 
 #. `Restart Jetty`_
 #. `Authors`_
@@ -170,8 +171,8 @@ Replace ``<PRIVACYIDEA-URI>`` with an uri likes ``https://privacyidea.server.url
 and ``<IDP-ADMIN-AUTHORIZATION-TOKEN>`` with the authorization token created
 in the section `Create the idp-admin authorization token`_
 
-Configure Shibboleth MFA plugin
-+++++++++++++++++++++++++++++++
+Configure Shibboleth MFA flow
++++++++++++++++++++++++++++++
 
 #. Edit ``authn.properties``:
 
