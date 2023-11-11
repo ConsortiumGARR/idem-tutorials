@@ -18,9 +18,10 @@ Table of Contents
 
 #. `Configure SimpleSAMLphp`_
 
-   #. `Cirrus Filter`_
-   #. `PrivacyIDEA Filter`_
-   #. `No MFA Filter`_
+   #. `Install modules`_
+   #. `Configure Cirrus Filter`_
+   #. `Configure PrivacyIDEA Filter`_
+   #. `Configure no MFA behaviour`_
 
 #. `Reference`_
 #. `Authors`_
@@ -100,6 +101,9 @@ Setup Policy for Admin
 Configure SimpleSAMLphp
 -----------------------
 
+Install modules
++++++++++++++++
+
 #. Become ROOT:
 
    * ``sudo su -``
@@ -120,8 +124,8 @@ Configure SimpleSAMLphp
 
 `TOC`_
 
-Cirrus Filter
-++++++++++++++
+Configure Cirrus Filter
++++++++++++++++++++++++
 
 In the IdP configuration file we will create a new filter (in the **authproc** section):
 
@@ -139,8 +143,8 @@ In the IdP configuration file we will create a new filter (in the **authproc** s
 
 `TOC`_
 
-PrivacyIDEA Filter
-+++++++++++++++++++
+Configure PrivacyIDEA Filter
+++++++++++++++++++++++++++++
 
 In the cirrus filter we can setup the PrivacyIDEA configuration (in the **authproc** section):
 
@@ -297,8 +301,8 @@ In the cirrus filter we can setup the PrivacyIDEA configuration (in the **authpr
 
 `TOC`_
 
-No MFA Filter
-++++++++++++++
+Configure no MFA behaviour
+++++++++++++++++++++++++++
 
 In the second part of the cirrus filter, **elseAuthproc**, we insert the behaviour of the IdP authentication when the MFA is not required:
 
