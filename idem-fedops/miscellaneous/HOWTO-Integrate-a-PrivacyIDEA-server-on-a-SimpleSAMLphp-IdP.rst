@@ -14,13 +14,13 @@ Table of Contents
 
    #. `Create Administrator`_
    #. `Login to the Web UI`_
-   #. `Setup Policy for Admin`_
+   #. `Create the idp-admin policies on the PrivacyIDEA server`_
 
 #. `Configure SimpleSAMLphp`_
 
    #. `Install modules`_
-   #. `Configure Cirrus Filter`_
-   #. `Configure PrivacyIDEA Filter`_
+   #. `Configure Cirrus AuthProc Filter`_
+   #. `Add PrivacyIDEA Authproc into Cirrus Authproc Filter`_
    #. `Configure no MFA behaviour`_
 
 #. `Reference`_
@@ -42,6 +42,7 @@ a particular authnContextClassRef: ``https://refeds.org/profile/mfa``
 
 For more you can check the `REFEDS MFA Profile`_
 
+`TOC`_
 
 Requirements
 ------------
@@ -63,7 +64,7 @@ is done throught a command line in the PrivacyIDEA Virtual Environment:
 
 * ``cd /opt/privacyidea``
 * ``source bin/activate``
-* ``pi-manage admin add ssp-admin``
+* ``pi-manage admin add idp-admin``
 
 `TOC`_
 
@@ -77,23 +78,20 @@ while normal users will only be able to manage their own tokens.
 
 `TOC`_
 
-Setup Policy for Admin
-++++++++++++++++++++++
+Create the idp-admin policies on the PrivacyIDEA server
++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 * Go to **Config** -> **Policies**
 * Open **Create new Policy**
-* Set the value of **Policy Name** to **ssp-admin**
+* Set the value of **Policy Name** to **idp-admin**
 * Set the value of **Scope** to **admin**
-* Set the value of **Priority** to **5**
-
+* Set the value of **Priority** to **last policy number + 1**
 * Move on the **Condition** tab
 * Leave the value of **Admin-Realm** to **None Selected** to enable policy for all admins' realms.
-* Set the value of **Admin** to **ssp-admin**
-
+* Set the value of **Admin** to **idp-admin**
 * Move on the **Action** tab
-* Check the ``tokenlist`` box under **token**.
-* Check the ``triggerchallenge`` box under **general**.
-
+* Search ``tokenlist`` on the *Filter action...* box and check it.
+* Search ``triggerchallenge`` on the *Filter action...* box and check it.
 * Save Policy
 
 `TOC`_
@@ -106,36 +104,45 @@ Install modules
 
 #. Become ROOT:
 
-   * ``sudo su -``
+   .. code::
+
+      sudo su -
 
 #. Move to the simplesamlphp folder:
 
-   * ``cd /var/simplesamlphp``
+   .. code::
+
+      cd /var/simplesamlphp``
 
 #. Install the required packages:
 
-   * ``composer require cirrusidentity/simplesamlphp-module-cirrusgeneral:2.0.3``
+   * .. code::
 
-   * ``composer require privacyidea/simplesamlphp-module-privacyidea:3.1.2``
+        composer require cirrusidentity/simplesamlphp-module-cirrusgeneral:2.0.3``
 
-#. Configure the **saml20-idp-hosted.php**:
+   * .. code::
 
-   * ``vim metadata/saml20-idp-hosted.php``
+        composer require privacyidea/simplesamlphp-module-privacyidea:3.1.2``
 
 `TOC`_
 
-Configure Cirrus Filter
-+++++++++++++++++++++++
+Configure Cirrus AuthProc Filter
+++++++++++++++++++++++++++++++++
 
-In the IdP configuration file we will create a new filter (in the **authproc** section):
+In the IdP configuration file we will create a new authentication process filter (under the **authproc** section):
+
+.. code::
+
+   vim metadata/saml20-idp-hosted.php
 
 .. code:: php
 
-   // Configuration for privacyIDEA
+   // Cirrus AuthProc Filter configuration that will exec the 'authproc' part if the 'condition' returns 'True'
+   // The 'condition' part checks if the Authentication Request contains the REFEDS MFA Profile AuthenticationContextClassRef.
    56 => [
-          'class' => 'cirrusgeneral:PhpConditionalAuthProcInserter',
-          'condition' => 'return (empty($state["saml:RequestedAuthnContext"]["AuthnContextClassRef"])) ? FALSE : ((in_array("https://refeds.org/profile/mfa",$state["saml:RequestedAuthnContext"]["AuthnContextClassRef"])) ? TRUE : FALSE );',
-          'authproc' => [
+         'class' => 'cirrusgeneral:PhpConditionalAuthProcInserter',
+         'condition' => 'return (empty($state["saml:RequestedAuthnContext"]["AuthnContextClassRef"])) ? FALSE : ((in_array("https://refeds.org/profile/mfa",$state["saml:RequestedAuthnContext"]["AuthnContextClassRef"])) ? TRUE : FALSE );',
+         'authproc' => [
          ],      
          // These will only get created if authnContext is not refeds MFA
          'elseAuthproc' => [],
@@ -143,25 +150,33 @@ In the IdP configuration file we will create a new filter (in the **authproc** s
 
 `TOC`_
 
-Configure PrivacyIDEA Filter
-++++++++++++++++++++++++++++
+Add PrivacyIDEA Authproc into Cirrus Authproc Filter
+++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-In the cirrus filter we can setup the PrivacyIDEA configuration (in the **authproc** section):
+Add the PrivacyIDEA AuthProc filter into the ``authproc`` section of the ``cirrusgeneral:PhpConditionalAuthProcInserter`` AuthProc Filter,
+and configure its behaviour by filling down its parameters:
+
+.. code::
+
+   vim metadata/saml20-idp-hosted.php
 
 .. code-block:: php
 
    [
       'class' => 'privacyidea:PrivacyideaAuthProc',
+
       /**
       * The URL of the privacyidea server.
       * Required
       */
-      'privacyideaServerURL' => 'https://idem-day-mfa-<N>.aai-test.garr.it',
+      'privacyideaServerURL' => '<PRIVACYIDEA-URI>',
+
       /**
       * Set the privacyidea realm.
       * Optional.
       */
-      'realm' => 'idem-day-org-<N>.it',
+      'realm' => '<REALM-NAME>',
+
       /**
       * The uidKey is the username's attribute key.
       * You can choose a single one or multiple ones. The first set will be used.
@@ -170,6 +185,7 @@ In the cirrus filter we can setup the PrivacyIDEA configuration (in the **authpr
       * Required.
       */
       'uidKey' => 'uid',
+
       /**
       * Disable SSL verification.
       * Values should be 'true' or 'false'. Default is 'true'.
@@ -179,17 +195,20 @@ In the cirrus filter we can setup the PrivacyIDEA configuration (in the **authpr
       */
       'sslVerifyHost' => 'true',
       'sslVerifyPeer' => 'true',
+
       /**
       * Specify the static password for the 'sendStaticPass' authentication flow.
       * Required by the 'sendStaticPass' authentication flow.
       */
       'staticPass' => '',
+
       /**
       * Specify the username and password of your service account from privacyIDEA server.
       * Required by the 'triggerChallenge' authentication flow.
       */
-      'serviceAccount' => '<ADMIN_USERNAME>',
+      'serviceAccount' => 'idp-admin',
       'servicePass' => '<ADMIN_PASSWORD>',
+
       /**
       * Choose one of the following authentication flows:
       * 
@@ -207,11 +226,13 @@ In the cirrus filter we can setup the PrivacyIDEA configuration (in the **authpr
       * Required.
       */
       'authenticationFlow' => 'default',
+
       /**
       * Set the realm for your service account.
       * Optional (by the 'triggerChallenge' authentication flow).
       */
       'serviceRealm' => '',
+
       /**
       * Set this to 'true' if you want to use single sign on.
       * All information required for SSO will be saved in the session.
@@ -220,11 +241,13 @@ In the cirrus filter we can setup the PrivacyIDEA configuration (in the **authpr
       * Optional.
       */
       'SSO' => 'true',
+
       /**
       * Custom hint for the OTP field.
       * Optional.
       */
       'otpFieldHint' => 'Please enter the OTP code!',
+
       /**
       * Other authproc filters can disable this filter.
       * If privacyIDEA should consider the setting, you have to enter the path and key of the state.
@@ -236,6 +259,7 @@ In the cirrus filter we can setup the PrivacyIDEA configuration (in the **authpr
       */
       'enabledPath' => 'privacyIDEA',
       'enabledKey' => 'enable',
+
       /**
       * You can exclude clients with specified ip addresses.
       * Enter a range like "10.0.0.0-10.2.0.0" or a single ip like "192.168.178.2"
@@ -244,6 +268,7 @@ In the cirrus filter we can setup the PrivacyIDEA configuration (in the **authpr
       * Optional.
       */
       'excludeClientIPs' => [],
+
       /**
       * If you want to selectively disable the privacyIDEA authentication using
       * the entityID and/or SAML attributes, you may enable this.
@@ -252,6 +277,7 @@ In the cirrus filter we can setup the PrivacyIDEA configuration (in the **authpr
       * Optional.
       */
       'checkEntityID' => 'true',
+
       /**
       * Depending on excludeEntityIDs and includeAttributes this will set the state variable 
       * $state[$setPath][$setPath] to true or false.
@@ -262,6 +288,7 @@ In the cirrus filter we can setup the PrivacyIDEA configuration (in the **authpr
       */
       'setPath' => 'privacyIDEA',
       'setKey' => 'enabled',
+
       /**
       * The requesting SAML provider's entityID will be tested against this list of regular expressions.
       * If there is a match, the filter will set the specified state variable to false and thereby disables 
@@ -273,6 +300,7 @@ In the cirrus filter we can setup the PrivacyIDEA configuration (in the **authpr
          '/http(s)\/\/conditional-no2fa-provider.de\/(.*)/',
          '/http(.*)no2fa-provider.de/'
       ],
+
       /**
       *  Per value in excludeEntityIDs, you may specify another set of regular expressions to match the
       *  attributes in the SAML request. If there is a match in any attribute value, this filter will
@@ -299,12 +327,21 @@ In the cirrus filter we can setup the PrivacyIDEA configuration (in the **authpr
       'AuthnContextClassRef' => 'https://refeds.org/profile/mfa',
    ],
 
+**!!! Attention !!!**
+
+Remember to replace:
+
+* ``<PRIVACYIDEA-URI>`` with the PrivacyIDEA server url likes ``https://privacyidea.server.url``
+* ``<REALM-NAME>`` with the Realm Name to use and configured on the PrivacyIDEA server
+* ``<ADMIN-PASSWORD>`` with the ``idp-admin`` password
+
 `TOC`_
 
 Configure no MFA behaviour
 ++++++++++++++++++++++++++
 
-In the second part of the cirrus filter, **elseAuthproc**, we insert the behaviour of the IdP authentication when the MFA is not required:
+Into the ``elseAuthproc`` part of the cirrus authproc filter,
+insert the behaviour of the authentication when the MFA is not requested:
 
 .. code:: php
 
