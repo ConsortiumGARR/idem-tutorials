@@ -2065,6 +2065,15 @@ Update IdP metadata
 
    #. Remove completely the comment containing ``<mdui:UIInfo>`` element from ``<IDPSSODescriptor>`` Section.
 
+   #. Add the ``HTTP-Redirect`` and ``HTTP-Post`` SingleLogoutService endpoints under the ``SOAP`` one:
+
+      .. code-block:: xml+jinja
+
+         <md:SingleLogoutService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="https://idp.example.org/idp/profile/SAML2/Redirect/SLO"/>
+         <md:SingleLogoutService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://idp.example.org/idp/profile/SAML2/POST/SLO"/>
+
+      (replace ``idp.example.org`` value with the Full Qualified Domain Name of the Identity Provider.)
+
    #. Between the last ``<SingleLogoutService>`` and the first ``<SingleSignOnService>`` endpoints add:
 
       .. code-block:: xml+jinja
