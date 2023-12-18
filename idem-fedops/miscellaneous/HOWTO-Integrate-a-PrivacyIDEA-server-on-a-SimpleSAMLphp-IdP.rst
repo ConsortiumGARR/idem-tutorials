@@ -112,7 +112,7 @@ Install modules
 
    .. code::
 
-      cd /var/simplesamlphp``
+      cd /var/simplesamlphp
 
 #. Install the required packages:
 
