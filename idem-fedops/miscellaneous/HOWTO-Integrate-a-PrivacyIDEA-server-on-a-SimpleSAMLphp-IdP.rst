@@ -118,11 +118,11 @@ Install modules
 
    * .. code::
 
-        composer require cirrusidentity/simplesamlphp-module-cirrusgeneral:2.0.3``
+        composer require cirrusidentity/simplesamlphp-module-cirrusgeneral:2.0.3
 
    * .. code::
 
-        composer require privacyidea/simplesamlphp-module-privacyidea:3.1.2``
+        composer require privacyidea/simplesamlphp-module-privacyidea:3.1.2
 
 `TOC`_
 
