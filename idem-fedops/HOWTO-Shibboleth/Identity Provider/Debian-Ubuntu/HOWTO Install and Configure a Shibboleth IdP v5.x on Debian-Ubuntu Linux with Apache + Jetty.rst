@@ -292,15 +292,17 @@ Jetty is a Web server and a Java Servlet container. It will be used to run the I
 
       sudo su -
 
-#. OPTIONAL - Install Servlet Jakarta API 5.0.0:
-
-   * apt install liblogback-java => logback-classic-1.2.11.jar, logback-core-1.2.11.jar
-   * apt install libservlet-api-java => servlet-api-4.0.1.jar
-   * apt install libjakarta-servlet-api-java => jakarta-servlet-api-5.0.0.jar
+#. Install Servlet Jakarta API 5.0.0:
 
    * .. code-block:: text
 
         apt install libjakarta-servlet-api-java --no-install-recommends
+
+#. Install Java LogBack libraries:
+
+   * .. code-block:: text
+   
+        apt install liblogback-java
 
 #. Download and Extract Jetty:
 
