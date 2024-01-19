@@ -877,7 +877,7 @@ This Storage service will memorize User Consent data on a persistent SQL databas
 3.  Check that you can reach the Directory from your IDP server:
 
     ``` text
-    ldapsearch -x -h <LDAP-SERVER-FQDN-OR-IP> -D 'cn=idpuser,ou=system,dc=example,dc=org' -w '<IDPUSER-PASSWORD>' -b 'ou=people,dc=example,dc=org' '(uid=<USERNAME-USED-IN-THE-LOGIN-FORM>)'
+    ldapsearch -x -H ldap://<LDAP-SERVER-FQDN-OR-IP> -D 'cn=idpuser,ou=system,dc=example,dc=org' -w '<IDPUSER-PASSWORD>' -b 'ou=people,dc=example,dc=org' '(uid=<USERNAME-USED-IN-THE-LOGIN-FORM>)'
     ```
 
     -   the baseDN (`-b` parameter) ==\> `ou=people,dc=example,dc=org`
@@ -1130,7 +1130,7 @@ This Storage service will memorize User Consent data on a persistent SQL databas
 3.  Check that you can reach the Directory from your IDP server:
 
     ``` text
-    ldapsearch -x -h <AD-SERVER-FQDN-OR-IP> -D 'CN=idpuser,CN=Users,DC=ad,DC=example,DC=org' -w '<IDPUSER-PASSWORD>' -b 'CN=Users,DC=ad,DC=example,DC=org' '(sAMAccountName=<USERNAME-USED-IN-THE-LOGIN-FORM>)'
+    ldapsearch -x -H ldap://<AD-SERVER-FQDN-OR-IP> -D 'CN=idpuser,CN=Users,DC=ad,DC=example,DC=org' -w '<IDPUSER-PASSWORD>' -b 'CN=Users,DC=ad,DC=example,DC=org' '(sAMAccountName=<USERNAME-USED-IN-THE-LOGIN-FORM>)'
     ```
 
     -   the baseDN (`-b` parameter) ==\> `CN=Users,DC=ad,DC=example,DC=org` (branch containing the registered users)
