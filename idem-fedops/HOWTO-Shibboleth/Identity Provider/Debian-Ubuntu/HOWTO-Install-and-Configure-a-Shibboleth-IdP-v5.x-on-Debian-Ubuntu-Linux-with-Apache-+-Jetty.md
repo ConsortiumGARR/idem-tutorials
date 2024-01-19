@@ -304,48 +304,34 @@ run the IdP application through its WAR file.
     sudo su -
     ```
 
-2.  Install Servlet Jakarta API 5.0.0:
-
-    -   ``` text
-        apt install libjakarta-servlet-api-java --no-install-recommends
-        ```
-
-3.  Install Java LogBack libraries:
-
-    -   ``` text
-        apt install liblogback-java
-        ```
-
-4.  Download and Extract Jetty:
+2.  Download and Extract Jetty:
 
     -   ``` text
         cd /usr/local/src
         ```
 
     -   ``` text
-        wget https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-home/11.0.18/jetty-home-11.0.18.tar.gz
+        wget https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-home/11.0.19/jetty-home-11.0.19.tar.gz
         ```
 
     -   ``` text
-        tar xzvf jetty-home-11.0.18.tar.gz
+        tar xzvf jetty-home-11.0.19.tar.gz
         ```
 
-5.  Create the `jetty-src` folder as a symbolic link. It will be useful
+3.  Create the `jetty-src` folder as a symbolic link. It will be useful
     for future Jetty updates:
 
     ``` text
-    ln -nsf jetty-home-11.0.18 jetty-src
+    ln -nsf jetty-home-11.0.19 jetty-src
     ```
 
-6.  Create the system user `jetty` that can run the web server (without
-    home directory):
+4.  Create the system user `jetty` that can run the web server (without home directory):
 
     ``` text
     useradd -r -M jetty
     ```
 
-7.  Create your custom Jetty configuration that overrides the default
-    one and will survive upgrades:
+5.  Create your custom Jetty configuration that overrides the default one and will survive upgrades:
 
     -   ``` text
         mkdir -p /opt/jetty
@@ -355,10 +341,9 @@ run the IdP application through its WAR file.
         wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP5/jetty-conf/start.ini -O /opt/jetty/start.ini
         ```
 
-        (the `start.ini` provided is adapted to be used with [IDEM
-        MDX](https://mdx.idem.garr.it/) service)
+        (the `start.ini` provided is adapted to be used with [IDEM MDX](https://mdx.idem.garr.it/) service)
 
-8.  Create the TMPDIR directory used by Jetty:
+6.  Create the TMPDIR directory used by Jetty:
 
     -   ``` text
         mkdir /opt/jetty/tmp ; chown jetty:jetty /opt/jetty/tmp
@@ -368,7 +353,7 @@ run the IdP application through its WAR file.
         chown -R jetty:jetty /opt/jetty /usr/local/src/jetty-src
         ```
 
-9.  Create the Jetty Logs' folders:
+7.  Create the Jetty Logs' folders:
 
     -   ``` text
         mkdir /var/log/jetty
@@ -382,19 +367,20 @@ run the IdP application through its WAR file.
         chown jetty:jetty /var/log/jetty /opt/jetty/logs
         ```
 
-10. Configure **/etc/default/jetty**:
+8. Configure **/etc/default/jetty**:
 
     ``` bash
     bash -c 'cat > /etc/default/jetty <<EOF
     JETTY_HOME=/usr/local/src/jetty-src
     JETTY_BASE=/opt/jetty
+    JETTY_PID=/opt/jetty/jetty.pid
     JETTY_USER=jetty
     JETTY_START_LOG=/var/log/jetty/start.log
     TMPDIR=/opt/jetty/tmp
     EOF'
     ```
 
-11. Create the service loadable from command line:
+9. Create the service loadable from command line:
 
     -   ``` text
         cd /etc/init.d
@@ -405,26 +391,41 @@ run the IdP application through its WAR file.
         ```
 
     -   ``` text
-        update-rc.d jetty defaults
-        ```
-
-    -   ``` text
         sudo update-alternatives --config editor
         ```
 
-        (enter `2` to select `/usr/bin/vim.basic` as editor)
+        (select `/usr/bin/vim.basic` or what do you prefer as editor)
 
-    -   Fix the wrong parameter from `start` to `run`:
 
-        ``` text
-        systemctl edit --full jetty.service
+    -   ``` text
+        cp /usr/local/src/jetty-src/bin/jetty.service /etc/systemd/system/jetty.service
         ```
 
-        ``` text
-        ExecStart=/etc/init.d/jetty run
+    -   Fix the `PIDFile` parameter with the `JETTY_PID` path:
+
+        -   ``` text
+            systemctl edit --full jetty.service
+            ```
+
+            ``` text
+            PIDFile=/opt/jetty/jetty.pid
+            ```
+
+    -   ``` text
+        systemctl daemon-reload
         ```
 
-12. Install & configure logback for all Jetty logging:
+    -   ``` text
+        systemctl enable jetty.service
+        ```
+
+10.  Install Servlet Jakarta API 5.0.0:
+
+    -   ``` text
+        apt install libjakarta-servlet-api-java
+        ```
+
+11. Install & configure logback for all Jetty logging:
 
     -   ``` text
         java -jar /usr/local/src/jetty-src/start.jar --add-module=logging-logback
@@ -454,18 +455,17 @@ run the IdP application through its WAR file.
         wget "https://registry.idem.garr.it/idem-conf/shibboleth/IDP5/jetty-conf/jetty-logging.properties" -O /opt/jetty/resources/jetty-logging.properties
         ```
 
-13. Check if all settings are OK:
+
+12. Check if all settings are OK:
 
     -   `service jetty check` (Jetty NOT running)
-    -   `service jetty run`
+    -   `service jetty start`
     -   `service jetty check` (Jetty running pid=XXXX)
 
-    If you receive an error likes "*Job for jetty.service failed because
-    the control process exited with error code. See "systemctl status
-    jetty.service" and "journalctl -xe" for details.*", try this:
+    If you receive an error likes "*Job for jetty.service failed because the control process exited with error code. See "systemctl status jetty.service" and "journalctl -xe" for details.*", try this:
 
     -   ``` text
-        rm /var/run/jetty.pid
+        rm /opt/jetty/jetty.pid
         ```
 
     -   ``` text
@@ -695,7 +695,7 @@ suggest disabling that feature at this point.
 4.  Restart Jetty:
 
     ``` text
-    systemctl restart jetty.service
+    systemctl restart jetty
     ```
 
 \[[TOC](#table-of-contents)\]
@@ -920,7 +920,7 @@ database.
 11. Restart Jetty to apply the changes:
 
     ``` text
-    systemctl restart jetty.service
+    systemctl restart jetty
     ```
 
 12. Check IdP Status:
@@ -1040,7 +1040,7 @@ database.
         -   Restart Jetty to apply the changes:
 
             ``` text
-            systemctl restart jetty.service
+            systemctl restart jetty
             ```
 
         -   Check IdP Status:
@@ -1125,7 +1125,7 @@ database.
         -   Restart Jetty to apply the changes:
 
             ``` text
-            systemctl restart jetty.service
+            systemctl restart jetty
             ```
 
         -   Check IdP Status:
@@ -1198,7 +1198,7 @@ database.
         -   Restart Jetty to apply the changes:
 
             ``` text
-            systemctl restart jetty.service
+            systemctl restart jetty
             ```
 
         -   Check IdP Status:
@@ -1321,7 +1321,7 @@ database.
         -   Restart Jetty to apply the changes:
 
             ``` text
-            systemctl restart jetty.service
+            systemctl restart jetty
             ```
 
         -   Check IdP Status:
@@ -1406,7 +1406,7 @@ database.
         -   Restart Jetty to apply the changes:
 
             ``` text
-            systemctl restart jetty.service
+            systemctl restart jetty
             ```
 
         -   Check IdP Status:
@@ -1479,7 +1479,7 @@ database.
         -   Restart Jetty to apply the changes:
 
             ``` text
-            systemctl restart jetty.service
+            systemctl restart jetty
             ```
 
         -   Check IdP Status:
@@ -1559,7 +1559,7 @@ Provider if the persistent one is not requested.
 3.  Restart Jetty to apply the changes:
 
     ``` text
-    systemctl restart jetty.service
+    systemctl restart jetty
     ```
 
 4.  Check IdP Status:
@@ -1762,7 +1762,7 @@ Provider if the persistent one is not requested.
 11. Restart Jetty to apply the changes:
 
     ``` text
-    systemctl restart jetty.service
+    systemctl restart jetty
     ```
 
 12. Check IdP Status:
@@ -1815,7 +1815,7 @@ to SAML or any other supported identity protocol.
 4.  Restart Jetty to apply the changes:
 
     ``` text
-    systemctl restart jetty.service
+    systemctl restart jetty
     ```
 
 5.  Check IdP Status:
@@ -1894,7 +1894,7 @@ steps on `persistent` NameID generation.
 5.  Restart Jetty to apply the changes:
 
     ``` text
-    systemctl restart jetty.service
+    systemctl restart jetty
     ```
 
 6.  Check IdP Status:
@@ -1967,7 +1967,7 @@ steps on `persistent` NameID generation.
 5.  Restart Jetty to apply the changes:
 
     ``` text
-    systemctl restart jetty.service
+    systemctl restart jetty
     ```
 
 6.  Check IdP Status:
@@ -2008,7 +2008,7 @@ Translate the IdP messages in your language:
 -   Put `messages_XX.properties` downloaded file into
     `/opt/shibboleth-idp/messages` directory
 -   Restart Jetty to apply the changes with
-    `systemctl restart jetty.service`
+    `systemctl restart jetty`
 
 \[[TOC](#table-of-contents)\]
 
@@ -2031,7 +2031,7 @@ Translate the IdP messages in your language:
 4.  Restart Jetty:
 
     ``` text
-    sudo systemctl restart jetty.service
+    sudo systemctl restart jetty
     ```
 
 \[[TOC](#table-of-contents)\]
@@ -2327,7 +2327,7 @@ Network](https://www.garr.it/en/infrastructures/network-infrastructure/connected
 4.  Restart Jetty to apply the changes:
 
     ``` text
-    systemctl restart jetty.service
+    systemctl restart jetty
     ```
 
 5.  Check IdP Status:
@@ -2409,7 +2409,7 @@ completing a login to a service, a simpler "static" form of consent.
 4.  Restart Jetty:
 
     ``` text
-    sudo systemctl restart jetty.service
+    sudo systemctl restart jetty
     ```
 
 \[[TOC](#table-of-contents)\]
@@ -2528,7 +2528,7 @@ Network](https://www.garr.it/en/infrastructures/network-infrastructure/connected
 3.  Restart Jetty to apply changes:
 
     ``` text
-    systemctl restart jetty.service
+    systemctl restart jetty
     ```
 
 \[[TOC](#table-of-contents)\]
