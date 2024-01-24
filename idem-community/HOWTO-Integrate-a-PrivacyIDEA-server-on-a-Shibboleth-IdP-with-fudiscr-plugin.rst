@@ -227,7 +227,7 @@ Restart Jetty
 
 .. code-block:: text
 
-   /etc/init.d/jetty stop ; /etc/init.d/jetty run
+   systemctl restart jetty.service
 
 Authors
 -------
