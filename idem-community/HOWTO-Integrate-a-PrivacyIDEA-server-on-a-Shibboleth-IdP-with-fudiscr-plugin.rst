@@ -210,6 +210,10 @@ Configure Shibboleth MFA flow
 
    * .. code-block:: text
 
+        cd /opt/shibboleth-idp/conf/authn
+
+   * .. code-block:: text
+
         sed -i 's|authn/Password|authn/fudiscr|g' mfa-authn-config.xml
 
    * .. code-block:: text
