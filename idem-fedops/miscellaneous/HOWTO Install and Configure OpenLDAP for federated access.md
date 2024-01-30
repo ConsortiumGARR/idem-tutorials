@@ -302,6 +302,8 @@ Please remember to **replace all occurencences** of the `example.org` domain nam
     ```bash
     sudo mkdir /var/log/slapd
 
+    sudo chown syslog /var/log/slapd
+
     sudo bash -c 'cat > /etc/rsyslog.d/99-slapd.conf <<EOF
     local4.* /var/log/slapd/slapd.log
     EOF'
