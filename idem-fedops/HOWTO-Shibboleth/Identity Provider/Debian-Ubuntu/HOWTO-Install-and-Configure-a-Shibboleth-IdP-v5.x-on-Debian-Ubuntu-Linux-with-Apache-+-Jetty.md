@@ -67,10 +67,11 @@
 -   Jetty 11+ Servlet Container (*implementing Servlet API 5.0 or above*)
 -   Amazon Corretto JDK 17
 -   OpenSSL (*\<= 3.0.2*)
+-   Shibboleth Identity Provider (*\<= 5.0.0*)
 
 ### Others
 
--   SSL Credentials: HTTPS Certificate & Key
+-   SSL Credentials: HTTPS Certificate & Private Key
 -   Logo:
     -   size: 80x60 px (or other that respect the aspect-ratio)
     -   format: PNG
@@ -93,7 +94,7 @@ Please remember to **replace all occurencences** of:
 
 [[TOC](#table-of-contents)]
 
-### Configure the environment
+## Configure the environment
 
 1.  Become ROOT:
 
@@ -376,24 +377,20 @@ Jetty is a Web server and a Java Servlet container. It will be used to run the I
         systemctl enable jetty.service
         ```
 
-10.  Install Servlet Jakarta API 5.0.0:
+10. Install Servlet Jakarta API 5.0.0:
 
-     -   ``` text
-         apt install libjakarta-servlet-api-java
-         ```
+    -   ``` text
+        apt install libjakarta-servlet-api-java
+        ```
 
-11. Install & configure logback for all Jetty logging:
+11. Install & configure LogBack for all Jetty logging:
+
+    -   ```text
+        cd /opt/jetty
+        ```
 
     -   ``` text
         java -jar /usr/local/src/jetty-src/start.jar --add-module=logging-logback
-        ```
-
-        ``` text
-        ALERT: There are enabled module(s) with licenses.
-        ...
-         Module: logging-logback
-        ...
-        Proceed (y/N)? y
         ```
 
     -   ``` text
@@ -496,7 +493,7 @@ It is a Java Web Application that can be deployed with its WAR file.
 
     **!!! ATTENTION !!!**
 
-    Replace the default value of *Attribute Scope* with the domain name of your institution.
+    Replace the default value of `Attribute Scope` with the domain name of your institution.
 
     ``` bash
     Installation Directory: [/opt/shibboleth-idp] ?                                        (Press ENTER)
@@ -504,7 +501,7 @@ It is a Java Web Application that can be deployed with its WAR file.
     Attribute Scope: [example.org] ?                            (Digit your domain name and press ENTER)
     ```
 
-    By starting from this point, the variable **idp.home** refers to the directory: `/opt/shibboleth-idp`
+    By starting from this point, the variable **%{idp.home}** into some IdP configuration files refers to the directory: `/opt/shibboleth-idp`
 
 [[TOC](#table-of-contents)]
 
@@ -514,7 +511,7 @@ It is a Java Web Application that can be deployed with its WAR file.
 
 Jetty has had vulnerabilities related to directory indexing (sigh) so we suggest disabling that feature at this point.
 
-1.  Create missing dir
+1.  Create missing directory:
 
     ``` text
     mkdir /opt/shibboleth-idp/edit-webapp/WEB-INF
@@ -640,7 +637,7 @@ Jetty has had vulnerabilities related to directory indexing (sigh) so we suggest
 4.  Restart Jetty:
 
     ``` text
-    systemctl restart jetty
+    service jetty restart
     ```
 
 [[TOC](#table-of-contents)]
@@ -655,13 +652,21 @@ The Apache HTTP Server will be configured as a reverse proxy and it will be used
     sudo su -
     ```
 
-2.  Create the Virtualhost file (**please pay attention: you need to edit this file and customize it, check the initial comment of the file**):
+2.  Create the Virtualhost file:
 
     ``` text
     wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP5/apache-conf/idp.example.org.conf -O /etc/apache2/sites-available/$(hostname -f).conf
     ```
 
-3.  Enable the Apache2 virtual hosts created:
+    (do not change `idp.example.org` with the FQDN of the IdP on the GitHub URL provided)
+
+3.  Edit the Virtualhost file (**PLEASE PAY ATTENTION! you need to edit this file and customize it, check the initial comment of the file**):
+
+    ``` text
+    vim /etc/apache2/sites-available/$(hostname -f).conf
+    ```
+
+4.  Enable the Apache2 virtual hosts created:
 
     -   ``` text
         a2ensite $(hostname -f).conf
@@ -671,11 +676,11 @@ The Apache HTTP Server will be configured as a reverse proxy and it will be used
         systemctl reload apache2.service
         ```
 
-4.  Check that IdP metadata is available on:
+5.  Check that IdP metadata is available on:
 
     `https://idp.example.org/idp/shibboleth`
 
-5.  Verify the strength of your IdP's machine on [SSLLabs](https://www.ssllabs.com/ssltest/analyze.html).
+6.  Verify the strength of your IdP's machine on [SSLLabs](https://www.ssllabs.com/ssltest/analyze.html).
 
 [[TOC](#table-of-contents)]
 
@@ -729,9 +734,9 @@ This Storage service will memorize User Consent data on a persistent SQL databas
 
 2.  Install SQL database and needed libraries:
 
-    -   ``` text
-        apt install default-mysql-server libmariadb-java libcommons-dbcp2-java libcommons-pool2-java --no-install-recommends
-        ```
+    ``` text
+    apt install default-mysql-server libmariadb-java libcommons-dbcp2-java libcommons-pool2-java --no-install-recommends
+    ```
 
 3.  Install JDBCStorageService plugin:
 
@@ -766,11 +771,11 @@ This Storage service will memorize User Consent data on a persistent SQL databas
 
 7.  Create `StorageRecords` table on the `storagerecords` database:
 
-    -   ``` text
-        wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP5/db-conf/shib-sr-db.sql -O /root/shib-sr-db.sql
-        ```
+    ``` text
+    wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP5/db-conf/shib-sr-db.sql -O /root/shib-sr-db.sql
+    ```
 
-    fill missing datas on `shib-sr-db.sql` before import:
+    fill missing datas on the `shib-sr-db.sql` file before import:
 
     -   ``` text
         mysql -u root < /root/shib-sr-db.sql
@@ -834,18 +839,18 @@ This Storage service will memorize User Consent data on a persistent SQL databas
 
 10. Set the consent storage service to the JDBC storage service:
 
-    ``` text
-    vim /opt/shibboleth-idp/conf/idp.properties
-    ```
+    * ``` text
+      vim /opt/shibboleth-idp/conf/idp.properties
+      ```
 
-    ``` text
-    idp.consent.StorageService = storagerecords.JDBCStorageService
-    ```
+      ``` text
+      idp.consent.StorageService = storagerecords.JDBCStorageService
+      ```
 
 11. Restart Jetty to apply the changes:
 
     ``` text
-    systemctl restart jetty
+    service jetty restart
     ```
 
 12. Check IdP Status:
@@ -893,6 +898,7 @@ This Storage service will memorize User Consent data on a persistent SQL databas
 4.  Connect the openLDAP to the IdP to allow the authentication of the users:
 
     -   Solution 1 - LDAP + STARTTLS:
+
         -   Configure `secrets.properties`:
 
             ``` text
@@ -923,7 +929,7 @@ This Storage service will memorize User Consent data on a persistent SQL databas
             idp.authn.LDAP.ldapURL = ldap://ldap.example.org
             idp.authn.LDAP.useStartTLS = true
             idp.authn.LDAP.sslConfig = certificateTrust
-            idp.authn.LDAP.trustCertificates = %{idp.home}/credentials/ldap-server.crt
+            idp.authn.LDAP.trustCertificates = /opt/shibboleth-idp/credentials/ldap-server.crt
             # List of attributes to request during authentication
             idp.authn.LDAP.returnAttributes = passwordExpirationTime,loginGraceRemaining
             idp.authn.LDAP.baseDN = ou=people,dc=example,dc=org
@@ -937,12 +943,19 @@ This Storage service will memorize User Consent data on a persistent SQL databas
             idp.attribute.resolver.LDAP.responseTimeout     = %{idp.authn.LDAP.responseTimeout:PT3S}
             idp.attribute.resolver.LDAP.baseDN              = %{idp.authn.LDAP.baseDN:undefined}
             idp.attribute.resolver.LDAP.bindDN              = %{idp.authn.LDAP.bindDN:undefined}
+           
+            # The userFilter is used to locate a directory entry to bind against for LDAP authentication.
+            idp.authn.LDAP.userFilter = (uid={user})
+            
             idp.attribute.resolver.LDAP.useStartTLS         = %{idp.authn.LDAP.useStartTLS:true}
             idp.attribute.resolver.LDAP.trustCertificates   = %{idp.authn.LDAP.trustCertificates:undefined}
-            # The searchFilter is is used to find user attributes from an LDAP source
+            
+            # The 'searchFilter' is is used to find user attributes from an LDAP source
             idp.attribute.resolver.LDAP.searchFilter        = (uid=$resolutionContext.principal)
+            
             # List of attributes produced by the Data Connector that should be directly exported as resolved IdPAttributes without requiring any <AttributeDefinition>
-            idp.attribute.resolver.LDAP.exportAttributes    = ### List space-separated of attributes to retrieve directly from the directory ###
+            # The 'exportAttributes' contains a list space-separated of attributes to retrieve directly from the directory service.
+            idp.attribute.resolver.LDAP.exportAttributes    = uid cn sn givenName mail eduPersonAffiliation
             ```
 
         -   Paste the OpenLDAP certificate into `/opt/shibboleth-idp/credentials/ldap-server.crt`.
@@ -956,7 +969,7 @@ This Storage service will memorize User Consent data on a persistent SQL databas
         -   Restart Jetty to apply the changes:
 
             ``` text
-            systemctl restart jetty
+            service jetty restart
             ```
 
         -   Check IdP Status:
@@ -968,6 +981,7 @@ This Storage service will memorize User Consent data on a persistent SQL databas
         -   Proceed with [Configure Shibboleth Identity Provider to release the persistent NameID](#configure-shibboleth-identity-provider-to-release-the-persistent-nameid)
 
     -   Solution 2 - LDAP + TLS:
+
         -   Configure `secrets.properties`:
 
             ``` text
@@ -998,28 +1012,25 @@ This Storage service will memorize User Consent data on a persistent SQL databas
             idp.authn.LDAP.ldapURL = ldaps://ldap.example.org
             idp.authn.LDAP.useStartTLS = false
             idp.authn.LDAP.sslConfig = certificateTrust
-            idp.authn.LDAP.trustCertificates = %{idp.home}/credentials/ldap-server.crt
+            idp.authn.LDAP.trustCertificates = /opt/shibboleth-idp/credentials/ldap-server.crt
             # List of attributes to request during authentication
             idp.authn.LDAP.returnAttributes = passwordExpirationTime,loginGraceRemaining
             idp.authn.LDAP.baseDN = ou=people,dc=example,dc=org
             idp.authn.LDAP.subtreeSearch = false
             idp.authn.LDAP.bindDN = cn=idpuser,ou=system,dc=example,dc=org
+           
             # The userFilter is used to locate a directory entry to bind against for LDAP authentication.
             idp.authn.LDAP.userFilter = (uid={user})
-
-            # LDAP attribute configuration, see attribute-resolver.xml
-            # Note, this likely won't apply to the use of legacy V2 resolver configurations
-            idp.attribute.resolver.LDAP.ldapURL             = %{idp.authn.LDAP.ldapURL}
-            idp.attribute.resolver.LDAP.connectTimeout      = %{idp.authn.LDAP.connectTimeout:PT3S}
-            idp.attribute.resolver.LDAP.responseTimeout     = %{idp.authn.LDAP.responseTimeout:PT3S}
-            idp.attribute.resolver.LDAP.baseDN              = %{idp.authn.LDAP.baseDN:undefined}
-            idp.attribute.resolver.LDAP.bindDN              = %{idp.authn.LDAP.bindDN:undefined}
+            
             idp.attribute.resolver.LDAP.useStartTLS         = %{idp.authn.LDAP.useStartTLS:true}
             idp.attribute.resolver.LDAP.trustCertificates   = %{idp.authn.LDAP.trustCertificates:undefined}
-            # The searchFilter is used to find user attributes from an LDAP source
+            
+            # The 'searchFilter' is is used to find user attributes from an LDAP source
             idp.attribute.resolver.LDAP.searchFilter        = (uid=$resolutionContext.principal)
+            
             # List of attributes produced by the Data Connector that should be directly exported as resolved IdPAttributes without requiring any <AttributeDefinition>
-            idp.attribute.resolver.LDAP.exportAttributes    = ### List space-separated of attributes to retrieve directly from the directory ###
+            # The 'exportAttributes' contains a list space-separated of attributes to retrieve directly from the directory service.
+            idp.attribute.resolver.LDAP.exportAttributes    = uid cn sn givenName mail eduPersonAffiliation
             ```
 
         -   Paste the content of OpenLDAP certificate into `/opt/shibboleth-idp/credentials/ldap-server.crt`
@@ -1033,7 +1044,7 @@ This Storage service will memorize User Consent data on a persistent SQL databas
         -   Restart Jetty to apply the changes:
 
             ``` text
-            systemctl restart jetty
+            service jetty restart
             ```
 
         -   Check IdP Status:
@@ -1045,6 +1056,7 @@ This Storage service will memorize User Consent data on a persistent SQL databas
         -   Proceed with [Configure Shibboleth Identity Provider to release the persistent NameID](#configure-shibboleth-identity-provider-to-release-the-persistent-nameid)
 
     -   Solution 3 - plain LDAP:
+
         -   Configure `secrets.properties`:
 
             ``` text
@@ -1079,28 +1091,25 @@ This Storage service will memorize User Consent data on a persistent SQL databas
             idp.authn.LDAP.baseDN = ou=people,dc=example,dc=org
             idp.authn.LDAP.subtreeSearch = false
             idp.authn.LDAP.bindDN = cn=idpuser,ou=system,dc=example,dc=org
+           
             # The userFilter is used to locate a directory entry to bind against for LDAP authentication.
             idp.authn.LDAP.userFilter = (uid={user})
-
-            # LDAP attribute configuration, see attribute-resolver.xml
-            # Note, this likely won't apply to the use of legacy V2 resolver configurations
-            idp.attribute.resolver.LDAP.ldapURL             = %{idp.authn.LDAP.ldapURL}
-            idp.attribute.resolver.LDAP.connectTimeout      = %{idp.authn.LDAP.connectTimeout:PT3S}
-            idp.attribute.resolver.LDAP.responseTimeout     = %{idp.authn.LDAP.responseTimeout:PT3S}
-            idp.attribute.resolver.LDAP.baseDN              = %{idp.authn.LDAP.baseDN:undefined}
-            idp.attribute.resolver.LDAP.bindDN              = %{idp.authn.LDAP.bindDN:undefined}
+            
             idp.attribute.resolver.LDAP.useStartTLS         = %{idp.authn.LDAP.useStartTLS:true}
             idp.attribute.resolver.LDAP.trustCertificates   = %{idp.authn.LDAP.trustCertificates:undefined}
-            # The searchFilter is is used to find user attributes from an LDAP source
+            
+            # The 'searchFilter' is is used to find user attributes from an LDAP source
             idp.attribute.resolver.LDAP.searchFilter        = (uid=$resolutionContext.principal)
+            
             # List of attributes produced by the Data Connector that should be directly exported as resolved IdPAttributes without requiring any <AttributeDefinition>
-            idp.attribute.resolver.LDAP.exportAttributes    = ### List space-separated of attributes to retrieve directly from the directory ###
+            # The 'exportAttributes' contains a list space-separated of attributes to retrieve directly from the directory service.
+            idp.attribute.resolver.LDAP.exportAttributes    = uid cn sn givenName mail eduPersonAffiliation
             ```
 
         -   Restart Jetty to apply the changes:
 
             ``` text
-            systemctl restart jetty
+            service jetty restart
             ```
 
         -   Check IdP Status:
@@ -1134,12 +1143,13 @@ This Storage service will memorize User Consent data on a persistent SQL databas
     ```
 
     -   the baseDN (`-b` parameter) ==\> `CN=Users,DC=ad,DC=example,DC=org` (branch containing the registered users)
-    -   the bindDN (`-D` parameter) ==\> `CN=idpuser,CN=Users,DC=ad,DC=example,DC=org` (distinguished name for the user that can made queries on the LDAP, read only is sufficient)
+    -   the bindDN (`-D` parameter) ==\> `CN=idpuser,CN=Users,DC=ad,DC=example,DC=org` (distinguished name for the user that can make queries on the LDAP, read only is sufficient)
     -   the searchFilter `(sAMAccountName=<USERNAME-USED-IN-THE-LOGIN-FORM>)` corresponds to the `(sAMAccountName=$resolutionContext.principal)` searchFilter configured into `conf/ldap.properties`
 
 4.  Connect the Active Directory to the IdP to allow the authentication of the users:
 
     -   Solution 1 - AD + STARTTLS:
+
         -   Configure `secrets.properties`:
 
             ``` text
@@ -1170,28 +1180,25 @@ This Storage service will memorize User Consent data on a persistent SQL databas
             idp.authn.LDAP.ldapURL = ldap://ldap.example.org
             idp.authn.LDAP.useStartTLS = true
             idp.authn.LDAP.sslConfig = certificateTrust
-            idp.authn.LDAP.trustCertificates = %{idp.home}/credentials/ldap-server.crt
+            idp.authn.LDAP.trustCertificates = /opt/shibboleth-idp/credentials/ldap-server.crt
             # List of attributes to request during authentication
             idp.authn.LDAP.returnAttributes = passwordExpirationTime,loginGraceRemaining
             idp.authn.LDAP.baseDN = CN=Users,DC=ad,DC=example,DC=org
             idp.authn.LDAP.subtreeSearch = false
             idp.authn.LDAP.bindDN = CN=idpuser,CN=Users,DC=ad,DC=example,DC=org
+           
             # The userFilter is used to locate a directory entry to bind against for LDAP authentication.
             idp.authn.LDAP.userFilter = (sAMAccountName={user})
-
-            # LDAP attribute configuration, see attribute-resolver.xml
-            # Note, this likely won't apply to the use of legacy V2 resolver configurations
-            idp.attribute.resolver.LDAP.ldapURL             = %{idp.authn.LDAP.ldapURL}
-            idp.attribute.resolver.LDAP.connectTimeout      = %{idp.authn.LDAP.connectTimeout:PT3S}
-            idp.attribute.resolver.LDAP.responseTimeout     = %{idp.authn.LDAP.responseTimeout:PT3S}
-            idp.attribute.resolver.LDAP.baseDN              = %{idp.authn.LDAP.baseDN:undefined}
-            idp.attribute.resolver.LDAP.bindDN              = %{idp.authn.LDAP.bindDN:undefined}
+            
             idp.attribute.resolver.LDAP.useStartTLS         = %{idp.authn.LDAP.useStartTLS:true}
             idp.attribute.resolver.LDAP.trustCertificates   = %{idp.authn.LDAP.trustCertificates:undefined}
-            # The searchFilter is is used to find user attributes from an LDAP source
+            
+            # The 'searchFilter' is is used to find user attributes from an LDAP source
             idp.attribute.resolver.LDAP.searchFilter        = (sAMAccountName=$resolutionContext.principal)
+            
             # List of attributes produced by the Data Connector that should be directly exported as resolved IdPAttributes without requiring any <AttributeDefinition>
-            idp.attribute.resolver.LDAP.exportAttributes    = ### List space-separated of attributes to retrieve directly from the directory ###
+            # The 'exportAttributes' contains a list space-separated of attributes to retrieve directly from the directory service.
+            idp.attribute.resolver.LDAP.exportAttributes    = sAMAccountName cn sn givenName mail eduPersonAffiliation
             ```
 
         -   Paste the content of OpenLDAP certificate into `/opt/shibboleth-idp/credentials/ldap-server.crt`
@@ -1205,7 +1212,7 @@ This Storage service will memorize User Consent data on a persistent SQL databas
         -   Restart Jetty to apply the changes:
 
             ``` text
-            systemctl restart jetty
+            service jetty restart
             ```
 
         -   Check IdP Status:
@@ -1217,6 +1224,7 @@ This Storage service will memorize User Consent data on a persistent SQL databas
         -   Proceed with [Configure Shibboleth Identity Provider to release the persistent NameID](#configure-shibboleth-identity-provider-to-release-the-persistent-nameid)
 
     -   Solution 2: AD + TLS:
+
         -   Configure `secrets.properties`:
 
             ``` text
@@ -1247,28 +1255,25 @@ This Storage service will memorize User Consent data on a persistent SQL databas
             idp.authn.LDAP.ldapURL = ldaps://ldap.example.org
             idp.authn.LDAP.useStartTLS = false
             idp.authn.LDAP.sslConfig = certificateTrust
-            idp.authn.LDAP.trustCertificates = %{idp.home}/credentials/ldap-server.crt
+            idp.authn.LDAP.trustCertificates = /opt/shibboleth-idp/credentials/ldap-server.crt
             # List of attributes to request during authentication
             idp.authn.LDAP.returnAttributes = passwordExpirationTime,loginGraceRemaining
             idp.authn.LDAP.baseDN = CN=Users,DC=ad,DC=example,DC=org
             idp.authn.LDAP.subtreeSearch = false
             idp.authn.LDAP.bindDN = CN=idpuser,CN=Users,DC=ad,DC=example,DC=org
+           
             # The userFilter is used to locate a directory entry to bind against for LDAP authentication.
             idp.authn.LDAP.userFilter = (sAMAccountName={user})
-
-            # LDAP attribute configuration, see attribute-resolver.xml
-            # Note, this likely won't apply to the use of legacy V2 resolver configurations
-            idp.attribute.resolver.LDAP.ldapURL             = %{idp.authn.LDAP.ldapURL}
-            idp.attribute.resolver.LDAP.connectTimeout      = %{idp.authn.LDAP.connectTimeout:PT3S}
-            idp.attribute.resolver.LDAP.responseTimeout     = %{idp.authn.LDAP.responseTimeout:PT3S}
-            idp.attribute.resolver.LDAP.baseDN              = %{idp.authn.LDAP.baseDN:undefined}
-            idp.attribute.resolver.LDAP.bindDN              = %{idp.authn.LDAP.bindDN:undefined}
+            
             idp.attribute.resolver.LDAP.useStartTLS         = %{idp.authn.LDAP.useStartTLS:true}
             idp.attribute.resolver.LDAP.trustCertificates   = %{idp.authn.LDAP.trustCertificates:undefined}
-            # The searchFilter is is used to find user attributes from an LDAP source
+            
+            # The 'searchFilter' is is used to find user attributes from an LDAP source
             idp.attribute.resolver.LDAP.searchFilter        = (sAMAccountName=$resolutionContext.principal)
+            
             # List of attributes produced by the Data Connector that should be directly exported as resolved IdPAttributes without requiring any <AttributeDefinition>
-            idp.attribute.resolver.LDAP.exportAttributes    = ### List space-separated of attributes to retrieve directly from the directory ###
+            # The 'exportAttributes' contains a list space-separated of attributes to retrieve directly from the directory service.
+            idp.attribute.resolver.LDAP.exportAttributes    = sAMAccountName cn sn givenName mail eduPersonAffiliation
             ```
 
         -   Paste the content of OpenLDAP certificate into `/opt/shibboleth-idp/credentials/ldap-server.crt`
@@ -1282,7 +1287,7 @@ This Storage service will memorize User Consent data on a persistent SQL databas
         -   Restart Jetty to apply the changes:
 
             ``` text
-            systemctl restart jetty
+            service jetty restart
             ```
 
         -   Check IdP Status:
@@ -1294,6 +1299,7 @@ This Storage service will memorize User Consent data on a persistent SQL databas
         -   Proceed with [Configure Shibboleth Identity Provider to release the persistent NameID](#configure-shibboleth-identity-provider-to-release-the-persistent-nameid)
 
     -   Solution 3 - plain AD:
+
         -   Configure `secrets.properties`:
 
             ``` text
@@ -1328,28 +1334,25 @@ This Storage service will memorize User Consent data on a persistent SQL databas
             idp.authn.LDAP.baseDN = CN=Users,DC=ad,DC=example,DC=org
             idp.authn.LDAP.subtreeSearch = false
             idp.authn.LDAP.bindDN = CN=idpuser,CN=Users,DC=ad,DC=example,DC=org
+           
             # The userFilter is used to locate a directory entry to bind against for LDAP authentication.
             idp.authn.LDAP.userFilter = (sAMAccountName={user})
-
-            # LDAP attribute configuration, see attribute-resolver.xml
-            # Note, this likely won't apply to the use of legacy V2 resolver configurations
-            idp.attribute.resolver.LDAP.ldapURL             = %{idp.authn.LDAP.ldapURL}
-            idp.attribute.resolver.LDAP.connectTimeout      = %{idp.authn.LDAP.connectTimeout:PT3S}
-            idp.attribute.resolver.LDAP.responseTimeout     = %{idp.authn.LDAP.responseTimeout:PT3S}
-            idp.attribute.resolver.LDAP.baseDN              = %{idp.authn.LDAP.baseDN:undefined}
-            idp.attribute.resolver.LDAP.bindDN              = %{idp.authn.LDAP.bindDN:undefined}
+            
             idp.attribute.resolver.LDAP.useStartTLS         = %{idp.authn.LDAP.useStartTLS:true}
             idp.attribute.resolver.LDAP.trustCertificates   = %{idp.authn.LDAP.trustCertificates:undefined}
-            # The searchFilter is is used to find user attributes from an LDAP source
+            
+            # The 'searchFilter' is is used to find user attributes from an LDAP source
             idp.attribute.resolver.LDAP.searchFilter        = (sAMAccountName=$resolutionContext.principal)
+            
             # List of attributes produced by the Data Connector that should be directly exported as resolved IdPAttributes without requiring any <AttributeDefinition>
-            idp.attribute.resolver.LDAP.exportAttributes    = ### List space-separated of attributes to retrieve directly from the directory ###
+            # The 'exportAttributes' contains a list space-separated of attributes to retrieve directly from the directory service.
+            idp.attribute.resolver.LDAP.exportAttributes    = sAMAccountName cn sn givenName mail eduPersonAffiliation
             ```
 
         -   Restart Jetty to apply the changes:
 
             ``` text
-            systemctl restart jetty
+            service jetty restart
             ```
 
         -   Check IdP Status:
@@ -1420,7 +1423,7 @@ By default, a transient NameID will always be released to the Service Provider i
 3.  Restart Jetty to apply the changes:
 
     ``` text
-    systemctl restart jetty
+    service jetty restart
     ```
 
 4.  Check IdP Status:
@@ -1443,9 +1446,9 @@ By default, a transient NameID will always be released to the Service Provider i
 
 2.  Install SQL database and needed libraries:
 
-    -   ``` text
-        apt install default-mysql-server libmariadb-java libcommons-dbcp2-java libcommons-pool2-java --no-install-recommends
-        ```
+    ``` text
+    apt install default-mysql-server libmariadb-java libcommons-dbcp2-java libcommons-pool2-java --no-install-recommends
+    ```
 
 3.  Install JDBCStorageService plugin:
 
@@ -1479,9 +1482,9 @@ By default, a transient NameID will always be released to the Service Provider i
 
 7.  Create `shibpid` table on `shibboleth` database:
 
-    -   ``` text
-        wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP5/db-conf/shib-pid-db.sql -O /root/shib-pid-db.sql
-        ```
+    ``` text
+    wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP5/db-conf/shib-pid-db.sql -O /root/shib-pid-db.sql
+    ```
 
     fill missing data on `shib-pid-db.sql` before import:
 
@@ -1540,7 +1543,7 @@ By default, a transient NameID will always be released to the Service Provider i
 
     **!!! IMPORTANT !!!**
 
-    remember to change "**\###\_SHIBPID-USERNAME-CHANGEME\_###**" and "**\###\_SHIBPID-DB-USER-PASSWORD-CHANGEME\_###**" with your DB user and password data
+    remember to change "**\###\_SHIBPID-USERNAME-CHANGEME\_###**" and "**\###\_SHIBPID-DB-USER-PASSWORD-CHANGEME\_###**" with your DB user and password data.
 
 10. Enable the generation of the `persistent-id`:
 
@@ -1613,7 +1616,7 @@ By default, a transient NameID will always be released to the Service Provider i
 11. Restart Jetty to apply the changes:
 
     ``` text
-    systemctl restart jetty
+    service jetty restart
     ```
 
 12. Check IdP Status:
@@ -1660,7 +1663,7 @@ which are an internal representation of user data not specific to SAML or any ot
 4.  Restart Jetty to apply the changes:
 
     ``` text
-    systemctl restart jetty
+    service jetty restart
     ```
 
 5.  Check IdP Status:
@@ -1688,7 +1691,7 @@ To be able to follow these steps, you need to have followed the previous steps o
 2.  Check to have the following `<AttributeDefinition>` and the `<DataConnector>` into the `attribute-resolver.xml`:
 
     ``` text
-    vim /opt/shibboleth-idp/conf/attribute-resolver.xml`
+    vim /opt/shibboleth-idp/conf/attribute-resolver.xml
     ```
 
     ``` xml+jinja
@@ -1699,7 +1702,7 @@ To be able to follow these steps, you need to have followed the previous steps o
           WARN [DEPRECATED:173] - xsi:type 'SAML2NameID'
           This feature is at-risk for removal in a future version
 
-     NOTE: eduPersonTargetedID is DEPRECATED and should not be used.
+          NOTE: eduPersonTargetedID is DEPRECATED and should not be used.
     -->
     <AttributeDefinition xsi:type="SAML2NameID" nameIdFormat="urn:oasis:names:tc:SAML:2.0:nameid-format:persistent" id="eduPersonTargetedID">
         <InputDataConnector ref="computed" attributeNames="computedId" />
@@ -1735,7 +1738,7 @@ To be able to follow these steps, you need to have followed the previous steps o
 5.  Restart Jetty to apply the changes:
 
     ``` text
-    systemctl restart jetty
+    service jetty restart
     ```
 
 6.  Check IdP Status:
@@ -1756,7 +1759,8 @@ To be able to follow these steps, you need to have followed the previous steps o
     sudo su -
     ```
 
-2.  Check to have the following `<AttributeDefinition>` and the `<DataConnector>` into the `attribute-resolver.xml`:
+2.  Check to have the following `<AttributeDefinition>` and the
+    `<DataConnector>` into the `attribute-resolver.xml`:
 
     ``` text
     vim /opt/shibboleth-idp/conf/attribute-resolver.xml`
@@ -1770,7 +1774,7 @@ To be able to follow these steps, you need to have followed the previous steps o
           WARN [DEPRECATED:173] - xsi:type 'SAML2NameID'
           This feature is at-risk for removal in a future version
 
-     NOTE: eduPersonTargetedID is DEPRECATED and should not be used.
+          NOTE: eduPersonTargetedID is DEPRECATED and should not be used.
     -->
     <AttributeDefinition xsi:type="SAML2NameID" nameIdFormat="urn:oasis:names:tc:SAML:2.0:nameid-format:persistent" id="eduPersonTargetedID">
         <InputDataConnector ref="stored" attributeNames="storedId" />
@@ -1806,7 +1810,7 @@ To be able to follow these steps, you need to have followed the previous steps o
 5.  Restart Jetty to apply the changes:
 
     ``` text
-    systemctl restart jetty
+    service jetty restart
     ```
 
 6.  Check IdP Status:
@@ -1843,7 +1847,7 @@ Translate the IdP messages in your language:
 
 -   Get the files translated in your language from [MessagesTranslation](https://shibboleth.atlassian.net/wiki/spaces/IDP5/pages/3199501275/MessagesTranslation)
 -   Put `messages_XX.properties` downloaded file into `/opt/shibboleth-idp/messages` directory
--   Restart Jetty to apply the changes with `systemctl restart jetty`
+-   Restart Jetty to apply the changes with `service jetty restart`
 
 [[TOC](#table-of-contents)]
 
@@ -1862,7 +1866,7 @@ Translate the IdP messages in your language:
 4.  Restart Jetty:
 
     ``` text
-    sudo systemctl restart jetty
+    sudo service jetty restart
     ```
 
 [[TOC](#table-of-contents)]
@@ -2000,7 +2004,7 @@ Change the content of `idp.url.password.reset` and `idp.url.helpdesk` variables 
 
     1.  Remove completely the initial default comment
 
-    2.  Remove completely the comment containing `<mdui:UIInfo>` element from `<IDPSSODescriptor>` Section.
+    2.  Remove completely the `<mdui:UIInfo>` element and its content too.
 
     3.  Add the `HTTP-Redirect` and `HTTP-Post` SingleLogoutService endpoints under the `SOAP` one:
 
@@ -2074,7 +2078,7 @@ These instructions will regularly update the secret key (and increase its versio
 
 6.  (OPTIONAL) Add the following properties to `conf/idp.properties` if you need to set different values than defaults:
 
-    -   `idp.sealer._count` - Number of earlier keys to keep (default 30)
+    -   `idp.sealer._count` - Number of earlier keys to keep (default "30")
     -   `idp.sealer._sync_hosts` - Space separated list of hosts to scp the sealer files to (default generate locally)
 
 [[TOC](#table-of-contents)]
@@ -2189,15 +2193,17 @@ The IdP includes the ability to require user consent to attribute release, as we
     bin/module.sh -t idp.intercept.Consent || bin/module.sh -e idp.intercept.Consent
     ```
 
-3.  Enable Consent Module by editing `conf/relying-party.xml` with the right `postAuthenticationFlows`:
+3.  Enable Consent Module by editing the `DefaultRelyingParty` on `conf/relying-party.xml` with the right `postAuthenticationFlows`:
 
     -   `<bean parent="SAML2.SSO" p:postAuthenticationFlows="attribute-release" />` - to enable only Attribute Release Consent
     -   `<bean parent="SAML2.SSO" p:postAuthenticationFlows="#{ {'terms-of-use', 'attribute-release'} }" />` - to enable both
 
+    (instead of `<ref bean="SAML2.SSO" />`)
+
 4.  Restart Jetty:
 
     ``` text
-    sudo systemctl restart jetty
+    service jetty restart
     ```
 
 [[TOC](#table-of-contents)]
