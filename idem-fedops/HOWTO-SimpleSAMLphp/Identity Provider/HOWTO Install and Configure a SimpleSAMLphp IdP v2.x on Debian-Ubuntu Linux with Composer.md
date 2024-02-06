@@ -482,7 +482,13 @@ and `idp.example.org` value with the Full Qualified Name of the Identity Provide
 
         /* The <LogoutResponse> message MUST be signed if the HTTP POST or Redirect binding is used */
         'sign.logout' => true,
-    
+
+        /* Enable SingleLogoutService HTTP-POST binding */
+        'SingleLogoutServiceBinding' => [
+    	     'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect',
+	        'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST',
+        ],
+
         'NameIDFormat' => [
            'urn:oasis:names:tc:SAML:2.0:nameid-format:transient',
            'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
