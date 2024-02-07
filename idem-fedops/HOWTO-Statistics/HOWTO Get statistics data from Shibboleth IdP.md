@@ -1,5 +1,7 @@
 # HOWTO Get statistics data from Shibboleth IDP
 
+### Instructions
+
 1. Ensure to have installed Python (possibly > 2.5) on your IdP and to have the compliant format set for the `idp-audit.log` with:
 
    * Shibboleth IdP v4.x and v5.x:
@@ -24,7 +26,13 @@
      wget https://raw.githubusercontent.com/ConsortiumGARR/idem-tutorials/master/idem-fedops/HOWTO-Statistics/idem-loganalysis-idp_v3_v4_v5.py -O $HOME/loganalisys.py
      ```
 
-3. Extract the data for each month and save the statistics in a corresponding JSON file:
+3. Set the IDP_HOME env variable with:
+
+   * `export IDP_HOME=/opt/shibboleth-idp`
+
+     (replace the `/opt/shibboleth-idp` value with your Shibboleth IdP Home path)
+
+4. Extract the data for each month and save the statistics in a corresponding JSON file:
 
    * Python 2.x - IdP v4.x / IdP v5.x: 
      ```bash
@@ -62,27 +70,33 @@
      zcat /opt/shibboleth-idp/logs/idp-audit-2021-01* | python3 $HOME/loganalisys.py -j - > idp-$(dnsdomainname)-2021-01-sso-stats.json
      ```
 
-   Example JSON output (for one month):
-   ```json
-   {
-    "stats": {
-      "logins": 29,
-      "rps": 8,
-      "users": 3
-      "version": "5.0.0"
-    },
-    "logins_per_rp": {
-      "https://filesender.garr.it/shibboleth": 5,
-      "https://coco.release-check.edugain.org/shibboleth": 1,
-      "https://sp-demo.idem.garr.it/shibboleth": 2,
-      "https://rendez-vous.renater.fr/shibboleth": 1,
-      "https://rns-ng.release-check.edugain.org/shibboleth": 1,
-      "https://buponline.com/shibboleth": 2,
-      "https://sp24-test.garr.it/shibboleth": 16,
-      "https://noec.release-check.edugain.org/shibboleth": 1
-    }
-   }
-   ```
+4. Unset the IDP_HOME env variable with:
+
+   * `unset IDP_HOME`
+
+
+### Example JSON output (for one month)
+
+```json
+{
+ "stats": {
+   "logins": 29,
+   "rps": 8,
+   "users": 3
+   "version": "5.0.0"
+ },
+ "logins_per_rp": {
+   "https://filesender.garr.it/shibboleth": 5,
+   "https://coco.release-check.edugain.org/shibboleth": 1,
+   "https://sp-demo.idem.garr.it/shibboleth": 2,
+   "https://rendez-vous.renater.fr/shibboleth": 1,
+   "https://rns-ng.release-check.edugain.org/shibboleth": 1,
+   "https://buponline.com/shibboleth": 2,
+   "https://sp24-test.garr.it/shibboleth": 16,
+   "https://noec.release-check.edugain.org/shibboleth": 1
+ }
+}
+```
    
 ### UTILITY
 
