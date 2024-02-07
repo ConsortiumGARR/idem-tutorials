@@ -18,7 +18,7 @@
 
    These are the formats compliant with the script provided into this HOWTO.
 
-2. Save the python script [idem-loganalysis-idp_v3_v4_v5.py](../HOWTO-Statistics/idem-loganalysis-idp_v3_v4_v5.py) as `$HOME/loganalisys.py`, or just copy and paste the command below:
+2. Save the python script [idem-loganalysis-idp_v3_v4_v5.py](./idem-loganalysis-idp_v3_v4_v5.py) as `$HOME/loganalisys.py`, or just copy and paste the command below:
 
    * ```
      wget https://raw.githubusercontent.com/ConsortiumGARR/idem-tutorials/master/idem-fedops/HOWTO-Statistics/idem-loganalysis-idp_v3_v4_v5.py -O $HOME/loganalisys.py
