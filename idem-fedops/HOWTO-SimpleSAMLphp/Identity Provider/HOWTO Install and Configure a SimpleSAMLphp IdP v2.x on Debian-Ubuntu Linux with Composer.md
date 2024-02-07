@@ -306,7 +306,8 @@ and `idp.example.org` value with the Full Qualified Name of the Identity Provide
       /* ...other things ... */
       'theme.header' = '<ORGANIZATION_NAME>',
       /* ...other things... */
-      // Comment out entire "authproc.idp" element because it will be used the 'authproc' into the 'saml20-idp-hosted.php' metadata
+      // Comment out line "50 => 'core:AttributeLimit'," into "authproc.idp" section
+      // because we will use core:AttributeLimit into the "authproc" section on "metadata/saml20-idp-hosted.php"
       /* ...other things... */
       'metadatadir' => '/var/simplesamlphp/metadata',
       /* ...other things... */
@@ -554,9 +555,8 @@ and `idp.example.org` value with the Full Qualified Name of the Identity Provide
                  ],
 
            // The Attribute Limit will be use to release all possibile values supported by IdP to SPs
-           // Remember to Comment out entire "authproc.idp" element into "config/config.php" file
+           // Remember to Comment out the line "50 => 'core:AttributeLimit'," into "authproc.idp" section in the "config/config.php" file
            // or no attribute will be released.
-           
            50 => [
                   'class' => 'core:AttributeLimit',
                   'uid','givenName','sn','cn','mail','displayName','mobile',
@@ -638,7 +638,7 @@ and `idp.example.org` value with the Full Qualified Name of the Identity Provide
      ];
      ```
 
-3. **NOTE**: Remember to Comment out entire "**authproc.idp**" element into "**config/config.php**" file or *no attributes will be released*.
+3. **NOTE**: Remember to Comment out the line "**50 => 'core:AttributeLimit',**" into "**authproc.idp**" section because we will use `core:AttributeLimit` into the "**authproc**" section on `metadata/saml20-idp-hosted.php` to limit the attributes released. If you keep the line *no attributes will be released*.
 
 [[TOC]](#table-of-contents)
 
@@ -849,7 +849,7 @@ Follow these steps **ONLY IF** your organization is connected to the [GARR Netwo
 
 ## Appendix B - How to collect useful statistics
 
-Follow: <https://simplesamlphp.org/docs/contrib_modules/statistics/statistics.html>
+DOC: **[SimpleSAMLphp statistics module](https://simplesamlphp.org/docs/contrib_modules/statistics/statistics.html)**
 
 1. Enable the 'statistics' and the 'cron' modules:
    * `vim /var/simplesamlphp/config/config.php`
