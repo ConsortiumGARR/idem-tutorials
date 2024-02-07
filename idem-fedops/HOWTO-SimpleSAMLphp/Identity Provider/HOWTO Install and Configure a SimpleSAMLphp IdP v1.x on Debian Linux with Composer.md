@@ -35,10 +35,14 @@
 * RAM: 4 GB
 * HDD: 20 GB
 
+[[TOC]](#table-of-contents)
+
 ## Requirements Software
 
 * PHP >= 7.2.5
 * OS: Debian 11 (Buster)
+
+[[TOC]](#table-of-contents)
 
 ## Software that will be installed
 
@@ -54,10 +58,14 @@
 * curl
 * build-essential
 
+[[TOC]](#table-of-contents)
+
 ## Installation
 
 The software installation provided by this guide is intended to run by ROOT user:
    * `sudo su -`
+
+[[TOC]](#table-of-contents)
 
 ### Prepare the environment
 
@@ -84,6 +92,8 @@ The software installation provided by this guide is intended to run by ROOT user
    * Import SSL CA: `/usr/local/share/ca-certificates/ssl-ca.crt`
    * Run the command: `update-ca-certificates`
 
+[[TOC]](#table-of-contents)
+
 ### Install Composer
 
 ---
@@ -106,6 +116,8 @@ To update Composer use: `composer self-update`
 4. Install Composer:
    * `php /usr/local/src/composer-setup.php --install-dir=/usr/local/bin --filename=composer`
 
+[[TOC]](#table-of-contents)
+
 ### Install SimpleSAMLphp
 
 1. Become ROOT:
@@ -122,6 +134,8 @@ To update Composer use: `composer self-update`
 4. Create `config` and `metadata` directories into `/var/simplesamlphp` by:
    * `cp -r /var/simplesamlphp/vendor/simplesamlphp/simplesamlphp/config-templates /var/simplesamlphp/config`
    * `cp -r /var/simplesamlphp/vendor/simplesamlphp/simplesamlphp/metadata-templates /var/simplesamlphp/metadata`
+
+[[TOC]](#table-of-contents)
 
 ## Configuration
 
@@ -191,7 +205,7 @@ To update Composer use: `composer self-update`
      </IfModule>
      ```
 
-4. Enable the following Apache2 modules:
+3. Enable the following Apache2 modules:
    * `a2enmod ssl` - To support SSL protocol
    * `a2enmod headers` - To control of HTTP request and response headers.
    * `a2enmod alias` - To manipulation and control of URLs as requests arrive at the server.
@@ -201,10 +215,10 @@ To update Composer use: `composer self-update`
    * `a2dissite 000-default.conf` - Disable HTTP default site
    * `systemctl restart apache2.service`
 
-5. Verify the strength of your IdP's machine on:
+4. Verify the strength of your IdP's machine on:
    * [**https://www.ssllabs.com/ssltest/analyze.html**](https://www.ssllabs.com/ssltest/analyze.html)
 
-6. **OPTIONAL STEPS**:
+5. **OPTIONAL STEPS**:
    If you want to host your IdP's Information/Privacy pages on the IdP itself, follow the next steps:
   
    1. Create all needed files with:
@@ -235,6 +249,8 @@ To update Composer use: `composer self-update`
       * `touch /var/www/html/ssp-idp.example.org/favicon.png` (16x16 px or bigger with the same aspect-ratio)
 
    2. Replace them with the correct content.
+
+[[TOC]](#table-of-contents)
 
 ### Configure SimpleSAMLphp
 
@@ -323,182 +339,189 @@ To update Composer use: `composer self-update`
    * `sudo phpenmod ssp`
    * `systemctl restart apache2.service`
 
+[[TOC]](#table-of-contents)
+
 ### Configure the Identity Provider
 
 #### Configure Metadata
 
-   * `vim /var/simplesamlphp/metadata/saml20-idp-hosted.php`
+* `vim /var/simplesamlphp/metadata/saml20-idp-hosted.php`
 
-     ```php
-     $metadata['__DYNAMIC:1__'] = [
-        'host' => '__DEFAULT__',
-        'privatekey' => 'ssp-idp.key',
-        'certificate' => 'ssp-idp.crt',
-        
-        'scope' => ['<INSERT-HERE-IDP-SCOPE>'],   // Usually the scope is the domain name
-        'userid.attribute' => 'uid', //deprecated, but needed by Consent module. It takes the same value of the persistent NameID source attribute
+  ```php
+  $metadata['__DYNAMIC:1__'] = [
+     'host' => '__DEFAULT__',
+     'privatekey' => 'ssp-idp.key',
+     'certificate' => 'ssp-idp.crt',
+     
+     'scope' => ['<INSERT-HERE-IDP-SCOPE>'],   // Usually the scope is the domain name
+     'userid.attribute' => 'uid', //deprecated, but needed by Consent module. It takes the same value of the persistent NameID source attribute
 
-        'UIInfo' => [
-           'DisplayName' => [
-              'en' => '<INSERT-HERE-THE-ENGLISH-IDP-DISPLAY-NAME>',
-              'it' => '<INSERT-HERE-THE-ITALIAN-IDP-DISPLAY-NAME>',
+     'UIInfo' => [
+        'DisplayName' => [
+           'en' => '<INSERT-HERE-THE-ENGLISH-IDP-DISPLAY-NAME>',
+           'it' => '<INSERT-HERE-THE-ITALIAN-IDP-DISPLAY-NAME>',
+        ],
+        'Description' => [
+           'en' => '<INSERT-HERE-THE-ENGLISH-IDP-DESCRIPTION>',
+           'it' => '<INSERT-HERE-THE-ITALIAN-IDP-DESCRIPTION>',
+        ],
+        'InformationURL' => [
+           'en' => '<INSERT-HERE-THE-ENGLISH-INFORMATION-PAGE-URL>',
+           'it' => '<INSERT-HERE-THE-ITALIAN-INFORMATION-PAGE-URL>',
+        ],
+        'PrivacyStatementURL' => [
+           'en' => '<INSERT-HERE-THE-ENGLISH-PRIVACY-POLICY-PAGE-URL>',
+           'it' => '<INSERT-HERE-THE-ITALIAN-PRIVACY-POLICY-PAGE-URL>',
+        ],
+        'Logo' => [
+           [
+            'url' => '<INSERT-HERE-THE-80X60-LOGO-URL>',
+            'height' => 60,
+            'width' => 80,
            ],
-           'Description' => [
-              'en' => '<INSERT-HERE-THE-ENGLISH-IDP-DESCRIPTION>',
-              'it' => '<INSERT-HERE-THE-ITALIAN-IDP-DESCRIPTION>',
+           [
+            'url' => '<INSERT-HERE-THE-16X16-LOGO-URL>',
+            'height' => 16,
+            'width' => 16,
            ],
-           'InformationURL' => [
-              'en' => '<INSERT-HERE-THE-ENGLISH-INFORMATION-PAGE-URL>',
-              'it' => '<INSERT-HERE-THE-ITALIAN-INFORMATION-PAGE-URL>',
-           ],
-           'PrivacyStatementURL' => [
-              'en' => '<INSERT-HERE-THE-ENGLISH-PRIVACY-POLICY-PAGE-URL>',
-              'it' => '<INSERT-HERE-THE-ITALIAN-PRIVACY-POLICY-PAGE-URL>',
-           ],
-           'Logo' => [
-              [
-               'url' => '<INSERT-HERE-THE-80X60-LOGO-URL>',
-               'height' => 60,
-               'width' => 80,
+        ],
+     ],
+
+     'OrganizationName' => [
+        'en' => '<INSERT-HERE-THE-ENGLISH-ORGANIZATION-NAME>',
+        'it' => '<INSERT-HERE-THE-ITALIAN-ORGANIZATION-NAME>',
+     ],
+     'OrganizationDisplayName' => [
+        'en' => '<INSERT-HERE-THE-ENGLISH-ORGANIZATION-DISPLAY-NAME>',
+        'it' => '<INSERT-HERE-THE-ITALIAN-ORGANIZATION-DISPLAY-NAME>',
+     ],
+     'OrganizationURL' => [
+        'en' => '<INSERT-HERE-THE-ENGLISH-ORGANIZATION-PAGE-URL>',
+        'it' => '<INSERT-HERE-THE-ENGLISH-ORGANIZATION-PAGE-URL>',
+     ],
+
+     /*Uncomment the following to use the uri NameFormat on attributes.*/
+     'attributes.NameFormat' => 'urn:oasis:names:tc:SAML:2.0:attrname-format:uri',
+     
+     /* eduPersonTargetedID with oid NameFormat is a raw XML value */
+     'attributeencodings' => ['urn:oid:1.3.6.1.4.1.5923.1.1.1.10' => 'raw'],
+
+     /* The <LogoutResponse> message MUST be signed if the HTTP POST or Redirect binding is used */
+     'sign.logout' => true,
+
+     'NameIDFormat' => [
+        'urn:oasis:names:tc:SAML:2.0:nameid-format:transient',
+        'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
+     ],
+
+     'authproc' => [
+        // Generate the transient NameID.
+        1 => [
+              'class' => 'saml:TransientNameID',
+        ],
+
+        // Generate the persistent NameID
+        2 => [
+              'class' => 'saml:PersistentNameID',
+              'attribute' => 'uid',  //the source attribute needed by the NameID generation
+        ],
+     
+        // Add schacHomeOrganization for domain of entity
+        10 => [
+               'class' => 'core:AttributeAdd',
+               'schacHomeOrganization' => '<INSERT-HERE-YOUR-DOMAIN-NAME>',
+               'schacHomeOrganizationType' => 'urn:schac:homeOrganizationType:eu:higherEducationalInstitution',
               ],
-              [
-               'url' => '<INSERT-HERE-THE-16X16-LOGO-URL>',
-               'height' => 16,
-               'width' => 16,
+
+        // Add eduPersonPrincipalName
+        11 => [
+               'class' => 'core:ScopeAttribute',
+               'scopeAttribute' => 'schacHomeOrganization',
+               'sourceAttribute' => 'uid',
+               'targetAttribute' => 'eduPersonPrincipalName',
               ],
-           ],
+
+        // Add eduPersonScopedAffiliation
+        12 => [
+               'class' => 'core:ScopeAttribute',
+               'scopeAttribute' => 'eduPersonPrincipalName',
+               'sourceAttribute' => 'eduPersonAffiliation',
+               'targetAttribute' => 'eduPersonScopedAffiliation',
+              ],
+
+        // Enable this authproc filter to automatically generated eduPersonTargetedID/persistent nameID
+        20 => [
+               'class' => 'saml:PersistentNameID2TargetedID',
+               'attribute' => 'eduPersonTargetedID',
+               'nameId' => true,
+              ],
+
+        // Adopts language from attribute to use in UI
+        30 => 'core:LanguageAdaptor',
+
+        // The Attribute Limit will be use to release all possibile values supported by IdP to SPs
+        // Remember to comment out the line "50 => 'core:AttributeLimit'," into the "config/config.php" file
+        // or no attribute will be released.
+        50 => [
+               'class' => 'core:AttributeLimit',
+               'uid','givenName','sn','cn','mail','displayName','mobile',
+               'title','preferredLanguage','telephoneNumber',
+               'schacMotherTongue','schacPersonalTitle','schacHomeOrganization',
+               'schacHomeOrganizationType','schacUserPresenceID','schacPersonalPosition',
+               'schacPersonalUniqueCode','schacPersonalUniqueID',
+               'eduPersonPrincipalName','eduPersonEntitlement',
+               'eduPersonTargetedID','eduPersonOrcid','eduPersonOrgDN','eduPersonOrgUnitDN',
+               'eduPersonScopedAffiliation','eduPersonAffiliation' => [
+                  'student',
+                  'staff',
+                  'member',
+                  'alum',
+                  'affiliate',
+                  'library-walk-in',
+                  'faculty', // NO IDEM
+                  'employee', // NO IDEM
+               ],
         ],
 
-        'OrganizationName' => [
-           'en' => '<INSERT-HERE-THE-ENGLISH-ORGANIZATION-NAME>',
-           'it' => '<INSERT-HERE-THE-ITALIAN-ORGANIZATION-NAME>',
-        ],
-        'OrganizationDisplayName' => [
-           'en' => '<INSERT-HERE-THE-ENGLISH-ORGANIZATION-DISPLAY-NAME>',
-           'it' => '<INSERT-HERE-THE-ITALIAN-ORGANIZATION-DISPLAY-NAME>',
-        ],
-        'OrganizationURL' => [
-           'en' => '<INSERT-HERE-THE-ENGLISH-ORGANIZATION-PAGE-URL>',
-           'it' => '<INSERT-HERE-THE-ENGLISH-ORGANIZATION-PAGE-URL>',
+        // Convert the attributes' names into OID because
+        // SSP will use them from parsed metadata on the $attributes array.
+        51 => ['class' => 'core:AttributeMap','name2oid'],
+
+        // IDEM Attribute Filter:
+        // IDEM SPs + Entity Category SPs + Custom SPs
+        60 =>[
+             'class' => 'core:PHP',
+             'code'	=>
+             '
+             $config_dir = apache_getenv("SIMPLESAMLPHP_CONFIG_DIR");
+             include($config_dir."/idem-attribute-filter.php");
+             '
         ],
 
-        /*Uncomment the following to use the uri NameFormat on attributes.*/
-        'attributes.NameFormat' => 'urn:oasis:names:tc:SAML:2.0:attrname-format:uri',
+        // Convert the attributes' names into Name
+        // to be able to see their names on the Consent page
+        80 => ['class' => 'core:AttributeMap','oid2name'],
+
+        // Consent module is enabled(with no permanent storage, using cookies)
+        90 => [
+               'class' => 'consent:Consent',
+               'store' => 'consent:Cookie',
+               'focus' => 'yes',
+               'checked' => false
+              ],
+ 
+        // If language is set in Consent module it will be added as 'preferredLanguage' attribute
+        99 => 'core:LanguageAdaptor',
         
-        /* eduPersonTargetedID with oid NameFormat is a raw XML value */
-        'attributeencodings' => ['urn:oid:1.3.6.1.4.1.5923.1.1.1.10' => 'raw'],
+        // Convert LDAP names to oids needed to send attributes to the SP
+        100 => ['class' => 'core:AttributeMap', 'name2oid'],
+     ],
+  ];
+  ```
 
-        /* The <LogoutResponse> message MUST be signed if the HTTP POST or Redirect binding is used */
-        'sign.logout' => true,
+  **NOTE**: Remember to Comment out the line "**50 => 'core:AttributeLimit',**" into "**authproc.idp**" section because we will use `core:AttributeLimit` into the "**authproc**" section on `metadata/saml20-idp-hosted.php` to limit the attributes released. If you keep the line *no attributes will be released*.
 
-        'NameIDFormat' => [
-           'urn:oasis:names:tc:SAML:2.0:nameid-format:transient',
-           'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
-        ],
-
-        'authproc' => [
-           // Generate the transient NameID.
-           1 => [
-                 'class' => 'saml:TransientNameID',
-           ],
-
-           // Generate the persistent NameID
-           2 => [
-                 'class' => 'saml:PersistentNameID',
-                 'attribute' => 'uid',  //the source attribute needed by the NameID generation
-           ],
-        
-           // Add schacHomeOrganization for domain of entity
-           10 => [
-                  'class' => 'core:AttributeAdd',
-                  'schacHomeOrganization' => '<INSERT-HERE-YOUR-DOMAIN-NAME>',
-                  'schacHomeOrganizationType' => 'urn:schac:homeOrganizationType:eu:higherEducationalInstitution',
-                 ],
-
-           // Add eduPersonPrincipalName
-           11 => [
-                  'class' => 'core:ScopeAttribute',
-                  'scopeAttribute' => 'schacHomeOrganization',
-                  'sourceAttribute' => 'uid',
-                  'targetAttribute' => 'eduPersonPrincipalName',
-                 ],
-
-           // Add eduPersonScopedAffiliation
-           12 => [
-                  'class' => 'core:ScopeAttribute',
-                  'scopeAttribute' => 'eduPersonPrincipalName',
-                  'sourceAttribute' => 'eduPersonAffiliation',
-                  'targetAttribute' => 'eduPersonScopedAffiliation',
-                 ],
-
-           // Enable this authproc filter to automatically generated eduPersonTargetedID/persistent nameID
-           20 => [
-                  'class' => 'saml:PersistentNameID2TargetedID',
-                  'attribute' => 'eduPersonTargetedID',
-                  'nameId' => true,
-                 ],
-
-           // Adopts language from attribute to use in UI
-           30 => 'core:LanguageAdaptor',
-
-           // The Attribute Limit will be use to release all possibile values supported by IdP to SPs
-           // Remember to comment out the same part with "50" on config/config.php file or no attributes will be released
-           50 => [
-                  'class' => 'core:AttributeLimit',
-                  'uid','givenName','sn','cn','mail','displayName','mobile',
-                  'title','preferredLanguage','telephoneNumber',
-                  'schacMotherTongue','schacPersonalTitle','schacHomeOrganization',
-                  'schacHomeOrganizationType','schacUserPresenceID','schacPersonalPosition',
-                  'schacPersonalUniqueCode','schacPersonalUniqueID',
-                  'eduPersonPrincipalName','eduPersonEntitlement',
-                  'eduPersonTargetedID','eduPersonOrcid','eduPersonOrgDN','eduPersonOrgUnitDN',
-                  'eduPersonScopedAffiliation','eduPersonAffiliation' => [
-                     'student',
-                     'staff',
-                     'member',
-                     'alum',
-                     'affiliate',
-                     'library-walk-in',
-                     'faculty', // NO IDEM
-                     'employee', // NO IDEM
-                  ],
-           ],
-
-           // Convert the attributes' names into OID because
-           // SSP will use them from parsed metadata on the $attributes array.
-           51 => ['class' => 'core:AttributeMap','name2oid'],
-
-           // IDEM Attribute Filter:
-           // IDEM SPs + Entity Category SPs + Custom SPs
-           60 =>[
-                'class' => 'core:PHP',
-                'code'	=>
-                '
-                $config_dir = apache_getenv("SIMPLESAMLPHP_CONFIG_DIR");
-                include($config_dir."/idem-attribute-filter.php");
-                '
-           ],
-
-           // Convert the attributes' names into Name
-           // to be able to see their names on the Consent page
-           80 => ['class' => 'core:AttributeMap','oid2name'],
-
-           // Consent module is enabled(with no permanent storage, using cookies)
-           90 => [
-                  'class' => 'consent:Consent',
-                  'store' => 'consent:Cookie',
-                  'focus' => 'yes',
-                  'checked' => false
-                 ],
-    
-           // If language is set in Consent module it will be added as 'preferredLanguage' attribute
-           99 => 'core:LanguageAdaptor',
-           
-           // Convert LDAP names to oids needed to send attributes to the SP
-           100 => ['class' => 'core:AttributeMap', 'name2oid'],
-        ],
-     ];
-     ```
+[[TOC]](#table-of-contents)
 
 #### Configure Attribute Release Policies
 
@@ -523,289 +546,305 @@ To update Composer use: `composer self-update`
 
    * Change the `require` line into `idem-attribute-filter.php` by setting the correct path of the `attributemap.php` file
 
+[[TOC]](#table-of-contents)
+
 #### Configure SAML Metadata Credentials
 
-   * `vim /var/simplesamlphp/cert/ssp-idp-credentials.cnf`:
+* `vim /var/simplesamlphp/cert/ssp-idp-credentials.cnf`:
 
-     (*Replace `ssp-idp.example.org` with your IDP Full Qualified Domain Name*)
+  (*Replace `ssp-idp.example.org` with your IDP Full Qualified Domain Name*)
 
-     ```cnf
-     [req]
-     default_bits=4096
-     default_md=sha256
-     encrypt_key=no
-     distinguished_name=dn
-     # PrintableStrings only
-     string_mask=MASK:0002
-     prompt=no
-     x509_extensions=ext
+  ```cnf
+  [req]
+  default_bits=4096
+  default_md=sha256
+  encrypt_key=no
+  distinguished_name=dn
+  # PrintableStrings only
+  string_mask=MASK:0002
+  prompt=no
+  x509_extensions=ext
 
-     # customize the "default_keyfile,", "CN" and "subjectAltName" lines below
-     default_keyfile=ssp-idp.key
+  # customize the "default_keyfile,", "CN" and "subjectAltName" lines below
+  default_keyfile=ssp-idp.key
 
-     [dn]
-     CN=ssp-idp.example.org
+  [dn]
+  CN=ssp-idp.example.org
 
-     [ext]
-     subjectAltName=DNS:ssp-idp.example.org, \
-                    URI:https://ssp-idp.example.org/idp/simplesaml/saml2/idp/metadata.php
-     subjectKeyIdentifier=hash
-     ```
+  [ext]
+  subjectAltName=DNS:ssp-idp.example.org, \
+                 URI:https://ssp-idp.example.org/idp/simplesaml/saml2/idp/metadata.php
+  subjectKeyIdentifier=hash
+  ```
 
-   * `cd /var/simplesamlphp/cert`
-   * `openssl req -new -x509 -config ssp-idp-credentials.cnf -text -out ssp-idp.crt -days 3650`
-   * `chown -R www-data: /var/simplesamlphp/cert`
-   * `chmod 400 /var/simplesamlphp/cert/ssp-idp.key`
+* `cd /var/simplesamlphp/cert`
+* `openssl req -new -x509 -config ssp-idp-credentials.cnf -text -out ssp-idp.crt -days 3650`
+* `chown -R www-data: /var/simplesamlphp/cert`
+* `chmod 400 /var/simplesamlphp/cert/ssp-idp.key`
+
+[[TOC]](#table-of-contents)
 
 #### Configure the authentication source
 
-   1. Enable LDAP PHP module:
-      * `apt install php-ldap`
-      * `systemctl restart apache2.service`
+1. Enable LDAP PHP module:
+   * `apt install php-ldap`
+   * `systemctl restart apache2.service`
 
-   2. Enable `ldap:LDAP` Authentication Source:
-      * `vim /var/simplesamlphp/config/authsources.php`
-      
+2. Enable `ldap:LDAP` Authentication Source:
+   * `vim /var/simplesamlphp/config/authsources.php`
+   
+     ```php
+     <?php
+
+     $config = [
+
+          // This is a authentication source which handles admin authentication.
+          'admin' => [
+              'core:AdminPassword',
+          ],
+
+          // LDAP authentication source.
+          'ldap' => [
+              'ldap:LDAP',
+              'hostname' => 'ldap.example.org',
+              'enable_tls' => true,
+              'debug' => false,
+              'timeout' => 0,
+              'port' => 389,
+              'referrals' => true,
+              'attributes' => null,
+              'dnpattern' => 'uid=%username%,ou=people,dc=example,dc=org',
+              'search.base' => 'ou=people,dc=example,dc=org',
+              'search.attributes' => ['uid'],
+              'search.username' => '<LDAP_USER_DN_USED_FOR_QUERIES>',
+              'search.password' => '<LDAP_USER_PASSWORD>',
+          ],
+     ];
+     ```
+
+3. Connect LDAP to the IdP:
+   * `vim /var/simplesamlphp/metadata/saml20-idp-hosted.php`
+
+     ```php
+        /* ...other things before end of file...*/
+        'auth' => 'ldap',
+     ];
+     ```
+
+4. Try the LDAP Authentication Source on: 
+   * `https://ssp-idp.example.org/simplesaml/module.php/core/authenticate.php`
+
+     (*Replace `ssp-idp.example.org` with your IDP Full Qualified Domain Name*)
+
+[[TOC]](#table-of-contents)
+
+#### Configure automatic download of Federation Metadata
+   
+1. **IDEM MDX (recommended): https://mdx.idem.garr.it/**
+
+2. IDEM MDS (legacy):
+   1. Load CRON module:
+      * `cd /var/simplesamlphp`
+      * `cp vendor/simplesamlphp/simplesamlphp/modules/cron/config-templates/module_cron.php config/`
+
+   2. Load METAREFRESH module:
+      * `cd /var/simplesamlphp`
+      * `cp vendor/simplesamlphp/simplesamlphp/modules/metarefresh/config-templates/config-metarefresh.php config/`
+
+   3. Enable CRON & METAREFRESH modules:
+      * `vim /var/simplesamlphp/config/config.php`
+
+        ```php
+        /* ...other things... */
+        'module.enable' => [
+           'cron' => true,
+           'metarefresh' => true,
+           'consent' => true,
+        ],
+        /* ...other things... */
+        ```
+
+   4. Test it:
+      * `cd /var/simplesamlphp/vendor/simplesamlphp/simplesamlphp/modules/metarefresh/bin`
+      * `./metarefresh.php -s http://md.idem.garr.it/metadata/idem-test-metadata-sha256.xml > metarefresh-test.txt`
+
+   5. Generate the CRON `<SECRET>`:
+      * `tr -c -d '0123456789abcdefghijklmnopqrstuvwxyz' </dev/urandom | dd bs=32 count=1 2>/dev/null ; echo`
+
+   6. Change the CRON configuration file:
+      * `vim /var/simplesamlphp/config/module_cron.php`
+
+        ```php
+        <?php
+        /*
+         * Configuration for the Cron module.
+         */
+
+        $config = [
+           'key' => '<SECRET>',
+           'allowed_tags' => ['hourly'],
+           'debug_message' => TRUE,
+           'sendemail' => TRUE,
+        ];
+        ?>
+        ```
+
+   7. Insert the following Cron job to the crontab file (`crontab -e`):
+
+      (*Replace `ssp-idp.example.org` with your IDP Full Qualified Domain Name*)
+
+      ```bash
+      # Run cron: [hourly]
+      01 * * * *  root  curl --silent "https://ssp-idp.example.org/simplesaml/module.php/cron/cron.php?key=<SECRET>&tag=hourly" > /dev/null 2>&1
+      ```
+
+   8. Configure METAREFRESH:
+      * `vim /var/simplesamlphp/config/config-metarefresh.php`
+
         ```php
         <?php
 
         $config = [
 
-             // This is a authentication source which handles admin authentication.
-             'admin' => [
-                 'core:AdminPassword',
-             ],
-
-             // LDAP authentication source.
-             'ldap' => [
-                 'ldap:LDAP',
-                 'hostname' => 'ldap.example.org',
-                 'enable_tls' => true,
-                 'debug' => false,
-                 'timeout' => 0,
-                 'port' => 389,
-                 'referrals' => true,
-                 'attributes' => null,
-                 'dnpattern' => 'uid=%username%,ou=people,dc=example,dc=org',
-                 'search.base' => 'ou=people,dc=example,dc=org',
-                 'search.attributes' => ['uid'],
-                 'search.username' => '<LDAP_USER_DN_USED_FOR_QUERIES>',
-                 'search.password' => '<LDAP_USER_PASSWORD>',
-             ],
-        ];
-        ```
-
-   3. Connect LDAP to the IdP:
-      * `vim /var/simplesamlphp/metadata/saml20-idp-hosted.php`
-
-        ```php
-           /* ...other things before end of file...*/
-           'auth' => 'ldap',
-        ];
-        ```
-
-   4. Try the LDAP Authentication Source on: 
-      * `https://ssp-idp.example.org/simplesaml/module.php/core/authenticate.php`
-
-        (*Replace `ssp-idp.example.org` with your IDP Full Qualified Domain Name*)
-
-#### Configure automatic download of Federation Metadata
-   
-   1. **IDEM MDX (recommended): https://mdx.idem.garr.it/**
-
-   2. IDEM MDS (legacy):
-      1. Load CRON module:
-         * `cd /var/simplesamlphp`
-         * `cp vendor/simplesamlphp/simplesamlphp/modules/cron/config-templates/module_cron.php config/`
-
-      2. Load METAREFRESH module:
-         * `cd /var/simplesamlphp`
-         * `cp vendor/simplesamlphp/simplesamlphp/modules/metarefresh/config-templates/config-metarefresh.php config/`
-
-      3. Enable CRON & METAREFRESH modules:
-         * `vim /var/simplesamlphp/config/config.php`
-
-           ```php
-           /* ...other things... */
-           'module.enable' => [
-              'cron' => true,
-              'metarefresh' => true,
-              'consent' => true,
-           ],
-           /* ...other things... */
-           ```
-
-      4. Test it:
-         * `cd /var/simplesamlphp/vendor/simplesamlphp/simplesamlphp/modules/metarefresh/bin`
-         * `./metarefresh.php -s http://md.idem.garr.it/metadata/idem-test-metadata-sha256.xml > metarefresh-test.txt`
-
-      5. Generate the CRON `<SECRET>`:
-         * `tr -c -d '0123456789abcdefghijklmnopqrstuvwxyz' </dev/urandom | dd bs=32 count=1 2>/dev/null ; echo`
-
-      6. Change the CRON configuration file:
-         * `vim /var/simplesamlphp/config/module_cron.php`
-
-           ```php
-           <?php
            /*
-            * Configuration for the Cron module.
+            * Global blacklist: entityIDs that should be excluded from ALL sets.
+           */
+           #'blacklist' = array(
+           #       'http://my.own.uni/idp'
+           #),
+
+           /*
+            * Conditional GET requests
+            * Efficient downloading so polling can be done more frequently.
+            * Works for sources that send 'Last-Modified' or 'Etag' headers.
+            * Note that the 'data' directory needs to be writable for this to work.
             */
+           #'conditionalGET'       => TRUE,
 
-           $config = [
-              'key' => '<SECRET>',
-              'allowed_tags' => ['hourly'],
-              'debug_message' => TRUE,
-              'sendemail' => TRUE,
-           ];
-           ?>
-           ```
+           'sets' => [
+              'idem' => [
+                 'cron'    => ['hourly'],
+                 'sources' => [
+                               [
+                                'src' => 'http://md.idem.garr.it/metadata/idem-test-metadata-sha256.xml',
+                                'certificates' => [
+                                   '/var/simplesamlphp/cert/federation-cert.pem',
+                                ],
+                                'template' => [
+                                   'tags'  => ['idem'],
+                                   'authproc' => [
+                                      51 => ['class' => 'core:AttributeMap', 'oid2name'],
+                                   ],
+                                ],
 
-      7. Insert the following Cron job to the crontab file (`crontab -e`):
+                                /*
+                                 * The sets of entities to load, any combination of:
+                                 *  - 'saml20-idp-remote'
+                                 *  - 'saml20-sp-remote'
+                                 *  - 'shib13-idp-remote'
+                                 *  - 'shib13-sp-remote'
+                                 *  - 'attributeauthority-remote'
+                                 *
+                                 * All of them will be used by default.
+                                 */
+                                 'types' => ['saml20-sp-remote'],   // Load only SAML v2.0 SP from metadata
+                               ],
+                              ],
+                 'expireAfter' => 864000, // Maximum 10 days cache time (3600*24*10)
+                 'outputDir'   => '/var/simplesamlphp/metadata/',
 
-         (*Replace `ssp-idp.example.org` with your IDP Full Qualified Domain Name*)
+                 /*
+                  * Which output format the metadata should be saved as.
+                  * Can be 'flatfile' or 'serialize'. 'flatfile' is the default.
+                 */
+                 'outputFormat' => 'flatfile',
+              ],
+           ],
+        ];
+        ```
 
-         ```bash
-         # Run cron: [hourly]
-         01 * * * *  root  curl --silent "https://ssp-idp.example.org/simplesaml/module.php/cron/cron.php?key=<SECRET>&tag=hourly" > /dev/null 2>&1
+   9. Remove not needed files from:
+       * `cd /var/simplesamlphp/metadata ; rm !(saml20-idp-hosted.php)`
+
+   10. Download the Federation signing certificate: 
+       * ```bash
+         wget https://md.idem.garr.it/certs/idem-signer-20241118.pem -O /var/simplesamlphp/cert/federation-cert.pem
          ```
 
-      8. Configure METAREFRESH:
-         * `vim /var/simplesamlphp/config/config-metarefresh.php`
+   11. Check the validity of the signing certificate:
+       * `cd /var/simplesamlphp/cert`
+       * `openssl x509 -in federation-cert.pem -fingerprint -sha1 -noout`
 
-           ```php
-           <?php
+         (sha1: 0E:21:81:8E:06:02:D1:D9:D1:CF:3D:4C:41:ED:5F:F3:43:70:16:79)
+       * `openssl x509 -in federation-cert.pem -fingerprint -md5 -noout`
 
-           $config = [
+         (md5: 73:B7:29:FA:7C:AE:5C:E7:58:1F:10:0B:FC:EE:DA:A9)
 
-              /*
-               * Global blacklist: entityIDs that should be excluded from ALL sets.
-              */
-              #'blacklist' = array(
-              #       'http://my.own.uni/idp'
-              #),
+   12. Go to `https://ssp-idp.example.org/simplesaml/module.php/core/frontpage_federation.php` and forcing download of the Federation metadata by pressing on `Metarefresh: fetch metadata` or wait 1 day
 
-              /*
-               * Conditional GET requests
-               * Efficient downloading so polling can be done more frequently.
-               * Works for sources that send 'Last-Modified' or 'Etag' headers.
-               * Note that the 'data' directory needs to be writable for this to work.
-               */
-              #'conditionalGET'       => TRUE,
+       (*Replace `ssp-idp.example.org` with your IDP Full Qualified Domain Name*)
 
-              'sets' => [
-                 'idem' => [
-                    'cron'    => ['hourly'],
-                    'sources' => [
-                                  [
-                                   'src' => 'http://md.idem.garr.it/metadata/idem-test-metadata-sha256.xml',
-                                   'certificates' => [
-                                      '/var/simplesamlphp/cert/federation-cert.pem',
-                                   ],
-                                   'template' => [
-                                      'tags'  => ['idem'],
-                                      'authproc' => [
-                                         51 => ['class' => 'core:AttributeMap', 'oid2name'],
-                                      ],
-                                   ],
-
-                                   /*
-                                    * The sets of entities to load, any combination of:
-                                    *  - 'saml20-idp-remote'
-                                    *  - 'saml20-sp-remote'
-                                    *  - 'shib13-idp-remote'
-                                    *  - 'shib13-sp-remote'
-                                    *  - 'attributeauthority-remote'
-                                    *
-                                    * All of them will be used by default.
-                                    */
-                                    'types' => ['saml20-sp-remote'],   // Load only SAML v2.0 SP from metadata
-                                  ],
-                                 ],
-                    'expireAfter' => 864000, // Maximum 10 days cache time (3600*24*10)
-                    'outputDir'   => '/var/simplesamlphp/metadata/',
-
-                    /*
-                     * Which output format the metadata should be saved as.
-                     * Can be 'flatfile' or 'serialize'. 'flatfile' is the default.
-                    */
-                    'outputFormat' => 'flatfile',
-                 ],
-              ],
-           ];
-           ```
-
-      9. Remove not needed files from:
-          * `cd /var/simplesamlphp/metadata ; rm !(saml20-idp-hosted.php)`
-
-      10. Download the Federation signing certificate: 
-          * ```bash
-            wget https://md.idem.garr.it/certs/idem-signer-20241118.pem -O /var/simplesamlphp/cert/federation-cert.pem
-            ```
-
-      11. Check the validity of the signing certificate:
-          * `cd /var/simplesamlphp/cert`
-          * `openssl x509 -in federation-cert.pem -fingerprint -sha1 -noout`
-
-            (sha1: 0E:21:81:8E:06:02:D1:D9:D1:CF:3D:4C:41:ED:5F:F3:43:70:16:79)
-          * `openssl x509 -in federation-cert.pem -fingerprint -md5 -noout`
-
-            (md5: 73:B7:29:FA:7C:AE:5C:E7:58:1F:10:0B:FC:EE:DA:A9)
-
-      12. Go to `https://ssp-idp.example.org/simplesaml/module.php/core/frontpage_federation.php` and forcing download of the Federation metadata by pressing on `Metarefresh: fetch metadata` or wait 1 day
-
-          (*Replace `ssp-idp.example.org` with your IDP Full Qualified Domain Name*)
+[[TOC]](#table-of-contents)
 
 #### Add translations of the new `schacHomeOrganizationType` attribute
 
-   * `vim /var/simplesamlphp/vendor/simplesamlphp/simplesamlphp/dictionaries/attributes.definition.json`
+* `vim /var/simplesamlphp/vendor/simplesamlphp/simplesamlphp/dictionaries/attributes.definition.json`
 
-     ```json
-     /* ...other things... */
-     "attribute_schachomeorganization":{
-        "en": "Home organization domain name"
-     },
+  ```json
+  /* ...other things... */
+  "attribute_schachomeorganization":{
+     "en": "Home organization domain name"
+  },
+  "attribute_schachomeorganizationtype":{
+     "en": "Home organization type"
+  },
+  /* ...other things... */
+  ```
+
+  (Pay attention also to "commas"!)
+
+* `vim /var/simplesamlphp/vendor/simplesamlphp/simplesamlphp/dictionaries/attributes.translation.json`
+
+  ```json
+     /* ...other things before the end of file... */
      "attribute_schachomeorganizationtype":{
-        "en": "Home organization type"
-     },
-     /* ...other things... */
-     ```
-
-     (Pay attention also to "commas"!)
-
-   * `vim /var/simplesamlphp/vendor/simplesamlphp/simplesamlphp/dictionaries/attributes.translation.json`
-
-     ```json
-        /* ...other things before the end of file... */
-        "attribute_schachomeorganizationtype":{
-           "it": "Tipo di Organizzazione"
-        }
+        "it": "Tipo di Organizzazione"
      }
-     ```
+  }
+  ```
 
-     (Pay attention also to "commas"!)
+  (Pay attention also to "commas"!)
+
+[[TOC]](#table-of-contents)
 
 #### Enable UTF-8 on IdP metadata (to avoid encoding problems with accents)
 
-   * `vim /var/simplesamlphp/vendor/simplesamlphp/saml2/src/SAML2/DOMDocumentFactory.php`
+* `vim /var/simplesamlphp/vendor/simplesamlphp/saml2/src/SAML2/DOMDocumentFactory.php`
 
-     ```bash
-     /* ...other things... */
-        public static function create() : DOMDocument
-        {
-          return new DOMDocument('1.0','utf-8');
-        }
+  ```bash
+  /* ...other things... */
+     public static function create() : DOMDocument
+     {
+       return new DOMDocument('1.0','utf-8');
      }
-     ```
+  }
+  ```
+
+[[TOC]](#table-of-contents)
 
 #### Download IdP Metadata
 
-   * `https://ssp-idp.example.org/simplesaml/saml2/idp/metadata.php`
+* `https://ssp-idp.example.org/simplesaml/saml2/idp/metadata.php`
 
-     (*Replace `ssp-idp.example.org` with your IDP Full Qualified Domain Name*)
+  (*Replace `ssp-idp.example.org` with your IDP Full Qualified Domain Name*)
+
+[[TOC]](#table-of-contents)
 
 #### Register IdP on IDEM Entity Registry
 
-   * Go to `https://registry.idem.garr.it` and follow "**Insert a New Identity Provider into the IDEM Test Federation**" (your entity has to be approved by an IDEM Federation Operator before become part of IDEM Test Federation)
+Go to `https://registry.idem.garr.it` and follow "**Insert a New Identity Provider into the IDEM Test Federation**" (your entity has to be approved by an IDEM Federation Operator before become part of IDEM Test Federation)
+
+[[TOC]](#table-of-contents)
 
 ### Appendix A - How to manage sessions with Memcached
 
@@ -826,15 +865,20 @@ To update Composer use: `composer self-update`
      'store.type' => 'memcache',
      /* ...other things... */
      ```
-     
+[[TOC]](#table-of-contents)
+
 ### Appendix B - How to collect useful statistics
 
 Follow **[SimpleSAMLphp statistics module](https://simplesamlphp.org/docs/contrib_modules/statistics/statistics.html)** documentation
+
+[[TOC]](#table-of-contents)
 
 ### Utility
 
 * [The Mozilla Observatory](https://observatory.mozilla.org/):
   The Mozilla Observatory has helped over 240,000 websites by teaching developers, system administrators, and security professionals how to configure their sites safely and securely.
+
+[[TOC]](#table-of-contents)
 
 ### Authors
 
