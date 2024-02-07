@@ -24,7 +24,7 @@
       8. [Download IdP Metadata](#download-idp-metadata)
       9. [Register IdP on IDEM Entity Registry](#register-idp-on-idem-entity-registry)
 6. [Appendix A - How to manage sessions with Memcache](#appendix-a---how-to-manage-sessions-with-memcached)
-7. [Appendix B - How to collect useful-statistics](#appendix-b---how-to-collect-useful-statistics)
+7. [Appendix B - How to collect useful statistics](#appendix-b---how-to-collect-useful-statistics)
 8. [Utility](#utility)
 9. [Authors](#authors)
 
@@ -277,7 +277,8 @@ To update Composer use: `composer self-update`
       /* ...other things ... */
       'theme.header' = '#_YOUR_ORGANIZATION_NAME_#',
       /* ...other things... */
-      // Comment out all content of "authproc.idp" because we will use the 'authproc' into 'saml20-idp-hosted.php' metadata
+      // Comment out line "50 => 'core:AttributeLimit'," into "authproc.idp" section
+      // because we will use core:AttributeLimit into the "authproc" section on "metadata/saml20-idp-hosted.php"
       /* ...other things... */
       'store.type' => 'phpsession',
       ```
@@ -828,7 +829,7 @@ To update Composer use: `composer self-update`
      
 ### Appendix B - How to collect useful statistics
 
-Follow https://simplesamlphp.org/docs/stable/statistics:statistics
+Follow **[SimpleSAMLphp statistics module](https://simplesamlphp.org/docs/contrib_modules/statistics/statistics.html)** documentation
 
 ### Utility
 
