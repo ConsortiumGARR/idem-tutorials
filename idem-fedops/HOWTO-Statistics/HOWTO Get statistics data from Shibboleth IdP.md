@@ -18,10 +18,10 @@
 
    These are the formats compliant with the script provided into this HOWTO.
 
-2. Save the python script [idem-loganalysis-idp_v3.py](../HOWTO-Statistics/idem-loganalysis-idp_v3.py) as `$HOME/loganalisys.py`, or just copy and paste the command below:
+2. Save the python script [idem-loganalysis-idp_v3_v4_v5.py](../HOWTO-Statistics/idem-loganalysis-idp_v3_v4_v5.py) as `$HOME/loganalisys.py`, or just copy and paste the command below:
 
    * ```
-     wget https://raw.githubusercontent.com/ConsortiumGARR/idem-tutorials/master/idem-fedops/HOWTO-Statistics/idem-loganalysis-idp_v3.py -O $HOME/loganalisys.py
+     wget https://raw.githubusercontent.com/ConsortiumGARR/idem-tutorials/master/idem-fedops/HOWTO-Statistics/idem-loganalysis-idp_v3_v4_v5.py -O $HOME/loganalisys.py
      ```
 
 3. Extract the data for each month and save the statistics in a corresponding JSON file:
@@ -69,6 +69,7 @@
       "logins": 29,
       "rps": 8,
       "users": 3
+      "version": "5.0.0"
     },
     "logins_per_rp": {
       "https://filesender.garr.it/shibboleth": 5,
