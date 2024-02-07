@@ -2,7 +2,7 @@
 
 1. Ensure to have installed Python (possibly > 2.5) on your IdP and to have the compliant format set for the `idp-audit.log` with:
 
-   * Shibboleth IdP v4.x e v5.x:
+   * Shibboleth IdP v4.x and v5.x:
      * `cat /opt/shibboleth-idp/conf/audit.xml | grep Shibboleth-Audit`
 
        ```xml  
