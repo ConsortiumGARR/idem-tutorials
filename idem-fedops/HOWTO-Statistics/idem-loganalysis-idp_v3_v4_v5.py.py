@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-
 """Parse Shibboleth Identity Provider audit logfile and generate simple stats."""
 from __future__ import absolute_import, print_function
 from fileinput import input as finput, hook_compressed as compr
@@ -9,6 +8,8 @@ from json import dumps
 from optparse import OptionParser
 from operator import itemgetter
 from subprocess import check_output
+from os import environ
+from os import getenv
 
 
 def parse_files(files, options):
@@ -73,7 +74,8 @@ def parse_files(files, options):
 
 def basic_stats(db):
     """Collect basic statistics to be fed to output functions"""
-    idp_version = check_output(['bash','/opt/shibboleth-idp/bin/version.sh']).strip().decode()
+    idp_home = environ["IDP_HOME"]
+    idp_version = check_output(['bash','%s/bin/version.sh' % idp_home]).strip().decode()
     rps = len(list(db['rp'].keys()))
     users = len(list(db['users'].keys()))
     logins = db['logins']
@@ -185,6 +187,7 @@ def getopts():
 
     # Parse options and do basic sanity checking
     (options, args) = parser.parse_args()
+
     if len(args) == 0:
         print("Missing filename(s). Specify '-' as filename to read from STDIN.%s" % linesep)
         parser.print_help()
@@ -202,6 +205,11 @@ def getopts():
 
 def main():
     """Run necessary procedures"""
+
+    if not getenv('IDP_HOME'):
+        print ("Missing IDP_HOME env variable.\n\nPlease configure it with your IdP Home. (e.g.: /opt/shibboleth-idp)")
+        term(-1)
+
     db, options = getopts()
     if options.uniqrp:
         unique_rp(db)
