@@ -12,6 +12,7 @@ These GitHub Repository contains step-by-step tutorials on Identity and Service 
   * Miscellaneous:
     + [PrivacyIDEA](#privacyidea)
     + [Shibboleth](#shibboleth)
+    + [SimpleSAMLphp](#simplesamlphp)
     + [OpenLDAP](#openldap)
   * [HOWTOs DEPRECATED](#howtos-deprecated)
 - IDEM Community Users HOWTOs:
@@ -61,6 +62,9 @@ These GitHub Repository contains step-by-step tutorials on Identity and Service 
 * [HOWTO Define dynamically attributes for Shibboleth IdP v3](./idem-fedops/HOWTO-Shibboleth/Solutions/HOWTO%20Define%20dynamically%20attributes%20for%20Shibboleth%20IdP%20v3.md)
 * [HOWTO Transform and add attributes dynamically for Shibboleth SP2 and SP3](./idem-fedops/HOWTO-Shibboleth/Solutions/HOWTO%20Transform%20and%20add%20attributes%20dynamically%20for%20Shibboleth%20SP2%20and%20SP3.md)
 * [HOWTO Get statistics data from Shibboleth IdP](./idem-fedops/HOWTO-Statistics/HOWTO%20Get%20statistics%20data%20from%20Shibboleth%20IdP.md#howto-get-statistics-data-from-shibboleth-idp)
+
+#### SimpleSAMLphp
+
 * [HOWTO Get statistics data from SimpleSAMLphp IdP](./idem-fedops/HOWTO-Statistics/HOWTO%20Get%20statistics%20data%20from%20SimpleSAMLphp%20IdP.md)
 
 #### OpenLDAP
