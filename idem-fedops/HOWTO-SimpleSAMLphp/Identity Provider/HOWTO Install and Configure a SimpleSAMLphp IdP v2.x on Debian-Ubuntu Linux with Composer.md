@@ -73,6 +73,8 @@
 * cron
 * curl
 * git
+* rsyslog
+* logrotate
 
 [[TOC]](#table-of-contents)
 
@@ -128,7 +130,7 @@ and `idp.example.org` value with the Full Qualified Name of the Identity Provide
 2. Install useful packages:
 
    ```bash
-   apt install vim wget ca-certificates openssl ntp fail2ban --no-install-recommends
+   apt install vim wget ca-certificates openssl ntp fail2ban rsyslog logrotate --no-install-recommends
    ```
 
 [[TOC]](#table-of-contents)
@@ -325,7 +327,27 @@ and `idp.example.org` value with the Full Qualified Name of the Identity Provide
 
    * `systemctl restart rsyslog.service`
 
-4. Create the `authsources.php` file:
+4. Enable Log rotation:
+
+   * `sudo vim /etc/logrotate.d/simplesamlphp`
+
+     ```bash
+     /var/log/simplesamlphp.log /var/log/simplesamlphp.stat {
+         monthly
+         missingok
+         rotate 12
+         compress
+         dateext
+         dateformat .%Y-%m
+         postrotate
+             systemctl reload rsyslog
+         endscript
+     }
+     ```
+
+   * `sudo systemctl restart logrotate.service`
+
+5. Create the `authsources.php` file:
    * `vim /var/simplesamlphp/config/authsources.php`
 
      ```php
@@ -340,10 +362,10 @@ and `idp.example.org` value with the Full Qualified Name of the Identity Provide
      ];   
      ```
 
-5. Install Consent module:
+6. Install Consent module:
    * `composer require simplesamlphp/simplesamlphp-module-consent --update-no-dev`
 
-6. Enable Consent module:
+7. Enable Consent module:
    * `vim /var/simplesamlphp/config/config.php`
 
      ```php
@@ -358,10 +380,10 @@ and `idp.example.org` value with the Full Qualified Name of the Identity Provide
      /* ...other things...*/
      ```
 
-7. Check if the module is enabled on the Administration page :
+8. Check if the module is enabled on the Administration page :
    * `https://idp.example.org/simplesaml/admin`
 
-8. Configure a SMTP server to send mail only (Example):
+9. Configure a SMTP server to send mail only (Example):
    * `apt install mailutils postfix --no-install-recommends` (Internet Site => Insert your IdP FQDN)
 
    * `vim /etc/postfix/main.cf`
