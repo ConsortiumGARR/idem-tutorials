@@ -13,7 +13,7 @@ Those who already use SimpleSAMLphp statistics module and `statistics:Statistics
 
 1. Follow the steps provided here: https://github.com/ConsortiumGARR/ssp-statistics-parser
 
-2. By considering only the "**AlignedMonth**" of "**SSP to service**",
+2. By considering only the "**AlignedMonth**" of "**SSO to service**",
    generate a files named `idp-$(dnsdomainname)-sso-stat-<YEAR><MONTH>.json` (es.: `idp-garr.it-sso-stat-202009.json`)
    for each month requested with the JSON format:
 
