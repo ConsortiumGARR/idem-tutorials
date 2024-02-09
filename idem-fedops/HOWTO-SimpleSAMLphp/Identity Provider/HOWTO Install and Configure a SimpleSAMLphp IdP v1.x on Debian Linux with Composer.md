@@ -108,7 +108,7 @@ To update Composer use: `composer self-update`
 
 2. Prepare the environment:
    * ```bash
-     apt install apache2 ntp php curl cron build-essential zip unzip --no-install-recommends
+     apt install apache2 ntp php curl cron build-essential zip unzip rsyslog logrotate --no-install-recommends
      ``` 
 3. Download Composer setup:
    * `wget "https://getcomposer.org/installer" -O /usr/local/src/composer-setup.php`
@@ -310,10 +310,30 @@ To update Composer use: `composer self-update`
      
    * `sudo systemctl restart rsyslog.service`
 
-4. Check Login on the SSP appliance and retrieve the IdP "Entity ID" from "Fedearation" tab:
+4. Enable Log rotation:
+
+   * `sudo vim /etc/logrotate.d/simplesamlphp`
+
+     ```bash
+     /var/log/simplesamlphp.log /var/log/simplesamlphp.stat {
+         monthly
+         missingok
+         rotate 12
+         compress
+         dateext
+         dateformat .%Y-%m
+         postrotate
+             systemctl reload rsyslog
+         endscript
+     }
+     ```
+
+   * `sudo systemctl restart logrotate.service`
+
+5. Check Login on the SSP appliance and retrieve the IdP "Entity ID" from "Fedearation" tab:
    * `https://ssp-idp.example.org/`
 
-5. Configure a SMTP server to send mail only (Example):
+6. Configure a SMTP server to send mail only (Example):
    * `apt install mailutils postfix --no-install-recommends` (Internet Site => Insert your IdP FQDN)
    
    * `vim /etc/postfix/main.cf`
@@ -326,7 +346,7 @@ To update Composer use: `composer self-update`
      
    * `systemctl restart postfix.service`
 
-6. **if MDX IDEM is not used**, set PHP `memory_limit` to '1024M' or more to allow the download of huge metadata files (like eduGAIN):
+7. **if MDX IDEM is not used**, set PHP `memory_limit` to '1024M' or more to allow the download of huge metadata files (like eduGAIN):
 
    * `vim /etc/php/7.4/mods-available/ssp.ini`
 
