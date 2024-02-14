@@ -28,7 +28,7 @@ These GitHub Repository contains step-by-step tutorials on Identity and Service 
 1. [HOWTO Install and Configure a Shibboleth IdP v5.x on Debian-Ubuntu Linux with Apache + Jetty](./idem-fedops/HOWTO-Shibboleth/Identity%20Provider/Debian-Ubuntu/HOWTO-Install-and-Configure-a-Shibboleth-IdP-v5.x-on-Debian-Ubuntu-Linux-with-Apache-%2B-Jetty.md)
 3. [HOWTO Install and Configure a Shibboleth IdP v4.x on Debian-Ubuntu Linux with Apache2 + Jetty9](./idem-fedops/HOWTO-Shibboleth/Identity%20Provider/Debian-Ubuntu/HOWTO%20Install%20and%20Configure%20a%20Shibboleth%20IdP%20v4.x%20on%20Debian-Ubuntu%20Linux%20with%20Apache2%20%2B%20Jetty9.md) (End-Of-Life at 01/09/2024)
 4. [HOWTO Install and Configure a SimpleSAMLphp IdP v2.x on Debian-Ubuntu Linux with Composer](./idem-fedops/HOWTO-SimpleSAMLphp/Identity%20Provider/HOWTO%20Install%20and%20Configure%20a%20SimpleSAMLphp%20IdP%20v2.x%20on%20Debian-Ubuntu%20Linux%20with%20Composer.md)
-5. [HOWTO Install and Configure a SimpleSAMLphp IDP v1.x on Debian Linux with Composer](https://github.com/ConsortiumGARR/idem-tutorials/blob/master/idem-fedops/HOWTO-SimpleSAMLphp/Identity%20Provider/HOWTO%20Install%20and%20Configure%20a%20SimpleSAMLphp%20IdP%20v1.x%20on%20Debian%20Linux%20with%20Composer.md#howto-install-and-configure-a-simplesamlphp-idp-v1x-on-debian-linux-with-composer)
+5. [HOWTO Install and Configure a SimpleSAMLphp IdP v1.x on Debian Linux with Composer](https://github.com/ConsortiumGARR/idem-tutorials/blob/master/idem-fedops/HOWTO-SimpleSAMLphp/Identity%20Provider/HOWTO%20Install%20and%20Configure%20a%20SimpleSAMLphp%20IdP%20v1.x%20on%20Debian%20Linux%20with%20Composer.md#howto-install-and-configure-a-simplesamlphp-idp-v1x-on-debian-linux-with-composer)
 
 #### HOWTO Install and Configure a Service Provider
 
