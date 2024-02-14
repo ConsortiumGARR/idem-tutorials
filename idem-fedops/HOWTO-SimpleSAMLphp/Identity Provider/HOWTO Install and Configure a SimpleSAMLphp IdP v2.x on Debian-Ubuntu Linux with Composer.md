@@ -641,10 +641,7 @@ and `idp.example.org` value with the Full Qualified Name of the Identity Provide
            
            91 => [
                  'class' => 'core:PHP',
-                 'code'  =>
-                 '
-                 unset($attributes['uid']);
-                 '
+                 'code'  => 'unset($attributes["uid"]);'
            ],
     
            // If language is set in Consent module it will be added as 'preferredLanguage' attribute
