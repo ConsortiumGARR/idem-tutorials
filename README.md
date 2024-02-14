@@ -40,7 +40,7 @@ These GitHub Repository contains step-by-step tutorials on Identity and Service 
 #### HOWTO Install and Configure an Identity Provider
 
 1. [HOWTO Install and Configure a Shibboleth IdP v4.x on Rocky Linux 8 with Apache2 + Jetty9](./idem-fedops/HOWTO-Shibboleth/Identity%20Provider/RockyLinux/HOWTO%20Install%20and%20Configure%20a%20Shibboleth%20IdP%20v4.x%20on%20Rocky%20Linux%208%20with%20Apache2%20+%20Jetty9.md) (End-Of-Life at 01/09/2024)
-2. [HOWTO Install and Configure a Shibboleth IdP v4.x on CentOS with Apache2 + Jetty9](./idem-fedops/HOWTO-Shibboleth/Identity%20Provider/CentOS/HOWTO%20Install%20and%20Configure%20a%20Shibboleth%20IdP%20v4.x%20on%20CentOS%20with%20Apache2%20+%20Jetty9.md) - End Of Life @ 30 June 2024
+2. [HOWTO Install and Configure a Shibboleth IdP v4.x on CentOS with Apache2 + Jetty9](./idem-fedops/HOWTO-Shibboleth/Identity%20Provider/CentOS/HOWTO%20Install%20and%20Configure%20a%20Shibboleth%20IdP%20v4.x%20on%20CentOS%20with%20Apache2%20+%20Jetty9.md) - (End-Of-Life at 30/06/2024)
 
 #### HOWTO Install and Configure a Service Provider
 1. [HOWTO Install and Configure a Shibboleth SP v3.x on CentOS 7 (x86_64)](./idem-fedops/HOWTO-Shibboleth/Service%20Provider/CentOS/HOWTO%20Install%20and%20Configure%20a%20Shibboleth%20SP%20v3.x%20on%20CentOS%207%20(x86_64).md)
