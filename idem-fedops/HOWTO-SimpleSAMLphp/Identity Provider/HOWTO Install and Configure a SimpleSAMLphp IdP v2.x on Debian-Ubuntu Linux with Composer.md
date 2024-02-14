@@ -327,7 +327,7 @@ and `idp.example.org` value with the Full Qualified Name of the Identity Provide
 
    * `systemctl restart rsyslog.service`
 
-4. Enable Log rotation:
+4. Enable Log rotation for Statistics logs:
 
    * `sudo vim /etc/logrotate.d/simplesamlphp`
 
