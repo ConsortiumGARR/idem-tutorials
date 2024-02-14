@@ -57,6 +57,8 @@
 * cron
 * curl
 * build-essential
+* fail2ban
+* logrotate
 
 [[TOC]](#table-of-contents)
 
@@ -108,7 +110,7 @@ To update Composer use: `composer self-update`
 
 2. Prepare the environment:
    * ```bash
-     apt install apache2 ntp php curl cron build-essential zip unzip rsyslog logrotate --no-install-recommends
+     apt install apache2 ntp php curl cron build-essential zip unzip fail2ban rsyslog logrotate --no-install-recommends
      ``` 
 3. Download Composer setup:
    * `wget "https://getcomposer.org/installer" -O /usr/local/src/composer-setup.php`
