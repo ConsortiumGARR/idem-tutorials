@@ -332,7 +332,7 @@ and `idp.example.org` value with the Full Qualified Name of the Identity Provide
    * `sudo vim /etc/logrotate.d/simplesamlphp`
 
      ```bash
-     /var/log/simplesamlphp.log /var/log/simplesamlphp.stat {
+     /var/log/simplesamlphp.stat {
          monthly
          missingok
          rotate 12
