@@ -310,12 +310,12 @@ To update Composer use: `composer self-update`
      
    * `sudo systemctl restart rsyslog.service`
 
-4. Enable Log rotation:
+4. Enable Log rotation for Statistics logs:
 
    * `sudo vim /etc/logrotate.d/simplesamlphp`
 
      ```bash
-     /var/log/simplesamlphp.log /var/log/simplesamlphp.stat {
+     /var/log/simplesamlphp.stat {
          monthly
          missingok
          rotate 12
@@ -491,21 +491,27 @@ To update Composer use: `composer self-update`
                'schacPersonalUniqueCode','schacPersonalUniqueID',
                'eduPersonPrincipalName','eduPersonEntitlement',
                'eduPersonTargetedID','eduPersonOrcid','eduPersonOrgDN','eduPersonOrgUnitDN',
-               'eduPersonScopedAffiliation','eduPersonAffiliation' => [
+               'eduPersonScopedAffiliation',
+         		  'regex' => true,
+         		  '/^student@.*/',
+         		  '/^staff@.*/',
+         		  '/^library-walk-in@.*/',
+         		  '/^affiliate@.*/',
+         		  '/^member@.*/',
+         		  '/^alum@.*/',
+         		  '/^employee@.*/', // NO IDEM
+         		  '/^faculty@.*/',  // NO IDEM
+               'eduPersonAffiliation' => [
                   'student',
                   'staff',
                   'member',
                   'alum',
                   'affiliate',
                   'library-walk-in',
-                  'faculty', // NO IDEM
+                  'faculty',  // NO IDEM
                   'employee', // NO IDEM
                ],
         ],
-
-        // Convert the attributes' names into OID because
-        // SSP will use them from parsed metadata on the $attributes array.
-        51 => ['class' => 'core:AttributeMap','name2oid'],
 
         // IDEM Attribute Filter:
         // IDEM SPs + Entity Category SPs + Custom SPs
@@ -518,17 +524,19 @@ To update Composer use: `composer self-update`
              '
         ],
 
-        // Convert the attributes' names into Name
-        // to be able to see their names on the Consent page
-        80 => ['class' => 'core:AttributeMap','oid2name'],
-
         // Consent module is enabled(with no permanent storage, using cookies)
         90 => [
                'class' => 'consent:Consent',
                'store' => 'consent:Cookie',
                'focus' => 'yes',
                'checked' => false
+               'attributes.exclude' => ['uid'],
               ],
+
+        91 => [
+            'class' => 'core:PHP',
+            'code'  => 'unset($attributes["uid"]);'
+        ],
  
         // If language is set in Consent module it will be added as 'preferredLanguage' attribute
         99 => 'core:LanguageAdaptor',
