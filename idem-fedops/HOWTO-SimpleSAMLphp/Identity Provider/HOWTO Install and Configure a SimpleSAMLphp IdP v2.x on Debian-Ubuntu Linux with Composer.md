@@ -287,32 +287,34 @@ and `idp.example.org` value with the Full Qualified Name of the Identity Provide
 
       ```php
       'baseurlpath' => 'simplesaml/',
-      /* ...other things... */
+      /* ...other configuration settings... */
       'loggingdir' => null,
       'datadir' => '/var/simplesamlphp/data/',
       'tempdir' => '/tmp/simplesaml',
-      /* ...other things... */
+      /* ...other configuration settings... */
       'certdir' => '/var/simplesamlphp/cert/',
-      /* ...other things... */
+      /* ...other configuration settings... */
       'technicalcontact_name' => 'Technical Contact',
       'technicalcontact_email' => 'technical.support@example.com',
-      /* ...other things... */
+      /* ...other configuration settings... */
       'secretsalt' => '<SECRET_SALT>',
-      /* ...other things... */
+      /* ...other configuration settings... */
       'auth.adminpassword' => '<USER_ADMIN_PASSWORD>',
-      /* ...other things... */
+      /* ...other configuration settings... */
       'logging.level' => 'SimpleSAML\Logger::NOTICE',
       'logging.handler' => 'syslog',
-      /* ...other things... */
+      /* ...other configuration settings... */
       'enable.saml20-idp' => true,
-      /* ...other things ... */
+      /* ...other configuration settings... */
       'theme.header' = '<ORGANIZATION_NAME>',
-      /* ...other things... */
+      /* ...other configuration settings... */
+      
       // Comment out line "50 => 'core:AttributeLimit'," into "authproc.idp" section
       // because we will use core:AttributeLimit into the "authproc" section on "metadata/saml20-idp-hosted.php"
-      /* ...other things... */
+      
+      /* ...other configuration settings... */
       'metadatadir' => '/var/simplesamlphp/metadata',
-      /* ...other things... */
+      /* ...other configuration settings... */
       'store.type' => 'phpsession',
       ```
 
@@ -369,7 +371,7 @@ and `idp.example.org` value with the Full Qualified Name of the Identity Provide
    * `vim /var/simplesamlphp/config/config.php`
 
      ```php
-     /* ...other things...*/
+     /* ...other configuration settings...*/
      'module.enable' => [
         'exampleauth' => false,
         'core' => true,
@@ -377,7 +379,7 @@ and `idp.example.org` value with the Full Qualified Name of the Identity Provide
         'saml' => true,
         'consent' => true,
      ],
-     /* ...other things...*/
+     /* ...other configuration settings...*/
      ```
 
 8. Check if the module is enabled on the Administration page :
@@ -389,9 +391,9 @@ and `idp.example.org` value with the Full Qualified Name of the Identity Provide
    * `vim /etc/postfix/main.cf`
 
      ```bash
-     /* ...other things... */
+     /* ...other configuration settings... */
      inet_interfaces = localhost
-     /* ...other things... */
+     /* ...other configuration settings... */
      ```
 
    * `systemctl restart postfix.service`
@@ -800,7 +802,7 @@ and `idp.example.org` value with the Full Qualified Name of the Identity Provide
    * `vim /var/simplesamlphp/config/config.php`
 
      ```php
-     /* ...other things...*/
+     /* ...other configuration settings...*/
      'module.enable' => [
         'exampleauth' => false,
         'core' => true,
@@ -809,7 +811,7 @@ and `idp.example.org` value with the Full Qualified Name of the Identity Provide
         'consent' => true,
         'ldap' => true,
      ],
-     /* ...other things...*/
+     /* ...other configuration settings...*/
      ```
 
 8. Try the LDAP Authentication Source on:
@@ -860,9 +862,9 @@ Follow these steps **ONLY IF** your organization is connected to the [GARR Netwo
    * `vim /var/simplesamlphp/config/config.php`
 
      ```php
-     /* ...other things... */
+     /* ...other configuration settings... */
      'store.type' => 'memcache',
-     /* ...other things... */
+     /* ...other configuration settings... */
      ```
 
 [[TOC]](#table-of-contents)
@@ -875,7 +877,7 @@ DOC: **[SimpleSAMLphp statistics module](https://simplesamlphp.org/docs/contrib_
    * `vim /var/simplesamlphp/config/config.php`
 
      ```php
-     /* ...other things...*/
+     /* ...other configuration settings...*/
      'module.enable' => [
         'exampleauth' => false,
         'core' => true,
@@ -886,7 +888,7 @@ DOC: **[SimpleSAMLphp statistics module](https://simplesamlphp.org/docs/contrib_
         'statistics' => true,
         'cron' => true,
      ],
-     /* ...other things...*/
+     /* ...other configuration settings...*/
      ```
 
 2. Install the 'statistics' module:
