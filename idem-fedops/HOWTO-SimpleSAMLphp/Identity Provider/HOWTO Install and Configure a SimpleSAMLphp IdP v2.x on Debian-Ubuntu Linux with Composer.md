@@ -287,34 +287,56 @@ and `idp.example.org` value with the Full Qualified Name of the Identity Provide
 
       ```php
       'baseurlpath' => 'simplesaml/',
-      /* ...other configuration settings... */
+
+      // ...other configuration settings...
+
       'loggingdir' => null,
       'datadir' => '/var/simplesamlphp/data/',
       'tempdir' => '/tmp/simplesaml',
-      /* ...other configuration settings... */
+
+      // ...other configuration settings...
+
       'certdir' => '/var/simplesamlphp/cert/',
-      /* ...other configuration settings... */
+
+      // ...other configuration settings...
+
       'technicalcontact_name' => 'Technical Contact',
       'technicalcontact_email' => 'technical.support@example.com',
-      /* ...other configuration settings... */
+
+      // ...other configuration settings...
+
       'secretsalt' => '<SECRET_SALT>',
-      /* ...other configuration settings... */
+
+      // ...other configuration settings...
+
       'auth.adminpassword' => '<USER_ADMIN_PASSWORD>',
-      /* ...other configuration settings... */
+
+      // ...other configuration settings...
+
       'logging.level' => 'SimpleSAML\Logger::NOTICE',
       'logging.handler' => 'syslog',
-      /* ...other configuration settings... */
+
+      // ...other configuration settings...
+
       'enable.saml20-idp' => true,
-      /* ...other configuration settings... */
+
+      // ...other configuration settings...
+
       'theme.header' = '<ORGANIZATION_NAME>',
-      /* ...other configuration settings... */
+
+      // ...other configuration settings...
+
+      /*
+       * Comment out line "50 => 'core:AttributeLimit'," into "authproc.idp" section
+       * because we will use core:AttributeLimit into the "authproc" section on "metadata/saml20-idp-hosted.php"
+      */
       
-      // Comment out line "50 => 'core:AttributeLimit'," into "authproc.idp" section
-      // because we will use core:AttributeLimit into the "authproc" section on "metadata/saml20-idp-hosted.php"
-      
-      /* ...other configuration settings... */
+      // ...other configuration settings...
+
       'metadatadir' => '/var/simplesamlphp/metadata',
-      /* ...other configuration settings... */
+
+      // ...other configuration settings...
+
       'store.type' => 'phpsession',
       ```
 
@@ -371,7 +393,8 @@ and `idp.example.org` value with the Full Qualified Name of the Identity Provide
    * `vim /var/simplesamlphp/config/config.php`
 
      ```php
-     /* ...other configuration settings...*/
+     // ...other configuration settings...
+     
      'module.enable' => [
         'exampleauth' => false,
         'core' => true,
@@ -379,7 +402,8 @@ and `idp.example.org` value with the Full Qualified Name of the Identity Provide
         'saml' => true,
         'consent' => true,
      ],
-     /* ...other configuration settings...*/
+     
+     // ...other configuration settings...
      ```
 
 8. Check if the module is enabled on the Administration page :
@@ -391,9 +415,9 @@ and `idp.example.org` value with the Full Qualified Name of the Identity Provide
    * `vim /etc/postfix/main.cf`
 
      ```bash
-     /* ...other configuration settings... */
+     // ...other configuration settings...
      inet_interfaces = localhost
-     /* ...other configuration settings... */
+     // ...other configuration settings...
      ```
 
    * `systemctl restart postfix.service`
@@ -862,9 +886,11 @@ Follow these steps **ONLY IF** your organization is connected to the [GARR Netwo
    * `vim /var/simplesamlphp/config/config.php`
 
      ```php
-     /* ...other configuration settings... */
+     // ...other configuration settings...
+     
      'store.type' => 'memcache',
-     /* ...other configuration settings... */
+     
+     // ...other configuration settings...
      ```
 
 [[TOC]](#table-of-contents)
