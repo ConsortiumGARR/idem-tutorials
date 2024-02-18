@@ -563,6 +563,7 @@ and `idp.example.org` value with the Full Qualified Name of the Identity Provide
            ],
 
            // Add pairwise-id
+           // The value of the "identifyingAttribute" MUST CONTAINS ONLY ALPHA or DIGIT characters and "=" or "-" symbols
            14 => [
                   'class' => 'saml:PairwiseID',
                   'identifyingAttribute' => 'uid',
