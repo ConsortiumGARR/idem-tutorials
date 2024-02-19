@@ -6,14 +6,15 @@
 
 1. [Requirements](#requirements)
    1. [Hardware](#hardware)
-   2. [Other](#other)
-2. [Software that will be installed](#software-that-will-be-installed)
+   2. [Software](#software)
+   3. [Other](#other)
 3. [Notes](#notes)
 4. [Configure the environment](#configure-the-environment)
-5. [Install Instructions](#install-instructions)
+5. [Configure APT Mirror](#configure-apt-mirror)
+6. [Install Instructions](#install-instructions)
    1. [Install useful basic packages](#install-useful-basic-packages)
    2. [Install SimpleSAMLphp](#install-simplesamlphp)
-6. [Configuration Instructions](#configuration-instructions)
+7. [Configuration Instructions](#configuration-instructions)
    1. [Configure SSL on Apache2](#configure-ssl-on-apache2)
    2. [Configure SimpleSAMLphp](#configure-simplesamlphp)
    3. [Configure the Identity Provider](#configure-the-identity-provider)
@@ -23,7 +24,7 @@
    4. [Configure the Directory (openLDAP or AD) Connection](#configure-the-directory-openldap-or-ad-connection)
    5. [Download IdP Metadata](#download-idp-metadata)
    6. [Register the IdP on the IDEM Test Federation](#register-the-idp-on-the-idem-test-federation)
-7. [Appendix A - How to manage sessions with Memcached](#appendix-a---how-to-manage-sessions-with-memcached)
+8. [Appendix A - How to manage sessions with Memcached](#appendix-a---how-to-manage-sessions-with-memcached)
 9. [Appendix B - How to collect useful statistics](#appendix-b---how-to-collect-useful-statistics)
 10. [Appendix C - How to upgrade all modules](#appendix-c---how-to-upgrade-all-modules)
 11. [Utility](#utility)
@@ -41,29 +42,13 @@
 
 [[TOC]](#table-of-contents)
 
-### Other
-
-* Apache >= 2.4
-* PHP >= 7.4.0
-* SSL Credentials: HTTPS Certificate & Key
-* Logo:
-  * size: 80x60 px (or other that respect the aspect-ratio)
-  * format: PNG
-  * style: with a transparent background
-* Favicon:
-  * size: 16x16 px (or other that respect the aspect-ratio)
-  * format: PNG
-  * style: with a transparent background
-
-[[TOC]](#table-of-contents)
-
-## Software that will be installed
+### Software
 
 * ca-certificates
 * ntp
 * vim
-* apache2
-* php
+* apache2 (>= 2.4)
+* php (>= 7.4 for SSP v2.0.x, >=8.0.0 for SSP v2.1.x)
 * php extensions (date,dom,hash,intl,json,libxml,mbstring,openssl,pcre,SPL,zlib,ldap extensions)
 * zip
 * unzip
@@ -75,6 +60,20 @@
 * git
 * rsyslog
 * logrotate
+
+[[TOC]](#table-of-contents)
+
+### Other
+
+* SSL Credentials: HTTPS Certificate & Key
+* Logo:
+  * size: 80x60 px (or other that respect the aspect-ratio)
+  * format: PNG
+  * style: with a transparent background
+* Favicon:
+  * size: 16x16 px (or other that respect the aspect-ratio)
+  * format: PNG
+  * style: with a transparent background
 
 [[TOC]](#table-of-contents)
 
@@ -106,19 +105,54 @@ and `idp.example.org` value with the Full Qualified Name of the Identity Provide
 
    * `hostnamectl set-hostname <HOSTNAME>`
 
-4. (OPTIONAL) Change the default mirror to the GARR ones *(only for italian institutions)* on `/etc/apt/sources.list`:
-   * `debian.mirror.garr.it` (Debian)
-   * `ubuntu.mirror.garr.it` (Ubuntu)
+[[TOC]](#table-of-contents)
 
-   Debian Mirror List: https://www.debian.org/mirror/list<br/>Ubuntu Mirror List: https://launchpad.net/ubuntu/+archivemirrors
+## Configure APT Mirror
 
-5. General packages update:
+Debian Mirror List: <https://www.debian.org/mirror/list>
 
-   ```bash
-   apt update && apt-get upgrade -y --no-install-recommends
-   ```
+Ubuntu Mirror List: <https://launchpad.net/ubuntu/+archivemirrors>
 
-[TOC](#table-of-contents)
+1.  Become ROOT:
+
+    ``` text
+    sudo su -
+    ```
+
+2.  (**only for italian institutions**) Change the default mirror to the GARR ones:
+
+    -   Debian 12 - Deb822 file format:
+
+        ``` text
+        bash -c 'cat > /etc/apt/sources.list.d/garr.sources <<EOF
+        Types: deb deb-src
+        URIs: https://debian.mirror.garr.it/debian/
+        Suites: bookworm bookworm-updates bookworm-backports
+        Components: main
+
+        Types: deb deb-src
+        URIs: https://debian.mirror.garr.it/debian-security/
+        Suites: bookworm-security
+        Components: main
+        EOF'
+        ```
+
+    -   Ubuntu:
+
+        ``` text
+        bash -c 'cat > /etc/apt/sources.list.d/garr.list <<EOF
+        deb https://ubuntu.mirror.garr.it/ubuntu/ jammy main
+        deb-src https://ubuntu.mirror.garr.it/ubuntu/ jammy main
+        EOF'
+        ```
+
+3.  Update packages:
+
+    ``` text
+    apt update && apt-get upgrade -y --no-install-recommends
+    ```
+
+[[TOC]](#table-of-contents)
 
 ## Install Instructions
 
