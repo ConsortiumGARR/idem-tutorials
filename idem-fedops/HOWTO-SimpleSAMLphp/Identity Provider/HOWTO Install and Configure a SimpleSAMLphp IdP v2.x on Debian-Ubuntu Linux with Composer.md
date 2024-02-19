@@ -171,7 +171,7 @@ Ubuntu Mirror List: <https://launchpad.net/ubuntu/+archivemirrors>
 
 ### Install SimpleSAMLphp
 
-1. Become ROOT & move into its HOME dir:
+1. Become ROOT:
    * `sudo su -`
 
 2. Prepare the environment:
