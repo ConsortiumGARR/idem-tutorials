@@ -1968,7 +1968,7 @@ Change the content of `idp.url.password.reset` and `idp.url.helpdesk` variables 
     cd /opt/shibboleth-idp
     ```
 
--   Modiy `messages.properties`:
+-   Modify `messages.properties`:
 
     ``` text
     vim messages/messages.properties
@@ -1979,7 +1979,7 @@ Change the content of `idp.url.password.reset` and `idp.url.helpdesk` variables 
     idp.url.helpdesk=CONTENT-FOR-NEED-HELP-LINK
     ```
 
--   Modiy `messages_it.properties`:
+-   Modify `messages_it.properties`:
 
     ``` text
     vim messages/messages_it.properties
