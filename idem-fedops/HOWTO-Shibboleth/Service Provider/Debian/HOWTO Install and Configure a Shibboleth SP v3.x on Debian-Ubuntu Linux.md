@@ -210,12 +210,26 @@ Please, remember to **replace all occurence** of `example.org` domain name, or p
 4. Enable Shibboleth Apache2 configuration:
    ```bash
    a2enmod shib
-   
-   systemctl reload apache2.service
    ```
+   
+5. Remove the `#` character from the `#Redirect ...` line on the Apache2 configuration to enable it:
 
-5. Now you are able to reach your Shibboleth SP Metadata on:
-   * ht<span>tps://</span>sp.example.org/Shibboleth.sso/Metadata
+   * `vim /etc/apache2/sites-available/000-$(hostname -f).conf`
+
+     ```bash
+     #Redirect "/shibboleth" "/Shibboleth.sso/Metadata"
+     ```
+
+6. Reload Apache2 service to apply changes:
+   * `systemctl reload apache2.service`
+
+7. Now you are able to reach your Shibboleth SP Metadata from its entityID:
+
+   * `https://sp.example.org/shibboleth`
+
+   or from its Metadata endpoint:
+   
+   * `https://sp.example.org/Shibboleth.sso/Metadata`
 
      (*Replace `sp.example.org` with your SP Full Qualified Domain Name*)
 
