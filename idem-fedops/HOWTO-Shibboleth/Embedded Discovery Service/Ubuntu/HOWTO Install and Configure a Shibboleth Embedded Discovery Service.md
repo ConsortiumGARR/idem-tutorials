@@ -87,6 +87,7 @@ The behaviour of Shibboleth Embedded Discovery Service is controlled by `IdPSele
 In the most of cases you have to modify only this file to change the behaviour of Discovery Service.
 
 Make sure to amend `this.returnWhiteList` to reflect your server name (if you are using Shibboleth EDS < 1.3).
+
 Make sure to amend `this.redirectAllow` to reflect your server name (if you are using Shibboleth EDS >= 1.3).
 
 Find here the EDS Configuration Options: https://wiki.shibboleth.net/confluence/display/EDS10/3.+Configuration
