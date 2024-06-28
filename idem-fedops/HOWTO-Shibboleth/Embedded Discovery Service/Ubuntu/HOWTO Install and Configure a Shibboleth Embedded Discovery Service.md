@@ -10,7 +10,6 @@ The EDS is a set of Javascript and CSS files, so installing it and using it is s
 1. [Requirements](#requirements)
 2. [Installation](#installation)
    1. [Debian/Ubuntu](#debianubuntu)
-   2. [CentOS](#centos)
 4. [Enable EDS on Shibboleth SP](#enable-eds-on-shibboleth-sp)
 5. [Configuration](#configuration)
 6. [Whitelist - How to allow IdPs to access the federated resource](#whitelist---how-to-allow-idps-to-access-the-federated-resource)
@@ -20,15 +19,14 @@ The EDS is a set of Javascript and CSS files, so installing it and using it is s
 7. [Blacklist - How to disallow IdPs to access the federated resource](#blacklist---how-to-disallow-idps-to-access-the-federated-resource)
   1. [How to disallow the access to IdPs by specifying their entityID](#how-to-disallow-the-access-to-idps-by-specifying-their-entityid)
   2. [How to disallow the access to IdPs that support a specific Entity Category](#how-to-disallow-the-access-to-idps-that-support-a-specific-entity-category)
-8. [Best Practices to follow to maximize the access to the resource](#best-practices-to-follow-to-maximize-the-access-to-the-resource)
-9. [Authors](#authors)
-10. [Credits](#credits)
+8. [Authors](#authors)
+9. [Credits](#credits)
 
 ## Requirements
 
 * Apache Server (>= 2.4)
 * A working Shibboleth Service Provider (>= 2.4)
-* Tested on: Debian, CentOS
+* Tested on: Debian/Ubuntu
 
 ## Installation
 
@@ -59,11 +57,6 @@ The EDS is a set of Javascript and CSS files, so installing it and using it is s
 4. Restart Apache to load the new web site:
    * `systemctl restart apache2.service`
 
-### CentOS
-
-1. `sudo su -`
-2. `yum install shibboleth-embedded-ds`
-
 ## Enable EDS on Shibboleth SP
 
 1. Update "`shibboleth2.xml`" file to the new Discovery Service page:
@@ -85,6 +78,7 @@ The EDS is a set of Javascript and CSS files, so installing it and using it is s
      ```
 
 2. Restart "**shibd**" service:
+
    * `systemctl restart shibd.service`
 
 ## Configuration
@@ -100,122 +94,222 @@ Find here the EDS Configuration Options: https://wiki.shibboleth.net/confluence/
 
 ### How to allow the access to IdPs by specifying their entityID
 
+DOC: [https://shibboleth.atlassian.net/wiki/spaces/SP3/pages/2063696201/IncludeMetadataFilter](https://shibboleth.atlassian.net/wiki/spaces/SP3/pages/2063696201/IncludeMetadataFilter)
+
 1. Modify "**shibboleth2.xml**":
   * `vim /etc/shibboleth/shibboleth2.xml`
 
-    ```xml
-    <MetadataProvider type="XML"
-                      uri="http://www.garr.it/idem-metadata/idem-metadata-sha256.xml"
-                      backingFilePath="idem-metadata-sha256.xml">
-       <MetadataFilter type="Signature" certificate="/etc/shibboleth/idem_signer_2019.pem"/>
-       <MetadataFilter type="RequireValidUntil" maxValidityInterval="864000" />
-       <MetadataFilter type="Whitelist">
-           <Include>https://entityid.idp1.allowed.it/shibboleth</Include>
-           <Include>https://entityid.idp2.allowed.it/shibboleth</Include>
-           <Include>https://entityid.idp3.allowed.it/shibboleth</Include>
-       </MetadataFilter>
-    </MetadataProvider>
-    ```
+    * Shibboleth SP <= v3.2:
+
+      ```xml
+      <MetadataProvider type="XML"
+                        uri="http://www.garr.it/idem-metadata/idem-metadata-sha256.xml"
+                        backingFilePath="idem-metadata-sha256.xml">
+         <MetadataFilter type="Signature" certificate="/etc/shibboleth/idem_signer_2019.pem"/>
+         <MetadataFilter type="RequireValidUntil" maxValidityInterval="864000" />
+         <MetadataFilter type="Whitelist">
+             <Include>https://entityid.idp1.allowed.it/shibboleth</Include>
+             <Include>https://entityid.idp2.allowed.it/shibboleth</Include>
+             <Include>https://entityid.idp3.allowed.it/shibboleth</Include>
+         </MetadataFilter>
+      </MetadataProvider>
+      ```
+
+    * Shibboleth SP > v3.2:
+
+      ```xml
+      <MetadataProvider type="XML"
+                        uri="http://www.garr.it/idem-metadata/idem-metadata-sha256.xml"
+                        backingFilePath="idem-metadata-sha256.xml">
+         <MetadataFilter type="Signature" certificate="/etc/shibboleth/idem_signer_2019.pem"/>
+         <MetadataFilter type="RequireValidUntil" maxValidityInterval="864000" />
+         <MetadataFilter type="Include">
+             <Include>https://entityid.idp1.allowed.it/shibboleth</Include>
+             <Include>https://entityid.idp2.allowed.it/shibboleth</Include>
+             <Include>https://entityid.idp3.allowed.it/shibboleth</Include>
+         </MetadataFilter>
+      </MetadataProvider>
+      ```
 
 2. Restart "**shibd**" service:
-  * `systemctl restart shibd.service`
+
+   * `systemctl restart shibd.service`
 
 ### How to allow the access to IdPs that support a specific Entity Category
 
+DOC: [https://shibboleth.atlassian.net/wiki/spaces/SP3/pages/2063696201/IncludeMetadataFilter](https://shibboleth.atlassian.net/wiki/spaces/SP3/pages/2063696201/IncludeMetadataFilter)
+
 1. Modify "**shibboleth2.xml**":
   * `vim /etc/shibboleth/shibboleth2.xml`
-   
-    ```xml
-    <MetadataProvider type="XML"
-                      uri="http://www.garr.it/idem-metadata/idem-metadata-sha256.xml"
-                      backingFilePath="idem-metadata-sha256.xml">
-       <MetadataFilter type="Signature" certificate="/etc/shibboleth/idem_signer_2019.pem"/>
-       <MetadataFilter type="RequireValidUntil" maxValidityInterval="864000" />
-       <MetadataFilter type="Whitelist" matcher="EntityAttributes">
-           <saml:Attribute Name="http://macedir.org/entity-category"
-                           NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri">
-               <saml:AttributeValue>http://refeds.org/category/research-and-scholarship</saml:AttributeValue>
-           </saml:Attribute>
-       </MetadataFilter>
-    </MetadataProvider>
-    ```
+
+    * Shibboleth SP <= 3.2:
+
+      ```xml
+      <MetadataProvider type="XML"
+                        uri="http://www.garr.it/idem-metadata/idem-metadata-sha256.xml"
+                        backingFilePath="idem-metadata-sha256.xml">
+         <MetadataFilter type="Signature" certificate="/etc/shibboleth/idem_signer_2019.pem"/>
+         <MetadataFilter type="RequireValidUntil" maxValidityInterval="864000" />
+         <MetadataFilter type="Whitelist" matcher="EntityAttributes">
+             <saml:Attribute Name="http://macedir.org/entity-category"
+                             NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri">
+                 <saml:AttributeValue>http://refeds.org/category/research-and-scholarship</saml:AttributeValue>
+             </saml:Attribute>
+         </MetadataFilter>
+      </MetadataProvider>
+      ```
+
+    * Shibboleth SP > 3.2:
+
+      ```xml
+      <MetadataProvider type="XML"
+                        uri="http://www.garr.it/idem-metadata/idem-metadata-sha256.xml"
+                        backingFilePath="idem-metadata-sha256.xml">
+         <MetadataFilter type="Signature" certificate="/etc/shibboleth/idem_signer_2019.pem"/>
+         <MetadataFilter type="RequireValidUntil" maxValidityInterval="864000" />
+         <MetadataFilter type="Include" matcher="EntityAttributes">
+             <saml:Attribute Name="http://macedir.org/entity-category"
+                             NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri">
+                 <saml:AttributeValue>http://refeds.org/category/research-and-scholarship</saml:AttributeValue>
+             </saml:Attribute>
+         </MetadataFilter>
+      </MetadataProvider>
+      ```
 
 2. Restart "**shibd**" service:
-  * `systemctl restart shibd.service`
+
+   * `systemctl restart shibd.service`
 
 ### How to allow the access to IdPs that support SIRTFI
 
 1. Modify "**shibboleth2.xml**":
   * `vim /etc/shibboleth/shibboleth2.xml`
-  
-    ```xml
-    <MetadataProvider type="XML"
-                      uri="http://www.garr.it/idem-metadata/idem-metadata-sha256.xml"
-                      backingFilePath="idem-metadata-sha256.xml">
-       <MetadataFilter type="Signature" certificate="/etc/shibboleth/idem_signer_2019.pem"/>
-       <MetadataFilter type="RequireValidUntil" maxValidityInterval="864000" />
-       <MetadataFilter type="Whitelist" matcher="EntityAttributes">
-           <saml:Attribute Name="urn:oasis:names:tc:SAML:attribute:assurancecertification"
-                           NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri">
-               <saml:AttributeValue>https://refeds.org/sirtfi</saml:AttributeValue>
-           </saml:Attribute>
-       </MetadataFilter>
-    </MetadataProvider>
-    ```
+
+    * Shibboleth SP <= 3.2:
+
+      ```xml
+      <MetadataProvider type="XML"
+                        uri="http://www.garr.it/idem-metadata/idem-metadata-sha256.xml"
+                        backingFilePath="idem-metadata-sha256.xml">
+         <MetadataFilter type="Signature" certificate="/etc/shibboleth/idem_signer_2019.pem"/>
+         <MetadataFilter type="RequireValidUntil" maxValidityInterval="864000" />
+         <MetadataFilter type="Whitelist" matcher="EntityAttributes">
+             <saml:Attribute Name="urn:oasis:names:tc:SAML:attribute:assurancecertification"
+                             NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri">
+                 <saml:AttributeValue>https://refeds.org/sirtfi</saml:AttributeValue>
+             </saml:Attribute>
+         </MetadataFilter>
+      </MetadataProvider>
+      ```
+
+    * Shibboleth SP > 3.2:
+
+      ```xml
+      <MetadataProvider type="XML"
+                        uri="http://www.garr.it/idem-metadata/idem-metadata-sha256.xml"
+                        backingFilePath="idem-metadata-sha256.xml">
+         <MetadataFilter type="Signature" certificate="/etc/shibboleth/idem_signer_2019.pem"/>
+         <MetadataFilter type="RequireValidUntil" maxValidityInterval="864000" />
+         <MetadataFilter type="Include" matcher="EntityAttributes">
+             <saml:Attribute Name="urn:oasis:names:tc:SAML:attribute:assurancecertification"
+                             NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri">
+                 <saml:AttributeValue>https://refeds.org/sirtfi</saml:AttributeValue>
+             </saml:Attribute>
+         </MetadataFilter>
+      </MetadataProvider>
+      ```
 
 2. Restart "**shibd**" service:
-  * `systemctl restart shibd.service`
+
+   * `systemctl restart shibd.service`
 
 ## Blacklist - How to disallow IdPs to access the federated resource
 
 ### How to disallow the access to IdPs by specifying their entityID
 
 1. Modify "**shibboleth2.xml**":
-  * `vim /etc/shibboleth/shibboleth2.xml`
-  
-    ```xml
-    <MetadataProvider type="XML"
-                      uri="http://www.garr.it/idem-metadata/idem-metadata-sha256.xml"
-                      backingFilePath="idem-metadata-sha256.xml">
-       <MetadataFilter type="Signature" certificate="/etc/shibboleth/idem_signer_2019.pem"/>
-       <MetadataFilter type="RequireValidUntil" maxValidityInterval="864000" />
-       <MetadataFilter type="Blacklist">
-           <Include>https://entityid.idp1.denied.it/shibboleth</Include>
-           <Include>https://entityid.idp2.denied.it/shibboleth</Include>
-           <Include>https://entityid.idp3.denied.it/shibboleth</Include>
-       </MetadataFilter>
-    </MetadataProvider>
-    ```
+
+   * `vim /etc/shibboleth/shibboleth2.xml`
+
+     * Shibboleth SP <= 3.2:
+
+       ```xml
+       <MetadataProvider type="XML"
+                         uri="http://www.garr.it/idem-metadata/idem-metadata-sha256.xml"
+                         backingFilePath="idem-metadata-sha256.xml">
+          <MetadataFilter type="Signature" certificate="/etc/shibboleth/idem_signer_2019.pem"/>
+          <MetadataFilter type="RequireValidUntil" maxValidityInterval="864000" />
+          <MetadataFilter type="Blacklist">
+              <Include>https://entityid.idp1.denied.it/shibboleth</Include>
+              <Include>https://entityid.idp2.denied.it/shibboleth</Include>
+              <Include>https://entityid.idp3.denied.it/shibboleth</Include>
+          </MetadataFilter>
+       </MetadataProvider>
+       ```
+
+     * Shibboleth SP > 3.2:
+
+       ```xml
+       <MetadataProvider type="XML"
+                         uri="http://www.garr.it/idem-metadata/idem-metadata-sha256.xml"
+                         backingFilePath="idem-metadata-sha256.xml">
+          <MetadataFilter type="Signature" certificate="/etc/shibboleth/idem_signer_2019.pem"/>
+          <MetadataFilter type="RequireValidUntil" maxValidityInterval="864000" />
+          <MetadataFilter type="Exclude">
+              <Include>https://entityid.idp1.denied.it/shibboleth</Include>
+              <Include>https://entityid.idp2.denied.it/shibboleth</Include>
+              <Include>https://entityid.idp3.denied.it/shibboleth</Include>
+          </MetadataFilter>
+       </MetadataProvider>
+       ```
 
 2. Restart "**shibd**" service:
-  * `systemctl restart shibd.service`
+
+   * `systemctl restart shibd.service`
 
 ### How to disallow the access to IdPs that support a specific Entity Category
 
 1. Modify "**shibboleth2.xml**":
-  * `vim /etc/shibboleth/shibboleth2.xml`
 
-    ```xml
-    <MetadataProvider type="XML"
-                      uri="http://www.garr.it/idem-metadata/idem-metadata-sha256.xml"
-                      backingFilePath="idem-metadata-sha256.xml">
-       <MetadataFilter type="Signature" certificate="/etc/shibboleth/idem_signer_2019.pem"/>
-       <MetadataFilter type="RequireValidUntil" maxValidityInterval="864000" />
-       <MetadataFilter type="Blacklist" matcher="EntityAttributes">
-           <saml:Attribute Name="http://macedir.org/entity-category"
-                           NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri">
-               <saml:AttributeValue>https://federation.renater.fr/scope/commercial</saml:AttributeValue>
-           </saml:Attribute>
-       </MetadataFilter>
-    </MetadataProvider>
-    ```
+   * `vim /etc/shibboleth/shibboleth2.xml`
+
+     * Shibboleth SP <= 3.2:
+
+       ```xml
+       <MetadataProvider type="XML"
+                         uri="http://www.garr.it/idem-metadata/idem-metadata-sha256.xml"
+                         backingFilePath="idem-metadata-sha256.xml">
+          <MetadataFilter type="Signature" certificate="/etc/shibboleth/idem_signer_2019.pem"/>
+          <MetadataFilter type="RequireValidUntil" maxValidityInterval="864000" />
+          <MetadataFilter type="Blacklist" matcher="EntityAttributes">
+              <saml:Attribute Name="http://macedir.org/entity-category"
+                              NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri">
+                  <saml:AttributeValue>https://federation.renater.fr/scope/commercial</saml:AttributeValue>
+              </saml:Attribute>
+          </MetadataFilter>
+       </MetadataProvider>
+       ```
+
+     * Shibboleth SP > 3.2:
+
+       ```xml
+       <MetadataProvider type="XML"
+                         uri="http://www.garr.it/idem-metadata/idem-metadata-sha256.xml"
+                         backingFilePath="idem-metadata-sha256.xml">
+          <MetadataFilter type="Signature" certificate="/etc/shibboleth/idem_signer_2019.pem"/>
+          <MetadataFilter type="RequireValidUntil" maxValidityInterval="864000" />
+          <MetadataFilter type="Exclude" matcher="EntityAttributes">
+              <saml:Attribute Name="http://macedir.org/entity-category"
+                              NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri">
+                  <saml:AttributeValue>https://federation.renater.fr/scope/commercial</saml:AttributeValue>
+              </saml:Attribute>
+          </MetadataFilter>
+       </MetadataProvider>
+       ```
 
 2. Restart "**shibd**" service:
-  * `systemctl restart shibd.service`
 
-## Best Practices to follow to maximize the access to the resource
-
-* [REFEDS Discovery Guide](https://discovery.refeds.org/)
+   * `systemctl restart shibd.service`
 
 ## Authors
 
@@ -226,5 +320,4 @@ Find here the EDS Configuration Options: https://wiki.shibboleth.net/confluence/
 ## Credits
 
 * [Consortium Shibboleth](https://shibboleth.net/)
-* [REFEDS Discovery Guide](https://discovery.refeds.org/)
 
