@@ -1791,7 +1791,7 @@ To be able to follow these steps, you need to have followed the previous steps o
 
         <InputDataConnector ref="myLDAP" attributeNames="%{idp.persistentId.sourceAttribute}" />
 
-        <BeanManagedConnection>MyDataSource</BeanManagedConnection>
+        <BeanManagedConnection>shibpid.JDBCStorageService.DataSource</BeanManagedConnection>
     </DataConnector>
     ```
 
