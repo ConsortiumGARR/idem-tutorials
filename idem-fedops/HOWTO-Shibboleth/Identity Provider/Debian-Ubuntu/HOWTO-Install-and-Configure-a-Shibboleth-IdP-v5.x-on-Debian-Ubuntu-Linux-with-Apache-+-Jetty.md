@@ -63,11 +63,11 @@
 
 ### Software
 
--   Apache Web Server (*\<= 2.4*)
+-   Apache Web Server (*\>= 2.4*)
 -   Jetty 11+ Servlet Container (*implementing Servlet API 5.0 or above*)
 -   Amazon Corretto JDK 17
--   OpenSSL (*\<= 3.0.2*)
--   Shibboleth Identity Provider (*\<= 5.0.0*)
+-   OpenSSL (*\>= 3.0.2*)
+-   Shibboleth Identity Provider (*\>= 5.0.0*)
 
 ### Others
 
