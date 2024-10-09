@@ -59,7 +59,7 @@
 -   CPU: 2 Core (64 bit)
 -   RAM: 2 GB (with IDEM MDX), 4GB (without IDEM MDX)
 -   HDD: 10 GB
--   OS: Debian 12 / Ubuntu 22.04
+-   OS: Debian (>= 12) / Ubuntu LTS (>= 22.04)
 
 ### Software
 
