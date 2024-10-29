@@ -36,38 +36,38 @@
 
    * Python 2.x - IdP v4.x / IdP v5.x: 
      ```bash
-     zcat /opt/shibboleth-idp/logs/idp-audit-2020-09* | python $HOME/loganalisys.py -j4 - > idp-$(dnsdomainname)-2020-09-sso-stats.json
-     zcat /opt/shibboleth-idp/logs/idp-audit-2020-10* | python $HOME/loganalisys.py -j4 - > idp-$(dnsdomainname)-2020-10-sso-stats.json
-     zcat /opt/shibboleth-idp/logs/idp-audit-2020-11* | python $HOME/loganalisys.py -j4 - > idp-$(dnsdomainname)-2020-11-sso-stats.json
-     zcat /opt/shibboleth-idp/logs/idp-audit-2020-12* | python $HOME/loganalisys.py -j4 - > idp-$(dnsdomainname)-2020-12-sso-stats.json
-     zcat /opt/shibboleth-idp/logs/idp-audit-2021-01* | python $HOME/loganalisys.py -j4 - > idp-$(dnsdomainname)-2021-01-sso-stats.json
+     zcat /opt/shibboleth-idp/logs/idp-audit-2020-09* | python $HOME/loganalisys.py -j4 - > idp_$(dnsdomainname)_2020_09_sso_stats.json
+     zcat /opt/shibboleth-idp/logs/idp-audit-2020-10* | python $HOME/loganalisys.py -j4 - > idp_$(dnsdomainname)_2020_10_sso_stats.json
+     zcat /opt/shibboleth-idp/logs/idp-audit-2020-11* | python $HOME/loganalisys.py -j4 - > idp_$(dnsdomainname)_2020_11_sso_stats.json
+     zcat /opt/shibboleth-idp/logs/idp-audit-2020-12* | python $HOME/loganalisys.py -j4 - > idp_$(dnsdomainname)_2020_12_sso_stats.json
+     zcat /opt/shibboleth-idp/logs/idp-audit-2021-01* | python $HOME/loganalisys.py -j4 - > idp_$(dnsdomainname)_2021_01_sso_stats.json
      ```
 
    * Python 3.x - IdP v4.x / IdP v5.x:
      ```bash
-     zcat /opt/shibboleth-idp/logs/idp-audit-2020-09* | python3 $HOME/loganalisys.py -j4 - > idp-$(dnsdomainname)-2020-09-sso-stats.json
-     zcat /opt/shibboleth-idp/logs/idp-audit-2020-10* | python3 $HOME/loganalisys.py -j4 - > idp-$(dnsdomainname)-2020-10-sso-stats.json
-     zcat /opt/shibboleth-idp/logs/idp-audit-2020-11* | python3 $HOME/loganalisys.py -j4 - > idp-$(dnsdomainname)-2020-11-sso-stats.json
-     zcat /opt/shibboleth-idp/logs/idp-audit-2020-12* | python3 $HOME/loganalisys.py -j4 - > idp-$(dnsdomainname)-2020-12-sso-stats.json
-     zcat /opt/shibboleth-idp/logs/idp-audit-2021-01* | python3 $HOME/loganalisys.py -j4 - > idp-$(dnsdomainname)-2021-01-sso-stats.json
+     zcat /opt/shibboleth-idp/logs/idp-audit-2020-09* | python3 $HOME/loganalisys.py -j4 - > idp_$(dnsdomainname)_2020_09_sso_stats.json
+     zcat /opt/shibboleth-idp/logs/idp-audit-2020-10* | python3 $HOME/loganalisys.py -j4 - > idp_$(dnsdomainname)_2020_10_sso_stats.json
+     zcat /opt/shibboleth-idp/logs/idp-audit-2020-11* | python3 $HOME/loganalisys.py -j4 - > idp_$(dnsdomainname)_2020_11_sso_stats.json
+     zcat /opt/shibboleth-idp/logs/idp-audit-2020-12* | python3 $HOME/loganalisys.py -j4 - > idp_$(dnsdomainname)_2020_12_sso_stats.json
+     zcat /opt/shibboleth-idp/logs/idp-audit-2021-01* | python3 $HOME/loganalisys.py -j4 - > idp_$(dnsdomainname)_2021_01_sso_stats.json
      ```
 
    * Python 2.x - IdP v3.x (DEPRECATED): 
      ```bash
-     zcat /opt/shibboleth-idp/logs/idp-audit-2020-09* | python $HOME/loganalisys.py -j - > idp-$(dnsdomainname)-2020-09-sso-stats.json
-     zcat /opt/shibboleth-idp/logs/idp-audit-2020-10* | python $HOME/loganalisys.py -j - > idp-$(dnsdomainname)-2020-10-sso-stats.json
-     zcat /opt/shibboleth-idp/logs/idp-audit-2020-11* | python $HOME/loganalisys.py -j - > idp-$(dnsdomainname)-2020-11-sso-stats.json
-     zcat /opt/shibboleth-idp/logs/idp-audit-2020-12* | python $HOME/loganalisys.py -j - > idp-$(dnsdomainname)-2020-12-sso-stats.json
-     zcat /opt/shibboleth-idp/logs/idp-audit-2021-01* | python $HOME/loganalisys.py -j - > idp-$(dnsdomainname)-2021-01-sso-stats.json
+     zcat /opt/shibboleth-idp/logs/idp-audit-2020-09* | python $HOME/loganalisys.py -j - > idp_$(dnsdomainname)_2020_09_sso_stats.json
+     zcat /opt/shibboleth-idp/logs/idp-audit-2020-10* | python $HOME/loganalisys.py -j - > idp_$(dnsdomainname)_2020_10_sso_stats.json
+     zcat /opt/shibboleth-idp/logs/idp-audit-2020-11* | python $HOME/loganalisys.py -j - > idp_$(dnsdomainname)_2020_11_sso_stats.json
+     zcat /opt/shibboleth-idp/logs/idp-audit-2020-12* | python $HOME/loganalisys.py -j - > idp_$(dnsdomainname)_2020_12_sso_stats.json
+     zcat /opt/shibboleth-idp/logs/idp-audit-2021-01* | python $HOME/loganalisys.py -j - > idp_$(dnsdomainname)_2021_01_sso_stats.json
      ```
 
    * Python 3.x - IdP v3.x (DEPRECATED):
      ```bash
-     zcat /opt/shibboleth-idp/logs/idp-audit-2020-09* | python3 $HOME/loganalisys.py -j - > idp-$(dnsdomainname)-2020-09-sso-stats.json
-     zcat /opt/shibboleth-idp/logs/idp-audit-2020-10* | python3 $HOME/loganalisys.py -j - > idp-$(dnsdomainname)-2020-10-sso-stats.json
-     zcat /opt/shibboleth-idp/logs/idp-audit-2020-11* | python3 $HOME/loganalisys.py -j - > idp-$(dnsdomainname)-2020-11-sso-stats.json
-     zcat /opt/shibboleth-idp/logs/idp-audit-2020-12* | python3 $HOME/loganalisys.py -j - > idp-$(dnsdomainname)-2020-12-sso-stats.json
-     zcat /opt/shibboleth-idp/logs/idp-audit-2021-01* | python3 $HOME/loganalisys.py -j - > idp-$(dnsdomainname)-2021-01-sso-stats.json
+     zcat /opt/shibboleth-idp/logs/idp-audit-2020-09* | python3 $HOME/loganalisys.py -j - > idp_$(dnsdomainname)_2020_09_sso_stats.json
+     zcat /opt/shibboleth-idp/logs/idp-audit-2020-10* | python3 $HOME/loganalisys.py -j - > idp_$(dnsdomainname)_2020_10_sso_stats.json
+     zcat /opt/shibboleth-idp/logs/idp-audit-2020-11* | python3 $HOME/loganalisys.py -j - > idp_$(dnsdomainname)_2020_11_sso_stats.json
+     zcat /opt/shibboleth-idp/logs/idp-audit-2020-12* | python3 $HOME/loganalisys.py -j - > idp_$(dnsdomainname)_2020_12_sso_stats.json
+     zcat /opt/shibboleth-idp/logs/idp-audit-2021-01* | python3 $HOME/loganalisys.py -j - > idp_$(dnsdomainname)_2021_01_sso_stats.json
      ```
 
 4. Unset the IDP_HOME env variable with:
