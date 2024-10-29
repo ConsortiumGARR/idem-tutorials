@@ -79,7 +79,7 @@ def basic_stats(db):
     rps = len(list(db['rp'].keys()))
     users = len(list(db['users'].keys()))
     logins = db['logins']
-    return {"idp": idp_version, "rps": rps, "users": users, "logins": logins}
+    return {"version": idp_version, "rps": rps, "users": users, "logins": logins}
 
 
 def xml_out(db):
