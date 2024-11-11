@@ -503,6 +503,8 @@ It is a Java Web Application that can be deployed with its WAR file.
 
     By starting from this point, the variable **%{idp.home}** into some IdP configuration files refers to the directory: `/opt/shibboleth-idp`
 
+    From the v5.1.3, the installer miss a space between `<md:EntityDescriptor` and `entityID` into the `/opt/shibboleth-idp/idp-metadata.xml`. **Make sure to add it before procede.**
+
 [[TOC](#table-of-contents)]
 
 ## Disable Jetty Directory Indexing
