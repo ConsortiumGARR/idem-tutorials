@@ -308,7 +308,7 @@ Jetty is a Web server and a Java Servlet container. It will be used to run the I
         ```
 
     -   ``` text
-        chown -R jetty:jetty /opt/jetty /usr/local/src/jetty-src
+        chown -R jetty:jetty /opt/jetty /usr/local/src/jetty-src/
         ```
 
 7.  Create the Jetty Logs' folders:
