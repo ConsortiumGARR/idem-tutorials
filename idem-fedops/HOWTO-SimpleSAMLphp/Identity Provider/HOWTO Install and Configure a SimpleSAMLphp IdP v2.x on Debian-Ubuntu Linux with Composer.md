@@ -791,7 +791,7 @@ Ubuntu Mirror List: <https://launchpad.net/ubuntu/+archivemirrors>
        corresponds to `search.base` authsource LDAP setting.
      * the bindDN (`-D` parameter) ==> `CN=idpuser,CN=Users,DC=ad,DC=example,DC=org` (distinguished name for the user that can made queries on the LDAP, read only is sufficient):<br/>
        corresponds to `search.username` authsource LDAP setting.
-     * the Search Filter `(&(objectClass=inetOrgPerson)(uid=<USERNAME-USED-IN-THE-LOGIN-FORM>))`:<br/>
+     * the Search Filter `(&(objectClass=inetOrgPerson)(sAMAccountName=<USERNAME-USED-IN-THE-LOGIN-FORM>))`:<br/>
        corresponds to `search.filter' authsource LDAP setting.
 
 5. Add the `ldap:Ldap` Authentication Source:
