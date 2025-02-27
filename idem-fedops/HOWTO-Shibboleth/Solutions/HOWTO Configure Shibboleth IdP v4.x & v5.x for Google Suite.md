@@ -60,7 +60,7 @@
            <KeyDescriptor use="encryption">
                <KeyInfo xmlns="http://www.w3.org/2000/09/xmldsig#">
                    <X509Data>
-                       <X509Certificate>GOOGLE-SP-MD-SIGN-ENCRYPT-CERT</X509Certificate>
+                       <X509Certificate>GOOGLE-SP-MD-ENCRYPT-CERT</X509Certificate>
                    </X509Data>
                </KeyInfo>
                <EncryptionMethod Algorithm="http://www.w3.org/2001/04/xmlenc#aes128-cbc"></EncryptionMethod>
