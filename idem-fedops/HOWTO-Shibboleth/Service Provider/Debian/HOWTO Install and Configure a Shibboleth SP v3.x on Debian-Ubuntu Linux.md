@@ -241,8 +241,6 @@ Please, remember to **replace all occurence** of `example.org` domain name, or p
    * `vim /etc/apache2/conf-available/secure.conf`
   
      ```bash
-     RedirectMatch    ^/$  /secure
-
      <Location /secure>
        Authtype shibboleth
        ShibRequireSession On
