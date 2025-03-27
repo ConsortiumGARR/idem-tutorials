@@ -1392,7 +1392,7 @@ By default, a transient NameID will always be released to the Service Provider i
 
         The *sourceAttribute* MUST be an attribute, or a list of comma-separated attributes, that uniquely identify the subject of the generated `persistent-id`.
 
-        The *sourceAttribute* MUST be a **Stable**, **Permanent** and **Not-reassignable** directory attribute.
+        The *sourceAttribute* MUST be a **SAML attribute** populated using a **Stable**, **Permanent** and **Not-reassignable** directory attribute, not a directory attribute itself unless you create a SAML attribute with the same name.
 
         ``` xml+jinja
         # ... other things ...#
