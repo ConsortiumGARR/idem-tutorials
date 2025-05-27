@@ -1646,7 +1646,7 @@ which are an internal representation of user data not specific to SAML or any ot
 2.  Download the sample attribute resolver provided by IDEM GARR AAI Federation Operators (OpenLDAP / Active Directory compliant):
 
     ``` text
-    wget https://registry.idem.garr.it/idem-conf/shibboleth/IDP5/conf/attribute-resolver-v5-idem-sample.xml -O /opt/shibboleth-idp/conf/attribute-resolver.xml
+    wget https://conf.idem.garr.it/idem-attribute-resolver-shib-v5.xml -O /opt/shibboleth-idp/conf/attribute-resolver.xml
     ```
 
     If you decide to use the plain text LDAP/AD solution, **remove or comment** the following directives from your Attribute Resolver file:
@@ -2123,7 +2123,7 @@ Follow these steps **ONLY IF** your organization is connected to the [GARR Netwo
 
     <bean id="IdemAttributeFilterFull" class="net.shibboleth.ext.spring.resource.FileBackedHTTPResource"
           c:client-ref="MyHTTPClient"
-          c:url="https://registry.idem.garr.it/idem-conf/shibboleth/IDP5/conf/idem-attribute-filter-v5-full.xml"
+          c:url="https://conf.idem.garr.it/idem-attribute-filter-shib-v5-full.xml"
           c:backingFile="%{idp.home}/conf/idem-attribute-filter-full.xml"/>
     ```
 
