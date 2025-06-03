@@ -222,7 +222,7 @@ Ubuntu Mirror List: <https://launchpad.net/ubuntu/+archivemirrors>
 3. Create the Virtualhost file (**please pay attention: you need to edit this file and customize it, check the internal initial comment**):
 
    ```bash
-   wget https://registry.idem.garr.it/idem-conf/simplesamlphp/IDP2/apache2/idp.example.org.conf -O /etc/apache2/sites-available/$(hostname -f).conf
+   wget https://github.com/ConsortiumGARR/idem-tutorials/raw/master/idem-fedops/HOWTO-SimpleSAMLphp/Identity%20Provider/utils/idp.example.org.conf -O /etc/apache2/sites-available/$(hostname -f).conf
    ```
 
 4. Put SSL credentials in the right place:

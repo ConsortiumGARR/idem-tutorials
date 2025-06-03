@@ -1,0 +1,49 @@
+    <!-- Release an additional attribute to an SP. -->
+    <AttributeFilterPolicy id="example-afp">
+        <PolicyRequirementRule xsi:type="Requester" value="### SP-ENTITYID ###" />
+
+        <AttributeRule attributeID="mail" permitAny="true" />
+        <AttributeRule attributeID="eduPersonPrincipalName" permitAny="true" />
+        <AttributeRule attributeID="displayName" permitAny="true" />
+        <AttributeRule attributeID="eduPersonOrcid" permitAny="true" />
+        <AttributeRule attributeID="sn" permitAny="true" />
+        <AttributeRule attributeID="givenName" permitAny="true" />
+        <AttributeRule attributeID="eduPersonEntitlement" permitAny="true" />
+        <AttributeRule attributeID="cn" permitAny="true" />
+        <AttributeRule attributeID="eduPersonOrgDN" permitAny="true" />
+        <AttributeRule attributeID="title" permitAny="true" />
+        <AttributeRule attributeID="telephoneNumber" permitAny="true" />
+        <AttributeRule attributeID="eduPersonOrgUnitDN" permitAny="true" />
+        <AttributeRule attributeID="schacPersonalTitle" permitAny="true" />
+        <AttributeRule attributeID="schacPersonalUniqueID" permitAny="true" />
+        <AttributeRule attributeID="schacHomeOrganization" permitAny="true" />
+        <AttributeRule attributeID="schacHomeOrganizationType" permitAny="true" />
+        <AttributeRule attributeID="schacUserPresenceID" permitAny="true" />
+        <AttributeRule attributeID="mobile" permitAny="true" />
+        <AttributeRule attributeID="schacMotherTongue" permitAny="true" />
+        <AttributeRule attributeID="preferredLanguage" permitAny="true" />
+        <AttributeRule attributeID="schacGender" permitAny="true" />
+        <AttributeRule attributeID="schacDateOfBirth" permitAny="true" />
+        <AttributeRule attributeID="schacPlaceOfBirth" permitAny="true" />
+        <AttributeRule attributeID="schacCountryOfCitizenship" permitAny="true" />
+        <AttributeRule attributeID="schacSn1" permitAny="true" />
+        <AttributeRule attributeID="schacSn2" permitAny="true" />
+        <AttributeRule attributeID="schacCountryOfResidence" permitAny="true" />
+        <AttributeRule attributeID="schacPersonalUniqueCode" permitAny="true" />
+        <AttributeRule attributeID="schacExpiryDate" permitAny="true" />
+        <AttributeRule attributeID="schacUserPrivateAttribute" permitAny="true" />
+        <AttributeRule attributeID="schacUserStatus" permitAny="true" />
+        <AttributeRule attributeID="schacProjectMembership" permitAny="true" />
+        <AttributeRule attributeID="schacProjectSpecificRole" permitAny="true" />
+        <AttributeRule attributeID="schacYearOfBirth" permitAny="true" />
+        <AttributeRule attributeID="eduPersonNickname" permitAny="true" />
+        <AttributeRule attributeID="eduPersonPrimaryAffiliation" permitAny="true" />
+        <AttributeRule attributeID="eduPersonPrimaryOrgUnitDN" permitAny="true" />
+        <AttributeRule attributeID="eduPersonAssurance" permitAny="true" />
+        <AttributeRule attributeID="eduPersonPrincipalNamePrior" permitAny="true" />
+        <AttributeRule attributeID="eduPersonUniqueId" permitAny="true" />
+        <AttributeRule attributeID="eduPersonUniqueCode" permitAny="true" />
+        <AttributeRule attributeID="eduPersonTargetedID" permitAny="true" />
+        <AttributeRule attributeID="eduPersonAffiliation" permitAny="true" />
+        <AttributeRule attributeID="eduPersonScopedAffiliation" permitAny="true" />
+    </AttributeFilterPolicy>
