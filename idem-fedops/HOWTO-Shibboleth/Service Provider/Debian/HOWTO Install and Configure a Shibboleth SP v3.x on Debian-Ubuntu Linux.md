@@ -132,16 +132,10 @@ Please, remember to **replace all occurence** of `example.org` domain name, or p
     - HTTPS Server Key (Private Key) inside `/etc/ssl/private`
     - Add CA Cert into `/etc/ssl/certs`
 
-      - If you use GARR TCS (Sectigo CA):
+      - If you use GARR TCS or GEANT TCS:
 
         ```bash
-        wget -O /etc/ssl/certs/GEANT_OV_RSA_CA_4.pem https://crt.sh/?d=2475254782
-
-        wget -O /etc/ssl/certs/SectigoRSAOrganizationValidationSecureServerCA.crt https://crt.sh/?d=924467857
-
-        cat /etc/ssl/certs/SectigoRSAOrganizationValidationSecureServerCA.crt >> /etc/ssl/certs/GEANT_OV_RSA_CA_4.pem
-
-        rm /etc/ssl/certs/SectigoRSAOrganizationValidationSecureServerCA.crt
+        wget -O /etc/ssl/certs/GEANT_TLS_RSA_1.pem https://crt.sh/?d=16099180997
         ```
 
       - If you use ACME (Let's Encrypt):
