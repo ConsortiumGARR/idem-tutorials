@@ -557,9 +557,9 @@ Jetty has had vulnerabilities related to directory indexing (sigh) so we suggest
     - Add CA Cert into `/etc/ssl/certs`
         - If you use GARR TCS or GEANT TCS:
 
-            - ``` text
-                wget -O /etc/ssl/certs/GEANT_TLS_RSA_1.pem https://crt.sh/?d=16099180997
-                ```
+          ``` text
+          wget -O /etc/ssl/certs/GEANT_TLS_RSA_1.pem https://crt.sh/?d=16099180997
+          ```
               
         - If you use ACME (Let's Encrypt):
 
