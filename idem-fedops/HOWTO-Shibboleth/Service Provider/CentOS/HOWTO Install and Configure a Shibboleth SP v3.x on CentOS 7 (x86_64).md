@@ -153,21 +153,20 @@ Please, remember to **replace all occurence** of `example.org` domain name, or p
    * HTTPS Server Certificate (Public Key) inside `/etc/pki/tls/certs/$(hostname -f).crt`
    * HTTPS Server Key (Private Key) inside `/etc/pki/tls/private/$(hostname -f).key`	
    * Add CA Cert into `/etc/pki/tls/certs`
-     * If you use GARR TCS (Sectigo CA): 
+     * If you use GARR TCS or GEANT TCS (Hellenic Academic and Research Institutions CA):
+
        ```bash
-       wget -O /etc/pki/tls/certs/GEANT_OV_RSA_CA_4.pem https://crt.sh/?d=2475254782
- 
-       wget -O /etc/pki/tls/certs/SectigoRSAOrganizationValidationSecureServerCA.crt https://crt.sh/?d=924467857
-
-       cat /etc/pki/tls/certs/SectigoRSAOrganizationValidationSecureServerCA.crt >> /etc/pki/tls/certs/GEANT_OV_RSA_CA_4.pem
-
-       rm /etc/pki/tls/certs/SectigoRSAOrganizationValidationSecureServerCA.crt
+       wget -O /etc/ssl/certs/GEANT_TLS_RSA_1.pem https://crt.sh/?d=16099180997
        ```
-       
-     * If you use ACME (Let's Encrypt): 
-       * `ln -s /etc/letsencrypt/live/<SERVER_FQDN>/chain.pem /etc/pki/tls/certs/ACME-CA.pem`
- 
+
+     * If you use ACME (Let's Encrypt):
+
+       ```bash
+       ln -s /etc/letsencrypt/live/<SERVER_FQDN>/chain.pem /etc/pki/tls/certs/ACME-CA.pem
+       ```
+
      (OPTIONAL) Create a Certificate and a Key self-signed for HTTPS if you don't have yet the official ones provided by the Certificate Authority:
+
      * ```bash
        openssl req -x509 -newkey rsa:3072 -keyout /etc/pki/tls/private/$(hostname -f).key -out /etc/pki/tls/certs/$(hostname -f).crt -nodes -days 1095
        ```

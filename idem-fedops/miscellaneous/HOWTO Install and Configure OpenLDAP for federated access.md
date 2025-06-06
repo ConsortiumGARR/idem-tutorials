@@ -24,9 +24,9 @@ This HOWTO uses `example.org` to provide this guide with example values.
 
 Please remember to **replace all occurencences** of the `example.org` domain name with the domain name of your institution.
 
-# Utility
+## Utility
 
-* Simple Bash script useful to convert a Domain Name into a Distinguished Name of LDAP: 
+* Simple Bash script useful to convert a Domain Name into a Distinguished Name of LDAP:
   [domain2dn.sh](https://github.com/ConsortiumGARR/idem-tutorials/blob/master/idem-fedops/miscellaneous/domain2dn.sh)
 
 ## Installation
@@ -68,6 +68,7 @@ Please remember to **replace all occurencences** of the `example.org` domain nam
       * ```bash
         sudo openssl req -newkey rsa:4096 -x509 -nodes -out /etc/ldap/$(hostname -f).crt -keyout /etc/ldap/$(hostname -f).key -days 1095 -subj "/CN=$(hostname -f)"
         ```
+
       * `sudo chown openldap:openldap /etc/ldap/$(hostname -f).crt`
       * `sudo chown openldap:openldap /etc/ldap/$(hostname -f).key`
       * `sudo chown openldap:openldap /etc/ldap/$(hostname -f).crt /etc/ldap/$(hostname -f).key`
@@ -75,40 +76,44 @@ Please remember to **replace all occurencences** of the `example.org` domain nam
    * Signed (**Do not use if you are not a NREN GARR Member**):
      * Add CA Cert into `/etc/ssl/certs`
        * If you use GARR TCS or GEANT TCS:
+
          ```bash
-         sudo wget -O /etc/ssl/certs/GEANT_OV_RSA_CA_4.pem https://crt.sh/?d=2475254782
-
-         sudo wget -O /etc/ssl/certs/SectigoRSAOrganizationValidationSecureServerCA.crt https://crt.sh/?d=924467857
-
-         sudo cat /etc/ssl/certs/SectigoRSAOrganizationValidationSecureServerCA.crt >> /etc/ssl/certs/GEANT_OV_RSA_CA_4.pem
-
-         sudo rm /etc/ssl/certs/SectigoRSAOrganizationValidationSecureServerCA.crt
+         wget -O /etc/ssl/certs/GEANT_TLS_RSA_1.pem https://crt.sh/?d=16099180997
          ```
 
        * If you use ACME (Let's Encrypt):
-         * `sudo ln -s /etc/letsencrypt/live/<SERVER_FQDN>/chain.pem /etc/ssl/certs/ACME-CA.pem`
+
+         ```bash
+         sudo ln -s /etc/letsencrypt/live/<SERVER_FQDN>/chain.pem /etc/ssl/certs/ACME-CA.pem
+         ```
 
      * Generate CSR(Certificate Signing Request) and the KEY:
+
        * ```bash
          sudo openssl req -new -newkey rsa:4096 -nodes -out /etc/ssl/certs/$(hostname -f).csr -keyout /etc/ssl/private/$(hostname -f).key -subj "/C=IT/ST=/L=Rome/O=Consortium GARR/CN=$(hostname -f)"
          ```
+
        * `sudo cp /etc/ssl/certs/$(hostname -f).crt /etc/ldap/$(hostname -f).crt`
        * `sudo cp /etc/ssl/private/$(hostname -f).key /etc/ldap/$(hostname -f).key`
        * `sudo chown openldap:openldap /etc/ldap/$(hostname -f).crt /etc/ldap/$(hostname -f).key`
 
 6. Enable SSL for LDAP:
+
    * ```bash
      sudo sed -i "s/TLS_CACERT.*/TLS_CACERT\t\/etc\/ldap\/$(hostname -f).crt/g" /etc/ldap/ldap.conf
      ```
+
    * `sudo chown openldap:openldap /etc/ldap/ldap.conf`
 
    On Debian 12 - Bookworm:
+
    * ```bash
      sudo echo -e "TLS_CACERT\t/etc/ldap/$(hostname -f).crt" >> /etc/ldap/ldap.conf
      ```
+
    * `sudo chown openldap:openldap /etc/ldap/ldap.conf`
 
-8. Restart OpenLDAP:
+7. Restart OpenLDAP:
    * `sudo service slapd restart`
 
 ## Configuration
@@ -117,6 +122,7 @@ Please remember to **replace all occurencences** of the `example.org` domain nam
    * `sudo mkdir /etc/ldap/scratch`
 
 2. Configure LDAP for SSL:
+
    ```bash
    sudo bash -c 'cat > /etc/ldap/scratch/olcTLS.ldif <<EOF
    dn: cn=config
@@ -133,14 +139,15 @@ Please remember to **replace all occurencences** of the `example.org` domain nam
    ```
   
 3. Apply with:
+
    ```bash
    sudo ldapmodify -Y EXTERNAL -H ldapi:/// -f /etc/ldap/scratch/olcTLS.ldif
    ```
 
 4. Create the 3 main _Organizational Unit_ (OU), `people`, `groups` and `system`.
 
-   *Example:* if the domain name is `example.org` than  the distinguish name will be `dc=example,dc=org`:
-   
+   _Example:_ if the domain name is `example.org` than  the distinguish name will be `dc=example,dc=org`:
+
    **Be carefull!** Replace `dc=example,dc=org` with distinguish name ([DN](https://ldap.com/ldap-dns-and-rdns/)) of your domain name and `<LDAP-ROOT-PW_CHANGEME>` with the LDAP ROOT password!
 
    * ```bash
@@ -163,14 +170,15 @@ Please remember to **replace all occurencences** of the `example.org` domain nam
      ```
 
    * Apply with:
+
      ```bash
      sudo ldapadd -x -D 'cn=admin,dc=example,dc=org' -w '<LDAP-ROOT-PW_CHANGEME>' -H ldapi:/// -f /etc/ldap/scratch/add_ou.ldif
      ```
 
    * Verify with: `sudo ldapsearch -x -b 'dc=example,dc=org'`
 
-5. Create the `idpuser` needed to perform "*Bind and Search*" operations:
-   
+5. Create the `idpuser` needed to perform _Bind and Search_ operations:
+
    **Be carefull!** Replace `dc=example,dc=org` with distinguish name ([DN](https://ldap.com/ldap-dns-and-rdns/)) of your domain name, `<LDAP-ROOT-PW_CHANGEME>` with the LDAP ROOT password and `<INSERT-HERE-IDPUSER-PW>` with password for the `idpuser` user!
 
    * ```bash
@@ -185,14 +193,15 @@ Please remember to **replace all occurencences** of the `example.org` domain nam
      ```
 
    * Apply with:
-     ```bash     
+
+     ```bash
      sudo ldapadd -x -D 'cn=admin,dc=example,dc=org' -w '<LDAP-ROOT-PW_CHANGEME>' -H ldapi:/// -f /etc/ldap/scratch/add_idpuser.ldif
      ```
 
-5. Configure OpenLDAP ACL to allow `idpuser` to perform *search* operation on the directory:
+6. Configure OpenLDAP ACL to allow `idpuser` to perform _search_ operation on the directory:
 
    **Be carefull!** Replace `dc=example,dc=org` with distinguish name ([DN](https://ldap.com/ldap-dns-and-rdns/)) of your domain name!
-   
+
    * Check which configuration your directory has with:
      * `sudo ldapsearch  -Y EXTERNAL -H ldapi:/// -b cn=config 'olcDatabase={1}mdb'`
 
@@ -212,11 +221,12 @@ Please remember to **replace all occurencences** of the `example.org` domain nam
      ```
 
    * Apply with:
+
      ```bash
      sudo ldapadd  -Y EXTERNAL -H ldapi:/// -f /etc/ldap/scratch/olcAcl.ldif
      ```
 
-6. Check that `idpuser` can search other users (when users exist):
+7. Check that `idpuser` can search other users (when users exist):
 
    **Be carefull!** Replace `dc=example,dc=org` with distinguish name ([DN](https://ldap.com/ldap-dns-and-rdns/)) of your domain name!
 
@@ -224,7 +234,7 @@ Please remember to **replace all occurencences** of the `example.org` domain nam
    sudo ldapsearch -x -D 'cn=idpuser,ou=system,dc=example,dc=org' -w '<INSERT-HERE-IDPUSER-PW>' -b 'ou=people,dc=example,dc=org'
    ```
 
-7. Install needed schemas (eduPerson, SCHAC, Password Policy):
+8. Install needed schemas (eduPerson, SCHAC, Password Policy):
 
    ```bash
    sudo wget https://raw.githubusercontent.com/REFEDS/eduperson/master/schema/openldap/eduperson.ldif -O /etc/ldap/schema/eduperson.ldif
@@ -273,7 +283,6 @@ Please remember to **replace all occurencences** of the `example.org` domain nam
     * Add it to the Directory:
       `sudo ldapadd -Q -Y EXTERNAL -H ldapi:/// -f /etc/ldap/scratch/add_memberof.ldif`
 
-
 10. Improve performance:
 
     * Create `olcDbIndex.ldif`:
@@ -295,10 +304,11 @@ Please remember to **replace all occurencences** of the `example.org` domain nam
       ```
 
     * Add it to the Directory:
-    
+
       `sudo ldapmodify -Y EXTERNAL -H ldapi:/// -f /etc/ldap/scratch/olcDbIndex.ldif`
 
 11. Configure Logging:
+
     ```bash
     sudo mkdir /var/log/slapd
 
@@ -323,6 +333,7 @@ Please remember to **replace all occurencences** of the `example.org` domain nam
     ```
 
 12. Configure openLDAP olcSizeLimit:
+
     ```bash
     sudo bash -c 'cat > /etc/ldap/scratch/olcSizeLimit.ldif <<EOF
     dn: cn=config
@@ -342,7 +353,9 @@ Please remember to **replace all occurencences** of the `example.org` domain nam
 13. Add your first user:
 
     **Be carefull!** Replace `dc=example,dc=org` with distinguish name ([DN](https://ldap.com/ldap-dns-and-rdns/)) of your domain name!
+
     * Configure `user1.ldif`:
+
       ```bash
       sudo bash -c 'cat > /etc/ldap/scratch/user1.ldif <<EOF
       # USERNAME: user1 , PASSWORD: ciaouser1
@@ -366,22 +379,25 @@ Please remember to **replace all occurencences** of the `example.org` domain nam
       eduPersonEntitlement: urn:mace:terena.org:tcs:personal-user
       EOF'
       ```
-      
-   * Apply with:
+
+    * Apply with:
+
      ```bash
      sudo ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/ldap/scratch/user1.ldif
      ```
 
-13. Check that `idpuser` can find `user1`:
+14. Check that `idpuser` can find `user1`:
 
     **Be carefull!** Replace `dc=example,dc=org` with distinguish name ([DN](https://ldap.com/ldap-dns-and-rdns/)) of your domain name!
 
     * `sudo ldapsearch -x -D 'cn=idpuser,ou=system,dc=example,dc=org' -w '<INSERT-HERE-IDPUSER-PW>' -b 'uid=user1,ou=people,dc=example,dc=org'`
 
-14. Check that LDAP has TLS ('anonymous' MUST BE returned):
+15. Check that LDAP has TLS ('anonymous' MUST BE returned):
+
     * `sudo ldapwhoami -H ldap:// -x -ZZ`
 
-15. Make mail, eduPersonPrincipalName and schacPersonalUniqueID as unique:
+16. Make mail, eduPersonPrincipalName and schacPersonalUniqueID as unique:
+
     * Load `unique` module:
 
       ```bash
@@ -411,7 +427,8 @@ Please remember to **replace all occurencences** of the `example.org` domain nam
       sudo ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/ldap/scratch/mail_ePPN_sPUI_unique.ldif
       ```
 
-16. Disable Anonymous bind
+17. Disable Anonymous bind
+
     ```bash
     sudo bash -c 'cat > /etc/ldap/scratch/disableAnonymoysBind.ldif <<EOF
     dn: cn=config
@@ -428,9 +445,10 @@ Please remember to **replace all occurencences** of the `example.org` domain nam
     sudo ldapmodify -Y EXTERNAL -H ldapi:/// -f /etc/ldap/scratch/disableAnonymoysBind.ldif
     ```
 
-# Password Policies
+## Password Policies
 
 1. Load Password Policy module:
+
    ```bash
    sudo bash -c 'cat > /etc/ldap/scratch/load-ppolicy-mod.ldif <<EOF
    dn: cn=module{0},cn=config
@@ -468,14 +486,16 @@ Please remember to **replace all occurencences** of the `example.org` domain nam
    olcPPolicyHashCleartext: TRUE
    EOF'
 
-# PhpLdapAdmin (PLA) - optional
+## PhpLdapAdmin (PLA) - optional
 
 ## PLA Installation
 
 1. Install requirements:
+
    * `sudo apt install apache2-utils python3-passlib gettext php php-ldap php-xml`
 
 2. Download and extract PLA into the Apache2 DocumentRoot directory:
+
    ```bash
    sudo su
    
@@ -489,6 +509,7 @@ Please remember to **replace all occurencences** of the `example.org` domain nam
    ```
 
 3. Create PLA configuration file:
+
    ```bash
    cd /var/www/html/pla/config
    
@@ -496,12 +517,15 @@ Please remember to **replace all occurencences** of the `example.org` domain nam
    ```
 
 4. Enable LDAP Apache module:
+
    * `sudo a2enmod ldap`
 
 5. Restart Apache2:
+
    * `sudo systemctl restart apache2`
 
 6. Login on PLA:
+
    * Navigate to `http://<YOUR-LDAP-FQDN>/pla`
    * Login with:
      * Username: `cn=admin,dc=example,dc=org`
