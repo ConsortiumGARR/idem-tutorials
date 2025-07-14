@@ -92,6 +92,7 @@ These GitHub Repository contains step-by-step tutorials on Identity and Service 
 
 #### Shibboleth
 
+* [HOWTO Install and Configure a Shibboleth IdP v5.x on Fedora Linux with Apache + Jetty](./idem-community/HOWTO-Shibboleth/Identity-Provider/HOWTO-Install-and-Configure-a-Shibboleth-IdP-v5.x-on-Fedora-Linux-with-Apache-%2B-Jetty.md)
 * [HOWTO Migrate a Shibboleth IdP](./idem-community/HOWTO-Shibboleth/Identity-Provider/HOW%20TO%20MIGRATE%20A%20SHIBBOLETH%20IDP.md#how-to-migrate-a-shibboleth-idp)
 * [HOWTO Setup a Shibboleth SP with NGINX](./idem-community/HOWTO-Shibboleth/Service-Provider/Debian/HOW%20TO%20SETUP%20A%20SHIBBOLETH%20SP%20WITH%20NGINX.md) di Marco Cappellacci (Università degli studi di Urbino Carlo Bo)
 * [HOWTO Relase properly eduPersonEntitlement](https://github.com/speedj/IdemDay18-Daniele/tree/master/eduPersonEntitlement#edupersonentitlement-valori-strettamente-necessari-agli-sp) di Daniele Albrizio (Università degli Studi di Trieste)
