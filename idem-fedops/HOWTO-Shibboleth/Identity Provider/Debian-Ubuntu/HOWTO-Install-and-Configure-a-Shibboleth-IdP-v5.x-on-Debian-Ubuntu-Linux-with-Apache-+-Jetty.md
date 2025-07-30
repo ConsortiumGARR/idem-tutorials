@@ -48,9 +48,10 @@
 28. [Appendix B: Import persistent-id from a previous database](#appendix-b-import-persistent-id-from-a-previous-database)
 29. [Appendix C: Useful logs to find problems](#appendix-c-useful-logs-to-find-problems)
 30. [Appendix D: Connect an SP with the IdP](#appendix-d-connect-an-sp-with-the-idp)
-31. [Utilities](#utilities)
-32. [Useful Documentation](#useful-documentation)
-33. [Authors](#authors)
+31. [Appendix E: Javascript Engine](#appendix-e-javascript-engine)
+32. [Utilities](#utilities)
+33. [Useful Documentation](#useful-documentation)
+34. [Authors](#authors)
 
 ## Requirements
 
@@ -2304,6 +2305,30 @@ Follow these steps **IF** your organization **IS NOT** connected to the [GARR Ne
 
     ``` text
     systemctl restart jetty
+    ```
+
+[[TOC](#table-of-contents)]
+
+## Appendix E: Javascript Engine
+
+DOC:
+- [Nashorn](https://shibboleth.atlassian.net/wiki/spaces/IDPPLUGINS/pages/1374027996/Nashorn)
+- [ScriptedAttributeDefinition](https://shibboleth.atlassian.net/wiki/spaces/IDP5/pages/3199503289/ScriptedAttributeDefinition)
+
+The Nashorn plugin provides support for the Nashorn JavaScript engine for IdPs of version 4.1 and beyond. This the scripting engine that was shipped with Java between versions 8 to 14 (it is not present as of JDK15).
+
+Follow these steps **IF** you have to use `ScriptedAttributeDefinition` in the attribute-resolver.xml file:
+
+01. Move into the IdP `bin` directory:
+
+    ``` bash
+    cd /opt/shibboleth/bin
+    ```
+
+02. Install Nashorn:
+
+    ``` bash
+    ./plugin.sh -I net.shibboleth.idp.plugin.nashorn
     ```
 
 [[TOC](#table-of-contents)]
