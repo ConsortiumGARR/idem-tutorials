@@ -14,6 +14,7 @@ These GitHub Repository contains step-by-step tutorials on Identity and Service 
     + [Shibboleth](#shibboleth)
     + [SimpleSAMLphp](#simplesamlphp)
     + [OpenLDAP](#openldap)
+    + [Ansible Shibboleth IdP](#ansible-shibboleth-idp)
   * [HOWTOs DEPRECATED](#howtos-deprecated)
 - IDEM Community Users HOWTOs:
     + [Shibboleth](#shibboleth-1)
@@ -65,6 +66,14 @@ These GitHub Repository contains step-by-step tutorials on Identity and Service 
 #### OpenLDAP
 
 * [HOWTO Install and Configure OpenLDAP for federated access](./idem-fedops/miscellaneous/HOWTO%20Install%20and%20Configure%20OpenLDAP%20for%20federated%20access.md#howto-install-and-configure-openldap-for-federated-access)
+
+#### Ansible Shibboleth IdP
+
+Consortium GARR provides the following Ansible playbook to help users to install and configure a Shibboleth Identity Provider:
+
+https://github.com/ConsortiumGARR/ansible-shibboleth-idp-garr/
+
+Any comments / developments are really appreciated!
 
 ### HOWTOs DEPRECATED
 
