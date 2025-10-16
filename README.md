@@ -15,6 +15,7 @@ These GitHub Repository contains step-by-step tutorials on Identity and Service 
     + [SimpleSAMLphp](#simplesamlphp)
     + [OpenLDAP](#openldap)
     + [Ansible Shibboleth IdP](#ansible-shibboleth-idp)
+    + [IDEM SP Base](#idem-sp-base)
   * [HOWTOs DEPRECATED](#howtos-deprecated)
 - IDEM Community Users HOWTOs:
     + [Shibboleth](#shibboleth-1)
@@ -74,6 +75,12 @@ Consortium GARR provides the following Ansible playbook to help users to install
 https://github.com/ConsortiumGARR/ansible-shibboleth-idp-garr/
 
 Any comments / developments are really appreciated!
+
+#### IDEM SP Base
+
+IDEM SP Base is a containerized Shibboleth Service Provider and a set of ansible roles developed by the IDEM GARR AAI Service to ease service providers deployment.
+
+https://github.com/ConsortiumGARR/idem-sp-base
 
 ### HOWTOs DEPRECATED
 
