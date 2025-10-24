@@ -1892,9 +1892,9 @@ Translate the IdP messages in your language:
 
         ``` text
         idp.login.infoPage=Informations
-        idp.url.infoPage=https://my.organization.it/english-idp-info-page.html
+        idp.url.infoPage=https://idp.example.org/english-idp-info-page.html
         idp.login.privacyPage=Privacy Policy
-        idp.url.privacyPage=https://my.organization.it/english-idp-privacy-policy.html
+        idp.url.privacyPage=https://idp.example.org/english-idp-privacy-policy.html
         ```
 
     - Modify `messages_it.properties`:
@@ -1905,9 +1905,9 @@ Translate the IdP messages in your language:
 
         ``` text
         idp.login.infoPage=Informazioni
-        idp.url.infoPage=https://my.organization.it/italian-idp-info-page.html
+        idp.url.infoPage=https://idp.example.org/italian-idp-info-page.html
         idp.login.privacyPage=Privacy Policy
-        idp.url.privacyPage=https://my.organization.it/italian-idp-privacy-policy.html
+        idp.url.privacyPage=https://idp.example.org/italian-idp-privacy-policy.html
         ```
 
 03. Rebuild IdP WAR file and Restart Jetty to apply changes:
