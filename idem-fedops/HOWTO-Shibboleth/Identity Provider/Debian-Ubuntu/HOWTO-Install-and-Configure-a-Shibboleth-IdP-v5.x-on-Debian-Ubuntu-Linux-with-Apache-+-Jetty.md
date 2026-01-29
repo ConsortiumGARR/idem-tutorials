@@ -1000,7 +1000,7 @@ This Storage service will memorize User Consent data on a persistent SQL databas
             idp.authn.LDAP.trustCertificates = /opt/shibboleth-idp/credentials/ldap-server.crt
 
             # List of attributes to request during authentication
-            idp.authn.LDAP.returnAttributes = passwordExpirationTime,loginGraceRemaining
+            idp.authn.LDAP.returnAttributes = pwdLastSet,badPwdCount
 
             idp.authn.LDAP.baseDN = ou=people,dc=example,dc=org
             idp.authn.LDAP.subtreeSearch = false
