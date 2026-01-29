@@ -1030,12 +1030,12 @@ This Storage service will memorize User Consent data on a persistent SQL databas
             idp.attribute.resolver.LDAP.exportAttributes    = uid cn sn givenName mail eduPersonAffiliation
             ```
 
-        - Paste the content of OpenLDAP certificate into `/opt/shibboleth-idp/credentials/ldap-server.crt`
+        - Paste the content of AD-CA certificate into `/opt/shibboleth-idp/credentials/AD-CA.crt`
 
         - Configure the right owner/group to the OpenLDAP certificate loaded:
 
             ``` text
-            chown jetty:root /opt/shibboleth-idp/credentials/ldap-server.crt ; chmod 600 /opt/shibboleth-idp/credentials/ldap-server.crt
+            chown jetty:root /opt/shibboleth-idp/credentials/AD-CA.crt ; chmod 600 /opt/shibboleth-idp/credentials/AD-CA.crt
             ```
 
         - Restart Jetty to apply the changes:
