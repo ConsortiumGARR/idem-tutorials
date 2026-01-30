@@ -1154,6 +1154,27 @@ This Storage service will memorize User Consent data on a persistent SQL databas
     - the baseDN (`-b` parameter) ==\> `CN=Users,DC=ad,DC=example,DC=org` (branch containing the registered users)
     - the bindDN (`-D` parameter) ==\> `CN=idpuser,CN=Users,DC=ad,DC=example,DC=org` (distinguished name for the user that can make queries on the LDAP, read only is sufficient)
     - the searchFilter `(sAMAccountName=<USERNAME-USED-IN-THE-LOGIN-FORM>)` corresponds to the `(sAMAccountName=$resolutionContext.principal)` searchFilter configured into `conf/ldap.properties`
+   
+    In the likely case Active Directory is set up to only accept secure LDAP queries, add the Certification Authority certificate (AD-CA certificate) to the IDP store, *before* the `ldapsearch` check.
+	The AD-CA certificate is needed to verify that the certificates shown by the Domain Controllers/LDAPS servers are valid.
+	A good guide to this check is _LDAPS Troubleshooting_ by Joe Kingsley: https://medium.com/@bluebeam/linux-client-to-active-directory-provided-ldaps-troubleshooting-75c3aa6480b3
+    
+	In short, the commands to add the certificate to the store are similar to:
+    
+	``` text
+	sudo cp AD-CA.crt /usr/share/ca-certificates/mozilla
+	sudo dpkg-reconfigure ca-certificates
+	```
+	...and the check to reach the Directory, similar to:
+    
+	``` text
+	ldapsearch -H ldaps://<LDAP-SERVER-FQDN-OR-IP>:636 -D username@example.org -W -b 'OU=People,DC=domain,DC=org' '(uid=<USERNAME-USED-IN-THE-LOGIN-FORM>)'
+	```
+ 
+	- the **W** parameter lets type the password instead to write in clear text in the command.
+	- the **bindDN** (`-D` parameter) ==\> (`username@example.org`) is only an example
+  	and is used in another, more readable form.
+  	A connectivity check can be done using any user with the same permissions  
 
 04. Connect the Active Directory to the IdP to allow the authentication of the users:
 
