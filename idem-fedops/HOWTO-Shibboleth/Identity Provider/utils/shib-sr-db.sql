@@ -16,8 +16,8 @@ USE storagerecords;
 
 CREATE TABLE IF NOT EXISTS StorageRecords
 (
-context VARCHAR(255) NOT NULL COLLATE utf8_bin,
-id VARCHAR(255) NOT NULL COLLATE utf8_bin,
+context VARCHAR(255) NOT NULL COLLATE utf8mb4_bin,
+id VARCHAR(255) NOT NULL COLLATE utf8mb4_bin,
 expires BIGINT(20) DEFAULT NULL,
 value LONGTEXT NOT NULL,
 version BIGINT(20) NOT NULL,
