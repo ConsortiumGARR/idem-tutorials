@@ -1452,7 +1452,7 @@ By default, a transient NameID will always be released to the Service Provider i
 
       The *sourceAttribute* MUST be an attribute, or a list of comma-separated attributes, that uniquely identify the subject of the generated `persistent-id`.
 
-      The *sourceAttribute* MUST be a **Stable**, **Permanent** and **Not-reassignable** directory attribute.
+      The *sourceAttribute* MUST reference one or more **Stable**, **Permanent** and **Not-reassignable** attributes supported by the IdP Attribute Resolver.
 
       ``` xml+jinja
       # ... other things ...#
