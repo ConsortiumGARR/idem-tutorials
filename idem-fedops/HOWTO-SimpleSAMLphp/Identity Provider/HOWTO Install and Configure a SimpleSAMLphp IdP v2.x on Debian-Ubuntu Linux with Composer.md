@@ -26,9 +26,10 @@
    6. [Register the IdP on the IDEM Test Federation](#register-the-idp-on-the-idem-test-federation)
 7. [Appendix A - How to manage sessions with Memcached](#appendix-a---how-to-manage-sessions-with-memcached)
 8. [Appendix B - How to collect useful statistics](#appendix-b---how-to-collect-useful-statistics)
-9. [Appendix C - How to upgrade all modules](#appendix-c---how-to-upgrade-all-modules)
-10. [Utility](#utility)
-11. [Authors](#authors)
+9. [Appendix C - How to enable F-Ticks module](#appendix-c---how-to-enable-f-ticks-module)
+10. [Appendix D - How to upgrade all modules](#appendix-d---how-to-upgrade-all-modules)
+11. [Utility](#utility)
+12. [Authors](#authors)
     1. [Original Author](#original-author)
 
 ## Requirements
@@ -976,7 +977,36 @@ DOC: **[SimpleSAMLphp statistics module](https://simplesamlphp.org/docs/contrib_
 
 [[TOC]](#table-of-contents)
 
-## Appendix C - How to upgrade all modules
+## Appendix C - How to enable F-Ticks module
+
+1. Install the SimpleSAMLphp F-Ticks module:
+   * `cd /var/simplesamlphp`
+   * `composer require simplesamlphp/simplesamlphp-module-fticks --update-no-dev`
+  
+2. Enable F-Ticks module:
+   * `vim /var/simplesamlphp/config/config.php`
+
+     ```php
+     // ...other configuration settings...
+     
+     'module.enable' => [
+        'exampleauth' => false,
+        'core' => true,
+        'admin' => true,
+        'saml' => true,
+        'consent' => true,
+        'fticks' => true,
+     ],
+     
+     // ...other configuration settings...
+     ```
+
+2. (**only for italian institutions**) Configure F-Ticks for IDEM GARR Federation:
+
+   https://conf.idem.garr.it/en/fticks/#simplesamlphp-identity-provider-configuration
+
+
+## Appendix D - How to upgrade all modules
 
 1. Move into the installation dir:
    * `cd /var/simplesamlphp`
