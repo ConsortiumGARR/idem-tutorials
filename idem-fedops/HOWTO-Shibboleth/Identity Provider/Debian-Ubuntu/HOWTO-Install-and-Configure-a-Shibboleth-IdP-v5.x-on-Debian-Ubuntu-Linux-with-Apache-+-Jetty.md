@@ -44,9 +44,10 @@
 28. [Appendix B: Useful logs to find problems](#appendix-b-useful-logs-to-find-problems)
 29. [Appendix C: Connect an SP with the IdP](#appendix-c-connect-an-sp-with-the-idp)
 30. [Appendix D: Javascript Engine](#appendix-d-javascript-engine)
-31. [Utilities](#utilities)
-32. [Useful Documentation](#useful-documentation)
-33. [Authors](#authors)
+31. [Appendix E: Enable F-Ticks logging](#appendix-e-enable-f-ticks-logging)
+32. [Utilities](#utilities)
+33. [Useful Documentation](#useful-documentation)
+34. [Authors](#authors)
 
 ## Requirements
 
@@ -2100,6 +2101,14 @@ Follow these steps **IF** you have to use `ScriptedAttributeDefinition` in the a
     ```
 
 [[TOC](#table-of-contents)]
+
+## Appendix E: Enable F-Ticks logging
+
+(**only for italian institutions**)
+
+Configure the IdP to send F-Ticks log to the IDEM GARR Federation:
+
+https://conf.idem.garr.it/en/fticks/#shibboleth-identity-provider-configuration
 
 ## Utilities
 
