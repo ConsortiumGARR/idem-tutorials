@@ -735,7 +735,7 @@ Ubuntu Mirror List: <https://launchpad.net/ubuntu/+archivemirrors>
 >    or that has needed to receive a specific value for one or more attributes
 
 * Download IDEM ARP into SimpleSAMLphp `config` directory:
-  * `sudo wget https://conf.idem.garr.it/idem-attribute-filter-ssp-v2x-full.php -O /var/simplesamlphp/config/idem-attribute-filter.php`
+  * `sudo wget https://conf.idem.garr.it/idem-attribute-filter-ssp-v2-full.php -O /var/simplesamlphp/config/idem-attribute-filter.php`
 
 * Change the `require` line into `idem-attribute-filter.php` by setting the correct path of the `name2oid.php` file if differs on your instance.
 
