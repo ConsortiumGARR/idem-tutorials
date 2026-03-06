@@ -6,12 +6,11 @@
 
 01. [Requirements](#requirements)
 02. [Notes](#notes)
-03. [Utility](#utility)
+03. [Utilities](#utilities)
 04. [Installation](#installation)
 05. [Configuration](#configuration)
 06. [Password Policies](#password-policies)
-07. [Utilities](#utilities)
-08. [Authors](#authors)
+07. [Authors](#authors)
 
 ## Requirements
 
@@ -27,10 +26,12 @@ This HOWTO uses `example.org` to provide this guide with example values.
 
 Please remember to **replace all occurencences** of the `example.org` domain name with the domain name of your institution.
 
-## Utility
+## Utilities
 
 * Simple Bash script useful to convert a Domain Name into a Distinguished Name of LDAP:
   [domain2dn.sh](https://github.com/ConsortiumGARR/idem-tutorials/blob/master/idem-fedops/miscellaneous/domain2dn.sh)
+
+* Apache Directory Studio: <https://directory.apache.org/studio/downloads.html>
 
 ## Installation
 
@@ -537,10 +538,6 @@ Please remember to **replace all occurencences** of the `example.org` domain nam
 
     sudo ldapadd -x -D 'cn=admin,dc=example,dc=org' -w '<LDAP-ROOT-PW_CHANGEME>' -H ldapi:/// -f /etc/ldap/scratch/policies-ou.ldif
     ```
-
-## Utilities
-
-* Apache Directory Studio: <https://directory.apache.org/studio/downloads.html>
 
 ## Authors
 
