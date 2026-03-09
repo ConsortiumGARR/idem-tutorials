@@ -16,9 +16,8 @@
 
 * Tested OS:
 
-  * Debian 12 (Bookworm)
-  * Ubuntu 22.04 (Jammy Jellyfish)
-  * Ubuntu 24.04 (Noble)
+  * Debian: 12 (Bookworm), 13 (Trixie)
+  * Ubuntu: 22.04 (Jammy Jellyfish), 24.04 (Noble)
 
 ## Notes
 
