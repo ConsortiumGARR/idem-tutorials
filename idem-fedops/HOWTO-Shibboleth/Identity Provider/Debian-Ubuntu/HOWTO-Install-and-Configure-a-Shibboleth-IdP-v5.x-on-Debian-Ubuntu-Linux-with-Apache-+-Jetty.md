@@ -64,7 +64,7 @@
 - Jetty 12.1.3+ Servlet Container (*implementing Servlet API 5.0 or above*)
 - Amazon Corretto JDK 17
 - OpenSSL (*\>= 3.5.1*)
-- Shibboleth Identity Provider (*\>= 5.1.6*)
+- Shibboleth Identity Provider (*\>= 5.2.1*)
 
 ### Others
 
@@ -145,36 +145,51 @@ Ubuntu Mirror List: <https://launchpad.net/ubuntu/+archivemirrors>
     sudo su -
     ```
 
-02. (**only for italian institutions**) Change the default mirror to the GARR one:
+02. Install package needed by mirrors protected by HTTPS:
 
-    - Debian:
+    ``` text
+    apt update && apt install apt-transport-https
+    ``` 
+
+03. (**only for italian institutions**) Change the default mirror to the GARR one:
+
+    - Debian example:
 
       ``` text
       bash -c 'cat > /etc/apt/sources.list.d/garr.sources <<EOF
-      Types: deb deb-src
+      Types: deb
       URIs: https://debian.mirror.garr.it/debian/
-      Suites: trixie trixie-updates trixie-backports
+      Suites: $(lsb_release -cs) $(lsb_release -cs)-updates $(lsb_release -cs)-backports
       Components: main
       Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg
 
-      Types: deb deb-src
+      Types: deb
       URIs: https://debian.mirror.garr.it/debian-security/
-      Suites: trixie-security
+      Suites: $(lsb_release -cs)-security
       Components: main
       Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg
       EOF'
       ```
 
-    - Ubuntu:
+    - Ubuntu example:
 
       ``` text
-      bash -c 'cat > /etc/apt/sources.list.d/garr.list <<EOF
-      deb https://ubuntu.mirror.garr.it/ubuntu/ noble main
-      deb-src https://ubuntu.mirror.garr.it/ubuntu/ noble main
+      bash -c 'cat > /etc/apt/sources.list.d/garr.sources <<EOF
+      Types: deb
+      URIs: https://ubuntu.mirror.garr.it/ubuntu/
+      Suites: $(lsb_release -cs) $(lsb_release -cs)-updates $(lsb_release -cs)-backports
+      Components: main universe restricted multiverse
+      Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
+
+      Types: deb
+      URIs: https://ubuntu.mirror.garr.it/ubuntu-archive/
+      Suites: $(lsb_release -cs)-security
+      Components: main universe restricted multiverse
+      Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
       EOF'
       ```
 
-03. Update packages:
+04. Update packages:
 
     ``` text
     apt update && apt-get upgrade -y --no-install-recommends
@@ -210,58 +225,37 @@ sudo apt install apache2
     sudo su -
     ```
 
-02. Download the Public Key *B04F24E3.pub* to verify the signature file from [Amazon](https://docs.aws.amazon.com/corretto/latest/corretto-17-ug/downloads-list.html#signature) into `/tmp` directory.
+02. Download the public key to verify package signatures from Amazon repository:
 
-03. Convert Public Key into "**amazon-corretto.gpg**":
+    ``` text
+    wget -O - https://apt.corretto.aws/corretto.key | sudo gpg --dearmor -o /usr/share/keyrings/corretto-keyring.gpg
+    ```
 
-    - ``` text
-      gpg --no-default-keyring --keyring /tmp/temp-keyring.gpg --import /tmp/B04F24E3.pub
-      ```
+03. Create an APT source list for Amazon Corretto:
 
-    - ``` text
-      gpg --no-default-keyring --keyring /tmp/temp-keyring.gpg --export --output /etc/apt/keyrings/amazon-corretto.gpg
-      ```
+    ``` text
+    bash -c 'cat > /etc/apt/sources.list.d/amazon-corretto.sources <<EOF
+    Types: deb
+    URIs: https://apt.corretto.aws
+    Suites: stable
+    Components: main
+    Signed-By: /usr/share/keyrings/corretto-keyring.gpg
 
-    - ``` text
-      rm /tmp/temp-keyring.gpg /tmp/B04F24E3.pub /tmp/temp-keyring.gpg~
-      ```
+    #Types: deb-src
+    #URIs: https://apt.corretto.aws
+    #Suites: stable
+    #Components: main
+    #Signed-By: /usr/share/keyrings/corretto-keyring.gpg
+    EOF'
+    ```
 
-04. Create an APT source list for Amazon Corretto:
-
-    - Debian:
-
-      ``` text
-      bash -c 'cat > /etc/apt/sources.list.d/amazon-corretto.sources <<EOF
-      Types: deb
-      URIs: https://apt.corretto.aws
-      Suites: stable
-      Components: main
-      Signed-By: /etc/apt/keyrings/amazon-corretto.gpg
-
-      #Types: deb-src
-      #URIs: https://apt.corretto.aws
-      #Suites: stable
-      #Components: main
-      #Signed-By: /etc/apt/keyrings/amazon-corretto.gpg
-      EOF'
-      ```
-
-    - Ubuntu:
-
-      ``` text
-      bash -c 'cat > /etc/apt/sources.list.d/amazon-corretto.list <<EOF
-      deb [signed-by=/etc/apt/keyrings/amazon-corretto.gpg] https://apt.corretto.aws stable main
-      #deb-src [signed-by=/etc/apt/keyrings/amazon-corretto.gpg] https://apt.corretto.aws stable main
-      EOF'
-      ```
-
-05. Install Amazon Corretto:
+04. Install Amazon Corretto:
 
     ``` text
     apt update ; apt install -y java-17-amazon-corretto-jdk
     ```
 
-06. Check that Java is working:
+05. Check that Java is working:
 
     ``` text
     java --version
@@ -394,7 +388,7 @@ Jetty is a Web server and a Java Servlet container. It will be used to run the I
       systemctl enable jetty.service
       ```
 
-10. Install Servlet Jakarta API 5.0.0:
+10. Install Servlet Jakarta API 5.0.0 needed to build and deploy the IdP WAR file:
 
     - ``` text
       apt install libjakarta-servlet-api-java
@@ -1798,15 +1792,7 @@ Change the content of `idp.url.password.reset` and `idp.url.helpdesk` variables 
 
     02. Remove completely the comment containing `<mdui:UIInfo>` element from `<IDPSSODescriptor>` Section.
 
-    03. Add the `HTTP-Redirect` SingleLogoutService endpoints under the `SOAP` one:
-
-        ``` xml+jinja
-        <md:SingleLogoutService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="https://idp.example.org/idp/profile/SAML2/Redirect/SLO"/>
-        ```
-
-        (replace `idp.example.org` value with the Full Qualified Domain Name of the Identity Provider.)
-
-    04. Between the last `<SingleLogoutService>` and the first `<SingleSignOnService>` endpoints add:
+    03. Between the last `<SingleLogoutService>` and the first `<SingleSignOnService>` endpoints add:
 
         ``` xml+jinja
         <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</md:NameIDFormat>
