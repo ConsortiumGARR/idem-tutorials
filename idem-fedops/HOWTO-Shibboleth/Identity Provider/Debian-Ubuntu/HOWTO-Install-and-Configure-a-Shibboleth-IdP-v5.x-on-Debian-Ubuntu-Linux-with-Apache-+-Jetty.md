@@ -1792,7 +1792,15 @@ Change the content of `idp.url.password.reset` and `idp.url.helpdesk` variables 
 
     02. Remove completely the comment containing `<mdui:UIInfo>` element from `<IDPSSODescriptor>` Section.
 
-    03. Between the last `<SingleLogoutService>` and the first `<SingleSignOnService>` endpoints add:
+    03. Add the `HTTP-Redirect` SingleLogoutService endpoints under the `SOAP` one:
+
+        ``` xml+jinja
+        <md:SingleLogoutService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="https://idp.example.org/idp/profile/SAML2/Redirect/SLO"/>
+        ```
+        
+        (replace `idp.example.org` value with the Full Qualified Domain Name of the Identity Provider.)
+
+    04. Between the last `<SingleLogoutService>` and the first `<SingleSignOnService>` endpoints add:
 
         ``` xml+jinja
         <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</md:NameIDFormat>
