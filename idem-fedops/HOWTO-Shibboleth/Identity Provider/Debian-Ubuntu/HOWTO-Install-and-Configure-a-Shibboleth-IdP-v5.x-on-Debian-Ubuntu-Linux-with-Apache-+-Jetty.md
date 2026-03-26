@@ -1171,7 +1171,6 @@ This Storage service will memorize User Consent data on a persistent SQL databas
    
     In the likely case Active Directory is set up to only accept secure LDAP queries, add the Certification Authority certificate (AD-CA certificate) to the IDP store, *before* the `ldapsearch` check.
 	The AD-CA certificate is needed to verify that the certificates shown by the Domain Controllers/LDAPS servers are valid.
-	A good guide to this check is _LDAPS Troubleshooting_ by Joe Kingsley: https://medium.com/@bluebeam/linux-client-to-active-directory-provided-ldaps-troubleshooting-75c3aa6480b3
     
 	In short, the commands to add the certificate to the store are similar to:
     
@@ -1186,9 +1185,9 @@ This Storage service will memorize User Consent data on a persistent SQL databas
 	```
  
 	- the **W** parameter lets type the password instead to write in clear text in the command.
-	- the **bindDN** (`-D` parameter) ==\> (`username@example.org`) is only an example
-  	and is used in another, more readable form.
-  	A connectivity check can be done using any user with the same permissions  
+	- the **bindDN** (`-D` parameter) ==\> `username@example.org` is only an example and is used in another, more readable form.
+
+    A connectivity check can be done using any user with the same permissions  
 
 04. Connect the Active Directory to the IdP to allow the authentication of the users:
 
