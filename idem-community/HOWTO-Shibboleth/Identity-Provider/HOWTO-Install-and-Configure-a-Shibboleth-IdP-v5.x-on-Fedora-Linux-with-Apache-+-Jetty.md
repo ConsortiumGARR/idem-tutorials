@@ -499,11 +499,6 @@ Jetty has had vulnerabilities related to directory indexing (sigh) so we suggest
 2. Create the file ```/etc/httpd/conf.d/idp.conf``` as follows:
 
    ``` text
-   SSLUseStapling on
-   SSLStaplingResponderTimeout 5
-   SSLStaplingReturnResponderErrors off
-   SSLStaplingCache shmcb:/var/run/ocsp(128000)
-
    <VirtualHost *:80>
       ServerName "idp.example.org"
       Redirect permanent "/" "https://idp.example.org/"
