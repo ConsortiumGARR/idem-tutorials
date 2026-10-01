@@ -37,11 +37,11 @@ The EDS is a set of Javascript and CSS files, so installing it and using it is s
 
    cd /usr/local/src
 
-   wget https://shibboleth.net/downloads/embedded-discovery-service/latest/shibboleth-embedded-ds-1.3.0.tar.gz -O shibboleth-eds.tar.gz
+   wget https://shibboleth.net/downloads/embedded-discovery-service/latest/shibboleth-embedded-ds-1.4.0.tar.gz -O shibboleth-eds.tar.gz
 
    tar xzf shibboleth-eds.tar.gz
 
-   cd shibboleth-embedded-ds-1.3.0
+   cd shibboleth-embedded-ds-1.4.0
 
    apt install make
    
