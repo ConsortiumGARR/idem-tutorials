@@ -31,7 +31,7 @@
 - CPU: 2 Core
 - RAM: 4 GB
 - HDD: 20 GB
-- OS: Debian 10
+- OS: Debian 13
 
 ## Software that will be installed
 
@@ -96,7 +96,7 @@ Please, remember to **replace all occurence** of `example.org` domain name, or p
 
 02. Install Shibboleth SP:
 
-    - `apt install apache2 libapache2-mod-shib ntp --no-install-recommends`
+    - `apt install apache2 libapache2-mod-shib --no-install-recommends`
 
       From this point the location of the SP directory is: `/etc/shibboleth`
 
@@ -190,7 +190,7 @@ Please, remember to **replace all occurence** of `example.org` domain name, or p
 
 03. Create SP metadata Signing and Encryption credentials:
 
-    - Ubuntu:
+    - Debian/Ubuntu:
 
       ```bash
       cd /etc/shibboleth
@@ -200,22 +200,6 @@ Please, remember to **replace all occurence** of `example.org` domain name, or p
       shib-keygen -u _shibd -g _shibd -h $(hostname -f) -y 30 -e https://$(hostname -f)/shibboleth -n sp-encrypt -f
 
       /usr/sbin/shibd -t
-
-      systemctl restart shibd.service
-
-      systemctl restart apache2.service
-      ```
-
-    - Debian
-
-      ```bash
-      cd /etc/shibboleth
-
-      ./keygen.sh -u shibd -g shibd -h $(hostname -f) -y 30 -e https://$(hostname -f)/shibboleth -n sp-signing -f
-
-      ./keygen.sh -u shibd -g shibd -h $(hostname -f) -y 30 -e https://$(hostname -f)/shibboleth -n sp-encrypt -f
-
-      LD_LIBRARY_PATH=/opt/shibboleth/lib64 /usr/sbin/shibd -t
 
       systemctl restart shibd.service
 
