@@ -8,6 +8,8 @@
 
 ## Instructions
 
+Reference: https://learn.microsoft.com/en-us/entra/identity/hybrid/connect/how-to-connect-fed-saml-idp
+
 1. Into `conf/relying-party.xml`, under `<util:list id="shibboleth.RelyingPartyOverrides">`, add the following `<bean>`:
    ```xml
    <bean id="Office365" parent="RelyingPartyByName" c:relyingPartyIds="urn:federation:MicrosoftOnline">
@@ -54,7 +56,7 @@
       <InputDataConnector ref="myLDAP" attributeNames="objectGUID"/>
    </AttributeDefinition>
    
-   <AttributeDefinition scope="%{idp.scope}" xsi:type="Scoped" id="UserId">
+   <AttributeDefinition scope="%{idp.scope}" xsi:type="Scoped" id="IDPEmail">
       <InputDataConnector ref="myLDAP" attributeNames="uid"/>
     </AttributeDefinition>
    ```
@@ -70,27 +72,25 @@
    description.en=Azure AD ImmutableID
    description.it=Azure AD ImmutableID
    saml2.name=urn:oid:1.2.840.113556.1.4.2
-   saml1.encodeType=false
+   saml2.encodeType=false
    ```
    
-5. Create `conf/attributes/custom/UserId.properties` as follow (the example considers italian and english languages only):
+5. Create `conf/attributes/custom/IDPEmail.properties` as follow (the example considers italian and english languages only):
    ```properties
-   # Azure AD User ID
+   # Azure AD IDPEmail
 
-   id=UserId
+   id=IDPEmail
    transcoder=SAML2ScopedStringTranscoder
-   displayName.en=Azure AD User ID
-   displayName.it=Azure AD User ID
-   description.en=Azure AD User ID
-   description.it=Azure AD User ID
-   saml2.name=urn:oid:0.9.2342.19200300.100.1.1
-   saml1.encodeType=false
+   displayName.en=Azure AD IDPEmail
+   displayName.it=Azure AD IDPEmail
+   saml2.name=IDPEmail
+   saml2.friendlyName=
+   saml2.nameFormat=
+   saml2.encodeType=false
    ```
 
 6. Create Office 365 metadata:
    * `wget https://nexus.microsoftonline-p.com/federationmetadata/saml20/federationmetadata.xml -O /opt/shibboleth-idp/metadata/office365-md.xml`
-   
-   (and remove the NameIDFormat "`unspecified`" or the relase NameID will be always "`transient`")
    
 7. Into `conf/metadata-providers.xml` add the Office 365 metadata:
    ```xml
@@ -104,7 +104,7 @@
       <PolicyRequirementRule xsi:type="Requester" value="urn:federation:MicrosoftOnline" />
 
       <!-- Release userPrincipalName as Azure AD User ID -->
-      <AttributeRule attributeID="UserId">
+      <AttributeRule attributeID="IDPEmail">
          <PermitValueRule xsi:type="ANY"/>
       </AttributeRule>
 
