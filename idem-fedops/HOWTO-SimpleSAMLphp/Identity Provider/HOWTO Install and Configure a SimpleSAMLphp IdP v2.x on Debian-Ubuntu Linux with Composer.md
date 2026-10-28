@@ -50,7 +50,7 @@
 * vim
 * apache2 (>= 2.4)
 * php (>= 7.4 for SSP v2.0.x, >=8.0.0 for SSP v2.1.x)
-* php extensions (date,dom,hash,intl,json,libxml,mbstring,openssl,pcre,SPL,zlib,ldap extensions)
+* php extensions (date,dom,hash,intl,json,libxml,mbstring,openssl,pcre,SPL,zlib,ldap,bcmath extensions)
 * zip
 * unzip
 * composer
@@ -178,7 +178,7 @@ Ubuntu Mirror List: <https://launchpad.net/ubuntu/+archivemirrors>
 2. Prepare the environment:
 
    ```bash
-   apt install git zip unzip apache2 php php-mbstring php-date php-intl php-xml php-curl libpcre3 libpcre3-dev zlib1g zlib1g-dev curl cron --no-install-recommends
+   apt install git zip unzip apache2 php php-mbstring php-date php-intl php-xml php-curl php-bcmath libpcre3 libpcre3-dev zlib1g zlib1g-dev curl cron --no-install-recommends
    ```
 
 3. Download Composer setup:
